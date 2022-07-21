@@ -1,6 +1,6 @@
 {
-  "name": "gamboa.martin/organigrama",
-  "description": "Organigrama de una empresa",
+  "name": "gamboa.martin/comercial",
+  "description": "Comercial",
   "type": "library",
   "license": "GPL-3.0-or-later",
   "authors": [
@@ -54,6 +54,7 @@
         "gamboa.martin/template_1": "dev-main",
         "gamboa.martin/system": "dev-main",
         "gamboa.martin/services": "dev-main",
+        "gamboa.martin/organigrama": "dev-main",
         "gamboa.martin/direccion_postal": "dev-main",
         "gamboa.martin/cat_sat": "dev-main"
     },
