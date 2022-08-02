@@ -12,7 +12,7 @@
 
     "autoload": {
         "psr-4": {
-          "gamboamartin\\organigrama\\controllers\\": "controllers",
+          "gamboamartin\\comercial\\controllers\\": "controllers",
           "config\\": "config/",
           "models\\": "orm",
           "tests\\": "tests/",
