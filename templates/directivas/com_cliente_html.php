@@ -311,7 +311,7 @@ class com_cliente_html extends html_controler {
         $modelo = new com_cliente(link: $link);
 
         $select = $this->select_catalogo(cols:$cols,con_registros:$con_registros,id_selected:$id_selected,
-            modelo: $modelo,label: 'Cliente');
+            modelo: $modelo,label: 'Cliente', required: true);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }
