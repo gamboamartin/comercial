@@ -64,6 +64,27 @@ class limpieza{
         return $org_empresa;
     }
 
+    public function init_modifica_com_cliente(controler $controler): array|stdClass
+    {
+        if(!isset($controler->row_upd)){
+            $controler->row_upd = new stdClass();
+        }
+        if(!isset($controler->row_upd->cat_sat_regimen_fiscal_id)){
+            $controler->row_upd->cat_sat_regimen_fiscal_id = -1;
+        }
+
+        $com_cliente = $controler->modelo->registro(registro_id: $controler->registro_id,retorno_obj: true);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener registro',data:  $com_cliente);
+        }
+
+        $init = $this->init_upd_com_cliente(controler: $controler,com_cliente:  $com_cliente);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializa datos',data:  $init);
+        }
+        return $init;
+    }
+
     public function init_modifica_org_empresa(controler $controler): array|stdClass
     {
         if(!isset($controler->row_upd)){
@@ -124,6 +145,18 @@ class limpieza{
 
 
         $init = $this->init_data_ubicacion(controler: $controler,org_empresa:  $org_empresa);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializa datos',data:  $init);
+        }
+        return $init;
+    }
+
+    private function init_upd_com_cliente(controler $controler, stdClass $com_cliente): array|stdClass
+    {
+        $keys_foraneas = array('dp_calle_pertenece_id','cat_sat_regimen_fiscal_id','cat_sat_moneda_id','cat_sat_forma_pago_id',
+            'cat_sat_metodo_pago_id', 'cat_sat_uso_cfdi_id','cat_sat_tipo_de_comprobante_id');
+
+        $init = $this->init_foraneas(keys_foraneas: $keys_foraneas,org_empresa:  $com_cliente);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializa datos',data:  $init);
         }
