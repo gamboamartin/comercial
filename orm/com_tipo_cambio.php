@@ -6,8 +6,8 @@ use PDO;
 class com_tipo_cambio extends modelo{
     public function __construct(PDO $link){
         $tabla = __CLASS__;
-        $columnas = array($tabla=>false);
-        $campos_obligatorios = array();
+        $columnas = array($tabla=>false,'cat_sat_moneda'=>$tabla,'dp_pais'=>'cat_sat_moneda');
+        $campos_obligatorios = array('cat_sat_moneda_id');
 
         parent::__construct(link: $link,tabla:  $tabla, campos_obligatorios: $campos_obligatorios,
             columnas: $columnas);
