@@ -19,7 +19,10 @@ class com_sucursal_html extends html_controler {
 
         $controler->inputs->numero_exterior = $inputs->texts->numero_exterior;
         $controler->inputs->numero_interior = $inputs->texts->numero_interior;
-        $controler->inputs->telefono = $inputs->texts->telefono;
+        $controler->inputs->nombre_contacto = $inputs->texts->nombre_contacto;
+        $controler->inputs->telefono_1 = $inputs->texts->telefono_1;
+        $controler->inputs->telefono_2 = $inputs->texts->telefono_2;
+        $controler->inputs->telefono_3 = $inputs->texts->telefono_3;
 
         return $controler->inputs;
     }
@@ -79,6 +82,27 @@ class com_sucursal_html extends html_controler {
         return $div;
     }
 
+    public function input_nombre_contacto(int $cols, stdClass $row_upd, bool $value_vacio): array|string
+    {
+        $valida = $this->directivas->valida_cols(cols: $cols);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
+        }
+
+        $html =$this->directivas->input_text_required(disable: false,name: 'nombre_contacto',place_holder: 'Nombre contacto',
+            row_upd: $row_upd, value_vacio: $value_vacio);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar input', data: $html);
+        }
+
+        $div = $this->directivas->html->div_group(cols: $cols,html:  $html);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar div', data: $div);
+        }
+
+        return $div;
+    }
+
     public function input_numero_exterior(int $cols, stdClass $row_upd, bool $value_vacio): array|string
     {
         $valida = $this->directivas->valida_cols(cols: $cols);
@@ -100,14 +124,56 @@ class com_sucursal_html extends html_controler {
         return $div;
     }
 
-    public function input_telefono(int $cols, stdClass $row_upd, bool $value_vacio): array|string
+    public function input_telefono_1(int $cols, stdClass $row_upd, bool $value_vacio): array|string
     {
         $valida = $this->directivas->valida_cols(cols: $cols);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
         }
 
-        $html =$this->directivas->input_text_required(disable: false,name: 'telefono',place_holder: 'Telefono',
+        $html =$this->directivas->input_text_required(disable: false,name: 'telefono-1',place_holder: 'Telefono 1',
+            row_upd: $row_upd, value_vacio: $value_vacio);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar input', data: $html);
+        }
+
+        $div = $this->directivas->html->div_group(cols: $cols,html:  $html);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar div', data: $div);
+        }
+
+        return $div;
+    }
+
+    public function input_telefono_2(int $cols, stdClass $row_upd, bool $value_vacio): array|string
+    {
+        $valida = $this->directivas->valida_cols(cols: $cols);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
+        }
+
+        $html =$this->directivas->input_text_required(disable: false,name: 'telefono-2',place_holder: 'Telefono 2',
+            row_upd: $row_upd, value_vacio: $value_vacio);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar input', data: $html);
+        }
+
+        $div = $this->directivas->html->div_group(cols: $cols,html:  $html);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar div', data: $div);
+        }
+
+        return $div;
+    }
+
+    public function input_telefono_3(int $cols, stdClass $row_upd, bool $value_vacio): array|string
+    {
+        $valida = $this->directivas->valida_cols(cols: $cols);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
+        }
+
+        $html =$this->directivas->input_text_required(disable: false,name: 'telefono-3',place_holder: 'Telefono 3',
             row_upd: $row_upd, value_vacio: $value_vacio);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
@@ -172,11 +238,29 @@ class com_sucursal_html extends html_controler {
         }
         $texts->numero_interior = $in_numero_interior;
 
-        $in_telefono = $this->input_telefono(cols: 6,row_upd:  $row_upd,value_vacio:  $value_vacio);
+        $in_telefono1 = $this->input_telefono_1(cols: 6,row_upd:  $row_upd,value_vacio:  $value_vacio);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar input',data:  $in_telefono);
+            return $this->error->error(mensaje: 'Error al generar input',data:  $in_telefono1);
         }
-        $texts->telefono = $in_telefono;
+        $texts->telefono_1 = $in_telefono1;
+
+        $in_telefono2 = $this->input_telefono_2(cols: 6,row_upd:  $row_upd,value_vacio:  $value_vacio);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar input',data:  $in_telefono2);
+        }
+        $texts->telefono_2 = $in_telefono2;
+
+        $in_telefono3 = $this->input_telefono_3(cols: 6,row_upd:  $row_upd,value_vacio:  $value_vacio);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar input',data:  $in_telefono3);
+        }
+        $texts->telefono_3 = $in_telefono3;
+
+        $in_nombre_contacto = $this->input_nombre_contacto(cols: 12,row_upd:  $row_upd,value_vacio:  $value_vacio);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar input',data:  $in_nombre_contacto);
+        }
+        $texts->nombre_contacto = $in_nombre_contacto;
 
         return $texts;
     }
