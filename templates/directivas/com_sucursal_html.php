@@ -15,6 +15,11 @@ class com_sucursal_html extends html_controler {
         $controler->inputs->select = new stdClass();
 
         $controler->inputs->select->com_cliente_id = $inputs->selects->com_cliente_id;
+        $controler->inputs->select->dp_pais_id = $inputs->selects->dp_pais_id;
+        $controler->inputs->select->dp_estado_id = $inputs->selects->dp_estado_id;
+        $controler->inputs->select->dp_municipio_id = $inputs->selects->dp_municipio_id;
+        $controler->inputs->select->dp_cp_id = $inputs->selects->dp_cp_id;
+        $controler->inputs->select->dp_colonia_id = $inputs->selects->dp_colonia_id;
         $controler->inputs->select->dp_calle_pertenece_id = $inputs->selects->dp_calle_pertenece_id;
 
         $controler->inputs->numero_exterior = $inputs->texts->numero_exterior;
@@ -198,6 +203,46 @@ class com_sucursal_html extends html_controler {
             return $this->error->error(mensaje: 'Error al generar select',data:  $select);
         }
         $selects->com_cliente_id = $select;
+
+        $dp_pais_html = new dp_pais_html(html:$this->html_base);
+        $select = $dp_pais_html->select_dp_pais_id(cols: 6, con_registros:true,
+            id_selected:-1,link: $link);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select',data:  $select);
+        }
+        $selects->dp_pais_id = $select;
+
+        $dp_estado_html = new dp_estado_html(html:$this->html_base);
+        $select = $dp_estado_html->select_dp_estado_id(cols: 6, con_registros:true,
+            id_selected:-1,link: $link);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select',data:  $select);
+        }
+        $selects->dp_estado_id = $select;
+
+        $dp_municipio_html = new dp_municipio_html(html:$this->html_base);
+        $select = $dp_municipio_html->select_dp_municipio_id(cols: 6, con_registros:true,
+            id_selected:-1,link: $link);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select',data:  $select);
+        }
+        $selects->dp_municipio_id = $select;
+
+        $dp_cp_html = new dp_cp_html(html:$this->html_base);
+        $select = $dp_cp_html->select_dp_cp_id(cols: 6, con_registros:true,
+            id_selected:-1,link: $link);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select',data:  $select);
+        }
+        $selects->dp_cp_id = $select;
+
+        $dp_colonia_html = new dp_colonia_html(html:$this->html_base);
+        $select = $dp_colonia_html->select_dp_colonia_id(cols: 6, con_registros:true,
+            id_selected:-1,link: $link);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select',data:  $select);
+        }
+        $selects->dp_colonia_id = $select;
 
         $dp_calle_pertenece_html = new dp_calle_pertenece_html(html:$this->html_base);
         $select = $dp_calle_pertenece_html->select_dp_calle_pertenece_id(cols: 6, con_registros:true,

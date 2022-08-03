@@ -1,11 +1,16 @@
 <?php /** @var controllers\controlador_com_cliente $controlador  controlador en ejecucion */ ?>
 <?php use config\views; ?>
+<?php echo $controlador->inputs->select->com_cliente_id; ?>
 <?php echo $controlador->inputs->codigo; ?>
 <?php echo $controlador->inputs->codigo_bis; ?>
 <?php echo $controlador->inputs->descripcion; ?>
 <?php echo $controlador->inputs->nombre_contacto; ?>
 
-<?php echo $controlador->inputs->select->com_cliente_id; ?>
+<?php echo $controlador->inputs->select->dp_pais_id; ?>
+<?php echo $controlador->inputs->select->dp_estado_id; ?>
+<?php echo $controlador->inputs->select->dp_municipio_id; ?>
+<?php echo $controlador->inputs->select->dp_cp_id; ?>
+<?php echo $controlador->inputs->select->dp_colonia_id; ?>
 <?php echo $controlador->inputs->select->dp_calle_pertenece_id; ?>
 
 <?php echo $controlador->inputs->numero_interior; ?>
