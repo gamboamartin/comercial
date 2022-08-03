@@ -1,0 +1,131 @@
+<?php
+namespace html;
+
+use gamboamartin\comercial\controllers\controlador_com_sucursal;
+use gamboamartin\errores\errores;
+use gamboamartin\system\html_controler;
+use models\com_sucursal;
+use PDO;
+use stdClass;
+
+class com_producto_html extends html_controler {
+
+    private function asigna_inputs(controlador_com_sucursal $controler, stdClass $inputs): array|stdClass
+    {
+        $controler->inputs->select = new stdClass();
+
+        $controler->inputs->select->cat_sat_producto_id = $inputs->selects->cat_sat_producto_id;
+        $controler->inputs->select->cat_sat_unidad_id = $inputs->selects->cat_sat_unidad_id;
+
+        $controler->inputs->obj_imp = $inputs->texts->obj_imp;
+
+        return $controler->inputs;
+    }
+
+    public function genera_inputs_alta(controlador_com_sucursal $controler,PDO $link): array|stdClass
+    {
+        $inputs = $this->init_alta(link: $link);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar inputs',data:  $inputs);
+
+        }
+        $inputs_asignados = $this->asigna_inputs(controler:$controler, inputs: $inputs);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al asignar inputs',data:  $inputs_asignados);
+        }
+
+        return $inputs_asignados;
+    }
+
+    private function init_alta(PDO $link): array|stdClass
+    {
+        $selects = $this->selects_alta(link: $link);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar selects',data:  $selects);
+        }
+
+        $texts = $this->texts_alta(row_upd: new stdClass(), value_vacio: true);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar texts',data:  $texts);
+        }
+
+        $alta_inputs = new stdClass();
+        $alta_inputs->selects = $selects;
+        $alta_inputs->texts = $texts;
+
+        return $alta_inputs;
+    }
+
+    public function input_obj_imp(int $cols, stdClass $row_upd, bool $value_vacio): array|string
+    {
+        $valida = $this->directivas->valida_cols(cols: $cols);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
+        }
+
+        $html =$this->directivas->input_text_required(disable: false,name: 'obj_imp',place_holder: 'OBJ IMP',
+            row_upd: $row_upd, value_vacio: $value_vacio);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar input', data: $html);
+        }
+
+        $div = $this->directivas->html->div_group(cols: $cols,html:  $html);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar div', data: $div);
+        }
+
+        return $div;
+    }
+
+
+    private function selects_alta(PDO $link): array|stdClass
+    {
+        $selects = new stdClass();
+
+        $cat_sat_producto_html = new cat_sat_producto_html(html:$this->html_base);
+        $select = $cat_sat_producto_html->select_cat_sat_producto_id(cols: 12, con_registros:true,
+            id_selected:-1,link: $link);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select',data:  $select);
+        }
+        $selects->cat_sat_producto_id = $select;
+
+        $cat_sat_unidad_html = new cat_sat_producto_html(html:$this->html_base);
+        $select = $cat_sat_unidad_html->select_cat_sat_producto_id(cols: 6, con_registros:true,
+            id_selected:-1,link: $link);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select',data:  $select);
+        }
+        $selects->cat_sat_unidad_id = $select;
+
+
+        return $selects;
+    }
+
+    public function select_com_producto_id(int $cols, bool $con_registros, int $id_selected, PDO $link): array|string
+    {
+        $modelo = new com_sucursal(link: $link);
+
+        $select = $this->select_catalogo(cols:$cols,con_registros:$con_registros,id_selected:$id_selected,
+            modelo: $modelo,label: 'Sucursal',required: true);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select', data: $select);
+        }
+        return $select;
+    }
+
+    private function texts_alta(stdClass $row_upd, bool $value_vacio): array|stdClass
+    {
+        $texts = new stdClass();
+
+        $in_obj_imp = $this->input_obj_imp(cols: 6,row_upd:  $row_upd,value_vacio:  $value_vacio);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar input',data:  $in_obj_imp);
+        }
+        $texts->obj_imp = $in_obj_imp;
+
+
+        return $texts;
+    }
+
+}
