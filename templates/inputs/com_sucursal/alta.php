@@ -1,4 +1,4 @@
-<?php /** @var controllers\controlador_com_cliente $controlador  controlador en ejecucion */ ?>
+<?php /** @var controllers\controlador_com_sucursal $controlador  controlador en ejecucion */ ?>
 <?php use config\views; ?>
 <?php echo $controlador->inputs->select->com_cliente_id; ?>
 <?php echo $controlador->inputs->codigo; ?>

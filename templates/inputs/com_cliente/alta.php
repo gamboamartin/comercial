@@ -3,9 +3,13 @@
 <?php echo $controlador->inputs->codigo; ?>
 <?php echo $controlador->inputs->rfc; ?>
 <?php echo $controlador->inputs->razon_social; ?>
-<?php echo $controlador->inputs->email_sat; ?>
 
 <?php echo $controlador->inputs->select->cat_sat_regimen_fiscal_id; ?>
+<?php echo $controlador->inputs->select->dp_pais_id; ?>
+<?php echo $controlador->inputs->select->dp_estado_id; ?>
+<?php echo $controlador->inputs->select->dp_municipio_id; ?>
+<?php echo $controlador->inputs->select->dp_cp_id; ?>
+<?php echo $controlador->inputs->select->dp_colonia_id; ?>
 <?php echo $controlador->inputs->select->dp_calle_pertenece_id; ?>
 <?php echo $controlador->inputs->select->cat_sat_uso_cfdi_id; ?>
 <?php echo $controlador->inputs->select->cat_sat_moneda_id; ?>

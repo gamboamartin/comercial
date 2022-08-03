@@ -15,6 +15,11 @@ class com_cliente_html extends html_controler {
     {
         $controler->inputs->select = new stdClass();
 
+        $controler->inputs->select->dp_pais_id = $inputs->selects->dp_pais_id;
+        $controler->inputs->select->dp_estado_id = $inputs->selects->dp_estado_id;
+        $controler->inputs->select->dp_municipio_id = $inputs->selects->dp_municipio_id;
+        $controler->inputs->select->dp_cp_id = $inputs->selects->dp_cp_id;
+        $controler->inputs->select->dp_colonia_id = $inputs->selects->dp_colonia_id;
         $controler->inputs->select->dp_calle_pertenece_id = $inputs->selects->dp_calle_pertenece_id;
         $controler->inputs->select->cat_sat_regimen_fiscal_id = $inputs->selects->cat_sat_regimen_fiscal_id;
         $controler->inputs->select->cat_sat_moneda_id = $inputs->selects->cat_sat_moneda_id;
@@ -28,8 +33,6 @@ class com_cliente_html extends html_controler {
         $controler->inputs->numero_exterior = $inputs->texts->numero_exterior;
         $controler->inputs->numero_interior = $inputs->texts->numero_interior;
         $controler->inputs->telefono = $inputs->texts->telefono;
-
-        $controler->inputs->email_sat = $inputs->texts->email_sat;
 
         return $controler->inputs;
     }
@@ -115,27 +118,6 @@ class com_cliente_html extends html_controler {
             return $this->error->error(mensaje: 'Error al generar inputs',data:  $inputs);
         }
         return $inputs;
-    }
-
-    public function input_email_sat(int $cols, stdClass $row_upd, bool $value_vacio): array|string
-    {
-        $valida = $this->directivas->valida_cols(cols: $cols);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
-        }
-
-        $html =$this->directivas->email_required(disable: false,name: 'email_sat',place_holder: 'Email SAT',
-            row_upd: $row_upd, value_vacio: $value_vacio);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar input', data: $html);
-        }
-
-        $div = $this->directivas->html->div_group(cols: $cols,html:  $html);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al integrar div', data: $div);
-        }
-
-        return $div;
     }
 
     public function input_numero_interior(int $cols, stdClass $row_upd, bool $value_vacio): array|string
@@ -247,6 +229,46 @@ class com_cliente_html extends html_controler {
     {
         $selects = new stdClass();
 
+        $dp_pais_html = new dp_pais_html(html:$this->html_base);
+        $select = $dp_pais_html->select_dp_pais_id(cols: 6, con_registros:true,
+            id_selected:-1,link: $link);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select',data:  $select);
+        }
+        $selects->dp_pais_id = $select;
+
+        $dp_estado_html = new dp_estado_html(html:$this->html_base);
+        $select = $dp_estado_html->select_dp_estado_id(cols: 6, con_registros:true,
+            id_selected:-1,link: $link);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select',data:  $select);
+        }
+        $selects->dp_estado_id = $select;
+
+        $dp_municipio_html = new dp_municipio_html(html:$this->html_base);
+        $select = $dp_municipio_html->select_dp_municipio_id(cols: 6, con_registros:true,
+            id_selected:-1,link: $link);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select',data:  $select);
+        }
+        $selects->dp_municipio_id = $select;
+
+        $dp_cp_html = new dp_cp_html(html:$this->html_base);
+        $select = $dp_cp_html->select_dp_cp_id(cols: 6, con_registros:true,
+            id_selected:-1,link: $link);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select',data:  $select);
+        }
+        $selects->dp_cp_id = $select;
+
+        $dp_colonia_html = new dp_colonia_html(html:$this->html_base);
+        $select = $dp_colonia_html->select_dp_colonia_id(cols: 6, con_registros:true,
+            id_selected:-1,link: $link);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select',data:  $select);
+        }
+        $selects->dp_colonia_id = $select;
+
         $dp_calle_pertenece_html = new dp_calle_pertenece_html(html:$this->html_base);
         $select = $dp_calle_pertenece_html->select_dp_calle_pertenece_id(cols: 6, con_registros:true,
             id_selected:-1,link: $link);
@@ -352,12 +374,6 @@ class com_cliente_html extends html_controler {
             return $this->error->error(mensaje: 'Error al generar input',data:  $in_telefono);
         }
         $texts->telefono = $in_telefono;
-
-        $in_email_sat = $this->input_email_sat(cols: 12,row_upd:  $row_upd,value_vacio:  $value_vacio);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar input',data:  $in_email_sat);
-        }
-        $texts->email_sat = $in_email_sat;
 
         return $texts;
     }
