@@ -14,21 +14,25 @@ class com_sucursal_html extends html_controler {
     {
         $controler->inputs->select = new stdClass();
 
-        $controler->inputs->select->com_cliente_id = $inputs->selects->com_cliente_id;
-        $controler->inputs->select->dp_pais_id = $inputs->selects->dp_pais_id;
-        $controler->inputs->select->dp_estado_id = $inputs->selects->dp_estado_id;
-        $controler->inputs->select->dp_municipio_id = $inputs->selects->dp_municipio_id;
-        $controler->inputs->select->dp_cp_id = $inputs->selects->dp_cp_id;
         $controler->inputs->select->dp_colonia_id = $inputs->selects->dp_colonia_id;
+        $controler->inputs->select->dp_cp_id = $inputs->selects->dp_cp_id;
+        $controler->inputs->select->dp_municipio_id = $inputs->selects->dp_municipio_id;
+        $controler->inputs->select->dp_pais_id = $inputs->selects->dp_pais_id;
         $controler->inputs->select->dp_calle_pertenece_id = $inputs->selects->dp_calle_pertenece_id;
-
+        $controler->inputs->select->dp_estado_id = $inputs->selects->dp_estado_id;
+        $controler->inputs->select->com_cliente_id = $inputs->selects->com_cliente_id;
+        $controler->inputs->telefono_3 = $inputs->texts->telefono_3;
+        $controler->inputs->telefono_2 = $inputs->texts->telefono_2;
+        $controler->inputs->telefono_1 = $inputs->texts->telefono_1;
         $controler->inputs->numero_exterior = $inputs->texts->numero_exterior;
         $controler->inputs->numero_interior = $inputs->texts->numero_interior;
         $controler->inputs->nombre_contacto = $inputs->texts->nombre_contacto;
-        $controler->inputs->telefono_1 = $inputs->texts->telefono_1;
-        $controler->inputs->telefono_2 = $inputs->texts->telefono_2;
-        $controler->inputs->telefono_3 = $inputs->texts->telefono_3;
-
+        $controler->inputs->codigo_bis = $inputs->texts->codigo_bis;
+        $controler->inputs->alias = $inputs->texts->alias;
+        $controler->inputs->descripcion_select = $inputs->texts->descripcion_select;
+        $controler->inputs->fecha_update = $inputs->texts->fecha_update;
+        $controler->inputs->fecha_alta = $inputs->texts->fecha_alta;
+        $controler->inputs->usuario_update_id = $inputs->texts->usuario_update_id;
         return $controler->inputs;
     }
 
