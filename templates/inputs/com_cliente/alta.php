@@ -1,6 +1,8 @@
 <?php /** @var controllers\controlador_com_cliente $controlador  controlador en ejecucion */ ?>
 <?php use config\views; ?>
 <?php echo $controlador->inputs->codigo; ?>
+
+
 <?php echo $controlador->inputs->rfc; ?>
 <?php echo $controlador->inputs->razon_social; ?>
 
@@ -20,5 +22,5 @@
 <?php echo $controlador->inputs->numero_interior; ?>
 <?php echo $controlador->inputs->numero_exterior; ?>
 <?php echo $controlador->inputs->telefono; ?>
-
+<?php echo $controlador->inputs->codigo_bis; ?>
 <?php include (new views())->ruta_templates.'botons/submit/alta_bd_otro.php';?>
