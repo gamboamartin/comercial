@@ -12,10 +12,7 @@ use gamboamartin\errores\errores;
 use gamboamartin\system\links_menu;
 use gamboamartin\system\system;
 use gamboamartin\template\html;
-use html\cat_sat_moneda_html;
-use html\com_cliente_html;
 use html\com_sucursal_html;
-use models\com_cliente;
 use models\com_sucursal;
 use PDO;
 use stdClass;
@@ -31,6 +28,7 @@ class controlador_com_sucursal extends system {
 
         $this->titulo_lista = 'Sucursal';
     }
+
 
     public function alta(bool $header, bool $ws = false): array|string
     {

@@ -27,12 +27,6 @@ class com_sucursal_html extends html_controler {
         $controler->inputs->numero_exterior = $inputs->texts->numero_exterior;
         $controler->inputs->numero_interior = $inputs->texts->numero_interior;
         $controler->inputs->nombre_contacto = $inputs->texts->nombre_contacto;
-        $controler->inputs->codigo_bis = $inputs->texts->codigo_bis;
-        $controler->inputs->alias = $inputs->texts->alias;
-        $controler->inputs->descripcion_select = $inputs->texts->descripcion_select;
-        $controler->inputs->fecha_update = $inputs->texts->fecha_update;
-        $controler->inputs->fecha_alta = $inputs->texts->fecha_alta;
-        $controler->inputs->usuario_update_id = $inputs->texts->usuario_update_id;
         return $controler->inputs;
     }
 
