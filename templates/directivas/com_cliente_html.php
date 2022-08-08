@@ -450,7 +450,7 @@ class com_cliente_html extends html_controler {
         }
         $texts->razon_social = $in_razon_social;
 
-        $in_rfc = $this->input_rfc(cols: 6,row_upd:  $row_upd,value_vacio:  $value_vacio);
+        $in_rfc = $this->input_rfc(cols: 12,row_upd:  $row_upd,value_vacio:  $value_vacio);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input',data:  $in_rfc);
         }
