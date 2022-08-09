@@ -7,8 +7,8 @@
  *
  */
 namespace gamboamartin\comercial\controllers;
-use gamboamartin\comercial\controllers\init;
 use gamboamartin\errores\errores;
+use gamboamartin\system\init;
 use gamboamartin\system\links_menu;
 use gamboamartin\system\system;
 use gamboamartin\template\html;
