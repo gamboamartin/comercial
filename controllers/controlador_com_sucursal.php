@@ -46,4 +46,6 @@ class controlador_com_sucursal extends system {
         return $r_alta;
     }
 
+
+
 }
