@@ -17,6 +17,7 @@ class com_producto_html extends html_controler {
         $controler->inputs->select->cat_sat_unidad_id = $inputs->selects->cat_sat_unidad_id;
         $controler->inputs->select->cat_sat_obj_imp_id = $inputs->selects->cat_sat_obj_imp_id;
         $controler->inputs->select->cat_sat_tipo_factor_id = $inputs->selects->cat_sat_tipo_factor_id;
+        $controler->inputs->select->cat_sat_factor_id = $inputs->selects->cat_sat_factor_id;
         $controler->inputs->obj_imp = $inputs->texts->obj_imp;
 
         return $controler->inputs;
@@ -155,7 +156,15 @@ class com_producto_html extends html_controler {
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select',data:  $select);
         }
-        $selects->cat_sat_tipo_factor_id = $select;
+        $selects->cat_sat_tipo_factor_id = $select;     
+        
+        $cat_sat_factor_html = new cat_sat_factor_html(html:$this->html_base);
+        $select = $cat_sat_factor_html->select_cat_sat_factor_id(cols: 12, con_registros:true,
+            id_selected:-1,link: $link);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select',data:  $select);
+        }
+        $selects->cat_sat_factor_id = $select;
 
 
         return $selects;
