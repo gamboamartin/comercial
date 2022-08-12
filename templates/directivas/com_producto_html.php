@@ -15,6 +15,7 @@ class com_producto_html extends html_controler {
         $controler->inputs->select = new stdClass();
         $controler->inputs->select->cat_sat_producto_id = $inputs->selects->cat_sat_producto_id;
         $controler->inputs->select->cat_sat_unidad_id = $inputs->selects->cat_sat_unidad_id;
+        $controler->inputs->select->cat_sat_obj_imp_id = $inputs->selects->cat_sat_obj_imp_id;
         $controler->inputs->obj_imp = $inputs->texts->obj_imp;
 
         return $controler->inputs;
@@ -139,6 +140,14 @@ class com_producto_html extends html_controler {
         }
         $selects->cat_sat_unidad_id = $select;
 
+        $cat_sat_obj_imp_html = new cat_sat_obj_imp_html(html:$this->html_base);
+        $select = $cat_sat_obj_imp_html->select_cat_sat_obj_imp_id(cols: 12, con_registros:true,
+            id_selected:-1,link: $link);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select',data:  $select);
+        }
+        $selects->cat_sat_obj_imp_id = $select;
+
 
         return $selects;
     }
@@ -160,6 +169,13 @@ class com_producto_html extends html_controler {
             return $this->error->error(mensaje: 'Error al generar select',data:  $select);
         }
         $selects->cat_sat_unidad_id = $select;
+
+        $select = (new cat_sat_obj_imp_html(html:$this->html_base))->select_cat_sat_obj_imp_id(
+            cols: 6, con_registros:true, id_selected:$row_upd->cat_sat_obj_imp_id,link: $link);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select',data:  $select);
+        }
+        $selects->cat_sat_obj_imp_id = $select;
 
         return $selects;
     }
