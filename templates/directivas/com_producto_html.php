@@ -4,6 +4,7 @@ namespace html;
 use gamboamartin\comercial\controllers\controlador_com_producto;
 use gamboamartin\errores\errores;
 use gamboamartin\system\html_controler;
+use models\com_producto;
 use models\com_sucursal;
 use PDO;
 use stdClass;
@@ -207,10 +208,10 @@ class com_producto_html extends html_controler {
 
     public function select_com_producto_id(int $cols, bool $con_registros, int $id_selected, PDO $link): array|string
     {
-        $modelo = new com_sucursal(link: $link);
+        $modelo = new com_producto(link: $link);
 
         $select = $this->select_catalogo(cols:$cols,con_registros:$con_registros,id_selected:$id_selected,
-            modelo: $modelo,label: 'Sucursal',required: true);
+            modelo: $modelo,label: 'Productos',required: true);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }
