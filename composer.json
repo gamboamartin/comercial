@@ -57,7 +57,13 @@
         "gamboa.martin/organigrama": "dev-main",
         "gamboa.martin/direccion_postal": "dev-main",
         "gamboa.martin/cat_sat": "dev-main",
-      "gamboa.martin/js_base": "dev-master"
+        "gamboa.martin/empleado": "dev-main",
+        "gamboa.martin/banco": "dev-main",
+        "gamboa.martin/im_registro_patronal": "dev-main",
+        "gamboa.martin/facturacion": "dev-main",
+        "gamboa.martin/js_base": "dev-master",
+        "gamboa.martin/documento": "dev-master",
+        "gamboa.martin/xml_cfdi_4": "dev-master"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5"
