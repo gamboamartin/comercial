@@ -24,9 +24,9 @@ class com_producto_html extends html_controler {
         return $controler->inputs;
     }
 
-    public function genera_inputs_alta(controlador_com_producto $controler,PDO $link): array|stdClass
+    public function genera_inputs_alta(controlador_com_producto $controler,array $keys_selects,PDO $link): array|stdClass
     {
-        $inputs = $this->init_alta(link: $link);
+        $inputs = $this->init_alta(keys_selects:$keys_selects, link: $link);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar inputs',data:  $inputs);
 
@@ -39,9 +39,9 @@ class com_producto_html extends html_controler {
         return $inputs_asignados;
     }
 
-    private function genera_inputs_modifica(controlador_com_producto $controler,PDO $link): array|stdClass
+    private function genera_inputs_modifica(controlador_com_producto $controler,PDO $link, stdClass $params): array|stdClass
     {
-        $inputs = $this->init_modifica(link: $link, row_upd: $controler->row_upd);
+        $inputs = $this->init_modifica(link: $link, row_upd: $controler->row_upd, params: $params);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar inputs',data:  $inputs);
         }
@@ -54,14 +54,15 @@ class com_producto_html extends html_controler {
         return $inputs_asignados;
     }
 
-    private function init_alta(PDO $link): array|stdClass
+    protected function init_alta(array $keys_selects, PDO $link): array|stdClass
     {
-        $selects = $this->selects_alta(link: $link);
+        $selects = $this->selects_alta(keys_selects: $keys_selects, link: $link);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar selects',data:  $selects);
         }
 
-        $texts = $this->texts_alta(row_upd: new stdClass(), value_vacio: true);
+        $params = new stdClass();
+        $texts = $this->texts_alta(row_upd: new stdClass(), value_vacio: true, params: $params);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar texts',data:  $texts);
         }
@@ -73,7 +74,7 @@ class com_producto_html extends html_controler {
         return $alta_inputs;
     }
 
-    private function init_modifica(PDO $link, stdClass $row_upd): array|stdClass
+    private function init_modifica(PDO $link, stdClass $row_upd, stdClass $params): array|stdClass
     {
 
         $selects = $this->selects_modifica(link: $link, row_upd: $row_upd);
@@ -81,7 +82,7 @@ class com_producto_html extends html_controler {
             return $this->error->error(mensaje: 'Error al generar selects',data:  $selects);
         }
 
-        $texts = $this->texts_alta(row_upd: new stdClass(), value_vacio: true);
+        $texts = $this->texts_alta(row_upd: new stdClass(), value_vacio: true, params: $params);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar texts',data:  $texts);
         }
@@ -93,9 +94,10 @@ class com_producto_html extends html_controler {
         return $alta_inputs;
     }
 
-    public function inputs_com_producto(controlador_com_producto $controlador_org_puesto): array|stdClass
+    public function inputs_com_producto(controlador_com_producto $controlador_org_puesto, array $keys_selects): array|stdClass
     {
-        $inputs = $this->genera_inputs_modifica(controler: $controlador_org_puesto, link: $controlador_org_puesto->link);
+        $inputs = $this->genera_inputs_modifica(controler: $controlador_org_puesto,
+            link: $controlador_org_puesto->link);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar inputs',data:  $inputs);
         }
@@ -123,7 +125,7 @@ class com_producto_html extends html_controler {
         return $div;
     }
 
-    private function selects_alta(PDO $link): array|stdClass
+    protected function selects_alta(array $keys_selects, PDO $link): array|stdClass
     {
         $selects = new stdClass();
 
@@ -218,7 +220,7 @@ class com_producto_html extends html_controler {
         return $select;
     }
 
-    private function texts_alta(stdClass $row_upd, bool $value_vacio): array|stdClass
+    protected function texts_alta(stdClass $row_upd, bool $value_vacio, stdClass $params = new stdClass()): array|stdClass
     {
         $texts = new stdClass();
 
