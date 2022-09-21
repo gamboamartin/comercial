@@ -46,24 +46,7 @@ class com_sucursal_html extends html_controler {
         return $inputs_asignados;
     }
 
-    private function init_alta(PDO $link): array|stdClass
-    {
-        $selects = $this->selects_alta(link: $link);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar selects',data:  $selects);
-        }
 
-        $texts = $this->texts_alta(row_upd: new stdClass(), value_vacio: true);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar texts',data:  $texts);
-        }
-
-        $alta_inputs = new stdClass();
-        $alta_inputs->selects = $selects;
-        $alta_inputs->texts = $texts;
-
-        return $alta_inputs;
-    }
 
     public function input_numero_interior(int $cols, stdClass $row_upd, bool $value_vacio): array|string
     {
@@ -191,7 +174,8 @@ class com_sucursal_html extends html_controler {
         return $div;
     }
 
-    private function selects_alta(PDO $link): array|stdClass
+    /**
+    protected function selects_alta(PDO $link): array|stdClass
     {
         $selects = new stdClass();
 
@@ -253,6 +237,7 @@ class com_sucursal_html extends html_controler {
 
         return $selects;
     }
+     * */
 
     /**
      * @param int $cols No columnas css
@@ -283,7 +268,7 @@ class com_sucursal_html extends html_controler {
         return $select;
     }
 
-    private function texts_alta(stdClass $row_upd, bool $value_vacio): array|stdClass
+    protected function texts_alta(stdClass $row_upd, bool $value_vacio, stdClass $params = new stdClass()): array|stdClass
     {
         $texts = new stdClass();
 
