@@ -31,9 +31,9 @@ class com_sucursal_html extends html_controler {
         return $controler->inputs;
     }
 
-    public function genera_inputs_alta(controlador_com_sucursal $controler,PDO $link): array|stdClass
+    public function genera_inputs_alta(controlador_com_sucursal $controler, array $keys_selects,PDO $link): array|stdClass
     {
-        $inputs = $this->init_alta(link: $link);
+        $inputs = $this->init_alta(keys_selects: $keys_selects, link: $link);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar inputs',data:  $inputs);
 
@@ -174,80 +174,16 @@ class com_sucursal_html extends html_controler {
         return $div;
     }
 
-    /**
-    protected function selects_alta(PDO $link): array|stdClass
-    {
-        $selects = new stdClass();
-
-        $com_cliente_html = new com_cliente_html(html:$this->html_base);
-        $select = $com_cliente_html->select_com_cliente_id(cols: 12, con_registros:true,
-            id_selected:-1,link: $link);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar select',data:  $select);
-        }
-        $selects->com_cliente_id = $select;
-
-        $dp_pais_html = new dp_pais_html(html:$this->html_base);
-        $select = $dp_pais_html->select_dp_pais_id(cols: 6, con_registros:true,
-            id_selected:-1,link: $link);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar select',data:  $select);
-        }
-        $selects->dp_pais_id = $select;
-
-        $dp_estado_html = new dp_estado_html(html:$this->html_base);
-        $select = $dp_estado_html->select_dp_estado_id(cols: 6, con_registros:true,
-            id_selected:-1,link: $link);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar select',data:  $select);
-        }
-        $selects->dp_estado_id = $select;
-
-        $dp_municipio_html = new dp_municipio_html(html:$this->html_base);
-        $select = $dp_municipio_html->select_dp_municipio_id(cols: 6, con_registros:true,
-            id_selected:-1,link: $link);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar select',data:  $select);
-        }
-        $selects->dp_municipio_id = $select;
-
-        $dp_cp_html = new dp_cp_html(html:$this->html_base);
-        $select = $dp_cp_html->select_dp_cp_id(cols: 6, con_registros:true,
-            id_selected:-1,link: $link);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar select',data:  $select);
-        }
-        $selects->dp_cp_id = $select;
-
-        $dp_colonia_html = new dp_colonia_html(html:$this->html_base);
-        $select = $dp_colonia_html->select_dp_colonia_id(cols: 6, con_registros:true,
-            id_selected:-1,link: $link);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar select',data:  $select);
-        }
-        $selects->dp_colonia_id = $select;
-
-        $dp_calle_pertenece_html = new dp_calle_pertenece_html(html:$this->html_base);
-        $select = $dp_calle_pertenece_html->select_dp_calle_pertenece_id(cols: 6, con_registros:true,
-            id_selected:-1,link: $link);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar select',data:  $select);
-        }
-        $selects->dp_calle_pertenece_id = $select;
-
-        return $selects;
-    }
-     * */
 
     /**
      * @param int $cols No columnas css
      * @param bool $con_registros si no con registros entonces options vacio
-     * @param int $id_selected identificador de la sucursal en caso de un selected
+     * @param int|null $id_selected identificador de la sucursal en caso de un selected
      * @param PDO $link Conexion a la base de datos
      * @param string $label Etiqueta a mostrar por default Sucursal
      * @return array|string
      */
-    public function select_com_sucursal_id(int $cols, bool $con_registros, int $id_selected, PDO $link,
+    public function select_com_sucursal_id(int $cols, bool $con_registros, int|null $id_selected, PDO $link,
                                            string $label ='Sucursal'): array|string
     {
         $valida = (new directivas(html:$this->html_base))->valida_cols(cols:$cols);

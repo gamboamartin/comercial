@@ -37,7 +37,39 @@ class controlador_com_sucursal extends system {
             return $this->retorno_error(mensaje: 'Error al generar template',data:  $r_alta, header: $header,ws:$ws);
         }
 
-        $inputs = (new com_sucursal_html(html: $this->html_base))->genera_inputs_alta(controler: $this, link: $this->link);
+        $keys_selects = array();
+
+        $keys_selects['com_cliente'] = new stdClass();
+        $keys_selects['com_cliente']->label = 'Cliente';
+        $keys_selects['com_cliente']->cols = 6;
+
+        $keys_selects['dp_pais'] = new stdClass();
+        $keys_selects['dp_pais']->label = 'Pais';
+        $keys_selects['dp_pais']->cols = 6;
+
+        $keys_selects['dp_estado'] = new stdClass();
+        $keys_selects['dp_estado']->label = 'Estado';
+        $keys_selects['dp_estado']->cols = 6;
+
+        $keys_selects['dp_municipio'] = new stdClass();
+        $keys_selects['dp_municipio']->label = 'Municipio';
+        $keys_selects['dp_municipio']->cols = 6;
+
+        $keys_selects['dp_cp'] = new stdClass();
+        $keys_selects['dp_cp']->label = 'CP';
+        $keys_selects['dp_cp']->cols = 6;
+
+        $keys_selects['dp_colonia'] = new stdClass();
+        $keys_selects['dp_colonia']->label = 'Colonia';
+        $keys_selects['dp_colonia']->cols = 6;
+
+        $keys_selects['dp_calle_pertenece'] = new stdClass();
+        $keys_selects['dp_calle_pertenece']->label = 'Calle';
+        $keys_selects['dp_calle_pertenece']->cols = 6;
+
+
+        $inputs = (new com_sucursal_html(html: $this->html_base))->genera_inputs_alta(
+            controler: $this, keys_selects: $keys_selects, link: $this->link);
         if(errores::$error){
             $error = $this->errores->error(mensaje: 'Error al generar inputs',data:  $inputs);
             print_r($error);
