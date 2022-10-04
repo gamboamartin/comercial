@@ -12,7 +12,7 @@ class com_cliente extends modelo{
         $campos_obligatorios = array('cat_sat_moneda_id');
 
         $tipo_campos = array();
-        $tipo_campos[] = 'rfc';
+        $tipo_campos['rfc'] = 'rfc';
 
         parent::__construct(link: $link,tabla:  $tabla, campos_obligatorios: $campos_obligatorios,
             columnas: $columnas, tipo_campos: $tipo_campos);
@@ -33,10 +33,22 @@ class com_cliente extends modelo{
         return $r_alta_bd;
     }
 
+    /**
+     * Ajusta la descripcion select
+     * @param array $registro Registro en proceso de alta
+     * @return array
+     * @version 0.28.6
+     */
     private function descripcion_select(array $registro): array
     {
+        $keys = array('codigo','razon_social','rfc');
+        $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
+        }
         if(!isset($registro['descripcion_select']) || $registro['descripcion_select'] === ''){
-            $registro['descripcion_select'] = $registro['rfc'];
+            $registro['descripcion_select'] = $registro['codigo'];
+            $registro['descripcion_select'] .= ' '.$registro['rfc'];
             $registro['descripcion_select'] .= ' '.$registro['razon_social'];
         }
         return $registro;
