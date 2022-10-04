@@ -1,12 +1,12 @@
 <?php
-namespace models;
+namespace gamboamartin\comercial\models;
 use base\orm\modelo;
 use PDO;
 
 class com_producto extends modelo{
 
     public function __construct(PDO $link){
-        $tabla = __CLASS__;
+        $tabla = 'com_producto';
         $columnas = array($tabla=>false,'cat_sat_factor'=>$tabla,'cat_sat_obj_imp'=>$tabla,'cat_sat_producto'=>$tabla,
             'cat_sat_unidad'=>$tabla,'cat_sat_tipo_factor'=>$tabla);
         $campos_obligatorios = array();

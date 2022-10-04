@@ -8,12 +8,12 @@
  */
 namespace gamboamartin\comercial\controllers;
 
+use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\errores\errores;
 use gamboamartin\system\links_menu;
 use gamboamartin\system\system;
 use gamboamartin\template\html;
 use html\com_sucursal_html;
-use models\com_sucursal;
 use PDO;
 use stdClass;
 

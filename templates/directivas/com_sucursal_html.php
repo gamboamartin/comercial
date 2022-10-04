@@ -2,10 +2,10 @@
 namespace html;
 
 use gamboamartin\comercial\controllers\controlador_com_sucursal;
+use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\errores\errores;
 use gamboamartin\system\html_controler;
 use gamboamartin\template\directivas;
-use models\com_sucursal;
 use PDO;
 use stdClass;
 
