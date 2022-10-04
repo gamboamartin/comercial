@@ -11,8 +11,11 @@ class com_cliente extends modelo{
         $columnas = array($tabla=>false,'cat_sat_moneda'=>$tabla,'dp_pais'=>'cat_sat_moneda');
         $campos_obligatorios = array('cat_sat_moneda_id');
 
+        $tipo_campos = array();
+        $tipo_campos[] = 'rfc';
+
         parent::__construct(link: $link,tabla:  $tabla, campos_obligatorios: $campos_obligatorios,
-            columnas: $columnas);
+            columnas: $columnas, tipo_campos: $tipo_campos);
     }
     public function alta_bd(): array|stdClass
     {
