@@ -15,7 +15,7 @@
           "gamboamartin\\comercial\\controllers\\": "controllers",
           "config\\": "config/",
           "gamboamartin\\comercial\\models\\": "orm",
-          "tests\\": "tests/",
+          "gamboamartin\\comercial\\test\\": "tests/",
           "links\\": "links/",
           "html\\": "templates/directivas/"
 
