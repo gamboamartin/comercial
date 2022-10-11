@@ -4,6 +4,7 @@ use base\orm\modelo_base;
 use gamboamartin\cat_sat\models\cat_sat_metodo_pago;
 use gamboamartin\cat_sat\models\cat_sat_moneda;
 use gamboamartin\comercial\models\com_cliente;
+use gamboamartin\comercial\models\com_producto;
 use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\errores\errores;
@@ -146,6 +147,23 @@ class base_test{
         return $alta;
     }
 
+    public function alta_com_producto(PDO $link): array|\stdClass
+    {
+
+        $registro = array();
+        $registro['id'] = 1;
+        $registro['codigo'] = 1;
+        $registro['descripcion'] = 1;
+
+
+        $alta = (new com_producto($link))->alta_registro($registro);
+        if(errores::$error){
+            return (new errores())->error('Error al dar de alta ', $alta);
+
+        }
+        return $alta;
+    }
+
 
     public function alta_com_sucursal(PDO $link): array|\stdClass
     {
@@ -187,6 +205,16 @@ class base_test{
         }
 
         $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_cliente');
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
+        }
+        return $del;
+    }
+
+    public function del_com_producto(PDO $link): array
+    {
+
+        $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_producto');
         if(errores::$error){
             return (new errores())->error('Error al eliminar', $del);
         }
