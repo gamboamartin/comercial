@@ -12,127 +12,45 @@ use PDO;
 
 class base_test{
 
-    public function alta_com_cliente(PDO $link, int $cat_sat_metodo_pago_id = -1, int $cat_sat_moneda_id = -1,
-                                     int $dp_calle_pertenece_id = -1, bool $predeterminado = false): array|\stdClass
+    public function alta_cat_sat_metodo_pago(PDO $link): array|\stdClass
     {
-        $registro = array();
 
-        if($dp_calle_pertenece_id === -1) {
-
-
-
-            $existe = (new dp_calle_pertenece($link))->existe_predeterminado();
-            if (errores::$error) {
-                return (new errores())->error('Error al validar si existe', $existe);
-
-            }
-
-            if(!$existe) {
-                $alta = (new \gamboamartin\direccion_postal\tests\base_test())->alta_dp_calle_pertenece(link: $link, predeterminado: true);
-                if (errores::$error) {
-                    return (new errores())->error('Error al dar de alta', $alta);
-
-                }
-            }
-
-        }
-        if($dp_calle_pertenece_id > 0){
-
-            $registro['dp_calle_pertenece_id'] = $dp_calle_pertenece_id;
-
-            $existe = (new dp_calle_pertenece($link))->existe_by_id(registro_id: $dp_calle_pertenece_id);
-            if (errores::$error) {
-                return (new errores())->error('Error al validar si existe', $existe);
-            }
-
-
-            if(!$existe) {
-                $alta = (new \gamboamartin\direccion_postal\tests\base_test())->alta_dp_calle_pertenece(link: $link, id: $dp_calle_pertenece_id);
-                if (errores::$error) {
-                    return (new errores())->error('Error al dar de alta', $alta);
-                }
-            }
-
+        $alta = (new \gamboamartin\cat_sat\tests\base_test())->alta_cat_sat_metodo_pago($link);
+        if(errores::$error){
+            return (new errores())->error('Error al insertar', $alta);
         }
 
-        if($cat_sat_moneda_id === -1) {
+        return $alta;
+    }
 
+    public function alta_cat_sat_moneda(PDO $link): array|\stdClass
+    {
 
-
-            $existe = (new cat_sat_moneda($link))->existe_predeterminado();
-            if (errores::$error) {
-                return (new errores())->error('Error al validar si existe', $existe);
-
-            }
-            if(!$existe) {
-
-                $alta = (new \gamboamartin\cat_sat\tests\base_test())->alta_cat_sat_moneda(link: $link, predeterminado: true);
-                if (errores::$error) {
-                    return (new errores())->error('Error al dar de alta', $alta);
-
-                }
-            }
-
-        }
-        if($cat_sat_moneda_id > 0){
-
-            $registro['cat_sat_moneda_id'] = $cat_sat_moneda_id;
-
-            $existe = (new cat_sat_moneda($link))->existe_by_id(registro_id: $cat_sat_moneda_id);
-            if (errores::$error) {
-                return (new errores())->error('Error al validar si existe', $existe);
-            }
-
-            if(!$existe) {
-                $alta = (new \gamboamartin\cat_sat\tests\base_test())->alta_cat_sat_moneda(link: $link, id: $cat_sat_moneda_id);
-                if (errores::$error) {
-                    return (new errores())->error('Error al dar de alta', $alta);
-                }
-
-            }
-
+        $alta = (new \gamboamartin\cat_sat\tests\base_test())->alta_cat_sat_moneda($link);
+        if(errores::$error){
+            return (new errores())->error('Error al insertar', $alta);
         }
 
-        if($cat_sat_metodo_pago_id === -1) {
+        return $alta;
+    }
 
+    public function alta_com_cliente(PDO $link, int $cat_sat_metodo_pago_id = 1, int $cat_sat_moneda_id = 1,
+                                     int $dp_calle_pertenece_id = 1, bool $predeterminado = false): array|\stdClass
+    {
 
-
-            $existe = (new cat_sat_metodo_pago($link))->existe_predeterminado();
-            if (errores::$error) {
-                return (new errores())->error('Error al validar si existe', $existe);
-
-            }
-
-            if(!$existe) {
-                $alta = (new \gamboamartin\cat_sat\tests\base_test())->alta_cat_sat_metodo_pago(link: $link, predeterminado: true);
-                if (errores::$error) {
-                    return (new errores())->error('Error al dar de alta', $alta);
-
-                }
-            }
-
-        }
-        if($cat_sat_metodo_pago_id > 0){
-
-            $registro['cat_sat_metodo_pago_id'] = $cat_sat_metodo_pago_id;
-
-            $existe = (new cat_sat_metodo_pago($link))->existe_by_id(registro_id: $cat_sat_metodo_pago_id);
-            if (errores::$error) {
-                return (new errores())->error('Error al validar si existe', $existe);
-            }
-
-
-            if(!$existe) {
-                $alta = (new \gamboamartin\cat_sat\tests\base_test())->alta_cat_sat_metodo_pago(link: $link, id: $cat_sat_metodo_pago_id);
-                if (errores::$error) {
-                    return (new errores())->error('Error al dar de alta', $alta);
-                }
-            }
-
+        $alta = (new base_test())->alta_cat_sat_moneda($link);
+        if(errores::$error){
+            return (new errores())->error('Error al insertar', $alta);
         }
 
+        $alta = (new base_test())->alta_cat_sat_metodo_pago($link);
+        if(errores::$error){
+            return (new errores())->error('Error al insertar', $alta);
+        }
 
-
+        $registro['dp_calle_pertenece_id'] = $dp_calle_pertenece_id;
+        $registro['cat_sat_moneda_id'] = $cat_sat_moneda_id;
+        $registro['cat_sat_metodo_pago_id'] = $cat_sat_metodo_pago_id;
         $registro['id'] = 1;
         $registro['codigo'] = 1;
         $registro['descripcion'] = 1;
