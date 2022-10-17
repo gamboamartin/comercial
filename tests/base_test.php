@@ -44,9 +44,16 @@ class base_test{
             return (new errores())->error('Error al insertar', $alta);
         }
 
-        $alta = (new base_test())->alta_cat_sat_metodo_pago($link);
+        $existe = (new cat_sat_metodo_pago($link))->existe_by_id(registro_id: $cat_sat_metodo_pago_id);
         if(errores::$error){
-            return (new errores())->error('Error al insertar', $alta);
+            return (new errores())->error('Error al verificar si existe', $existe);
+        }
+
+        if(!$existe) {
+            $alta = (new base_test())->alta_cat_sat_metodo_pago($link);
+            if (errores::$error) {
+                return (new errores())->error('Error al insertar', $alta);
+            }
         }
 
         $registro['dp_calle_pertenece_id'] = $dp_calle_pertenece_id;
