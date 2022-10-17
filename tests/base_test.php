@@ -87,6 +87,11 @@ class base_test{
     public function alta_com_sucursal(PDO $link): array|\stdClass
     {
 
+        $alta = (new base_test())->alta_com_cliente($link);
+        if(errores::$error){
+            return (new errores())->error('Error al insertar', $alta);
+        }
+
         $registro = array();
         $registro['id'] = 1;
         $registro['codigo'] = 1;
@@ -148,6 +153,13 @@ class base_test{
     {
 
         $del = (new base_test())->del_com_tipo_cambio($link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new base_test())->del_com_cliente($link);
         if(errores::$error){
             $error = (new errores())->error('Error al eliminar', $del);
             print_r($error);

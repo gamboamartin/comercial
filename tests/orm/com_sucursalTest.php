@@ -34,7 +34,16 @@ class com_sucursalTest extends test {
         $modelo = new com_sucursal($this->link);
         //$modelo = new liberator($modelo);
 
-        $del = (new base_test())->del_com_sucursal($this->link);
+
+
+        $del = (new base_test())->del_cat_sat_moneda($this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new base_test())->del_cat_sat_metodo_pago($this->link);
         if(errores::$error){
             $error = (new errores())->error('Error al eliminar', $del);
             print_r($error);
