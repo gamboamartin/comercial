@@ -44,13 +44,13 @@ class com_clienteTest extends test {
             exit;
         }
 
-        $del = (new \gamboamartin\cat_sat\tests\base_test())->del_cat_sat_moneda($this->link);
+        $del = (new base_test())->del_cat_sat_moneda($this->link);
         if(errores::$error){
             $error = (new errores())->error('Error al eliminar', $del);
             print_r($error);
             exit;
         }
-        $del = (new \gamboamartin\cat_sat\tests\base_test())->del_cat_sat_metodo_pago($this->link);
+        $del = (new base_test())->del_cat_sat_metodo_pago($this->link);
         if(errores::$error){
             $error = (new errores())->error('Error al eliminar', $del);
             print_r($error);

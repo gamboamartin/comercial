@@ -11,5 +11,7 @@ class com_tipo_producto extends modelo{
 
         parent::__construct(link: $link,tabla:  $tabla, campos_obligatorios: $campos_obligatorios,
             columnas: $columnas);
+
+        $this->NAMESPACE = __NAMESPACE__;
     }
 }

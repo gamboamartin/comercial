@@ -6,6 +6,7 @@ use gamboamartin\cat_sat\models\cat_sat_moneda;
 use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\comercial\models\com_producto;
 use gamboamartin\comercial\models\com_sucursal;
+use gamboamartin\comercial\models\com_tipo_cambio;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\errores\errores;
 use PDO;
@@ -102,6 +103,24 @@ class base_test{
         return $alta;
     }
 
+    public function alta_com_tipo_cambio(PDO $link): array|\stdClass
+    {
+
+        $registro = array();
+        $registro['id'] = 1;
+        $registro['codigo'] = 1;
+        $registro['descripcion'] = 1;
+        $registro['cat_sat_moneda_id'] = 1;
+
+
+        $alta = (new com_tipo_cambio($link))->alta_registro($registro);
+        if(errores::$error){
+            return (new errores())->error('Error al dar de alta ', $alta);
+
+        }
+        return $alta;
+    }
+
 
 
     public function del(PDO $link, string $name_model): array
@@ -110,6 +129,34 @@ class base_test{
         $del = $model->elimina_todo();
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al eliminar '.$name_model, data: $del);
+        }
+        return $del;
+    }
+    public function del_cat_sat_metodo_pago(PDO $link): array
+    {
+
+
+        $del =(new \gamboamartin\cat_sat\tests\base_test())->del_cat_sat_metodo_pago($link);
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
+        }
+        return $del;
+    }
+
+
+    public function del_cat_sat_moneda(PDO $link): array
+    {
+
+        $del = (new base_test())->del_com_tipo_cambio($link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del =(new \gamboamartin\cat_sat\tests\base_test())->del_cat_sat_moneda($link);
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
         }
         return $del;
     }
