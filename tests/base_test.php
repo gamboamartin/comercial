@@ -39,9 +39,16 @@ class base_test{
                                      int $dp_calle_pertenece_id = 1, bool $predeterminado = false): array|\stdClass
     {
 
-        $alta = (new base_test())->alta_cat_sat_moneda($link);
+        $existe = (new cat_sat_moneda($link))->existe_by_id(registro_id: $cat_sat_moneda_id);
         if(errores::$error){
-            return (new errores())->error('Error al insertar', $alta);
+            return (new errores())->error('Error al verificar si existe', $existe);
+        }
+
+        if(!$existe) {
+            $alta = (new base_test())->alta_cat_sat_moneda($link);
+            if(errores::$error){
+                return (new errores())->error('Error al insertar', $alta);
+            }
         }
 
         $existe = (new cat_sat_metodo_pago($link))->existe_by_id(registro_id: $cat_sat_metodo_pago_id);
