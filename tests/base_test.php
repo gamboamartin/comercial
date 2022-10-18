@@ -98,19 +98,27 @@ class base_test{
     }
 
 
-    public function alta_com_sucursal(PDO $link): array|\stdClass
+    public function alta_com_sucursal(PDO $link, int $com_cliente_id = 1): array|\stdClass
     {
 
-        $alta = (new base_test())->alta_com_cliente($link);
+        $existe = (new com_cliente($link))->existe_by_id(registro_id: $com_cliente_id);
         if(errores::$error){
-            return (new errores())->error('Error al insertar', $alta);
+            return (new errores())->error('Error al verificar si existe', $existe);
         }
+
+        if(!$existe) {
+            $alta = (new base_test())->alta_com_cliente($link);
+            if(errores::$error){
+                return (new errores())->error('Error al insertar', $alta);
+            }
+        }
+
 
         $registro = array();
         $registro['id'] = 1;
         $registro['codigo'] = 1;
         $registro['descripcion'] = 1;
-        $registro['com_cliente_id'] = 1;
+        $registro['com_cliente_id'] = $com_cliente_id;
         $registro['dp_calle_pertenece_id'] = 1;
         $registro['numero_exterior'] = 1;
 
