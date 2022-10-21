@@ -8,6 +8,11 @@ use gamboamartin\cat_sat\models\cat_sat_regimen_fiscal;
 use gamboamartin\cat_sat\models\cat_sat_tipo_de_comprobante;
 use gamboamartin\cat_sat\models\cat_sat_uso_cfdi;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
+use gamboamartin\direccion_postal\models\dp_colonia;
+use gamboamartin\direccion_postal\models\dp_cp;
+use gamboamartin\direccion_postal\models\dp_estado;
+use gamboamartin\direccion_postal\models\dp_municipio;
+use gamboamartin\direccion_postal\models\dp_pais;
 use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
@@ -22,8 +27,52 @@ class com_cliente extends modelo{
         $tipo_campos = array();
         $tipo_campos['rfc'] = 'rfc';
 
+        $campos_view = array();
+        $campos_view['dp_pais_id']['type'] = 'selects';
+        $campos_view['dp_pais_id']['model'] = (new dp_pais($link));
+
+        $campos_view['dp_estado_id']['type'] = 'selects';
+        $campos_view['dp_estado_id']['model'] = (new dp_estado($link));
+
+        $campos_view['dp_municipio_id']['type'] = 'selects';
+        $campos_view['dp_municipio_id']['model'] = (new dp_municipio($link));
+
+        $campos_view['dp_cp_id']['type'] = 'selects';
+        $campos_view['dp_cp_id']['model'] = (new dp_cp($link));
+
+        $campos_view['dp_colonia_id']['type'] = 'selects';
+        $campos_view['dp_colonia_id']['model'] = (new dp_colonia($link));
+
+        $campos_view['dp_calle_pertenece_id']['type'] = 'selects';
+        $campos_view['dp_calle_pertenece_id']['model'] = (new dp_calle_pertenece($link));
+
+        $campos_view['cat_sat_regimen_fiscal_id']['type'] = 'selects';
+        $campos_view['cat_sat_regimen_fiscal_id']['model'] = (new cat_sat_regimen_fiscal($link));
+
+        $campos_view['cat_sat_moneda_id']['type'] = 'selects';
+        $campos_view['cat_sat_moneda_id']['model'] = (new cat_sat_moneda($link));
+
+        $campos_view['cat_sat_forma_pago_id']['type'] = 'selects';
+        $campos_view['cat_sat_forma_pago_id']['model'] = (new cat_sat_forma_pago($link));
+
+        $campos_view['cat_sat_metodo_pago_id']['type'] = 'selects';
+        $campos_view['cat_sat_metodo_pago_id']['model'] = (new cat_sat_metodo_pago($link));
+
+        $campos_view['cat_sat_uso_cfdi_id']['type'] = 'selects';
+        $campos_view['cat_sat_uso_cfdi_id']['model'] = (new cat_sat_uso_cfdi($link));
+
+        $campos_view['cat_sat_tipo_de_comprobante_id']['type'] = 'selects';
+        $campos_view['cat_sat_tipo_de_comprobante_id']['model'] = (new cat_sat_tipo_de_comprobante($link));
+
+        $campos_view['razon_social']['type'] = 'inputs';
+        $campos_view['rfc']['type'] = 'inputs';
+        $campos_view['numero_exterior']['type'] = 'inputs';
+        $campos_view['numero_interior']['type'] = 'inputs';
+        $campos_view['telefono']['type'] = 'inputs';
+
+
         parent::__construct(link: $link,tabla:  $tabla, campos_obligatorios: $campos_obligatorios,
-            columnas: $columnas, tipo_campos: $tipo_campos);
+            columnas: $columnas, tipo_campos: $tipo_campos, campos_view: $campos_view);
 
         $this->NAMESPACE = __NAMESPACE__;
     }

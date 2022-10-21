@@ -12,35 +12,35 @@ use stdClass;
 
 class com_cliente_html extends html_controler {
 
-    private function asigna_inputs(controlador_com_cliente $controler, stdClass $inputs): array|stdClass
+    private function asigna_inputs(controlador_com_cliente $controler, array|stdClass $inputs): array|stdClass
     {
         $controler->inputs->select = new stdClass();
 
-        $controler->inputs->select->dp_pais_id = $inputs->selects->dp_pais_id;
-        $controler->inputs->select->dp_estado_id = $inputs->selects->dp_estado_id;
-        $controler->inputs->select->dp_municipio_id = $inputs->selects->dp_municipio_id;
-        $controler->inputs->select->dp_cp_id = $inputs->selects->dp_cp_id;
-        $controler->inputs->select->dp_colonia_id = $inputs->selects->dp_colonia_id;
-        $controler->inputs->select->dp_calle_pertenece_id = $inputs->selects->dp_calle_pertenece_id;
-        $controler->inputs->select->cat_sat_regimen_fiscal_id = $inputs->selects->cat_sat_regimen_fiscal_id;
-        $controler->inputs->select->cat_sat_moneda_id = $inputs->selects->cat_sat_moneda_id;
-        $controler->inputs->select->cat_sat_forma_pago_id = $inputs->selects->cat_sat_forma_pago_id;
-        $controler->inputs->select->cat_sat_metodo_pago_id = $inputs->selects->cat_sat_metodo_pago_id;
-        $controler->inputs->select->cat_sat_uso_cfdi_id = $inputs->selects->cat_sat_uso_cfdi_id;
-        $controler->inputs->select->cat_sat_tipo_de_comprobante_id = $inputs->selects->cat_sat_tipo_de_comprobante_id;
+        $controler->inputs->select->dp_pais_id = $inputs['selects']->dp_pais_id;
+        $controler->inputs->select->dp_estado_id = $inputs['selects']->dp_estado_id;
+        $controler->inputs->select->dp_municipio_id = $inputs['selects']->dp_municipio_id;
+        $controler->inputs->select->dp_cp_id = $inputs['selects']->dp_cp_id;
+        $controler->inputs->select->dp_colonia_id = $inputs['selects']->dp_colonia_id;
+        $controler->inputs->select->dp_calle_pertenece_id = $inputs['selects']->dp_calle_pertenece_id;
+        $controler->inputs->select->cat_sat_regimen_fiscal_id = $inputs['selects']->cat_sat_regimen_fiscal_id;
+        $controler->inputs->select->cat_sat_moneda_id = $inputs['selects']->cat_sat_moneda_id;
+        $controler->inputs->select->cat_sat_forma_pago_id = $inputs['selects']->cat_sat_forma_pago_id;
+        $controler->inputs->select->cat_sat_metodo_pago_id = $inputs['selects']->cat_sat_metodo_pago_id;
+        $controler->inputs->select->cat_sat_uso_cfdi_id = $inputs['selects']->cat_sat_uso_cfdi_id;
+        $controler->inputs->select->cat_sat_tipo_de_comprobante_id = $inputs['selects']->cat_sat_tipo_de_comprobante_id;
 
-        $controler->inputs->razon_social = $inputs->texts->razon_social;
-        $controler->inputs->rfc = $inputs->texts->rfc;
-        $controler->inputs->numero_exterior = $inputs->texts->numero_exterior;
-        $controler->inputs->numero_interior = $inputs->texts->numero_interior;
-        $controler->inputs->telefono = $inputs->texts->telefono;
+        $controler->inputs->razon_social = $inputs['inputs']->razon_social;
+        $controler->inputs->rfc = $inputs['inputs']->rfc;
+        $controler->inputs->numero_exterior = $inputs['inputs']->numero_exterior;
+        $controler->inputs->numero_interior = $inputs['inputs']->numero_interior;
+        $controler->inputs->telefono = $inputs['inputs']->telefono;
 
         return $controler->inputs;
     }
 
-    public function genera_inputs_alta(controlador_com_cliente $controler,PDO $link): array|stdClass
+    public function genera_inputs_alta(controlador_com_cliente $controler,PDO $link, $keys_select): array|stdClass
     {
-        $inputs = $this->init_alta(link: $link);
+        $inputs = $this->init_alta2(row_upd: $controler->row_upd, keys_selects: $keys_select, link: $link, modelo: $controler->modelo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar inputs',data:  $inputs);
 
@@ -68,7 +68,7 @@ class com_cliente_html extends html_controler {
         return $inputs_asignados;
     }
 
-    private function init_alta(PDO $link): array|stdClass
+    protected function init_alta($keys_selects, $link): array|stdClass
     {
         $selects = $this->selects_alta(link: $link);
         if(errores::$error){
@@ -221,7 +221,7 @@ class com_cliente_html extends html_controler {
         return $div;
     }
 
-    private function selects_alta(PDO $link): array|stdClass
+    /*protected function selects_alta(PDO $link): array|stdClass
     {
         $selects = new stdClass();
 
@@ -322,7 +322,7 @@ class com_cliente_html extends html_controler {
         $selects->cat_sat_tipo_de_comprobante_id = $select;
 
         return $selects;
-    }
+    }*/
 
     private function selects_modifica(PDO $link, stdClass $row_upd): array|stdClass
     {
@@ -439,7 +439,7 @@ class com_cliente_html extends html_controler {
         return $select;
     }
 
-    private function texts_alta(stdClass $row_upd, bool $value_vacio): array|stdClass
+    /*private function texts_alta(stdClass $row_upd, bool $value_vacio): array|stdClass
     {
 
         $texts = new stdClass();
@@ -475,6 +475,6 @@ class com_cliente_html extends html_controler {
         $texts->telefono = $in_telefono;
 
         return $texts;
-    }
+    }*/
 
 }
