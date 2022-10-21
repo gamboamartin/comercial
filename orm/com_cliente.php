@@ -139,6 +139,10 @@ class com_cliente extends modelo{
             $registro['cat_sat_metodo_pago_id'] = $id_predeterminado;
         }
 
+        if(isset($registro['dp_colonia_id'])){
+            unset($registro['dp_colonia_id']);
+        }
+
 
 
         $this->registro = $registro;
