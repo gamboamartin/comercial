@@ -11,34 +11,34 @@ use stdClass;
 
 class com_sucursal_html extends html_controler {
 
-    private function asigna_inputs(controlador_com_sucursal $controler, stdClass $inputs): array|stdClass
+    private function asigna_inputs_alta(controlador_com_sucursal $controler, array|stdClass $inputs): array|stdClass
     {
         $controler->inputs->select = new stdClass();
 
-        $controler->inputs->select->dp_colonia_id = $inputs->selects->dp_colonia_id;
-        $controler->inputs->select->dp_cp_id = $inputs->selects->dp_cp_id;
-        $controler->inputs->select->dp_municipio_id = $inputs->selects->dp_municipio_id;
-        $controler->inputs->select->dp_pais_id = $inputs->selects->dp_pais_id;
-        $controler->inputs->select->dp_calle_pertenece_id = $inputs->selects->dp_calle_pertenece_id;
-        $controler->inputs->select->dp_estado_id = $inputs->selects->dp_estado_id;
-        $controler->inputs->select->com_cliente_id = $inputs->selects->com_cliente_id;
-        $controler->inputs->telefono_3 = $inputs->texts->telefono_3;
-        $controler->inputs->telefono_2 = $inputs->texts->telefono_2;
-        $controler->inputs->telefono_1 = $inputs->texts->telefono_1;
-        $controler->inputs->numero_exterior = $inputs->texts->numero_exterior;
-        $controler->inputs->numero_interior = $inputs->texts->numero_interior;
-        $controler->inputs->nombre_contacto = $inputs->texts->nombre_contacto;
+        $controler->inputs->select->dp_colonia_id = $inputs['selects']->dp_colonia_id;
+        $controler->inputs->select->dp_cp_id = $inputs['selects']->dp_cp_id;
+        $controler->inputs->select->dp_municipio_id = $inputs['selects']->dp_municipio_id;
+        $controler->inputs->select->dp_pais_id = $inputs['selects']->dp_pais_id;
+        $controler->inputs->select->dp_calle_pertenece_id = $inputs['selects']->dp_calle_pertenece_id;
+        $controler->inputs->select->dp_estado_id = $inputs['selects']->dp_estado_id;
+        $controler->inputs->select->com_cliente_id = $inputs['selects']->com_cliente_id;
+        $controler->inputs->telefono_3 = $inputs['inputs']->telefono_3;
+        $controler->inputs->telefono_2 = $inputs['inputs']->telefono_2;
+        $controler->inputs->telefono_1 = $inputs['inputs']->telefono_1;
+        $controler->inputs->numero_exterior = $inputs['inputs']->numero_exterior;
+        $controler->inputs->numero_interior = $inputs['inputs']->numero_interior;
+        $controler->inputs->nombre_contacto = $inputs['inputs']->nombre_contacto;
         return $controler->inputs;
     }
 
     public function genera_inputs_alta(controlador_com_sucursal $controler, array $keys_selects,PDO $link): array|stdClass
     {
-        $inputs = $this->init_alta(keys_selects: $keys_selects, link: $link);
+        $inputs = $this->init_alta2(row_upd: $controler->row_upd, keys_selects: $keys_selects, link: $link, modelo: $controler->modelo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar inputs',data:  $inputs);
 
         }
-        $inputs_asignados = $this->asigna_inputs(controler:$controler, inputs: $inputs);
+        $inputs_asignados = $this->asigna_inputs_alta(controler:$controler, inputs: $inputs);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar inputs',data:  $inputs_asignados);
         }

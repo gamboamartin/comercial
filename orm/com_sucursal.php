@@ -2,6 +2,12 @@
 namespace gamboamartin\comercial\models;
 use base\orm\modelo;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
+use gamboamartin\direccion_postal\models\dp_pais;
+use gamboamartin\direccion_postal\models\dp_colonia;
+use gamboamartin\direccion_postal\models\dp_cp;
+use gamboamartin\direccion_postal\models\dp_municipio;
+use gamboamartin\direccion_postal\models\dp_estado;
+
 use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
@@ -14,10 +20,41 @@ class com_sucursal extends modelo{
             'dp_colonia_postal'=>'dp_calle_pertenece','dp_cp'=>'dp_colonia_postal',
             'cat_sat_regimen_fiscal'=>'com_cliente');
         $campos_obligatorios = array('descripcion','codigo','descripcion_select','alias','codigo_bis',
-            'numero_exterior','com_cliente_id','dp_calle_pertenece_id');
+            'numero_exterior','com_cliente_id', 'dp_pais_id', 'dp_calle_pertenece_id');
+
+        $tipo_campos = array();
+
+        $campos_view = array();
+        $campos_view['dp_colonia_id']['type'] = 'selects';
+        $campos_view['dp_colonia_id']['model'] = (new dp_colonia($link));
+
+        $campos_view['dp_cp_id']['type'] = 'selects';
+        $campos_view['dp_cp_id']['model'] = (new dp_cp($link));
+
+        $campos_view['dp_municipio_id']['type'] = 'selects';
+        $campos_view['dp_municipio_id']['model'] = (new dp_municipio($link));
+
+        $campos_view['dp_pais_id']['type'] = 'selects';
+        $campos_view['dp_pais_id']['model'] = (new dp_pais($link));
+
+        $campos_view['dp_calle_pertenece_id']['type'] = 'selects';
+        $campos_view['dp_calle_pertenece_id']['model'] = (new dp_calle_pertenece($link));
+
+        $campos_view['dp_estado_id']['type'] = 'selects';
+        $campos_view['dp_estado_id']['model'] = (new dp_estado($link));
+
+        $campos_view['com_cliente_id']['type'] = 'selects';
+        $campos_view['com_cliente_id']['model'] = (new com_cliente($link));
+
+        $campos_view['telefono_3']['type'] = 'inputs';
+        $campos_view['telefono_2']['type'] = 'inputs';
+        $campos_view['telefono_1']['type'] = 'inputs';
+        $campos_view['numero_exterior']['type'] = 'inputs';
+        $campos_view['numero_interior']['type'] = 'inputs';
+        $campos_view['nombre_contacto']['type'] = 'inputs';
 
         parent::__construct(link: $link,tabla:  $tabla, campos_obligatorios: $campos_obligatorios,
-            columnas: $columnas);
+            columnas: $columnas, tipo_campos: $tipo_campos, campos_view: $campos_view);
 
         $this->NAMESPACE =__NAMESPACE__;
 
