@@ -3,6 +3,7 @@ namespace html;
 
 use config\generales;
 use gamboamartin\comercial\controllers\controlador_com_cliente;
+use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\errores\errores;
 use gamboamartin\system\html_controler;
 use models\base\limpieza;
@@ -12,7 +13,7 @@ use stdClass;
 
 class com_cliente_html extends html_controler {
 
-    private function asigna_inputs(controlador_com_cliente $controler, array|stdClass $inputs): array|stdClass
+    private function asigna_inputs_alta(controlador_com_cliente $controler, array|stdClass $inputs): array|stdClass
     {
         $controler->inputs->select = new stdClass();
 
@@ -38,6 +39,32 @@ class com_cliente_html extends html_controler {
         return $controler->inputs;
     }
 
+    private function asigna_inputs_modifica(controlador_com_cliente $controler, array|stdClass $inputs): array|stdClass
+    {
+        $controler->inputs->select = new stdClass();
+
+        $controler->inputs->select->dp_pais_id = $inputs->selects->dp_pais_id;
+        $controler->inputs->select->dp_estado_id = $inputs->selects->dp_estado_id;
+        $controler->inputs->select->dp_municipio_id = $inputs->selects->dp_municipio_id;
+        $controler->inputs->select->dp_cp_id = $inputs->selects->dp_cp_id;
+        $controler->inputs->select->dp_colonia_id = $inputs->selects->dp_colonia_id;
+        $controler->inputs->select->dp_calle_pertenece_id = $inputs->selects->dp_calle_pertenece_id;
+        $controler->inputs->select->cat_sat_regimen_fiscal_id = $inputs->selects->cat_sat_regimen_fiscal_id;
+        $controler->inputs->select->cat_sat_moneda_id = $inputs->selects->cat_sat_moneda_id;
+        $controler->inputs->select->cat_sat_forma_pago_id = $inputs->selects->cat_sat_forma_pago_id;
+        $controler->inputs->select->cat_sat_metodo_pago_id = $inputs->selects->cat_sat_metodo_pago_id;
+        $controler->inputs->select->cat_sat_uso_cfdi_id = $inputs->selects->cat_sat_uso_cfdi_id;
+        $controler->inputs->select->cat_sat_tipo_de_comprobante_id = $inputs->selects->cat_sat_tipo_de_comprobante_id;
+
+        $controler->inputs->razon_social = $inputs->texts->razon_social;
+        $controler->inputs->rfc = $inputs->texts->rfc;
+        $controler->inputs->numero_exterior = $inputs->texts->numero_exterior;
+        $controler->inputs->numero_interior = $inputs->texts->numero_interior;
+        $controler->inputs->telefono = $inputs->texts->telefono;
+
+        return $controler->inputs;
+    }
+
     public function genera_inputs_alta(controlador_com_cliente $controler,PDO $link, $keys_select): array|stdClass
     {
         $inputs = $this->init_alta2(row_upd: $controler->row_upd, keys_selects: $keys_select, link: $link, modelo: $controler->modelo);
@@ -45,7 +72,7 @@ class com_cliente_html extends html_controler {
             return $this->error->error(mensaje: 'Error al generar inputs',data:  $inputs);
 
         }
-        $inputs_asignados = $this->asigna_inputs(controler:$controler, inputs: $inputs);
+        $inputs_asignados = $this->asigna_inputs_alta(controler:$controler, inputs: $inputs);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar inputs',data:  $inputs_asignados);
         }
@@ -60,7 +87,7 @@ class com_cliente_html extends html_controler {
             return $this->error->error(mensaje: 'Error al generar inputs',data:  $inputs);
 
         }
-        $inputs_asignados = $this->asigna_inputs(controler:$controler, inputs: $inputs);
+        $inputs_asignados = $this->asigna_inputs_modifica(controler:$controler, inputs: $inputs);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar inputs',data:  $inputs_asignados);
         }
@@ -95,7 +122,7 @@ class com_cliente_html extends html_controler {
             return $this->error->error(mensaje: 'Error al generar selects',data:  $selects);
         }
 
-        $texts = $this->texts_alta(row_upd: new stdClass(), value_vacio: true);
+        $texts = $this->texts_modifica(row_upd: $row_upd, value_vacio: false);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar texts',data:  $texts);
         }
@@ -328,6 +355,10 @@ class com_cliente_html extends html_controler {
     {
 
         $selects = new stdClass();
+        $dp_calle_pertenece = new dp_calle_pertenece(link: $link);
+
+        $r_dp_calle_pertenece = $dp_calle_pertenece->registro(registro_id: $row_upd->dp_calle_pertenece_id);
+
 
         $select = (new cat_sat_regimen_fiscal_html(html:$this->html_base))->select_cat_sat_regimen_fiscal_id(
             cols: 12, con_registros:true, id_selected:$row_upd->cat_sat_regimen_fiscal_id,link: $link);
@@ -338,29 +369,31 @@ class com_cliente_html extends html_controler {
         $selects->cat_sat_regimen_fiscal_id = $select;
 
         $select = (new dp_pais_html(html:$this->html_base))->select_dp_pais_id(
-            cols: 6, con_registros:true, id_selected:$row_upd->dp_pais_id,link: $link);
+            cols: 6, con_registros:true, id_selected:$r_dp_calle_pertenece['dp_pais_id'],link: $link);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select',data:  $select);
         }
 
         $selects->dp_pais_id = $select;
 
+
+
         $select = (new dp_estado_html(html:$this->html_base))->select_dp_estado_id(
-            cols: 6, con_registros:true, id_selected:$row_upd->dp_estado_id,link: $link);
+            cols: 6, con_registros:true, id_selected:$r_dp_calle_pertenece['dp_estado_id'],link: $link);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select',data:  $select);
         }
         $selects->dp_estado_id = $select;
 
         $select = (new dp_municipio_html(html:$this->html_base))->select_dp_municipio_id(
-            cols: 6, con_registros:true, id_selected:$row_upd->dp_municipio_id,link: $link);
+            cols: 6, con_registros:true, id_selected:$r_dp_calle_pertenece['dp_municipio_id'],link: $link);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select',data:  $select);
         }
         $selects->dp_municipio_id = $select;
 
         $select = (new dp_cp_html(html:$this->html_base))->select_dp_cp_id(
-            cols: 6, con_registros:true, id_selected:$row_upd->dp_cp_id,link: $link);
+            cols: 6, con_registros:true, id_selected:$r_dp_calle_pertenece['dp_cp_id'],link: $link);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select',data:  $select);
         }
@@ -368,7 +401,7 @@ class com_cliente_html extends html_controler {
 
 
         $select = (new dp_calle_pertenece_html(html:$this->html_base))->select_dp_calle_pertenece_id(
-            cols: 6, con_registros:true, id_selected:$row_upd->dp_calle_pertenece_id,link: $link);
+            cols: 6, con_registros:true, id_selected:$r_dp_calle_pertenece['dp_calle_pertenece_id'],link: $link);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select',data:  $select);
         }
@@ -417,7 +450,7 @@ class com_cliente_html extends html_controler {
         $selects->cat_sat_tipo_de_comprobante_id = $select;
 
         $select = (new dp_colonia_html(html:$this->html_base))->select_dp_colonia_id(
-            cols: 6, con_registros:true, id_selected:$row_upd->dp_colonia_id,link: $link);
+            cols: 6, con_registros:true, id_selected:$r_dp_calle_pertenece['dp_colonia_id'],link: $link);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select',data:  $select);
         }
@@ -439,7 +472,7 @@ class com_cliente_html extends html_controler {
         return $select;
     }
 
-    /*private function texts_alta(stdClass $row_upd, bool $value_vacio): array|stdClass
+    protected function texts_modifica(stdClass $row_upd, bool $value_vacio): array|stdClass
     {
 
         $texts = new stdClass();
@@ -475,6 +508,6 @@ class com_cliente_html extends html_controler {
         $texts->telefono = $in_telefono;
 
         return $texts;
-    }*/
+    }
 
 }
