@@ -3,11 +3,11 @@ namespace html;
 
 use config\generales;
 use gamboamartin\comercial\controllers\controlador_com_cliente;
+use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\errores\errores;
 use gamboamartin\system\html_controler;
 use models\base\limpieza;
-use models\com_cliente;
 use PDO;
 use stdClass;
 
