@@ -113,7 +113,7 @@ class com_sucursal_html extends html_controler {
             return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
         }
 
-        $html =$this->directivas->input_text_required(disable: false,name: 'numero_interior',place_holder: 'Numero interior',
+        $html =$this->directivas->input_text_required(disabled: false,name: 'numero_interior',place_holder: 'Numero interior',
             row_upd: $row_upd, value_vacio: $value_vacio);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
@@ -134,7 +134,7 @@ class com_sucursal_html extends html_controler {
             return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
         }
 
-        $html =$this->directivas->input_text_required(disable: false,name: 'nombre_contacto',place_holder: 'Nombre contacto',
+        $html =$this->directivas->input_text_required(disabled: false,name: 'nombre_contacto',place_holder: 'Nombre contacto',
             row_upd: $row_upd, value_vacio: $value_vacio);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
@@ -155,7 +155,7 @@ class com_sucursal_html extends html_controler {
             return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
         }
 
-        $html =$this->directivas->input_text_required(disable: false,name: 'numero_exterior',place_holder: 'Numero exterior',
+        $html =$this->directivas->input_text_required(disabled: false,name: 'numero_exterior',place_holder: 'Numero exterior',
             row_upd: $row_upd, value_vacio: $value_vacio);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
@@ -176,7 +176,7 @@ class com_sucursal_html extends html_controler {
             return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
         }
 
-        $html =$this->directivas->input_text_required(disable: false,name: 'telefono_1',place_holder: 'Telefono 1',
+        $html =$this->directivas->input_text_required(disabled: false,name: 'telefono_1',place_holder: 'Telefono 1',
             row_upd: $row_upd, value_vacio: $value_vacio);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
@@ -197,7 +197,7 @@ class com_sucursal_html extends html_controler {
             return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
         }
 
-        $html =$this->directivas->input_text_required(disable: false,name: 'telefono_2',place_holder: 'Telefono 2',
+        $html =$this->directivas->input_text_required(disabled: false,name: 'telefono_2',place_holder: 'Telefono 2',
             row_upd: $row_upd, value_vacio: $value_vacio);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
@@ -218,7 +218,7 @@ class com_sucursal_html extends html_controler {
             return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
         }
 
-        $html =$this->directivas->input_text_required(disable: false,name: 'telefono_3',place_holder: 'Telefono 3',
+        $html =$this->directivas->input_text_required(disabled: false,name: 'telefono_3',place_holder: 'Telefono 3',
             row_upd: $row_upd, value_vacio: $value_vacio);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $html);

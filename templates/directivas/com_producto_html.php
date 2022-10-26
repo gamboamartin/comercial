@@ -111,7 +111,7 @@ class com_producto_html extends html_controler {
             return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
         }
 
-        $html =$this->directivas->input_text_required(disable: false,name: 'obj_imp',place_holder: 'OBJ IMP',
+        $html =$this->directivas->input_text_required(disabled: false,name: 'obj_imp',place_holder: 'OBJ IMP',
             row_upd: $row_upd, value_vacio: $value_vacio);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
