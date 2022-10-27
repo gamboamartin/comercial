@@ -82,7 +82,7 @@ class com_producto_html extends html_controler {
             return $this->error->error(mensaje: 'Error al generar selects',data:  $selects);
         }
 
-        $texts = $this->texts_alta(row_upd: new stdClass(), value_vacio: true, params: $params);
+        $texts = $this->texts_alta(row_upd: $row_upd, value_vacio: false, params: $params);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar texts',data:  $texts);
         }
