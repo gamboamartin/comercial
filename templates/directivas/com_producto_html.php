@@ -97,7 +97,7 @@ class com_producto_html extends html_controler {
     public function inputs_com_producto(controlador_com_producto $controlador_org_puesto, array $keys_selects): array|stdClass
     {
         $inputs = $this->genera_inputs_modifica(controler: $controlador_org_puesto,
-            link: $controlador_org_puesto->link);
+            link: $controlador_org_puesto->link, params: new stdClass());
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar inputs',data:  $inputs);
         }
@@ -204,6 +204,13 @@ class com_producto_html extends html_controler {
             return $this->error->error(mensaje: 'Error al generar select',data:  $select);
         }
         $selects->cat_sat_tipo_factor_id = $select;
+
+        $select = (new cat_sat_factor_html(html:$this->html_base))->select_cat_sat_factor_id(
+            cols: 6, con_registros:true, id_selected:$row_upd->cat_sat_factor_id,link: $link);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select',data:  $select);
+        }
+        $selects->cat_sat_factor_id = $select;
 
         return $selects;
     }
