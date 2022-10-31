@@ -455,12 +455,13 @@ class com_cliente_html extends html_controler {
         return $selects;
     }
 
-    public function select_com_cliente_id(int $cols, bool $con_registros, int $id_selected, PDO $link): array|string
+    public function select_com_cliente_id(int $cols, bool $con_registros, int $id_selected, PDO $link,
+                                          bool $disabled = false): array|string
     {
         $modelo = new com_cliente(link: $link);
 
         $select = $this->select_catalogo(cols:$cols,con_registros:$con_registros,id_selected:$id_selected,
-            modelo: $modelo,label: 'Cliente', required: true);
+            modelo: $modelo, disabled: $disabled, label: 'Cliente', required: true);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }
