@@ -8,9 +8,9 @@
  */
 namespace gamboamartin\comercial\controllers;
 use gamboamartin\comercial\models\com_cliente;
+use gamboamartin\direccion_postal\src\init;
 use gamboamartin\errores\errores;
 use gamboamartin\system\actions;
-use gamboamartin\system\init;
 use gamboamartin\system\links_menu;
 use gamboamartin\system\system;
 use gamboamartin\template\html;
@@ -119,11 +119,11 @@ class controlador_com_cliente extends system {
     {
         $this->link->beginTransaction();
 
-        $keys = array('dp_pais_id','dp_estado_id','dp_municipio_id','dp_cp_id','dp_colonia_postal_id');
-        $_POST = (new init())->limpia_rows(keys: $keys,row:  $_POST);
+
+        $limpia = (new init())->limpia_data_alta();
         if(errores::$error){
             $this->link->rollBack();
-            return $this->retorno_error(mensaje: 'Error al limpiar datos',data:  $_POST, header: $header,ws:$ws);
+            return $this->retorno_error(mensaje: 'Error al limpiar datos',data:  $limpia, header: $header,ws:$ws);
         }
 
 
