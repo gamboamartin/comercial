@@ -142,4 +142,17 @@ class com_sucursal extends modelo{
         }
         return $r_modifica_bd;
     }
+
+    public function sucursales(int $com_cliente_id): array|stdClass
+    {
+        if($com_cliente_id <=0){
+            return $this->error->error(mensaje: 'Error $com_cliente_id debe ser mayor a 0', data: $com_cliente_id);
+        }
+        $filtro['com_cliente.id'] = $com_cliente_id;
+        $r_com_sucursal = $this->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener sucursales', data: $r_com_sucursal);
+        }
+        return $r_com_sucursal;
+    }
 }
