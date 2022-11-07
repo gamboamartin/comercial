@@ -9,6 +9,7 @@ use gamboamartin\direccion_postal\models\dp_municipio;
 use gamboamartin\direccion_postal\models\dp_estado;
 
 use gamboamartin\errores\errores;
+use models\nom_rel_empleado_sucursal;
 use PDO;
 use stdClass;
 
@@ -117,6 +118,19 @@ class com_sucursal extends modelo{
             return $this->error->error(mensaje: 'Error al insertar com_sucursal',data:  $r_alta_bd);
         }
         return $r_alta_bd;
+    }
+
+    public function em_empleado_by_sucursal(int $com_sucursal_id): array
+    {
+
+        $filtro['com_sucursal.id'] = $com_sucursal_id;
+        $r_tg_em_empleado_sucursal = (new nom_rel_empleado_sucursal($this->link))->filtro_and(filtro:$filtro);
+        if(errores::$error){
+
+            return $this->error->error(mensaje: 'Error al limpiar datos',data:  $r_tg_em_empleado_sucursal);
+        }
+        return $r_tg_em_empleado_sucursal->registros;
+
     }
 
     public function modifica_bd(array $registro, int $id, bool $reactiva = false): array|stdClass
