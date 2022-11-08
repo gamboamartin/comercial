@@ -56,7 +56,7 @@ class controlador_com_producto extends system {
         }
 
         $keys_selects = array();
-        $inputs = (new com_producto_html(html: $this->html_base))->inputs_com_producto(controlador_org_puesto:$this,
+        $inputs = (new com_producto_html(html: $this->html_base))->inputs_com_producto(controlador_com_producto:$this,
             keys_selects: $keys_selects);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al inicializar inputs',data:  $inputs, header: $header,ws:$ws);

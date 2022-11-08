@@ -94,10 +94,10 @@ class com_producto_html extends html_controler {
         return $alta_inputs;
     }
 
-    public function inputs_com_producto(controlador_com_producto $controlador_org_puesto, array $keys_selects): array|stdClass
+    public function inputs_com_producto(controlador_com_producto $controlador_com_producto, array $keys_selects): array|stdClass
     {
-        $inputs = $this->genera_inputs_modifica(controler: $controlador_org_puesto,
-            link: $controlador_org_puesto->link, params: new stdClass());
+        $inputs = $this->genera_inputs_modifica(controler: $controlador_com_producto,
+            link: $controlador_com_producto->link, params: new stdClass());
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar inputs',data:  $inputs);
         }
