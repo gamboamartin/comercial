@@ -9,9 +9,7 @@
 namespace gamboamartin\comercial\controllers;
 use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
-use gamboamartin\direccion_postal\src\init;
 use gamboamartin\errores\errores;
-use gamboamartin\system\actions;
 use gamboamartin\system\links_menu;
 use gamboamartin\system\system;
 use gamboamartin\template\html;
@@ -35,7 +33,8 @@ class controlador_com_cliente extends system {
         $columns["com_cliente_rfc"]["titulo"] = "RFC";
         $columns["cat_sat_regimen_fiscal_descripcion"]["titulo"] = "Régimen Fiscal";
 
-        $filtro = array("com_producto.id","com_producto.codigo", "com_producto.descripcion");
+        $filtro = array("com_cliente.id","com_cliente.codigo", "com_cliente.razon_social", "com_cliente.rfc",
+            "cat_sat_regimen_fiscal.descripcion");
 
         $datatables = new stdClass();
         $datatables->columns = $columns;

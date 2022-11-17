@@ -7,9 +7,7 @@ use gamboamartin\cat_sat\models\cat_sat_moneda;
 use gamboamartin\cat_sat\models\cat_sat_regimen_fiscal;
 use gamboamartin\cat_sat\models\cat_sat_tipo_de_comprobante;
 use gamboamartin\cat_sat\models\cat_sat_uso_cfdi;
-use gamboamartin\direccion_postal\models\dp_calle;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
-use gamboamartin\direccion_postal\models\dp_colonia;
 use gamboamartin\direccion_postal\models\dp_colonia_postal;
 use gamboamartin\direccion_postal\models\dp_cp;
 use gamboamartin\direccion_postal\models\dp_estado;
@@ -22,8 +20,9 @@ use stdClass;
 class com_cliente extends modelo{
     public function __construct(PDO $link){
         $tabla = 'com_cliente';
-        $columnas = array($tabla=>false,'cat_sat_moneda'=>$tabla,'dp_pais'=>'cat_sat_moneda',
-            'cat_sat_regimen_fiscal' => $tabla);
+        $columnas = array($tabla=>false,'cat_sat_moneda'=>$tabla, 'cat_sat_regimen_fiscal' => $tabla,
+            'dp_calle_pertenece' => $tabla, 'dp_colonia_postal' => 'dp_calle_pertenece', 'dp_cp' => 'dp_colonia_postal',
+            'dp_municipio' => 'dp_cp','dp_estado' => 'dp_municipio','dp_pais' => 'dp_estado');
         $campos_obligatorios = array('cat_sat_moneda_id','cat_sat_regimen_fiscal_id','cat_sat_moneda_id',
             'cat_sat_forma_pago_id','cat_sat_uso_cfdi_id','cat_sat_tipo_de_comprobante_id','cat_sat_metodo_pago_id');
 

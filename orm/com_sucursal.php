@@ -1,7 +1,14 @@
 <?php
 namespace gamboamartin\comercial\models;
 use base\orm\modelo;
+use gamboamartin\cat_sat\models\cat_sat_forma_pago;
+use gamboamartin\cat_sat\models\cat_sat_metodo_pago;
+use gamboamartin\cat_sat\models\cat_sat_moneda;
+use gamboamartin\cat_sat\models\cat_sat_regimen_fiscal;
+use gamboamartin\cat_sat\models\cat_sat_tipo_de_comprobante;
+use gamboamartin\cat_sat\models\cat_sat_uso_cfdi;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
+use gamboamartin\direccion_postal\models\dp_colonia_postal;
 use gamboamartin\direccion_postal\models\dp_pais;
 use gamboamartin\direccion_postal\models\dp_colonia;
 use gamboamartin\direccion_postal\models\dp_cp;
@@ -9,7 +16,6 @@ use gamboamartin\direccion_postal\models\dp_municipio;
 use gamboamartin\direccion_postal\models\dp_estado;
 
 use gamboamartin\errores\errores;
-use models\nom_rel_empleado_sucursal;
 use PDO;
 use stdClass;
 
@@ -25,100 +31,89 @@ class com_sucursal extends modelo{
 
         $tipo_campos = array();
 
-        $campos_view = array();
-        $campos_view['dp_colonia_id']['type'] = 'selects';
-        $campos_view['dp_colonia_id']['model'] = (new dp_colonia($link));
+        $campos_view['dp_pais_id'] = array('type' => 'selects', 'model' => new dp_pais($link));
+        $campos_view['dp_estado_id'] = array('type' => 'selects', 'model' => new dp_estado($link));
+        $campos_view['dp_municipio_id'] = array('type' => 'selects', 'model' => new dp_municipio($link));
+        $campos_view['dp_cp_id'] = array('type' => 'selects', 'model' => new dp_cp($link));
+        $campos_view['dp_colonia_postal_id'] = array('type' => 'selects', 'model' => new dp_colonia_postal($link));
+        $campos_view['dp_calle_pertenece_id'] = array('type' => 'selects', 'model' => new dp_calle_pertenece($link));
+        $campos_view['com_cliente_id'] = array('type' => 'selects', 'model' => new com_cliente($link));
+        $campos_view['codigo'] = array('type' => 'inputs');
+        $campos_view['nombre_contacto'] = array('type' => 'inputs');
+        $campos_view['numero_exterior'] = array('type' => 'inputs');
+        $campos_view['numero_interior'] = array('type' => 'inputs');
+        $campos_view['telefono_1'] = array('type' => 'inputs');
+        $campos_view['telefono_2'] = array('type' => 'inputs');
+        $campos_view['telefono_3'] = array('type' => 'inputs');
 
-        $campos_view['dp_cp_id']['type'] = 'selects';
-        $campos_view['dp_cp_id']['model'] = (new dp_cp($link));
+        parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios,
+            columnas: $columnas, campos_view: $campos_view, tipo_campos: $tipo_campos);
 
-        $campos_view['dp_municipio_id']['type'] = 'selects';
-        $campos_view['dp_municipio_id']['model'] = (new dp_municipio($link));
-
-        $campos_view['dp_pais_id']['type'] = 'selects';
-        $campos_view['dp_pais_id']['model'] = (new dp_pais($link));
-
-        $campos_view['dp_calle_pertenece_id']['type'] = 'selects';
-        $campos_view['dp_calle_pertenece_id']['model'] = (new dp_calle_pertenece($link));
-
-        $campos_view['dp_estado_id']['type'] = 'selects';
-        $campos_view['dp_estado_id']['model'] = (new dp_estado($link));
-
-        $campos_view['com_cliente_id']['type'] = 'selects';
-        $campos_view['com_cliente_id']['model'] = (new com_cliente($link));
-
-        $campos_view['telefono_3']['type'] = 'inputs';
-        $campos_view['telefono_2']['type'] = 'inputs';
-        $campos_view['telefono_1']['type'] = 'inputs';
-        $campos_view['numero_exterior']['type'] = 'inputs';
-        $campos_view['numero_interior']['type'] = 'inputs';
-        $campos_view['nombre_contacto']['type'] = 'inputs';
-
-        parent::__construct(link: $link,tabla:  $tabla, campos_obligatorios: $campos_obligatorios,
-            columnas: $columnas, tipo_campos: $tipo_campos, campos_view: $campos_view);
-
-        $this->NAMESPACE =__NAMESPACE__;
+        $this->NAMESPACE = __NAMESPACE__;
 
     }
 
     public function alta_bd(): array|stdClass
     {
-
         $keys = array('com_cliente_id','dp_calle_pertenece_id');
         $valida = $this->validacion->valida_ids(keys:$keys,registro:  $this->registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar registro',data:  $valida);
         }
 
-        $com_cliente = (new com_cliente($this->link))->registro(registro_id: $this->registro['com_cliente_id']);
+        $this->registro = $this->init_base(data:$this->registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener com_cliente',data:  $com_cliente);
+            return $this->error->error(mensaje: 'Error al inicializar campo base',data: $this->registro);
         }
 
-        $dp_calle_pertenece = (new dp_calle_pertenece($this->link))->registro(
-            registro_id: $this->registro['dp_calle_pertenece_id']);
+        $this->registro = $this->limpia_campos(registro: $this->registro, campos_limpiar: array('dp_pais_id',
+            'dp_estado_id','dp_municipio_id','dp_cp_id','dp_cp_id','dp_colonia_postal_id'));
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al limpiar campos', data: $this->registro);
+        }
+
+        $r_alta_bd =  parent::alta_bd();
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener dp_calle_pertenece',data:  $com_cliente);
-        }
-
-        if(!isset($this->registro['descripcion_select'])){
-            $descripcion_select = $com_cliente['com_cliente_rfc'].' '.$com_cliente['com_cliente_razon_social'].' '.
-                $dp_calle_pertenece['dp_municipio_descripcion'];
-
-            $this->registro['descripcion_select'] = $descripcion_select;
-        }
-
-        if(!isset($this->registro['alias'])){
-            $alias = strtoupper($this->registro['descripcion_select']);
-
-            $this->registro['alias'] = $alias;
-        }
-
-        if(!isset($this->registro['codigo_bis'])){
-            $codigo_bis = strtoupper($this->registro['codigo']);
-
-            $this->registro['codigo_bis'] = $codigo_bis;
-        }
-
-        if(isset($this->registro['dp_pais_id'])){
-            unset($this->registro['dp_pais_id']);
-        }
-        if(isset($this->registro['dp_estado_id'])){
-            unset($this->registro['dp_estado_id']);
-        }
-        if(isset($this->registro['dp_cp_id'])){
-            unset($this->registro['dp_cp_id']);
-        }
-        if(isset($this->registro['dp_colonia_id'])){
-            unset($this->registro['dp_colonia_id']);
-        }
-
-        $r_alta_bd = parent::alta_bd(); // TODO: Change the autogenerated stub
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al insertar com_sucursal',data:  $r_alta_bd);
+            return $this->error->error(mensaje: 'Error al insertar cliente', data: $r_alta_bd);
         }
         return $r_alta_bd;
     }
+
+    protected function init_base(array $data): array
+    {
+        if(!isset($data['descripcion'])){
+            $data['descripcion'] =  $data['nombre_contacto'];
+        }
+
+        if(!isset($data['codigo_bis'])){
+            $data['codigo_bis'] =  $data['codigo'];
+        }
+
+        if(!isset($data['descripcion_select'])){
+            $ds = str_replace("_"," ",$data['descripcion']);
+            $ds = ucwords($ds);
+            $data['descripcion_select'] =  "{$data['codigo']} - {$ds}";
+        }
+
+        if(!isset($data['alias'])){
+            $data['alias'] = $data['codigo'];
+        }
+        return $data;
+    }
+
+    private function limpia_campos(array $registro, array $campos_limpiar): array
+    {
+        foreach ($campos_limpiar as $valor) {
+            if (isset($registro[$valor])) {
+                unset($registro[$valor]);
+            }
+        }
+        return $registro;
+    }
+
+    /*
+     * REVISAR
+     */
 
     public function em_empleado_by_sucursal(int $com_sucursal_id): array
     {
@@ -135,25 +130,22 @@ class com_sucursal extends modelo{
 
     public function modifica_bd(array $registro, int $id, bool $reactiva = false): array|stdClass
     {
-
-        if(isset($registro['dp_pais_id'])){
-            unset($registro['dp_pais_id']);
-        }
-        if(isset($registro['dp_estado_id'])){
-            unset($registro['dp_estado_id']);
-        }
-        if(isset($registro['dp_cp_id'])){
-            unset($registro['dp_cp_id']);
-        }
-        if(isset($registro['dp_colonia_id'])){
-            unset($registro['dp_colonia_id']);
-        }
-
-
-        $r_modifica_bd = parent::modifica_bd($registro, $id, $reactiva); // TODO: Change the autogenerated stub
+        $registro = $this->init_base(data:$registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al modificar com_sucursal',data:  $r_modifica_bd);
+            return $this->error->error(mensaje: 'Error al inicializar campo base',data: $registro);
         }
+
+        $registro = $this->limpia_campos(registro: $registro, campos_limpiar: array('dp_pais_id', 'dp_estado_id',
+            'dp_municipio_id','dp_cp_id','dp_cp_id','dp_colonia_postal_id'));
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al limpiar campos', data: $registro);
+        }
+
+        $r_modifica_bd = parent::modifica_bd($registro, $id, $reactiva);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al modificar producto',data:  $r_modifica_bd);
+        }
+
         return $r_modifica_bd;
     }
 
