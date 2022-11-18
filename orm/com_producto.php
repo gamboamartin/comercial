@@ -78,6 +78,16 @@ class com_producto extends modelo{
         return $data;
     }
 
+    public function get_producto(int $com_producto_id): array|stdClass|int
+    {
+        $registro = $this->registro(registro_id: $com_producto_id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener producto',data:  $registro);
+        }
+
+        return $registro;
+    }
+
     private function limpia_campos(array $registro, array $campos_limpiar): array
     {
         foreach ($campos_limpiar as $valor) {
