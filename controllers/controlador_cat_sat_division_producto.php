@@ -8,4 +8,4 @@
  */
 namespace gamboamartin\comercial\controllers;
 
-class controlador_cat_sat_division_producto extends \controllers\controlador_cat_sat_division_producto {}
+class controlador_cat_sat_division_producto extends \gamboamartin\cat_sat\controllers\controlador_cat_sat_division_producto {}
