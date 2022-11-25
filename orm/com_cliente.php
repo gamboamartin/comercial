@@ -41,6 +41,7 @@ class com_cliente extends modelo{
         $campos_view['cat_sat_uso_cfdi_id'] = array('type' => 'selects', 'model' => new cat_sat_metodo_pago($link));
         $campos_view['cat_sat_metodo_pago_id'] = array('type' => 'selects', 'model' => new cat_sat_uso_cfdi($link));
         $campos_view['cat_sat_tipo_de_comprobante_id'] = array('type' => 'selects', 'model' => new cat_sat_tipo_de_comprobante($link));
+        $campos_view['com_tipo_cliente_id'] = array('type' => 'selects', 'model' => new com_tipo_cliente($link));
         $campos_view['codigo'] = array('type' => 'inputs');
         $campos_view['razon_social'] = array('type' => 'inputs');
         $campos_view['rfc'] = array('type' => 'inputs');
@@ -109,6 +110,7 @@ class com_cliente extends modelo{
         $foraneas['cat_sat_uso_cfdi_id'] = new cat_sat_tipo_de_comprobante($this->link);
         $foraneas['cat_sat_tipo_de_comprobante_id'] = new cat_sat_uso_cfdi($this->link);
         $foraneas['cat_sat_metodo_pago_id'] = new cat_sat_metodo_pago($this->link);
+        $foraneas['com_tipo_cliente_id'] = new com_tipo_cliente($this->link);
 
         foreach ($foraneas as $key => $valor){
             if(!isset($data[$key]) || $data[$key] === -1){

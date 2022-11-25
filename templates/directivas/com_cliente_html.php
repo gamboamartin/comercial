@@ -29,6 +29,7 @@ class com_cliente_html extends html_controler {
         $controler->inputs->select->cat_sat_metodo_pago_id = $inputs['selects']->cat_sat_metodo_pago_id;
         $controler->inputs->select->cat_sat_uso_cfdi_id = $inputs['selects']->cat_sat_uso_cfdi_id;
         $controler->inputs->select->cat_sat_tipo_de_comprobante_id = $inputs['selects']->cat_sat_tipo_de_comprobante_id;
+        $controler->inputs->select->com_tipo_cliente_id = $inputs['selects']->com_tipo_cliente_id;
 
         $controler->inputs->razon_social = $inputs['inputs']->razon_social;
         $controler->inputs->rfc = $inputs['inputs']->rfc;
@@ -55,6 +56,7 @@ class com_cliente_html extends html_controler {
         $controler->inputs->select->cat_sat_metodo_pago_id = $inputs->selects->cat_sat_metodo_pago_id;
         $controler->inputs->select->cat_sat_uso_cfdi_id = $inputs->selects->cat_sat_uso_cfdi_id;
         $controler->inputs->select->cat_sat_tipo_de_comprobante_id = $inputs->selects->cat_sat_tipo_de_comprobante_id;
+        $controler->inputs->select->com_tipo_cliente_id = $inputs->selects->com_tipo_cliente_id;
 
         $controler->inputs->razon_social = $inputs->texts->razon_social;
         $controler->inputs->rfc = $inputs->texts->rfc;
@@ -67,7 +69,7 @@ class com_cliente_html extends html_controler {
 
     public function genera_inputs_alta(controlador_com_cliente $controler,PDO $link, $keys_select): array|stdClass
     {
-        $inputs = $this->init_alta2(row_upd: $controler->row_upd, keys_selects: $keys_select, link: $link, modelo: $controler->modelo);
+        $inputs = $this->init_alta2(row_upd: $controler->row_upd, modelo: $controler->modelo, keys_selects: $keys_select);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar inputs',data:  $inputs);
 
@@ -443,6 +445,14 @@ class com_cliente_html extends html_controler {
             return $this->error->error(mensaje: 'Error al generar select',data:  $select);
         }
         $selects->cat_sat_tipo_de_comprobante_id = $select;
+
+        $select = (new com_cliente_html(html:$this->html_base))->select_com_cliente_id(
+            cols: 6, con_registros:true, id_selected:$row_upd->com_tipo_cliente_id,link: $link);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select',data:  $select);
+        }
+
+        $selects->dp_pais_id = $select;
 
         $select = (new dp_colonia_html(html:$this->html_base))->select_dp_colonia_id(
             cols: 6, con_registros:true, id_selected:$r_dp_calle_pertenece['dp_colonia_id'],link: $link);

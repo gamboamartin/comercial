@@ -108,7 +108,7 @@ class controlador_com_cliente extends system {
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "cat_sat_regimen_fiscal_id";
-        $propiedades = array("label" => "Régimen Fiscal", "cols" => 12);
+        $propiedades = array("label" => "Régimen Fiscal", "cols" => 6);
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "cat_sat_moneda_id";
@@ -129,6 +129,10 @@ class controlador_com_cliente extends system {
 
         $identificador = "cat_sat_tipo_de_comprobante_id";
         $propiedades = array("label" => "Tipo de Comprobante");
+        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+
+        $identificador = "com_tipo_cliente_id";
+        $propiedades = array("label" => "Tipo de Cliente");
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "codigo";
@@ -221,6 +225,10 @@ class controlador_com_cliente extends system {
 
         $identificador = "cat_sat_tipo_de_comprobante_id";
         $propiedades = array("id_selected" => $this->row_upd->cat_sat_tipo_de_comprobante_id);
+        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+
+        $identificador = "com_tipo_cliente_id";
+        $propiedades = array("id_selected" => $this->row_upd->com_tipo_cliente_id);
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $inputs = $this->genera_inputs(keys_selects:  $this->keys_selects);
