@@ -24,6 +24,8 @@ class com_sucursal_html extends html_controler {
         $controler->inputs->select->dp_calle_pertenece_id = $inputs['selects']->dp_calle_pertenece_id;
         $controler->inputs->select->dp_estado_id = $inputs['selects']->dp_estado_id;
         $controler->inputs->select->com_cliente_id = $inputs['selects']->com_cliente_id;
+        $controler->inputs->select->com_tipo_sucursal_id = $inputs['selects']->com_tipo_sucursal_id;
+
         $controler->inputs->telefono_3 = $inputs['inputs']->telefono_3;
         $controler->inputs->telefono_2 = $inputs['inputs']->telefono_2;
         $controler->inputs->telefono_1 = $inputs['inputs']->telefono_1;
@@ -44,6 +46,7 @@ class com_sucursal_html extends html_controler {
         $controler->inputs->select->dp_calle_pertenece_id = $inputs->selects->dp_calle_pertenece_id;
         $controler->inputs->select->dp_estado_id = $inputs->selects->dp_estado_id;
         $controler->inputs->select->com_cliente_id = $inputs->selects->com_cliente_id;
+        $controler->inputs->select->com_tipo_sucursal_id = $inputs->selects->com_tipo_sucursal_id;
 
         $controler->inputs->telefono_3 = $inputs->texts->telefono_3;
         $controler->inputs->telefono_2 = $inputs->texts->telefono_2;
@@ -57,7 +60,7 @@ class com_sucursal_html extends html_controler {
 
     public function genera_inputs_alta(controlador_com_sucursal $controler, array $keys_selects,PDO $link): array|stdClass
     {
-        $inputs = $this->init_alta2(row_upd: $controler->row_upd, keys_selects: $keys_selects, link: $link, modelo: $controler->modelo);
+        $inputs = $this->init_alta2(row_upd: $controler->row_upd, modelo: $controler->modelo, keys_selects: $keys_selects);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar inputs',data:  $inputs);
 
@@ -329,6 +332,13 @@ class com_sucursal_html extends html_controler {
         }
 
         $selects->com_cliente_id = $select;
+
+        $select = (new com_tipo_sucursal_html(html:$this->html_base))->select_com_tipo_sucursal_id(
+            cols: 6, con_registros:true, id_selected:$row_upd->com_tipo_sucursal_id,link: $link);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar select',data:  $select);
+        }
+        $selects->com_tipo_sucursal_id = $select;
 
         $select = (new dp_pais_html(html:$this->html_base))->select_dp_pais_id(
             cols: 6, con_registros:true, id_selected:$r_dp_calle_pertenece['dp_pais_id'],link: $link);

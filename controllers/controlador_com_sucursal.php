@@ -113,12 +113,16 @@ class controlador_com_sucursal extends system {
             "dp_municipio_id","dp_cp_id","dp_colonia_postal_id","dp_calle_pertenece_id"));
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
+        $identificador = "com_tipo_sucursal_id";
+        $propiedades = array("label" => "Tipo Sucursal");
+        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+
         $identificador = "codigo";
         $propiedades = array("place_holder" => "Código");
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "nombre_contacto";
-        $propiedades = array("place_holder" => "Contacto", "cols" => 12);
+        $propiedades = array("place_holder" => "Contacto", "cols" => 6);
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "telefono_1";
@@ -187,6 +191,10 @@ class controlador_com_sucursal extends system {
 
         $identificador = "com_cliente_id";
         $propiedades = array("id_selected" => $this->row_upd->com_cliente_id);
+        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+
+        $identificador = "com_tipo_sucursal_id";
+        $propiedades = array("id_selected" => $this->row_upd->com_tipo_sucursal_id);
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $inputs = $this->genera_inputs(keys_selects:  $this->keys_selects);
