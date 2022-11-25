@@ -6,7 +6,7 @@ use PDO;
 class com_tipo_cliente extends modelo{
     public function __construct(PDO $link){
         $tabla = 'com_tipo_cliente';
-        $columnas = array();
+        $columnas = array($tabla=>false);
         $campos_obligatorios = array();
 
         parent::__construct(link: $link,tabla:  $tabla, campos_obligatorios: $campos_obligatorios,
