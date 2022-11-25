@@ -60,7 +60,7 @@ class com_producto extends modelo{
         return $r_alta_bd;
     }
 
-    protected function campos_base(array $data,modelo $modelo, int $id = -1): array
+    protected function campos_base(array $data,modelo $modelo, int $id = -1, array $keys_integra_ds = array()): array
     {
         if(!isset($data['codigo_bis'])){
             $data['codigo_bis'] =  $data['codigo'];
