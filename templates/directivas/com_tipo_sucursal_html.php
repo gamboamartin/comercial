@@ -1,16 +1,16 @@
 <?php
 namespace html;
 
+use gamboamartin\comercial\models\com_tipo_sucursal;
 use gamboamartin\errores\errores;
 use gamboamartin\system\html_controler;
-use models\com_tipo_sucursal;
 use PDO;
 
 
 class com_tipo_sucursal_html extends html_controler {
 
 
-    public function select_com_tipo_cambio_id(int $cols, bool $con_registros, int $id_selected, PDO $link): array|string
+    public function select_com_tipo_sucursal_id(int $cols, bool $con_registros, int $id_selected, PDO $link): array|string
     {
         $modelo = new com_tipo_sucursal(link: $link);
 

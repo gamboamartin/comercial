@@ -446,13 +446,12 @@ class com_cliente_html extends html_controler {
         }
         $selects->cat_sat_tipo_de_comprobante_id = $select;
 
-        $select = (new com_cliente_html(html:$this->html_base))->select_com_cliente_id(
+        $select = (new com_tipo_cliente_html(html:$this->html_base))->select_com_tipo_cliente_id(
             cols: 6, con_registros:true, id_selected:$row_upd->com_tipo_cliente_id,link: $link);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select',data:  $select);
         }
-
-        $selects->dp_pais_id = $select;
+        $selects->com_tipo_cliente_id = $select;
 
         $select = (new dp_colonia_html(html:$this->html_base))->select_dp_colonia_id(
             cols: 6, con_registros:true, id_selected:$r_dp_calle_pertenece['dp_colonia_id'],link: $link);

@@ -38,6 +38,7 @@ class com_sucursal extends modelo{
         $campos_view['dp_colonia_postal_id'] = array('type' => 'selects', 'model' => new dp_colonia_postal($link));
         $campos_view['dp_calle_pertenece_id'] = array('type' => 'selects', 'model' => new dp_calle_pertenece($link));
         $campos_view['com_cliente_id'] = array('type' => 'selects', 'model' => new com_cliente($link));
+        $campos_view['com_tipo_sucursal_id'] = array('type' => 'selects', 'model' => new com_tipo_sucursal($link));
         $campos_view['codigo'] = array('type' => 'inputs');
         $campos_view['nombre_contacto'] = array('type' => 'inputs');
         $campos_view['numero_exterior'] = array('type' => 'inputs');
