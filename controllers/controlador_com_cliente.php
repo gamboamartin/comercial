@@ -233,6 +233,10 @@ class controlador_com_cliente extends system {
         $propiedades = array("id_selected" => $this->row_upd->cat_sat_regimen_fiscal_id);
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
+        $identificador = "cat_sat_regimen_fiscal_id";
+        $propiedades = array("id_selected" => $this->row_upd->cat_sat_regimen_fiscal_id);
+        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+
         $identificador = "cat_sat_moneda_id";
         $propiedades = array("id_selected" => $this->row_upd->cat_sat_moneda_id);
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);

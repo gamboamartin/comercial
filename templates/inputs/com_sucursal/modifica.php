@@ -1,9 +1,9 @@
 <?php /** @var \gamboamartin\comercial\controllers\controlador_com_sucursal $controlador  controlador en ejecucion */ ?>
 <?php use config\views; ?>
-<?php echo $controlador->inputs->codigo; ?>
-<?php echo $controlador->inputs->com_cliente_id; ?>
-<?php echo $controlador->inputs->nombre_contacto; ?>
 <?php echo $controlador->inputs->com_tipo_sucursal_id; ?>
+<?php echo $controlador->inputs->codigo; ?>
+<?php echo $controlador->inputs->nombre_contacto; ?>
+<?php echo $controlador->inputs->com_cliente_id; ?>
 <?php echo $controlador->inputs->dp_pais_id; ?>
 <?php echo $controlador->inputs->dp_estado_id; ?>
 <?php echo $controlador->inputs->dp_municipio_id; ?>
