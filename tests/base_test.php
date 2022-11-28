@@ -3,6 +3,7 @@ namespace gamboamartin\comercial\test;
 use base\orm\modelo_base;
 use gamboamartin\cat_sat\models\cat_sat_metodo_pago;
 use gamboamartin\cat_sat\models\cat_sat_moneda;
+use gamboamartin\cat_sat\models\cat_sat_tipo_de_comprobante;
 use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\comercial\models\com_producto;
 use gamboamartin\comercial\models\com_sucursal;
@@ -35,8 +36,20 @@ class base_test{
         return $alta;
     }
 
+    public function alta_cat_sat_tipo_de_comprobante(PDO $link): array|\stdClass
+    {
+
+        $alta = (new \gamboamartin\cat_sat\tests\base_test())->alta_cat_sat_tipo_de_comprobante($link);
+        if(errores::$error){
+            return (new errores())->error('Error al insertar', $alta);
+        }
+
+        return $alta;
+    }
+
     public function alta_com_cliente(PDO $link, int $cat_sat_metodo_pago_id = 1, int $cat_sat_moneda_id = 1,
-                                     int $dp_calle_pertenece_id = 1, bool $predeterminado = false): array|\stdClass
+                                     int $cat_sat_tipo_de_comprobante_id = 1,int $dp_calle_pertenece_id = 1,
+                                     bool $predeterminado = false): array|\stdClass
     {
 
         $existe = (new cat_sat_moneda($link))->existe_by_id(registro_id: $cat_sat_moneda_id);
@@ -46,6 +59,18 @@ class base_test{
 
         if(!$existe) {
             $alta = (new base_test())->alta_cat_sat_moneda($link);
+            if(errores::$error){
+                return (new errores())->error('Error al insertar', $alta);
+            }
+        }
+
+        $existe = (new cat_sat_tipo_de_comprobante($link))->existe_by_id(registro_id: $cat_sat_tipo_de_comprobante_id);
+        if(errores::$error){
+            return (new errores())->error('Error al verificar si existe', $existe);
+        }
+
+        if(!$existe) {
+            $alta = (new base_test())->alta_cat_sat_tipo_de_comprobante($link);
             if(errores::$error){
                 return (new errores())->error('Error al insertar', $alta);
             }
