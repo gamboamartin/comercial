@@ -7,6 +7,7 @@
  *
  */
 namespace gamboamartin\comercial\controllers;
+use base\controller\controler;
 use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\errores\errores;
@@ -27,27 +28,26 @@ class controlador_com_cliente extends system {
         $html = new com_cliente_html(html: $html);
         $obj_link = new links_menu(link: $link,registro_id: $this->registro_id);
 
-        $columns["com_cliente_id"]["titulo"] = "Id";
-        $columns["com_cliente_codigo"]["titulo"] = "Código";
-        $columns["com_cliente_razon_social"]["titulo"] = "Razón Social";
-        $columns["com_cliente_rfc"]["titulo"] = "RFC";
-        $columns["cat_sat_regimen_fiscal_descripcion"]["titulo"] = "Régimen Fiscal";
-
-        $filtro = array("com_cliente.id","com_cliente.codigo", "com_cliente.razon_social", "com_cliente.rfc",
-            "cat_sat_regimen_fiscal.descripcion");
-
-        $datatables = new stdClass();
-        $datatables->columns = $columns;
-        $datatables->filtro = $filtro;
+        $datatables = $this->init_datatable();
+        if(errores::$error){
+            $error = $this->errores->error(mensaje: 'Error al inicializar datatable',data: $datatables);
+            print_r($error);
+            die('Error');
+        }
 
         parent::__construct(html:$html, link: $link,modelo:  $modelo, obj_link: $obj_link, datatables: $datatables,
             paths_conf: $paths_conf);
 
-        $this->titulo_lista = 'Cliente';
-
-        $propiedades = $this->inicializa_propiedades();
+        $configuraciones = $this->init_configuraciones();
         if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al inicializar propiedades',data:  $propiedades);
+            $error = $this->errores->error(mensaje: 'Error al inicializar configuraciones',data: $configuraciones);
+            print_r($error);
+            die('Error');
+        }
+
+        $inputs = $this->init_inputs();
+        if(errores::$error){
+            $error = $this->errores->error(mensaje: 'Error al inicializar inputs',data:  $inputs);
             print_r($error);
             die('Error');
         }
@@ -81,7 +81,33 @@ class controlador_com_cliente extends system {
         }
     }
 
-    private function inicializa_propiedades(): array
+    private function init_configuraciones(): controler
+    {
+        $this->seccion_titulo = 'Clientes';
+        $this->titulo_lista = 'Registro de Clientes';
+
+        return $this;
+    }
+
+    public function init_datatable(): stdClass
+    {
+        $columns["com_cliente_id"]["titulo"] = "Id";
+        $columns["com_cliente_codigo"]["titulo"] = "Código";
+        $columns["com_cliente_razon_social"]["titulo"] = "Razón Social";
+        $columns["com_cliente_rfc"]["titulo"] = "RFC";
+        $columns["cat_sat_regimen_fiscal_descripcion"]["titulo"] = "Régimen Fiscal";
+
+        $filtro = array("com_cliente.id","com_cliente.codigo", "com_cliente.razon_social", "com_cliente.rfc",
+            "cat_sat_regimen_fiscal.descripcion");
+
+        $datatables = new stdClass();
+        $datatables->columns = $columns;
+        $datatables->filtro = $filtro;
+
+        return $datatables;
+    }
+
+    private function init_inputs(): array
     {
         $identificador = "dp_pais_id";
         $propiedades = array("label" => "Pais");
@@ -108,7 +134,7 @@ class controlador_com_cliente extends system {
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "cat_sat_regimen_fiscal_id";
-        $propiedades = array("label" => "Régimen Fiscal", "cols" => 6);
+        $propiedades = array("label" => "Régimen Fiscal", "cols" => 12);
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "cat_sat_moneda_id";
@@ -132,7 +158,7 @@ class controlador_com_cliente extends system {
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "com_tipo_cliente_id";
-        $propiedades = array("label" => "Tipo de Cliente");
+        $propiedades = array("label" => "Tipo de Cliente", "cols" => 12);
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "codigo";
@@ -162,11 +188,11 @@ class controlador_com_cliente extends system {
         return $this->keys_selects;
     }
 
-    public function modifica(bool $header, bool $ws = false): array|stdClass
+    private function init_modifica(): array|stdClass
     {
         $r_modifica =  parent::modifica(header: false);
         if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al generar template',data:  $r_modifica, header: $header,ws:$ws);
+            return $this->errores->error(mensaje: 'Error al generar template',data:  $r_modifica);
         }
 
         $calle = (new dp_calle_pertenece($this->link))->get_calle_pertenece($this->row_upd->dp_calle_pertenece_id);
@@ -236,9 +262,21 @@ class controlador_com_cliente extends system {
             return $this->errores->error(mensaje: 'Error al inicializar inputs',data:  $inputs);
         }
 
-        return $r_modifica;
+        $data = new stdClass();
+        $data->template = $r_modifica;
+        $data->inputs = $inputs;
+
+        return $data;
     }
 
+    public function modifica(bool $header, bool $ws = false): array|stdClass
+    {
+        $base = $this->init_modifica();
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al maquetar datos',data:  $base,
+                header: $header,ws:$ws);
+        }
 
-
+        return $base->template;
+    }
 }

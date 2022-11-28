@@ -38,8 +38,8 @@ class com_cliente extends modelo{
         $campos_view['cat_sat_regimen_fiscal_id'] = array('type' => 'selects', 'model' => new cat_sat_regimen_fiscal($link));
         $campos_view['cat_sat_moneda_id'] = array('type' => 'selects', 'model' => new cat_sat_moneda($link));
         $campos_view['cat_sat_forma_pago_id'] = array('type' => 'selects', 'model' => new cat_sat_forma_pago($link));
-        $campos_view['cat_sat_uso_cfdi_id'] = array('type' => 'selects', 'model' => new cat_sat_metodo_pago($link));
-        $campos_view['cat_sat_metodo_pago_id'] = array('type' => 'selects', 'model' => new cat_sat_uso_cfdi($link));
+        $campos_view['cat_sat_uso_cfdi_id'] = array('type' => 'selects', 'model' => new cat_sat_uso_cfdi($link));
+        $campos_view['cat_sat_metodo_pago_id'] = array('type' => 'selects', 'model' => new cat_sat_metodo_pago($link));
         $campos_view['cat_sat_tipo_de_comprobante_id'] = array('type' => 'selects', 'model' => new cat_sat_tipo_de_comprobante($link));
         $campos_view['com_tipo_cliente_id'] = array('type' => 'selects', 'model' => new com_tipo_cliente($link));
         $campos_view['codigo'] = array('type' => 'inputs');
@@ -154,7 +154,7 @@ class com_cliente extends modelo{
 
         $r_modifica_bd = parent::modifica_bd($registro, $id, $reactiva);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al modificar producto',data:  $r_modifica_bd);
+            return $this->error->error(mensaje: 'Error al modificar cliente',data:  $r_modifica_bd);
         }
 
         return $r_modifica_bd;

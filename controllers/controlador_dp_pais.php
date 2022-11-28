@@ -8,8 +8,5 @@
  */
 namespace gamboamartin\comercial\controllers;
 
-use PDO;
-use stdClass;
-
 
 class controlador_dp_pais extends \controllers\controlador_dp_pais {}
