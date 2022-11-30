@@ -124,7 +124,7 @@ class base_test{
     }
 
 
-    public function alta_com_sucursal(PDO $link, int $com_cliente_id = 1, int $id = 1): array|\stdClass
+    public function alta_com_sucursal(PDO $link, int $com_cliente_id = 1, int $com_tipo_sucursal_id = 1, int $id = 1): array|\stdClass
     {
 
         $existe = (new com_cliente($link))->existe_by_id(registro_id: $com_cliente_id);
@@ -145,6 +145,7 @@ class base_test{
         $registro['codigo'] = 1;
         $registro['descripcion'] = 1;
         $registro['com_cliente_id'] = $com_cliente_id;
+        $registro['com_tipo_sucursal_id'] = $com_tipo_sucursal_id;
         $registro['dp_calle_pertenece_id'] = 1;
         $registro['numero_exterior'] = 1;
 
