@@ -82,6 +82,18 @@ class controlador_com_producto extends system {
         }
     }
 
+    public function get_productos(bool $header, bool $ws = true): array|stdClass
+    {
+        $keys['com_tipo_producto'] = array('id','descripcion','codigo','codigo_bis');
+
+        $salida = $this->get_out(header: $header,keys: $keys, ws: $ws);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al generar salida',data:  $salida,header: $header,ws: $ws);
+        }
+
+        return $salida;
+    }
+
     private function inicializa_propiedades(): array
     {
         $identificador = "cat_sat_tipo_producto_id";
