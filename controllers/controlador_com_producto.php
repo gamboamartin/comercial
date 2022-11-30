@@ -85,40 +85,43 @@ class controlador_com_producto extends system {
     private function inicializa_propiedades(): array
     {
         $identificador = "cat_sat_tipo_producto_id";
-        $propiedades = array("label" => "Tipo");
+        $propiedades = array("label" => "SAT - Tipo");
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "cat_sat_division_producto_id";
-        $propiedades = array("label" => "División", "con_registros" => false);
+        $propiedades = array("label" => "SAT - División", "con_registros" => false);
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "cat_sat_grupo_producto_id";
-        $propiedades = array("label" => "Grupo", "con_registros" => false);
+        $propiedades = array("label" => "SAT - Grupo", "con_registros" => false);
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "cat_sat_clase_producto_id";
-        $propiedades = array("label" => "Clase", "con_registros" => false);
+        $propiedades = array("label" => "SAT - Clase", "con_registros" => false);
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "cat_sat_producto_id";
-        $propiedades = array("label" => "SAT Producto", "con_registros" => false, "cols" => 12);
+        $propiedades = array("label" => "SAT - Producto", "con_registros" => false, "cols" => 12);
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "cat_sat_unidad_id";
-        $propiedades = array("label" => "Unidad");
+        $propiedades = array("label" => "SAT - Unidad");
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "cat_sat_obj_imp_id";
         $propiedades = array("label" => "Objeto del Impuesto");
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
+        $identificador = "com_tipo_producto_id";
+        $propiedades = array("label" => "Tipo Producto", "cols" => 8);
+        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "codigo";
         $propiedades = array("place_holder" => "Código", "cols" => 4);
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "descripcion";
-        $propiedades = array("place_holder" => "Producto", "cols" => 8);
+        $propiedades = array("place_holder" => "Producto", "cols" => 12);
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         return $this->keys_selects;
@@ -166,6 +169,10 @@ class controlador_com_producto extends system {
 
         $identificador = "cat_sat_obj_imp_id";
         $propiedades = array("id_selected" => $this->row_upd->cat_sat_obj_imp_id);
+        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+
+        $identificador = "com_tipo_producto_id";
+        $propiedades = array("id_selected" => $this->row_upd->com_tipo_producto_id);
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $inputs = $this->genera_inputs(keys_selects:  $this->keys_selects);

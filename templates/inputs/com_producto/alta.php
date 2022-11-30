@@ -6,6 +6,7 @@
 <?php echo $controlador->inputs->cat_sat_clase_producto_id; ?>
 <?php echo $controlador->inputs->cat_sat_producto_id; ?>
 <?php echo $controlador->inputs->codigo; ?>
+<?php echo $controlador->inputs->com_tipo_producto_id; ?>
 <?php echo $controlador->inputs->descripcion; ?>
 <?php echo $controlador->inputs->cat_sat_unidad_id; ?>
 <?php echo $controlador->inputs->cat_sat_obj_imp_id; ?>

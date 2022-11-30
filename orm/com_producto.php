@@ -26,6 +26,7 @@ class com_producto extends _modelo_parent {
         $campos_view['cat_sat_producto_id'] = array('type' => 'selects', 'model' => new cat_sat_producto($link));
         $campos_view['cat_sat_unidad_id'] = array('type' => 'selects', 'model' => new cat_sat_unidad($link));
         $campos_view['cat_sat_obj_imp_id'] = array('type' => 'selects', 'model' => new cat_sat_obj_imp($link));
+        $campos_view['com_tipo_producto_id'] = array('type' => 'selects', 'model' => new com_tipo_producto($link));
         $campos_view['codigo'] = array('type' => 'inputs');
         $campos_view['descripcion'] = array('type' => 'inputs');
 
