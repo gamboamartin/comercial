@@ -38,9 +38,7 @@ class com_sucursal_htmlTest extends test {
         $id_selected = -1;
         $con_registros = -1;
         $link = $this->link;
-        $resultado = $html->select_com_sucursal_id($cols, $con_registros, $id_selected, $link);
-
-
+        $resultado = $html->select_com_sucursal_id($cols, $con_registros, $id_selected, $link,false);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase("r='com_sucursal_id'>Sucursal", $resultado);
@@ -54,10 +52,10 @@ class com_sucursal_htmlTest extends test {
         $con_registros = -1;
         $link = $this->link;
         $label = 'x';
-        $resultado = $html->select_com_sucursal_id($cols, $con_registros, $id_selected, $link, $label);
+        $resultado = $html->select_com_sucursal_id($cols, $con_registros, $id_selected, $link, false,$label);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("'control-label' for='com_sucursal_id'>x</label>", $resultado);
+        $this->assertStringContainsStringIgnoringCase("<label class='control-label' for='com_sucursal_id'>x</label>", $resultado);
 
         errores::$error = false;
     }

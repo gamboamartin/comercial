@@ -83,7 +83,7 @@ class com_productoTest extends test {
         $registro['rfc'] = 'c';
         $registro['codigo'] = 'd';
         $resultado = $modelo->descripcion_select($registro);
-
+        print_r($resultado); exit();
 
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);

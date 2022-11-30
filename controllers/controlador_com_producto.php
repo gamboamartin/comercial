@@ -32,9 +32,7 @@ class controlador_com_producto extends system {
         $columns["com_producto_codigo"]["titulo"] = "Código";
         $columns["cat_sat_producto_descripcion"]["titulo"] = "SAT Producto";
         $columns["cat_sat_unidad_descripcion"]["titulo"] = "SAT Unidad";
-        $columns["cat_sat_obj_imp_descripcion"]["titulo"] = "SAT Uso CFDI";
-        $columns["cat_sat_tipo_factor_descripcion"]["titulo"] = "SAT Tipo Factor";
-        $columns["cat_sat_factor_factor"]["titulo"] = "SAT Factor";
+        $columns["cat_sat_obj_imp_descripcion"]["titulo"] = "SAT ObjetoImp";
         $columns["com_producto_descripcion"]["titulo"] = "Producto";
 
         $filtro = array("com_producto.id","com_producto.codigo", "com_producto.descripcion");
@@ -114,13 +112,6 @@ class controlador_com_producto extends system {
         $propiedades = array("label" => "Objeto del Impuesto");
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
-        $identificador = "cat_sat_tipo_factor_id";
-        $propiedades = array("label" => "Tipo Factor");
-        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
-
-        $identificador = "cat_sat_factor_id";
-        $propiedades = array("label" => "Factor");
-        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "codigo";
         $propiedades = array("place_holder" => "Código", "cols" => 4);
@@ -175,14 +166,6 @@ class controlador_com_producto extends system {
 
         $identificador = "cat_sat_obj_imp_id";
         $propiedades = array("id_selected" => $this->row_upd->cat_sat_obj_imp_id);
-        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
-
-        $identificador = "cat_sat_tipo_factor_id";
-        $propiedades = array("id_selected" => $this->row_upd->cat_sat_tipo_factor_id);
-        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
-
-        $identificador = "cat_sat_factor_id";
-        $propiedades = array("id_selected" => $this->row_upd->cat_sat_factor_id);
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $inputs = $this->genera_inputs(keys_selects:  $this->keys_selects);

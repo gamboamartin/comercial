@@ -1,25 +1,22 @@
 <?php
 namespace gamboamartin\comercial\models;
-use base\orm\modelo;
+use base\orm\_modelo_parent;
 use gamboamartin\cat_sat\models\cat_sat_clase_producto;
 use gamboamartin\cat_sat\models\cat_sat_division_producto;
-use gamboamartin\cat_sat\models\cat_sat_factor;
 use gamboamartin\cat_sat\models\cat_sat_grupo_producto;
 use gamboamartin\cat_sat\models\cat_sat_obj_imp;
 use gamboamartin\cat_sat\models\cat_sat_producto;
-use gamboamartin\cat_sat\models\cat_sat_tipo_factor;
 use gamboamartin\cat_sat\models\cat_sat_tipo_producto;
 use gamboamartin\cat_sat\models\cat_sat_unidad;
 use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
 
-class com_producto extends modelo{
+class com_producto extends _modelo_parent {
 
     public function __construct(PDO $link){
         $tabla = 'com_producto';
-        $columnas = array($tabla=>false,'cat_sat_factor'=>$tabla,'cat_sat_obj_imp'=>$tabla,'cat_sat_producto'=>$tabla,
-            'cat_sat_unidad'=>$tabla,'cat_sat_tipo_factor'=>$tabla);
+        $columnas = array($tabla=>false,'cat_sat_obj_imp'=>$tabla,'cat_sat_producto'=>$tabla, 'cat_sat_unidad'=>$tabla);
         $campos_obligatorios = array();
 
         $campos_view['cat_sat_tipo_producto_id'] = array('type' => 'selects', 'model' => new cat_sat_tipo_producto($link));
@@ -29,8 +26,6 @@ class com_producto extends modelo{
         $campos_view['cat_sat_producto_id'] = array('type' => 'selects', 'model' => new cat_sat_producto($link));
         $campos_view['cat_sat_unidad_id'] = array('type' => 'selects', 'model' => new cat_sat_unidad($link));
         $campos_view['cat_sat_obj_imp_id'] = array('type' => 'selects', 'model' => new cat_sat_obj_imp($link));
-        $campos_view['cat_sat_tipo_factor_id'] = array('type' => 'selects', 'model' => new cat_sat_tipo_factor($link));
-        $campos_view['cat_sat_factor_id'] = array('type' => 'selects', 'model' => new cat_sat_factor($link));
         $campos_view['codigo'] = array('type' => 'inputs');
         $campos_view['descripcion'] = array('type' => 'inputs');
 
@@ -40,7 +35,7 @@ class com_producto extends modelo{
         $this->NAMESPACE = __NAMESPACE__;
     }
 
-    public function alta_bd(): array|stdClass
+    public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
     {
         $this->registro = $this->campos_base(data:$this->registro, modelo: $this);
         if(errores::$error){
@@ -58,24 +53,6 @@ class com_producto extends modelo{
             return $this->error->error(mensaje: 'Error al insertar producto', data: $r_alta_bd);
         }
         return $r_alta_bd;
-    }
-
-    protected function campos_base(array $data,modelo $modelo, int $id = -1, array $keys_integra_ds = array()): array
-    {
-        if(!isset($data['codigo_bis'])){
-            $data['codigo_bis'] =  $data['codigo'];
-        }
-
-        if(!isset($data['descripcion_select'])){
-            $ds = str_replace("_"," ",$data['descripcion']);
-            $ds = ucwords($ds);
-            $data['descripcion_select'] =  "{$data['codigo']} - {$ds}";
-        }
-
-        if(!isset($data['alias'])){
-            $data['alias'] = $data['codigo'];
-        }
-        return $data;
     }
 
     public function get_producto(int $com_producto_id): array|stdClass|int
@@ -98,9 +75,10 @@ class com_producto extends modelo{
         return $registro;
     }
 
-    public function modifica_bd(array $registro, int $id, bool $reactiva = false): array|stdClass
+    public function modifica_bd(array $registro, int $id, bool $reactiva = false,
+                                array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
     {
-        $registro = $this->campos_base(data:$registro, modelo: $this);
+        $registro = $this->campos_base(data:$registro, modelo: $this,id: $id);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar campo base',data: $registro);
         }
