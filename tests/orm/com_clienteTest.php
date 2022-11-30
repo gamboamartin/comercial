@@ -91,16 +91,17 @@ class com_clienteTest extends test {
         $modelo = new com_cliente($this->link);
         $modelo = new liberator($modelo);
 
-        $registro = array();
-        $registro['razon_social'] = 'a';
-        $registro['rfc'] = 'c';
-        $registro['codigo'] = 'd';
-        $resultado = $modelo->descripcion_select($registro);
+        $data = array();
+        $data['razon_social'] = 'a';
+        $data['rfc'] = 'c';
+        $data['codigo'] = 'd';
+        $keys_integra_ds = array('codigo','rfc', 'razon_social');
+        $resultado = $modelo->descripcion_select(data: $data,keys_integra_ds: $keys_integra_ds);
+        //print_r($resultado);exit;
 
-
-        $this->assertIsArray($resultado);
+        $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("d c a", $resultado['descripcion_select']);
+        $this->assertEquals("d C A", $resultado);
 
         errores::$error = false;
 

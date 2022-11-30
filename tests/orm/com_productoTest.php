@@ -75,19 +75,20 @@ class com_productoTest extends test {
         $_GET['accion'] = 'lista';
         $_SESSION['grupo_id'] = 1;
         $_GET['session_id'] = '1';
-        $modelo = new com_cliente($this->link);
+        $modelo = new com_producto($this->link);
         $modelo = new liberator($modelo);
 
         $registro = array();
         $registro['razon_social'] = 'a';
         $registro['rfc'] = 'c';
         $registro['codigo'] = 'd';
-        $resultado = $modelo->descripcion_select($registro);
+        $keys_integra_ds = array('codigo','rfc','razon_social');
+        $resultado = $modelo->descripcion_select(data: $registro, keys_integra_ds: $keys_integra_ds );
 
-
-        $this->assertIsArray($resultado);
+        //print_r($resultado);exit;
+        $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("d c a", $resultado['descripcion_select']);
+        $this->assertEquals("d C A", $resultado);
 
         errores::$error = false;
 

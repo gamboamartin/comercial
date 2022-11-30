@@ -91,6 +91,7 @@ class base_test{
         $registro['dp_calle_pertenece_id'] = $dp_calle_pertenece_id;
         $registro['cat_sat_moneda_id'] = $cat_sat_moneda_id;
         $registro['cat_sat_metodo_pago_id'] = $cat_sat_metodo_pago_id;
+        $registro['cat_sat_tipo_de_comprobante_id'] = $cat_sat_tipo_de_comprobante_id;
         $registro['id'] = 1;
         $registro['codigo'] = 1;
         $registro['descripcion'] = 1;
