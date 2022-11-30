@@ -82,11 +82,13 @@ class com_productoTest extends test {
         $registro['razon_social'] = 'a';
         $registro['rfc'] = 'c';
         $registro['codigo'] = 'd';
+
         $keys_integra_ds = array('codigo','rfc','razon_social');
         $resultado = $modelo->descripcion_select(data: $registro, keys_integra_ds: $keys_integra_ds );
 
         //print_r($resultado);exit;
         $this->assertIsString($resultado);
+
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("d C A", $resultado);
 
