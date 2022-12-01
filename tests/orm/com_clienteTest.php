@@ -1,5 +1,5 @@
 <?php
-namespace tests\links\secciones;
+namespace gamboamartin\comercial\test\orm;
 
 use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\comercial\test\base_test;
@@ -44,15 +44,29 @@ class com_clienteTest extends test {
             exit;
         }
 
+        $del = (new base_test())->del_com_tipo_producto($this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar tipo producto', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new base_test())->del_com_producto($this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar producto', $del);
+            print_r($error);
+            exit;
+        }
+
         $del = (new base_test())->del_cat_sat_moneda($this->link);
         if(errores::$error){
-            $error = (new errores())->error('Error al eliminar', $del);
+            $error = (new errores())->error('Error al eliminar moneda', $del);
             print_r($error);
             exit;
         }
         $del = (new base_test())->del_cat_sat_metodo_pago($this->link);
         if(errores::$error){
-            $error = (new errores())->error('Error al eliminar', $del);
+            $error = (new errores())->error('Error al eliminar metodo pago', $del);
             print_r($error);
             exit;
         }
