@@ -301,6 +301,11 @@ class base_test{
     public function del_com_tipo_producto(PDO $link): array
     {
 
+        $del = $this->del_com_producto($link);
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
+        }
+
         $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_tipo_producto');
         if(errores::$error){
             return (new errores())->error('Error al eliminar tipo producto', $del);

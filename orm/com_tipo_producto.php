@@ -7,15 +7,17 @@ use PDO;
 class com_tipo_producto extends _modelo_parent{
     public function __construct(PDO $link){
         $tabla = 'com_tipo_producto';
-        $columnas = array($tabla=>false,'cat_sat_moneda'=>$tabla,'dp_pais'=>'cat_sat_moneda');
-        $campos_obligatorios = array('cat_sat_moneda_id');
+        $columnas = array($tabla=>false);
+        $campos_obligatorios = array();
 
-        $campos_view['cat_sat_moneda_id'] = array('type' => 'selects', 'model' => new cat_sat_moneda($link));
         $campos_view['codigo'] = array('type' => 'inputs');
         $campos_view['descripcion'] = array('type' => 'inputs');
 
+        $columnas_extra['com_tipo_producto_n_productos'] = /** @lang sql */
+            "(SELECT COUNT(*) FROM com_producto WHERE com_producto.com_tipo_producto_id = com_tipo_producto.id)";
+
         parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios,
-            columnas: $columnas, campos_view: $campos_view);
+            columnas: $columnas, campos_view: $campos_view, columnas_extra: $columnas_extra);
 
         $this->NAMESPACE = __NAMESPACE__;
     }

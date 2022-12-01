@@ -8,20 +8,20 @@
  */
 namespace gamboamartin\comercial\controllers;
 
-use base\controller\controler;
-use gamboamartin\comercial\models\com_tipo_cambio;
+
 use gamboamartin\comercial\models\com_tipo_producto;
 use gamboamartin\errores\errores;
+use gamboamartin\system\_ctl_parent_sin_codigo;
 use gamboamartin\system\links_menu;
-use gamboamartin\system\system;
+
 use gamboamartin\template\html;
-use html\cat_sat_moneda_html;
-use html\com_tipo_cambio_html;
+
+use html\com_producto_html;
 use html\com_tipo_producto_html;
 use PDO;
 use stdClass;
 
-class controlador_com_tipo_producto extends system {
+class controlador_com_tipo_producto extends _ctl_parent_sin_codigo {
 
     public array $keys_selects = array();
 
@@ -41,56 +41,9 @@ class controlador_com_tipo_producto extends system {
         parent::__construct(html:$html_, link: $link,modelo:  $modelo, obj_link: $obj_link, datatables: $datatables,
             paths_conf: $paths_conf);
 
-        $configuraciones = $this->init_configuraciones();
-        if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al inicializar configuraciones',data: $configuraciones);
-            print_r($error);
-            die('Error');
-        }
 
-        $inputs = $this->init_inputs();
-        if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al inicializar inputs',data:  $inputs);
-            print_r($error);
-            die('Error');
-        }
     }
 
-    public function alta(bool $header, bool $ws = false): array|string
-    {
-        $r_alta =  parent::alta(header: false);
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al generar template',data:  $r_alta, header: $header,ws:$ws);
-        }
-
-        $inputs = $this->genera_inputs(keys_selects:  $this->keys_selects);
-        if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al generar inputs',data:  $inputs);
-            print_r($error);
-            die('Error');
-        }
-
-        return $r_alta;
-    }
-
-    public function asignar_propiedad(string $identificador, mixed $propiedades)
-    {
-        if (!array_key_exists($identificador,$this->keys_selects)){
-            $this->keys_selects[$identificador] = new stdClass();
-        }
-
-        foreach ($propiedades as $key => $value){
-            $this->keys_selects[$identificador]->$key = $value;
-        }
-    }
-
-    private function init_configuraciones(): controler
-    {
-        $this->seccion_titulo = 'Tipo de Productos';
-        $this->titulo_lista = 'Registro de Tipo de Productos';
-
-        return $this;
-    }
 
     public function init_datatable(): stdClass
     {
@@ -107,54 +60,70 @@ class controlador_com_tipo_producto extends system {
         return $datatables;
     }
 
-    private function init_inputs(): array
-    {
-        $identificador = "cat_sat_moneda_id";
-        $propiedades = array("label" => "Moneda","cols" => 12);
-        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+    protected function inputs_children(stdClass $registro): array|stdClass{
+        $select_com_tipo_producto_id = (new com_tipo_producto_html(html: $this->html_base))->select_com_tipo_producto_id(
+            cols:12,con_registros: true,id_selected:  $registro->com_tipo_producto_id,link:  $this->link, disabled: true);
 
-        $identificador = "codigo";
-        $propiedades = array("place_holder" => "Código","cols" => 4);
-        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
-
-        $identificador = "descripcion";
-        $propiedades = array("place_holder" => "Tipo de Producto","cols" => 8);
-        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
-
-        return $this->keys_selects;
-    }
-
-    private function init_modifica(): array|stdClass
-    {
-        $r_modifica =  parent::modifica(header: false);
         if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al generar template',data:  $r_modifica);
+            return $this->errores->error(mensaje: 'Error al obtener select_com_tipo_producto_id',data:  $select_com_tipo_producto_id);
         }
 
-        $identificador = "cat_sat_moneda_id";
-        $propiedades = array("id_selected" => $this->row_upd->cat_sat_moneda_id);
-        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
-
-        $inputs = $this->genera_inputs(keys_selects:  $this->keys_selects);
+        $com_producto_descripcion = (new com_producto_html(html: $this->html_base))->input_descripcion(
+            cols:12,row_upd:  new stdClass(), value_vacio: true, place_holder: 'Producto');
         if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al generar inputs',data:  $inputs);
+            return $this->errores->error(mensaje: 'Error al obtener com_producto_descripcion',
+                data:  $com_producto_descripcion);
         }
 
-        $data = new stdClass();
-        $data->template = $r_modifica;
-        $data->inputs = $inputs;
 
-        return $data;
+        $this->inputs = new stdClass();
+        $this->inputs->select = new stdClass();
+        $this->inputs->select->com_tipo_producto_id = $select_com_tipo_producto_id;
+        $this->inputs->com_producto_descripcion = $com_producto_descripcion;
+
+        return $this->inputs;
     }
 
-    public function modifica(bool $header, bool $ws = false): array|stdClass
+    protected function key_selects_txt(array $keys_selects): array
     {
-        $base = $this->init_modifica();
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6,key: 'codigo',
+            keys_selects:$keys_selects, place_holder: 'Cod');
         if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al maquetar datos',data:  $base,
-                header: $header,ws:$ws);
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
 
-        return $base->template;
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 12,key: 'descripcion',
+            keys_selects:$keys_selects, place_holder: 'Tipo Producto');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        return $keys_selects;
     }
+
+    public function productos(bool $header = true, bool $ws = false): array|stdClass|string
+    {
+
+        $data_view = new stdClass();
+        $data_view->names = array('Id','Cod','Producto','Acciones');
+        $data_view->keys_data = array('com_producto_id','com_producto_codigo','com_producto_descripcion');
+        $data_view->key_actions = 'acciones';
+        $data_view->namespace_model = 'gamboamartin\\comercial\\models';
+        $data_view->name_model_children = 'com_producto';
+
+
+        $contenido_table = $this->contenido_children(data_view: $data_view, next_accion: __FUNCTION__);
+        if(errores::$error){
+            return $this->retorno_error(
+                mensaje: 'Error al obtener tbody',data:  $contenido_table, header: $header,ws:  $ws);
+        }
+
+
+        return $contenido_table;
+
+
+
+    }
+
+
 }
