@@ -8,6 +8,7 @@ use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\comercial\models\com_producto;
 use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\comercial\models\com_tipo_cambio;
+use gamboamartin\comercial\models\com_tipo_cliente;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\errores\errores;
 use PDO;
@@ -48,8 +49,8 @@ class base_test{
     }
 
     public function alta_com_cliente(PDO $link, int $cat_sat_metodo_pago_id = 1, int $cat_sat_moneda_id = 1,
-                                     int $cat_sat_tipo_de_comprobante_id = 1,int $dp_calle_pertenece_id = 1,
-                                     bool $predeterminado = false): array|\stdClass
+                                     int $cat_sat_tipo_de_comprobante_id = 1, int $com_tipo_cliente_id = 1,
+                                     int $dp_calle_pertenece_id = 1, bool $predeterminado = false): array|\stdClass
     {
 
         $existe = (new cat_sat_moneda($link))->existe_by_id(registro_id: $cat_sat_moneda_id);
@@ -88,10 +89,23 @@ class base_test{
             }
         }
 
+        $existe = (new com_tipo_cliente($link))->existe_by_id(registro_id: $com_tipo_cliente_id);
+        if(errores::$error){
+            return (new errores())->error('Error al verificar si existe', $existe);
+        }
+
+        if(!$existe) {
+            $alta = (new base_test())->alta_com_tipo_cliente($link);
+            if (errores::$error) {
+                return (new errores())->error('Error al insertar', $alta);
+            }
+        }
+
         $registro['dp_calle_pertenece_id'] = $dp_calle_pertenece_id;
         $registro['cat_sat_moneda_id'] = $cat_sat_moneda_id;
         $registro['cat_sat_metodo_pago_id'] = $cat_sat_metodo_pago_id;
         $registro['cat_sat_tipo_de_comprobante_id'] = $cat_sat_tipo_de_comprobante_id;
+        $registro['com_tipo_cliente_id'] = $com_tipo_cliente_id;
         $registro['id'] = 1;
         $registro['codigo'] = 1;
         $registro['descripcion'] = 1;
@@ -168,6 +182,23 @@ class base_test{
 
 
         $alta = (new com_tipo_cambio($link))->alta_registro($registro);
+        if(errores::$error){
+            return (new errores())->error('Error al dar de alta ', $alta);
+
+        }
+        return $alta;
+    }
+
+    public function alta_com_tipo_cliente(PDO $link, int $id = 1): array|\stdClass
+    {
+
+        $registro = array();
+        $registro['id'] = $id;
+        $registro['codigo'] = 1;
+        $registro['descripcion'] = 1;
+
+
+        $alta = (new com_tipo_cliente($link))->alta_registro($registro);
         if(errores::$error){
             return (new errores())->error('Error al dar de alta ', $alta);
 
