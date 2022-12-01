@@ -35,6 +35,9 @@ class controlador_com_tipo_cambio extends _ctl_base {
     public function alta(bool $header, bool $ws = false): array|string
     {
 
+        $this->row_upd = new stdClass();
+        $this->row_upd->fecha = date('Y-m-d');
+
         $r_alta = $this->init_alta();
         if(errores::$error){
             return $this->retorno_error(
