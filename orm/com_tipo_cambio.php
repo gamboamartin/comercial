@@ -11,7 +11,7 @@ class com_tipo_cambio extends _modelo_parent{
     public function __construct(PDO $link){
         $tabla = 'com_tipo_cambio';
         $columnas = array($tabla=>false,'cat_sat_moneda'=>$tabla,'dp_pais'=>'cat_sat_moneda');
-        $campos_obligatorios = array('cat_sat_moneda_id');
+        $campos_obligatorios = array('cat_sat_moneda_id','monto','fecha');
 
         $campos_view['cat_sat_moneda_id'] = array('type' => 'selects', 'model' => new cat_sat_moneda($link));
         $campos_view['codigo'] = array('type' => 'inputs');

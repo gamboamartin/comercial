@@ -179,6 +179,8 @@ class base_test{
         $registro['codigo'] = 1;
         $registro['descripcion'] = 1;
         $registro['cat_sat_moneda_id'] = 1;
+        $registro['monto'] = 1;
+        $registro['fecha'] = '2020-01-01';
 
 
         $alta = (new com_tipo_cambio($link))->alta_registro($registro);
