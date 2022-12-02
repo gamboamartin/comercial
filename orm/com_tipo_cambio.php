@@ -5,6 +5,7 @@ use base\orm\modelo;
 use gamboamartin\cat_sat\models\cat_sat_moneda;
 use gamboamartin\errores\errores;
 use PDO;
+use stdClass;
 
 class com_tipo_cambio extends _modelo_parent{
     public function __construct(PDO $link){
@@ -24,6 +25,24 @@ class com_tipo_cambio extends _modelo_parent{
 
     protected function campos_base(array $data, modelo $modelo, int $id = -1, array $keys_integra_ds = array('codigo', 'descripcion')): array
     {
+        if($id > 0) {
+            $registro_previo = $this->registro(registro_id: $id, retorno_obj: true);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al obtener cat_sat_tipo_cambio', data: $registro_previo);
+            }
+            if( !isset($data['cat_sat_moneda_id'])){
+
+                $data['cat_sat_moneda_id'] = $registro_previo->cat_sat_moneda_id;
+            }
+
+            if( !isset($data['fecha'])){
+
+                $data['fecha'] = $registro_previo->com_tipo_cambio_fecha;
+            }
+        }
+
+
+
         if( !isset($data['descripcion'])){
             $cat_sat_moneda = (new cat_sat_moneda(link: $this->link))->registro(registro_id: $data['cat_sat_moneda_id']);
             if(errores::$error){
@@ -45,4 +64,6 @@ class com_tipo_cambio extends _modelo_parent{
         }
         return $campos_base;
     }
+
+
 }
