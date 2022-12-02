@@ -1,9 +1,10 @@
 <?php
 namespace html;
 
+use gamboamartin\comercial\models\com_tipo_cambio;
 use gamboamartin\errores\errores;
 use gamboamartin\system\html_controler;
-use models\com_tipo_cambio;
+
 use PDO;
 
 
@@ -21,5 +22,7 @@ class com_tipo_cambio_html extends html_controler {
         }
         return $select;
     }
+
+
 
 }

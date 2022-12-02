@@ -21,6 +21,8 @@ use Throwable;
 
 class controlador_com_tipo_cambio extends _ctl_base {
 
+
+
     public function __construct(PDO $link, html $html = new \gamboamartin\template_1\html(), stdClass $paths_conf = new stdClass()){
         $modelo = new com_tipo_cambio(link: $link);
 
@@ -47,6 +49,9 @@ class controlador_com_tipo_cambio extends _ctl_base {
 
         $this->titulo_lista = 'Tipos de cambio';
 
+
+
+        $this->lista_get_data = true;
 
     }
 
@@ -219,8 +224,5 @@ class controlador_com_tipo_cambio extends _ctl_base {
         return $r_modifica_bd;
 
     }
-
-
-
 
 }
