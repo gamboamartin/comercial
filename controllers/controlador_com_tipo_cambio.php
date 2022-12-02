@@ -34,6 +34,7 @@ class controlador_com_tipo_cambio extends _ctl_base {
         $datatables->columns['dp_pais_descripcion']['titulo'] = 'Pais';
         $datatables->columns['cat_sat_moneda_codigo']['titulo'] = 'Moneda';
         $datatables->columns['com_tipo_cambio_fecha']['titulo'] = 'Fecha';
+        $datatables->columns['com_tipo_cambio_monto']['titulo'] = 'Monto';
 
         $datatables->filtro = array();
         $datatables->filtro[] = 'com_tipo_cambio.id';
@@ -45,8 +46,6 @@ class controlador_com_tipo_cambio extends _ctl_base {
             datatables: $datatables, paths_conf: $paths_conf);
 
         $this->titulo_lista = 'Tipos de cambio';
-
-
 
 
     }
@@ -140,7 +139,7 @@ class controlador_com_tipo_cambio extends _ctl_base {
     protected function campos_view(): array
     {
         $keys = new stdClass();
-        $keys->inputs = array();
+        $keys->inputs = array('monto');
         $keys->selects = array();
         $keys->fechas = array('fecha');
 
@@ -160,7 +159,12 @@ class controlador_com_tipo_cambio extends _ctl_base {
     protected function key_selects_txt(array $keys_selects): array
     {
 
-        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 12,key: 'fecha', keys_selects:$keys_selects, place_holder: 'Fecha');
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6,key: 'fecha', keys_selects:$keys_selects, place_holder: 'Fecha');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6,key: 'monto', keys_selects:$keys_selects, place_holder: 'Monto');
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
