@@ -8,8 +8,6 @@
  */
 namespace gamboamartin\comercial\controllers;
 
-
-
 use gamboamartin\errores\errores;
 use html\cat_sat_moneda_html;
 use html\com_tipo_cambio_html;
@@ -59,6 +57,7 @@ class controlador_cat_sat_moneda extends \gamboamartin\cat_sat\controllers\contr
 
     protected function inputs_children(stdClass $registro): stdClass|array
     {
+
         $select_dp_pais_id = (new dp_pais_html(html: $this->html_base))->select_dp_pais_id(
             cols:6,con_registros: true,id_selected:  $registro->dp_pais_id,link:  $this->link, disabled: true);
 
@@ -77,7 +76,7 @@ class controlador_cat_sat_moneda extends \gamboamartin\cat_sat\controllers\contr
         }
 
         $com_tipo_cambio_fecha = (new com_tipo_cambio_html(html: $this->html_base))->input_fecha(
-            cols:6,row_upd:  new stdClass(),value_vacio:  false);
+            cols:6,row_upd:  new stdClass(),value_vacio:  false, value: date('Y-m-d'));
         if(errores::$error){
             return $this->errores->error(
                 mensaje: 'Error al obtener com_tipo_cambio_fecha',data:  $com_tipo_cambio_fecha);
