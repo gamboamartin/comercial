@@ -26,9 +26,26 @@ class controlador_com_tipo_cambio extends _ctl_base {
 
         $html_ = new com_tipo_cambio_html(html: $html);
         $obj_link = new links_menu(link: $link,registro_id: $this->registro_id);
-        parent::__construct(html:$html_, link: $link,modelo:  $modelo, obj_link: $obj_link, paths_conf: $paths_conf);
+
+
+        $datatables = new stdClass();
+        $datatables->columns = array();
+        $datatables->columns['com_tipo_cambio_id']['titulo'] = 'Id';
+        $datatables->columns['dp_pais_descripcion']['titulo'] = 'Pais';
+        $datatables->columns['cat_sat_moneda_codigo']['titulo'] = 'Moneda';
+        $datatables->columns['com_tipo_cambio_fecha']['titulo'] = 'Fecha';
+
+        $datatables->filtro = array();
+        $datatables->filtro[] = 'com_tipo_cambio.id';
+        $datatables->filtro[] = 'dp_pais.descripcion';
+        $datatables->filtro[] = 'dp_moneda.codigo';
+        $datatables->filtro[] = 'com_tipo_cambio.fecha';
+
+        parent::__construct(html: $html_, link: $link, modelo: $modelo, obj_link: $obj_link,
+            datatables: $datatables, paths_conf: $paths_conf);
 
         $this->titulo_lista = 'Tipos de cambio';
+
 
 
 
