@@ -28,18 +28,12 @@ class controlador_com_producto extends system {
         $html = new com_producto_html(html: $html);
         $obj_link = new links_menu(link: $link,registro_id: $this->registro_id);
 
-        $columns["com_producto_id"]["titulo"] = "Id";
-        $columns["com_producto_codigo"]["titulo"] = "Código";
-        $columns["cat_sat_producto_descripcion"]["titulo"] = "SAT Producto";
-        $columns["cat_sat_unidad_descripcion"]["titulo"] = "SAT Unidad";
-        $columns["cat_sat_obj_imp_descripcion"]["titulo"] = "SAT ObjetoImp";
-        $columns["com_producto_descripcion"]["titulo"] = "Producto";
-
-        $filtro = array("com_producto.id","com_producto.codigo", "com_producto.descripcion");
-
-        $datatables = new stdClass();
-        $datatables->columns = $columns;
-        $datatables->filtro = $filtro;
+        $datatables = $this->init_datatable();
+        if(errores::$error){
+            $error = $this->errores->error(mensaje: 'Error al inicializar datatable',data: $datatables);
+            print_r($error);
+            die('Error');
+        }
 
         parent::__construct(html:$html, link: $link,modelo:  $modelo, obj_link: $obj_link, datatables: $datatables,
             paths_conf: $paths_conf);
@@ -92,6 +86,24 @@ class controlador_com_producto extends system {
         }
 
         return $salida;
+    }
+
+    public function init_datatable(): stdClass
+    {
+        $columns["com_producto_id"]["titulo"] = "Id";
+        $columns["com_producto_codigo"]["titulo"] = "Código";
+        $columns["cat_sat_producto_descripcion"]["titulo"] = "SAT Producto";
+        $columns["cat_sat_unidad_descripcion"]["titulo"] = "SAT Unidad";
+        $columns["cat_sat_obj_imp_descripcion"]["titulo"] = "SAT ObjetoImp";
+        $columns["com_producto_descripcion"]["titulo"] = "Producto";
+
+        $filtro = array("com_producto.id","com_producto.codigo", "com_producto.descripcion");
+
+        $datatables = new stdClass();
+        $datatables->columns = $columns;
+        $datatables->filtro = $filtro;
+
+        return $datatables;
     }
 
     private function inicializa_propiedades(): array
