@@ -17,7 +17,9 @@ class com_producto extends _modelo_parent {
     public function __construct(PDO $link){
         $tabla = 'com_producto';
         $columnas = array($tabla=>false,'cat_sat_obj_imp'=>$tabla,'cat_sat_producto'=>$tabla, 'cat_sat_unidad'=>$tabla,
-            'com_tipo_producto'=>$tabla);
+            'com_tipo_producto'=>$tabla, 'cat_sat_clase_producto' => 'cat_sat_producto',
+            'cat_sat_grupo_producto' => 'cat_sat_clase_producto', 'cat_sat_division_producto' => 'cat_sat_grupo_producto',
+            'cat_sat_tipo_producto' => 'cat_sat_division_producto');
         $campos_obligatorios = array();
 
         $campos_view['cat_sat_tipo_producto_id'] = array('type' => 'selects', 'model' => new cat_sat_tipo_producto($link));
