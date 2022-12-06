@@ -197,11 +197,11 @@ class base_test{
         return $alta;
     }
 
-    public function alta_com_tipo_cambio(PDO $link): array|\stdClass
+    public function alta_com_tipo_cambio(PDO $link, int $id = 1): array|\stdClass
     {
 
         $registro = array();
-        $registro['id'] = 1;
+        $registro['id'] = $id;
         $registro['codigo'] = 1;
         $registro['descripcion'] = 1;
         $registro['cat_sat_moneda_id'] = 1;
