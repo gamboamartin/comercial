@@ -8,15 +8,14 @@
  */
 namespace gamboamartin\comercial\controllers;
 
+use base\controller\controler;
 use gamboamartin\comercial\models\com_tipo_producto;
 use gamboamartin\errores\errores;
-use gamboamartin\system\_ctl_base;
 use gamboamartin\system\_ctl_parent_sin_codigo;
 use gamboamartin\system\links_menu;
 
 use gamboamartin\template\html;
 
-use html\com_producto_html;
 use html\com_tipo_producto_html;
 use PDO;
 use stdClass;
@@ -24,6 +23,9 @@ use stdClass;
 class controlador_com_tipo_producto extends _ctl_parent_sin_codigo {
 
     public array $keys_selects = array();
+    public controlador_com_producto $controlador_com_producto;
+
+    public string $link_com_producto_alta_bd = '';
 
     public function __construct(PDO $link, html $html = new \gamboamartin\template_1\html(),
                                 stdClass $paths_conf = new stdClass()){
@@ -40,6 +42,28 @@ class controlador_com_tipo_producto extends _ctl_parent_sin_codigo {
 
         parent::__construct(html:$html_, link: $link,modelo:  $modelo, obj_link: $obj_link, datatables: $datatables,
             paths_conf: $paths_conf);
+
+        $init_controladores = $this->init_controladores(paths_conf: $paths_conf);
+        if(errores::$error){
+            $error = $this->errores->error(mensaje: 'Error al inicializar controladores',data:  $init_controladores);
+            print_r($error);
+            die('Error');
+        }
+
+        $init_links = $this->init_links();
+        if(errores::$error){
+            $error = $this->errores->error(mensaje: 'Error al inicializar links',data:  $init_links);
+            print_r($error);
+            die('Error');
+        }
+
+    }
+
+    private function init_controladores(stdClass $paths_conf): controler
+    {
+        $this->controlador_com_producto= new controlador_com_producto(link:$this->link, paths_conf: $paths_conf);
+
+        return $this;
     }
 
     public function init_datatable(): stdClass
@@ -57,25 +81,43 @@ class controlador_com_tipo_producto extends _ctl_parent_sin_codigo {
         return $datatables;
     }
 
+    private function init_links(): array|string
+    {
+        $this->obj_link->genera_links($this);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al generar links para tipo producto',data:  $this->obj_link);
+        }
+
+        $link = $this->obj_link->get_link("com_producto","alta_bd");
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener link alta_bd',data:  $link);
+        }
+        $this->link_com_producto_alta_bd = $link;
+
+        return $link;
+    }
+
     protected function inputs_children(stdClass $registro): array|stdClass{
-        $select_com_tipo_producto_id = (new com_tipo_producto_html(html: $this->html_base))->select_com_tipo_producto_id(
-            cols:12,con_registros: true,id_selected:  $registro->com_tipo_producto_id,link:  $this->link, disabled: true);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al obtener select_com_tipo_producto_id',data:  $select_com_tipo_producto_id);
-        }
 
-        $com_producto_descripcion = (new com_producto_html(html: $this->html_base))->input_descripcion(
-            cols:12,row_upd:  new stdClass(), value_vacio: true, place_holder: 'Producto');
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al obtener com_producto_descripcion',
-                data:  $com_producto_descripcion);
-        }
+        $this->keys_selects = $this->controlador_com_producto->key_selects_txt($this->keys_selects);
 
+        $inputs = $this->controlador_com_producto->inputs(keys_selects: $this->keys_selects);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener inputs',data:  $inputs);
+        }
 
         $this->inputs = new stdClass();
         $this->inputs->select = new stdClass();
-        $this->inputs->select->com_tipo_producto_id = $select_com_tipo_producto_id;
-        $this->inputs->com_producto_descripcion = $com_producto_descripcion;
+        $this->inputs->select->cat_sat_tipo_producto_id = $this->controlador_com_producto->inputs->cat_sat_tipo_producto_id;
+        $this->inputs->select->cat_sat_division_producto_id = $inputs->cat_sat_division_producto_id;
+        $this->inputs->select->cat_sat_grupo_producto_id = $inputs->cat_sat_grupo_producto_id;
+        $this->inputs->select->cat_sat_clase_producto_id = $inputs->cat_sat_clase_producto_id;
+        $this->inputs->select->cat_sat_producto_id = $inputs->cat_sat_producto_id;
+        $this->inputs->select->com_tipo_producto_id = $inputs->com_tipo_producto_id;
+        $this->inputs->com_producto_codigo = $inputs->codigo;
+        $this->inputs->com_producto_descripcion = $inputs->descripcion;
+        $this->inputs->select->cat_sat_unidad_id = $inputs->cat_sat_unidad_id;
+        $this->inputs->select->cat_sat_obj_imp_id = $inputs->cat_sat_obj_imp_id;
 
         return $this->inputs;
     }
@@ -107,7 +149,6 @@ class controlador_com_tipo_producto extends _ctl_parent_sin_codigo {
         $data_view->namespace_model = 'gamboamartin\\comercial\\models';
         $data_view->name_model_children = 'com_producto';
 
-
         $contenido_table = $this->contenido_children(data_view: $data_view, next_accion: __FUNCTION__);
         if(errores::$error){
             return $this->retorno_error(
@@ -116,6 +157,4 @@ class controlador_com_tipo_producto extends _ctl_parent_sin_codigo {
 
         return $contenido_table;
     }
-
-
 }

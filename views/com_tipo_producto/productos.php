@@ -9,13 +9,25 @@
                 <?php include (new views())->ruta_templates."mensajes.php"; ?>
 
                 <div class="widget  widget-box box-container form-main widget-form-cart" id="form">
-                    <form method="post" action="" class="form-additional">
+                    <form method="post" action="<?php echo $controlador->link_com_producto_alta_bd; ?>" class="form-additional">
                         <?php include (new views())->ruta_templates."head/subtitulo.php"; ?>
 
+                        <?php echo $controlador->inputs->select->cat_sat_tipo_producto_id; ?>
+                        <?php echo $controlador->inputs->select->cat_sat_division_producto_id; ?>
+                        <?php echo $controlador->inputs->select->cat_sat_grupo_producto_id; ?>
+                        <?php echo $controlador->inputs->select->cat_sat_clase_producto_id; ?>
+                        <?php echo $controlador->inputs->select->cat_sat_producto_id; ?>
+                        <?php echo $controlador->inputs->com_producto_codigo; ?>
                         <?php echo $controlador->inputs->select->com_tipo_producto_id; ?>
+                        <?php echo $controlador->inputs->com_producto_descripcion; ?>
+                        <?php echo $controlador->inputs->select->cat_sat_unidad_id; ?>
+                        <?php echo $controlador->inputs->select->cat_sat_obj_imp_id; ?>
 
+                        <?php echo $controlador->inputs->hidden_row_id; ?>
+                        <?php echo $controlador->inputs->hidden_seccion_retorno; ?>
+                        <?php echo $controlador->inputs->hidden_id_retorno; ?>
                         <div class="controls">
-                            <br>
+                            <button type="submit" class="btn btn-success" value="productos" name="btn_action_next">Alta</button><br>
                         </div>
                     </form>
                 </div>

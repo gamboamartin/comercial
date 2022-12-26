@@ -11,6 +11,7 @@ namespace gamboamartin\comercial\controllers;
 use gamboamartin\cat_sat\models\cat_sat_producto;
 use gamboamartin\comercial\models\com_producto;
 use gamboamartin\errores\errores;
+use gamboamartin\system\_ctl_base;
 use gamboamartin\system\links_menu;
 use gamboamartin\system\system;
 use gamboamartin\template\html;
@@ -18,7 +19,7 @@ use html\com_producto_html;
 use PDO;
 use stdClass;
 
-class controlador_com_producto extends system {
+class controlador_com_producto extends _ctl_base {
 
     public array $keys_selects = array();
 
@@ -86,6 +87,101 @@ class controlador_com_producto extends system {
         }
 
         return $salida;
+    }
+
+    protected function campos_view(): array
+    {
+        $keys = new stdClass();
+        $keys->inputs = array('codigo','descripcion');
+        $keys->selects = array();
+
+        $init_data = array();
+        $init_data['cat_sat_tipo_producto'] = "gamboamartin\\cat_sat";
+        $init_data['cat_sat_division_producto'] = "gamboamartin\\cat_sat";
+        $init_data['cat_sat_grupo_producto'] = "gamboamartin\\cat_sat";
+        $init_data['cat_sat_clase_producto'] = "gamboamartin\\cat_sat";
+        $init_data['cat_sat_producto'] = "gamboamartin\\cat_sat";
+        $init_data['com_tipo_producto'] = "gamboamartin\\comercial";
+        $init_data['cat_sat_unidad'] = "gamboamartin\\cat_sat";
+        $init_data['cat_sat_obj_imp'] = "gamboamartin\\cat_sat";
+        $campos_view = $this->campos_view_base(init_data: $init_data,keys:  $keys);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        }
+
+        return $campos_view;
+    }
+
+
+
+    public function key_selects_txt(array $keys_selects): array
+    {
+        $r_alta = $this->init_alta();
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al inicializar alta',data:  $r_alta);
+        }
+
+        $keys_selects = $this->key_select(cols:6, con_registros: true,filtro:  array(), key: 'cat_sat_tipo_producto_id',
+            keys_selects: $keys_selects, id_selected: -1, label: 'SAT - Tipo');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->key_select(cols:6, con_registros: false,filtro:  array(), key: 'cat_sat_division_producto_id',
+            keys_selects: $keys_selects, id_selected: -1, label: 'SAT - División');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->key_select(cols:6, con_registros: false,filtro:  array(), key: 'cat_sat_grupo_producto_id',
+            keys_selects: $keys_selects, id_selected: -1, label: 'SAT - Grupo');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->key_select(cols:6, con_registros: false,filtro:  array(), key: 'cat_sat_clase_producto_id',
+            keys_selects: $keys_selects, id_selected: -1, label: 'SAT - Clase');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->key_select(cols:12, con_registros: false,filtro:  array(), key: 'cat_sat_producto_id',
+            keys_selects: $keys_selects, id_selected: -1, label: 'SAT - Producto');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->key_select(cols:6, con_registros: true,filtro:  array(), key: 'com_tipo_producto_id',
+            keys_selects: $keys_selects, id_selected: -1, label: 'Tipo Producto');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->key_select(cols:6, con_registros: true,filtro:  array(), key: 'cat_sat_unidad_id',
+            keys_selects: $keys_selects, id_selected: -1, label: 'Unidad');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->key_select(cols:6, con_registros: true,filtro:  array(), key: 'cat_sat_obj_imp_id',
+            keys_selects: $keys_selects, id_selected: -1, label: 'Objeto del Impuesto');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6,key: 'codigo',
+            keys_selects:$keys_selects, place_holder: 'Cod');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 12,key: 'descripcion',
+            keys_selects:$keys_selects, place_holder: 'Producto');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        return $keys_selects;
     }
 
     public function init_datatable(): stdClass
