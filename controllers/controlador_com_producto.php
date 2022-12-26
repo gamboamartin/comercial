@@ -113,7 +113,6 @@ class controlador_com_producto extends _ctl_base {
     }
 
 
-
     public function key_selects_txt(array $keys_selects): array
     {
         $r_alta = $this->init_alta();

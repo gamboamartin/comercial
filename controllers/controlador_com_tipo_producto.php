@@ -108,7 +108,7 @@ class controlador_com_tipo_producto extends _ctl_parent_sin_codigo {
 
         $this->inputs = new stdClass();
         $this->inputs->select = new stdClass();
-        $this->inputs->select->cat_sat_tipo_producto_id = $this->controlador_com_producto->inputs->cat_sat_tipo_producto_id;
+        $this->inputs->select->cat_sat_tipo_producto_id = $inputs->cat_sat_tipo_producto_id;
         $this->inputs->select->cat_sat_division_producto_id = $inputs->cat_sat_division_producto_id;
         $this->inputs->select->cat_sat_grupo_producto_id = $inputs->cat_sat_grupo_producto_id;
         $this->inputs->select->cat_sat_clase_producto_id = $inputs->cat_sat_clase_producto_id;
@@ -139,8 +139,7 @@ class controlador_com_tipo_producto extends _ctl_parent_sin_codigo {
         return $keys_selects;
     }
 
-
-    public function productos(bool $header = true, bool $ws = false): array|stdClass|string
+    public function productos(bool $header = true, bool $ws = false): array|string
     {
         $data_view = new stdClass();
         $data_view->names = array('Id','Cod','Producto','Acciones');
