@@ -1,14 +1,16 @@
-<?php /** @var gamboamartin\acl\controllers\controlador_adm_menu $controlador  controlador en ejecucion */ ?>
+<?php /** @var \gamboamartin\comercial\controllers\controlador_com_tipo_producto $controlador  controlador en ejecucion */ ?>
 <?php use config\views; ?>
 <main class="main section-color-primary">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
+                <?php include (new views())->ruta_templates."head/title.php"; ?>
+
+                <?php include (new views())->ruta_templates."mensajes.php"; ?>
+
                 <div class="widget  widget-box box-container form-main widget-form-cart" id="form">
                     <form method="post" action="" class="form-additional">
-                        <?php include (new views())->ruta_templates."head/title.php"; ?>
                         <?php include (new views())->ruta_templates."head/subtitulo.php"; ?>
-                        <?php include (new views())->ruta_templates."mensajes.php"; ?>
 
                         <?php echo $controlador->inputs->select->com_tipo_producto_id; ?>
 

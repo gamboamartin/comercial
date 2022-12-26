@@ -8,9 +8,9 @@
  */
 namespace gamboamartin\comercial\controllers;
 
-
 use gamboamartin\comercial\models\com_tipo_producto;
 use gamboamartin\errores\errores;
+use gamboamartin\system\_ctl_base;
 use gamboamartin\system\_ctl_parent_sin_codigo;
 use gamboamartin\system\links_menu;
 
@@ -40,22 +40,19 @@ class controlador_com_tipo_producto extends _ctl_parent_sin_codigo {
 
         parent::__construct(html:$html_, link: $link,modelo:  $modelo, obj_link: $obj_link, datatables: $datatables,
             paths_conf: $paths_conf);
-
-
     }
-
 
     public function init_datatable(): stdClass
     {
-        $columns["com_tipo_producto_id"]["titulo"] = "Id";
-        $columns["com_tipo_producto_codigo"]["titulo"] = "Código";
-        $columns["com_tipo_producto_descripcion"]["titulo"] = "Tipo Producto";
-
-        $filtro = array("com_tipo_producto.id","com_tipo_producto.codigo","com_tipo_producto.descripcion");
-
         $datatables = new stdClass();
-        $datatables->columns = $columns;
-        $datatables->filtro = $filtro;
+        $datatables->columns = array();
+        $datatables->columns['com_tipo_producto_id']['titulo'] = 'Id';
+        $datatables->columns['com_tipo_producto_descripcion']['titulo'] = 'Tipo Producto';
+        $datatables->columns['com_tipo_producto_n_productos']['titulo'] = 'Productos';
+
+        $datatables->filtro = array();
+        $datatables->filtro[] = 'com_tipo_producto.id';
+        $datatables->filtro[] = 'com_tipo_producto.descripcion';
 
         return $datatables;
     }
@@ -63,7 +60,6 @@ class controlador_com_tipo_producto extends _ctl_parent_sin_codigo {
     protected function inputs_children(stdClass $registro): array|stdClass{
         $select_com_tipo_producto_id = (new com_tipo_producto_html(html: $this->html_base))->select_com_tipo_producto_id(
             cols:12,con_registros: true,id_selected:  $registro->com_tipo_producto_id,link:  $this->link, disabled: true);
-
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al obtener select_com_tipo_producto_id',data:  $select_com_tipo_producto_id);
         }
@@ -86,13 +82,13 @@ class controlador_com_tipo_producto extends _ctl_parent_sin_codigo {
 
     protected function key_selects_txt(array $keys_selects): array
     {
-        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6,key: 'codigo',
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 4,key: 'codigo',
             keys_selects:$keys_selects, place_holder: 'Cod');
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
 
-        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 12,key: 'descripcion',
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 8,key: 'descripcion',
             keys_selects:$keys_selects, place_holder: 'Tipo Producto');
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
@@ -101,9 +97,9 @@ class controlador_com_tipo_producto extends _ctl_parent_sin_codigo {
         return $keys_selects;
     }
 
+
     public function productos(bool $header = true, bool $ws = false): array|stdClass|string
     {
-
         $data_view = new stdClass();
         $data_view->names = array('Id','Cod','Producto','Acciones');
         $data_view->keys_data = array('com_producto_id','com_producto_codigo','com_producto_descripcion');
@@ -118,11 +114,7 @@ class controlador_com_tipo_producto extends _ctl_parent_sin_codigo {
                 mensaje: 'Error al obtener tbody',data:  $contenido_table, header: $header,ws:  $ws);
         }
 
-
         return $contenido_table;
-
-
-
     }
 
 
