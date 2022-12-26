@@ -88,13 +88,14 @@ class controlador_com_tipo_producto extends _ctl_parent_sin_codigo {
             return $this->errores->error(mensaje: 'Error al generar links para tipo producto',data:  $this->obj_link);
         }
 
-        $link = $this->obj_link->get_link("com_producto","alta_bd");
+        $this->link_com_producto_alta_bd = $this->obj_link->link_alta_bd(link: $this->link, seccion: 'com_producto');
         if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al obtener link alta_bd',data:  $link);
+            $error = $this->errores->error(mensaje: 'Error al obtener link',data:  $this->link_com_producto_alta_bd);
+            print_r($error);
+            exit;
         }
-        $this->link_com_producto_alta_bd = $link;
 
-        return $link;
+        return $this->link_com_producto_alta_bd;
     }
 
     protected function inputs_children(stdClass $registro): array|stdClass{
