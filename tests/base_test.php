@@ -3,6 +3,7 @@ namespace gamboamartin\comercial\test;
 use base\orm\modelo_base;
 use gamboamartin\cat_sat\models\cat_sat_metodo_pago;
 use gamboamartin\cat_sat\models\cat_sat_moneda;
+use gamboamartin\cat_sat\models\cat_sat_regimen_fiscal;
 use gamboamartin\cat_sat\models\cat_sat_tipo_de_comprobante;
 use gamboamartin\cat_sat\models\cat_sat_uso_cfdi;
 use gamboamartin\comercial\models\com_cliente;
@@ -38,6 +39,17 @@ class base_test{
         return $alta;
     }
 
+    public function alta_cat_sat_regimen_fiscal(PDO $link): array|\stdClass
+    {
+
+        $alta = (new \gamboamartin\cat_sat\tests\base_test())->alta_cat_sat_regimen_fiscal($link);
+        if(errores::$error){
+            return (new errores())->error('Error al insertar', $alta);
+        }
+
+        return $alta;
+    }
+
     public function alta_cat_sat_tipo_de_comprobante(PDO $link): array|\stdClass
     {
 
@@ -61,8 +73,9 @@ class base_test{
     }
 
     public function alta_com_cliente(PDO $link, int $cat_sat_metodo_pago_id = 1, int $cat_sat_moneda_id = 1,
-                                     int $cat_sat_tipo_de_comprobante_id = 1,int $cat_sat_uso_cfdi_id = 1,
-                                     int $com_tipo_cliente_id = 1, int $dp_calle_pertenece_id = 1): array|\stdClass
+                                     int $cat_sat_regimen_fiscal_id = 1, int $cat_sat_tipo_de_comprobante_id = 1,
+                                     int $cat_sat_uso_cfdi_id = 1, int $com_tipo_cliente_id = 1,
+                                     int $dp_calle_pertenece_id = 1): array|\stdClass
     {
 
         $existe = (new cat_sat_moneda($link))->existe_by_id(registro_id: $cat_sat_moneda_id);
@@ -125,12 +138,25 @@ class base_test{
             }
         }
 
+        $existe = (new cat_sat_regimen_fiscal($link))->existe_by_id(registro_id: $cat_sat_regimen_fiscal_id);
+        if(errores::$error){
+            return (new errores())->error('Error al verificar si existe', $existe);
+        }
+
+        if(!$existe) {
+            $alta = (new base_test())->alta_cat_sat_regimen_fiscal($link);
+            if (errores::$error) {
+                return (new errores())->error('Error al insertar', $alta);
+            }
+        }
+
 
         $registro['dp_calle_pertenece_id'] = $dp_calle_pertenece_id;
         $registro['cat_sat_moneda_id'] = $cat_sat_moneda_id;
         $registro['cat_sat_metodo_pago_id'] = $cat_sat_metodo_pago_id;
         $registro['cat_sat_tipo_de_comprobante_id'] = $cat_sat_tipo_de_comprobante_id;
         $registro['com_tipo_cliente_id'] = $com_tipo_cliente_id;
+        $registro['cat_sat_regimen_fiscal_id'] = $cat_sat_regimen_fiscal_id;
         $registro['cat_sat_uso_cfdi_id'] = $cat_sat_uso_cfdi_id;
         $registro['id'] = 1;
         $registro['codigo'] = 1;
