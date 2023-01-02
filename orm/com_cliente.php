@@ -22,7 +22,7 @@ class com_cliente extends modelo{
         $tabla = 'com_cliente';
         $columnas = array($tabla=>false,'cat_sat_moneda'=>$tabla, 'cat_sat_regimen_fiscal' => $tabla,
             'dp_calle_pertenece' => $tabla, 'dp_colonia_postal' => 'dp_calle_pertenece', 'dp_cp' => 'dp_colonia_postal',
-            'dp_municipio' => 'dp_cp','dp_estado' => 'dp_municipio','dp_pais' => 'dp_estado');
+            'dp_municipio' => 'dp_cp','dp_estado' => 'dp_municipio','dp_pais' => 'dp_estado','com_tipo_cliente'=>$tabla);
         $campos_obligatorios = array('cat_sat_moneda_id','cat_sat_regimen_fiscal_id','cat_sat_moneda_id',
             'cat_sat_forma_pago_id','cat_sat_uso_cfdi_id','cat_sat_tipo_de_comprobante_id','cat_sat_metodo_pago_id');
 

@@ -11,6 +11,7 @@ use base\controller\controler;
 use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\errores\errores;
+use gamboamartin\system\_ctl_base;
 use gamboamartin\system\links_menu;
 use gamboamartin\system\system;
 use gamboamartin\template\html;
@@ -18,7 +19,7 @@ use html\com_cliente_html;
 use PDO;
 use stdClass;
 
-class controlador_com_cliente extends system {
+class controlador_com_cliente extends _ctl_base {
 
     public array $keys_selects = array();
 
@@ -188,7 +189,159 @@ class controlador_com_cliente extends system {
         return $this->keys_selects;
     }
 
-    private function init_modifica(): array|stdClass
+    protected function campos_view(): array
+    {
+        $keys = new stdClass();
+        $keys->inputs = array('codigo','razon_social','rfc','telefono','numero_interior','numero_exterior');
+        $keys->selects = array();
+
+        $init_data = array();
+        $init_data['dp_pais'] = "gamboamartin\\direccion_postal";
+        $init_data['dp_estado'] = "gamboamartin\\direccion_postal";
+        $init_data['dp_municipio'] = "gamboamartin\\direccion_postal";
+        $init_data['dp_cp'] = "gamboamartin\\direccion_postal";
+        $init_data['dp_colonia_postal'] = "gamboamartin\\direccion_postal";
+        $init_data['dp_calle_pertenece'] = "gamboamartin\\direccion_postal";
+        $init_data['cat_sat_regimen_fiscal'] = "gamboamartin\\cat_sat";
+        $init_data['cat_sat_moneda'] = "gamboamartin\\cat_sat";
+        $init_data['cat_sat_forma_pago'] = "gamboamartin\\cat_sat";
+        $init_data['cat_sat_metodo_pago'] = "gamboamartin\\cat_sat";
+        $init_data['cat_sat_uso_cfdi'] = "gamboamartin\\cat_sat";
+        $init_data['cat_sat_tipo_de_comprobante'] = "gamboamartin\\cat_sat";
+        $init_data['com_tipo_cliente'] = "gamboamartin\\comercial";
+        $campos_view = $this->campos_view_base(init_data: $init_data,keys:  $keys);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        }
+
+        return $campos_view;
+    }
+
+    public function key_selects_txt(array $keys_selects): array
+    {
+        $r_alta = $this->init_alta();
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al inicializar alta',data:  $r_alta);
+        }
+
+        $keys_selects = $this->key_select(cols:6, con_registros: true,filtro:  array(), key: 'dp_pais_id',
+            keys_selects: $keys_selects, id_selected: -1, label: 'Pais');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->key_select(cols:6, con_registros: false,filtro:  array(), key: 'dp_estado_id',
+            keys_selects: $keys_selects, id_selected: -1, label: 'Estado');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->key_select(cols:6, con_registros: false,filtro:  array(), key: 'dp_municipio_id',
+            keys_selects: $keys_selects, id_selected: -1, label: 'Municipio');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->key_select(cols:6, con_registros: false,filtro:  array(), key: 'dp_cp_id',
+            keys_selects: $keys_selects, id_selected: -1, label: 'Código Postal');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->key_select(cols:6, con_registros: false,filtro:  array(), key: 'dp_colonia_postal_id',
+            keys_selects: $keys_selects, id_selected: -1, label: 'Colonia Postal');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->key_select(cols:6, con_registros: false,filtro:  array(), key: 'dp_calle_pertenece_id',
+            keys_selects: $keys_selects, id_selected: -1, label: 'Calle');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->key_select(cols:12, con_registros: true,filtro:  array(), key: 'cat_sat_regimen_fiscal_id',
+            keys_selects: $keys_selects, id_selected: -1, label: 'Régimen Fiscal');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->key_select(cols:6, con_registros: true,filtro:  array(), key: 'cat_sat_moneda_id',
+            keys_selects: $keys_selects, id_selected: -1, label: 'Moneda');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->key_select(cols:6, con_registros: true,filtro:  array(), key: 'cat_sat_forma_pago_id',
+            keys_selects: $keys_selects, id_selected: -1, label: 'Forma Pago');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->key_select(cols:6, con_registros: true,filtro:  array(), key: 'cat_sat_metodo_pago_id',
+            keys_selects: $keys_selects, id_selected: -1, label: 'Método de Pago');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->key_select(cols:12, con_registros: true,filtro:  array(), key: 'cat_sat_uso_cfdi_id',
+            keys_selects: $keys_selects, id_selected: -1, label: 'Uso CFDI');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->key_select(cols:6, con_registros: true,filtro:  array(), key: 'cat_sat_tipo_de_comprobante_id',
+            keys_selects: $keys_selects, id_selected: -1, label: 'Tipo de Comprobante');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->key_select(cols:12, con_registros: true,filtro:  array(), key: 'com_tipo_cliente_id',
+            keys_selects: $keys_selects, id_selected: -1, label: 'Tipo de Cliente');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 4,key: 'codigo',
+            keys_selects:$keys_selects, place_holder: 'Cod');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 8,key: 'razon_social',
+            keys_selects:$keys_selects, place_holder: 'Razón Social');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6,key: 'rfc',
+            keys_selects:$keys_selects, place_holder: 'RFC');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6,key: 'telefono',
+            keys_selects:$keys_selects, place_holder: 'Teléfono');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6,key: 'numero_interior',
+            keys_selects:$keys_selects, place_holder: 'Num Int');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6,key: 'numero_exterior',
+            keys_selects:$keys_selects, place_holder: 'Num Ext');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        return $keys_selects;
+    }
+
+    private function init_modifica2(): array|stdClass
     {
         $r_modifica =  parent::modifica(header: false);
         if(errores::$error){
@@ -275,7 +428,7 @@ class controlador_com_cliente extends system {
 
     public function modifica(bool $header, bool $ws = false): array|stdClass
     {
-        $base = $this->init_modifica();
+        $base = $this->init_modifica2();
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al maquetar datos',data:  $base,
                 header: $header,ws:$ws);

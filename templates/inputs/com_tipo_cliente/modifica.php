@@ -1,5 +1,2 @@
-<?php /** @var controllers\controlador_dp_estado $controlador  controlador en ejecucion */ ?>
-<?php use config\views; ?>
-<?php echo $controlador->inputs->codigo; ?>
-<?php echo $controlador->inputs->descripcion; ?>
-<?php include (new views())->ruta_templates.'botons/submit/modifica_bd.php';?>
+<?php use config\generales; ?>
+<?php include (new generales())->path_base.'templates/inputs/_parent/modifica.php'; ?>
