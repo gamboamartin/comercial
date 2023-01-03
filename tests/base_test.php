@@ -301,6 +301,18 @@ class base_test{
         }
         return $del;
     }
+
+    public function elimina_registro(PDO $link, string $name_model, int $id): array
+    {
+        $model = (new modelo_base($link))->genera_modelo(modelo: $name_model);
+        $del = $model->elimina_bd(id: $id);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al eliminar '.$name_model, data: $del);
+        }
+        return $del;
+    }
+
+
     public function del_cat_sat_metodo_pago(PDO $link): array
     {
 
@@ -361,6 +373,17 @@ class base_test{
         }
         return $del;
     }
+
+    public function del_com_producto_id(PDO $link, int $id): array
+    {
+        $del = $this->elimina_registro($link, 'gamboamartin\\comercial\\models\\com_producto',id: $id);
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar producto', $del);
+        }
+
+        return $del;
+    }
+
 
     public function del_com_sucursal(PDO $link): array
     {
