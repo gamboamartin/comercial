@@ -22,23 +22,27 @@ use stdClass;
 
 class com_cliente extends _modelo_parent
 {
-
     public function __construct(PDO $link)
     {
         $tabla = 'com_cliente';
+
         $columnas = array($tabla => false, 'cat_sat_moneda' => $tabla, 'cat_sat_regimen_fiscal' => $tabla,
             'dp_calle_pertenece' => $tabla, 'dp_colonia_postal' => 'dp_calle_pertenece', 'dp_cp' => 'dp_colonia_postal',
             'dp_municipio' => 'dp_cp', 'dp_estado' => 'dp_municipio', 'dp_pais' => 'dp_estado', 'com_tipo_cliente' => $tabla,
             'cat_sat_uso_cfdi' => $tabla, 'cat_sat_metodo_pago' => $tabla, 'cat_sat_forma_pago' => $tabla,
             'cat_sat_tipo_de_comprobante' => $tabla);
+
         $campos_obligatorios = array('cat_sat_moneda_id', 'cat_sat_regimen_fiscal_id', 'cat_sat_moneda_id',
             'cat_sat_forma_pago_id', 'cat_sat_uso_cfdi_id', 'cat_sat_tipo_de_comprobante_id', 'cat_sat_metodo_pago_id');
+
+        $columnas_extra['com_cliente_n_sucursales'] =
+            "(SELECT COUNT(*) FROM com_sucursal WHERE com_sucursal.com_cliente_id = com_cliente.id)";
 
         $tipo_campos = array();
         $tipo_campos['rfc'] = 'rfc';
 
         parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios,
-            columnas: $columnas, tipo_campos: $tipo_campos);
+            columnas: $columnas, columnas_extra: $columnas_extra, tipo_campos: $tipo_campos);
 
         $this->NAMESPACE = __NAMESPACE__;
     }
@@ -64,6 +68,19 @@ class com_cliente extends _modelo_parent
         $r_alta_bd = parent::alta_bd($keys_integra_ds);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al insertar cliente', data: $r_alta_bd);
+        }
+
+        $data = (new com_sucursal($this->link))->maqueta_data(codigo: $this->registro["codigo"],
+            nombre_contacto: $this->registro["razon_social"], com_cliente_id: $r_alta_bd->registro_id,
+            telefono: $this->registro["telefono"], dp_calle_pertenece_id: $this->registro["dp_calle_pertenece_id"],
+            numero_exterior: $this->registro["numero_exterior"], numero_interior: $this->registro["numero_interior"]);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al maquetar datos de sucursal', data: $data);
+        }
+
+        $alta_sucursal = (new com_sucursal($this->link))->alta_registro(registro: $data);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al insertar sucursal', data: $alta_sucursal);
         }
 
         return $r_alta_bd;

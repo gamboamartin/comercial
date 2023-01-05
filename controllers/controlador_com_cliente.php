@@ -11,6 +11,7 @@ namespace gamboamartin\comercial\controllers;
 
 use base\controller\controler;
 use gamboamartin\comercial\models\com_cliente;
+use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\errores\errores;
 use gamboamartin\system\_ctl_base;
@@ -126,6 +127,7 @@ class controlador_com_cliente extends _ctl_base
         $columns["com_cliente_razon_social"]["titulo"] = "Razón Social";
         $columns["com_cliente_rfc"]["titulo"] = "RFC";
         $columns["cat_sat_regimen_fiscal_descripcion"]["titulo"] = "Régimen Fiscal";
+        $columns["com_cliente_n_sucursales"]["titulo"] = "Sucursales";
 
         $filtro = array("com_cliente.id", "com_cliente.codigo", "com_cliente.razon_social", "com_cliente.rfc",
             "cat_sat_regimen_fiscal.descripcion");
