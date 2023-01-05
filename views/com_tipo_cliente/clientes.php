@@ -12,25 +12,25 @@
                     <form method="post" action="<?php echo $controlador->link_com_cliente_alta_bd; ?>" class="form-additional">
                         <?php include (new views())->ruta_templates."head/subtitulo.php"; ?>
 
-                        <?php echo $controlador->inputs->select->com_tipo_cliente_id; ?>
-                        <?php echo $controlador->inputs->com_cliente_codigo; ?>
-                        <?php echo $controlador->inputs->com_cliente_razon_social; ?>
-                        <?php echo $controlador->inputs->com_cliente_rfc; ?>
-                        <?php echo $controlador->inputs->com_cliente_telefono; ?>
-                        <?php echo $controlador->inputs->select->cat_sat_regimen_fiscal_id; ?>
-                        <?php echo $controlador->inputs->select->dp_pais_id; ?>
-                        <?php echo $controlador->inputs->select->dp_estado_id; ?>
-                        <?php echo $controlador->inputs->select->dp_municipio_id; ?>
-                        <?php echo $controlador->inputs->select->dp_cp_id; ?>
-                        <?php echo $controlador->inputs->select->dp_colonia_postal_id; ?>
-                        <?php echo $controlador->inputs->select->dp_calle_pertenece_id; ?>
-                        <?php echo $controlador->inputs->select->cat_sat_uso_cfdi_id; ?>
-                        <?php echo $controlador->inputs->select->cat_sat_metodo_pago_id; ?>
-                        <?php echo $controlador->inputs->select->cat_sat_forma_pago_id; ?>
-                        <?php echo $controlador->inputs->select->cat_sat_tipo_de_comprobante_id; ?>
-                        <?php echo $controlador->inputs->select->cat_sat_moneda_id; ?>
-                        <?php echo $controlador->inputs->com_cliente_numero_interior; ?>
-                        <?php echo $controlador->inputs->com_cliente_numero_exterior; ?>
+                        <?php echo $controlador->inputs->com_tipo_cliente_id; ?>
+                        <?php echo $controlador->inputs->codigo; ?>
+                        <?php echo $controlador->inputs->razon_social; ?>
+                        <?php echo $controlador->inputs->rfc; ?>
+                        <?php echo $controlador->inputs->telefono; ?>
+                        <?php echo $controlador->inputs->cat_sat_regimen_fiscal_id; ?>
+                        <?php echo $controlador->inputs->dp_pais_id; ?>
+                        <?php echo $controlador->inputs->dp_estado_id; ?>
+                        <?php echo $controlador->inputs->dp_municipio_id; ?>
+                        <?php echo $controlador->inputs->dp_cp_id; ?>
+                        <?php echo $controlador->inputs->dp_colonia_postal_id; ?>
+                        <?php echo $controlador->inputs->dp_calle_pertenece_id; ?>
+                        <?php echo $controlador->inputs->numero_exterior; ?>
+                        <?php echo $controlador->inputs->numero_interior; ?>
+                        <?php echo $controlador->inputs->cat_sat_uso_cfdi_id; ?>
+                        <?php echo $controlador->inputs->cat_sat_metodo_pago_id; ?>
+                        <?php echo $controlador->inputs->cat_sat_forma_pago_id; ?>
+                        <?php echo $controlador->inputs->cat_sat_tipo_de_comprobante_id; ?>
+                        <?php echo $controlador->inputs->cat_sat_moneda_id; ?>
 
                         <?php echo $controlador->inputs->hidden_row_id; ?>
                         <?php echo $controlador->inputs->hidden_seccion_retorno; ?>

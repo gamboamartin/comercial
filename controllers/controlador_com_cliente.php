@@ -51,35 +51,13 @@ class controlador_com_cliente extends _ctl_base
     {
         $r_alta = $this->init_alta();
         if (errores::$error) {
-            return $this->retorno_error(
-                mensaje: 'Error al inicializar alta', data: $r_alta, header: $header, ws: $ws);
+            return $this->retorno_error(mensaje: 'Error al inicializar alta', data: $r_alta, header: $header, ws: $ws);
         }
 
-        $keys_selects = $this->init_selects(keys_selects: array(), key: "com_tipo_cliente_id", label: "Tipo de Cliente",
-            cols: 12);
-        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_regimen_fiscal_id",
-            label: "Régimen Fiscal", cols: 12);
-        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_pais_id", label: "País");
-        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_estado_id", label: "Estado",
-            con_registros: false);
-        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_municipio_id", label: "Municipio",
-            con_registros: false);
-        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_cp_id", label: "Código Postal",
-            con_registros: false);
-        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_colonia_postal_id",
-            label: "Colonia Postal", con_registros: false);
-        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_calle_pertenece_id", label: "Calle",
-            con_registros: false);
-        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_uso_cfdi_id", label: "Uso CFDI",
-            cols: 12);
-        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_metodo_pago_id",
-            label: "Método de Pago");
-        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_forma_pago_id",
-            label: "Forma Pago");
-        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_tipo_de_comprobante_id",
-            label: "Tipo de Comprobante");
-        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_moneda_id",
-            label: "Moneda");
+        $keys_selects = $this->init_selects_inputs();
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al inicializar selects', data: $r_alta, header: $header, ws: $ws);
+        }
 
         $inputs = $this->inputs(keys_selects: $keys_selects);
         if (errores::$error) {
@@ -106,6 +84,37 @@ class controlador_com_cliente extends _ctl_base
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
         }
+
+        return $keys_selects;
+    }
+
+    public function init_selects_inputs(): array{
+
+        $keys_selects = $this->init_selects(keys_selects: array(), key: "com_tipo_cliente_id", label: "Tipo de Cliente",
+            cols: 12);
+        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_regimen_fiscal_id",
+            label: "Régimen Fiscal", cols: 12);
+        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_pais_id", label: "País");
+        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_estado_id", label: "Estado",
+            con_registros: false);
+        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_municipio_id", label: "Municipio",
+            con_registros: false);
+        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_cp_id", label: "Código Postal",
+            con_registros: false);
+        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_colonia_postal_id",
+            label: "Colonia Postal", con_registros: false);
+        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_calle_pertenece_id", label: "Calle",
+            con_registros: false);
+        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_uso_cfdi_id", label: "Uso CFDI",
+            cols: 12);
+        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_metodo_pago_id",
+            label: "Método de Pago");
+        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_forma_pago_id",
+            label: "Forma Pago");
+        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_tipo_de_comprobante_id",
+            label: "Tipo de Comprobante");
+        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_moneda_id",
+            label: "Moneda");
 
         return $keys_selects;
     }

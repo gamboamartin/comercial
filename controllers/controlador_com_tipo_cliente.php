@@ -97,35 +97,22 @@ class controlador_com_tipo_cliente extends _ctl_parent_sin_codigo {
 
     protected function inputs_children(stdClass $registro): array|stdClass{
 
-        $this->keys_selects = $this->controlador_com_cliente->key_selects_txt($this->keys_selects);
+        $r_template = $this->controlador_com_cliente->alta(header:false);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener template',data:  $r_template);
+        }
 
-        $inputs = $this->controlador_com_cliente->inputs(keys_selects: $this->keys_selects);
+        $keys_selects = $this->controlador_com_cliente->init_selects_inputs();
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al inicializar selects',data:  $keys_selects);
+        }
+
+        $inputs = $this->controlador_com_cliente->inputs(keys_selects: $keys_selects);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al obtener inputs',data:  $inputs);
         }
 
-        $this->inputs = new stdClass();
-        $this->inputs->select = new stdClass();
-        $this->inputs->select->com_tipo_cliente_id = $inputs->com_tipo_cliente_id;
-        $this->inputs->com_cliente_codigo = $inputs->codigo;
-        $this->inputs->com_cliente_razon_social = $inputs->razon_social;
-        $this->inputs->com_cliente_rfc = $inputs->rfc;
-        $this->inputs->com_cliente_telefono = $inputs->telefono;
-        $this->inputs->select->cat_sat_regimen_fiscal_id = $inputs->cat_sat_regimen_fiscal_id;
-        $this->inputs->select->dp_pais_id = $inputs->dp_pais_id;
-        $this->inputs->select->dp_estado_id = $inputs->dp_estado_id;
-        $this->inputs->select->dp_municipio_id = $inputs->dp_municipio_id;
-        $this->inputs->select->dp_cp_id = $inputs->dp_cp_id;
-        $this->inputs->select->dp_colonia_postal_id = $inputs->dp_colonia_postal_id;
-        $this->inputs->select->dp_calle_pertenece_id = $inputs->dp_calle_pertenece_id;
-        $this->inputs->select->cat_sat_uso_cfdi_id = $inputs->cat_sat_uso_cfdi_id;
-        $this->inputs->select->cat_sat_metodo_pago_id = $inputs->cat_sat_metodo_pago_id;
-        $this->inputs->select->cat_sat_forma_pago_id = $inputs->cat_sat_forma_pago_id;
-        $this->inputs->select->cat_sat_tipo_de_comprobante_id = $inputs->cat_sat_tipo_de_comprobante_id;
-        $this->inputs->select->cat_sat_moneda_id = $inputs->cat_sat_moneda_id;
-
-        $this->inputs->com_cliente_numero_interior = $inputs->numero_interior;
-        $this->inputs->com_cliente_numero_exterior = $inputs->numero_exterior;
+        $this->inputs = $inputs;
 
         return $this->inputs;
     }
