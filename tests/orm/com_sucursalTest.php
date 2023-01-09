@@ -50,6 +50,28 @@ class com_sucursalTest extends test {
             exit;
         }
 
+        $del = (new base_test())->del_cat_sat_moneda($this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new base_test())->del_com_cliente($this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new base_test())->del_com_sucursal($this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+
         $alta = (new base_test())->alta_com_sucursal($this->link);
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);

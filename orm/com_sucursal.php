@@ -3,16 +3,9 @@
 namespace gamboamartin\comercial\models;
 
 use base\orm\modelo;
-use gamboamartin\cat_sat\models\cat_sat_forma_pago;
-use gamboamartin\cat_sat\models\cat_sat_metodo_pago;
-use gamboamartin\cat_sat\models\cat_sat_moneda;
-use gamboamartin\cat_sat\models\cat_sat_regimen_fiscal;
-use gamboamartin\cat_sat\models\cat_sat_tipo_de_comprobante;
-use gamboamartin\cat_sat\models\cat_sat_uso_cfdi;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\direccion_postal\models\dp_colonia_postal;
 use gamboamartin\direccion_postal\models\dp_pais;
-use gamboamartin\direccion_postal\models\dp_colonia;
 use gamboamartin\direccion_postal\models\dp_cp;
 use gamboamartin\direccion_postal\models\dp_municipio;
 use gamboamartin\direccion_postal\models\dp_estado;
@@ -77,6 +70,12 @@ class com_sucursal extends modelo
             return $this->error->error(mensaje: 'Error al limpiar campos', data: $this->registro);
         }
 
+        $ins_pred = (new com_tipo_sucursal(link: $this->link))->inserta_predeterminado(codigo: 'MAT',descripcion: 'MATRIZ');
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al insertar predeterminado', data: $ins_pred);
+        }
+
+
         $r_alta_bd = parent::alta_bd();
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al insertar cliente', data: $r_alta_bd);
@@ -136,12 +135,20 @@ class com_sucursal extends modelo
     public function maqueta_data(string $codigo, string $nombre_contacto, int $com_cliente_id, string $telefono,
                                  int    $dp_calle_pertenece_id, string $numero_exterior, string $numero_interior): array
     {
-        $com_tipo_sucursal = (new com_tipo_sucursal($this->link))->id_predeterminado();
+
+        $com_tipo_sucursal= (new com_tipo_sucursal($this->link))->inserta_predeterminado(codigo: 'MAT',descripcion: 'MATRIZ');
         if (errores::$error) {
             return $this->error->error(mensaje: "Error al obtener el id predeterminado", data: $com_tipo_sucursal);
         }
 
-        $data['com_tipo_sucursal_id'] = $com_tipo_sucursal;
+        $com_tipo_sucursal_id = (new com_tipo_sucursal(link: $this->link))->id_predeterminado();
+        if (errores::$error) {
+            return $this->error->error(mensaje: "Error al obtener el id predeterminado", data: $com_tipo_sucursal);
+        }
+
+
+
+        $data['com_tipo_sucursal_id'] = $com_tipo_sucursal_id;
         $data['codigo'] = $codigo;
         $data['descripcion'] = $nombre_contacto;
         $data['nombre_contacto'] = $nombre_contacto;

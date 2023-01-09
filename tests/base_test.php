@@ -164,6 +164,8 @@ class base_test{
         $registro['descripcion'] = 1;
         $registro['razon_social'] = 1;
         $registro['rfc'] = 'AAA010101ABC';
+        $registro['telefono'] = '3333333333';
+        $registro['numero_exterior'] = '3333333333';
 
         $alta = (new com_cliente($link))->alta_registro($registro);
         if(errores::$error){
@@ -216,6 +218,11 @@ class base_test{
             if(errores::$error){
                 return (new errores())->error('Error al insertar', $alta);
             }
+        }
+
+        $del = $this->del_com_sucursal($link);
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
         }
 
 
