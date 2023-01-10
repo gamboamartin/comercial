@@ -62,12 +62,14 @@ class controlador_com_sucursal extends _ctl_base {
             return $this->retorno_error(mensaje: 'Error al generar template',data:  $r_alta, header: $header,ws:$ws);
         }
 
+
         $inputs = $this->genera_inputs(keys_selects:  $this->keys_selects);
         if(errores::$error){
             $error = $this->errores->error(mensaje: 'Error al generar inputs',data:  $inputs);
             print_r($error);
             die('Error');
         }
+
 
         return $r_alta;
     }
@@ -131,11 +133,11 @@ class controlador_com_sucursal extends _ctl_base {
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "telefono_2";
-        $propiedades = array("place_holder" => "Teléfono 2", "cols" => 4);
+        $propiedades = array("place_holder" => "Teléfono 2", "cols" => 4, "required"=>false);
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "telefono_3";
-        $propiedades = array("place_holder" => "Teléfono 3", "cols" => 4);
+        $propiedades = array("place_holder" => "Teléfono 3", "cols" => 4, "required"=>false);
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "numero_exterior";
@@ -143,7 +145,7 @@ class controlador_com_sucursal extends _ctl_base {
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "numero_interior";
-        $propiedades = array("place_holder" => "Num Int");
+        $propiedades = array("place_holder" => "Num Int", "required"=>false);
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         return $this->keys_selects;
@@ -259,13 +261,13 @@ class controlador_com_sucursal extends _ctl_base {
         }
 
         $keys_selects = (new \base\controller\init())->key_select_txt(cols: 4,key: 'telefono_2',
-            keys_selects:$keys_selects, place_holder: 'Teléfono 2');
+            keys_selects:$keys_selects, place_holder: 'Teléfono 2', required: false);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
 
         $keys_selects = (new \base\controller\init())->key_select_txt(cols: 4,key: 'telefono_3',
-            keys_selects:$keys_selects, place_holder: 'Teléfono 3');
+            keys_selects:$keys_selects, place_holder: 'Teléfono 3', required: false);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
