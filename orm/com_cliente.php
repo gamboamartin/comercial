@@ -126,6 +126,9 @@ class com_cliente extends _modelo_parent
             if($key ==='cat_sat_moneda_id') {
                 $codigo = 'XXX';
             }
+            if($key ==='cat_sat_regimen_fiscal_id') {
+                $codigo = '999';
+            }
 
             $ins_pred = $modelo_pred->inserta_predeterminado(codigo: $codigo);
             if (errores::$error) {
