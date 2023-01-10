@@ -120,11 +120,22 @@ class com_cliente extends _modelo_parent
         $foraneas['cat_sat_metodo_pago_id'] = new cat_sat_metodo_pago($this->link);
         $foraneas['com_tipo_cliente_id'] = new com_tipo_cliente($this->link);
 
-        foreach ($foraneas as $key => $valor) {
+        foreach ($foraneas as $key => $modelo_pred) {
+
+            $codigo = 'PRED';
+            if($key ==='cat_sat_moneda_id') {
+                $codigo = 'XXX';
+            }
+
+            $ins_pred = $modelo_pred->inserta_predeterminado(codigo: $codigo);
+            if (errores::$error) {
+                return $this->error->error(mensaje: "Error al insertar predeterminada en modelo ".$this->tabla, data: $ins_pred);
+            }
+
             if (!isset($data[$key]) || $data[$key] === -1) {
-                $predeterminado = ($valor)->id_predeterminado();
+                $predeterminado = ($modelo_pred)->id_predeterminado();
                 if (errores::$error) {
-                    return $this->error->error(mensaje: "Error al $key predeterminada", data: $predeterminado);
+                    return $this->error->error(mensaje: "Error al $key predeterminada en modelo ".$this->tabla, data: $predeterminado);
                 }
                 $data[$key] = $predeterminado;
             }
