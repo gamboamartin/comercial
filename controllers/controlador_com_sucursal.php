@@ -241,7 +241,7 @@ class controlador_com_sucursal extends _ctl_base {
         }
 
         $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6,key: 'numero_interior',
-            keys_selects:$keys_selects, place_holder: 'Num Int');
+            keys_selects:$keys_selects, place_holder: 'Num Int', required: false);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
