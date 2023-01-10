@@ -194,7 +194,7 @@ class controlador_com_cliente extends _ctl_base
         }
 
         $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6, key: 'numero_interior',
-            keys_selects: $keys_selects, place_holder: 'Num Int');
+            keys_selects: $keys_selects, place_holder: 'Num Int', required: false);
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
         }
@@ -251,7 +251,7 @@ class controlador_com_cliente extends _ctl_base
             label: "Moneda", id_selected: $this->registro['cat_sat_moneda_id']);
 
 
-        $base = $this->base_upd(keys_selects: $keys_selects, not_actions: array(__FUNCTION__), params: array(), params_ajustados: array());
+        $base = $this->base_upd(keys_selects: $keys_selects,  params: array(), params_ajustados: array());
         if (errores::$error) {
             return $this->retorno_error(mensaje: 'Error al integrar base', data: $base, header: $header, ws: $ws);
         }
