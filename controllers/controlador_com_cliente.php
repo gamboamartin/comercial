@@ -250,6 +250,7 @@ class controlador_com_cliente extends _ctl_base
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_moneda_id",
             label: "Moneda", id_selected: $this->registro['cat_sat_moneda_id']);
 
+        $this->not_actions[] = __FUNCTION__;
 
         $base = $this->base_upd(keys_selects: $keys_selects,  params: array(), params_ajustados: array());
         if (errores::$error) {
