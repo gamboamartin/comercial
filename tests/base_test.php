@@ -12,6 +12,7 @@ use gamboamartin\comercial\models\com_producto;
 use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\comercial\models\com_tipo_cambio;
 use gamboamartin\comercial\models\com_tipo_cliente;
+use gamboamartin\comercial\models\com_tipo_producto;
 use gamboamartin\comercial\models\com_tipo_sucursal;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\errores\errores;
@@ -201,13 +202,31 @@ class base_test{
         return $alta;
     }
 
-    public function alta_com_producto(PDO $link, int $id = 1): array|\stdClass
+    public function alta_com_producto(PDO $link, int $cat_sat_obj_imp_id = 1, int $cat_sat_producto_id = 1,
+                                      int $cat_sat_unidad_id = 1, int $com_tipo_producto_id = 1,
+                                      int $id = 1): array|\stdClass
     {
+
+        $existe = (new com_tipo_producto($link))->existe_by_id(registro_id: $com_tipo_producto_id);
+        if(errores::$error){
+            return (new errores())->error('Error al verificar si existe', $existe);
+        }
+
+        if(!$existe) {
+            $alta = (new base_test())->alta_com_tipo_producto($link);
+            if (errores::$error) {
+                return (new errores())->error('Error al insertar', $alta);
+            }
+        }
 
         $registro = array();
         $registro['id'] = $id;
         $registro['codigo'] = 1;
         $registro['descripcion'] = 1;
+        $registro['cat_sat_producto_id'] = $cat_sat_producto_id;
+        $registro['cat_sat_unidad_id'] = $cat_sat_unidad_id;
+        $registro['cat_sat_obj_imp_id'] = $cat_sat_obj_imp_id;
+        $registro['com_tipo_producto_id'] = $com_tipo_producto_id;
 
 
         $alta = (new com_producto($link))->alta_registro($registro);
@@ -299,6 +318,23 @@ class base_test{
 
 
         $alta = (new com_tipo_cliente($link))->alta_registro($registro);
+        if(errores::$error){
+            return (new errores())->error('Error al dar de alta ', $alta);
+
+        }
+        return $alta;
+    }
+
+    public function alta_com_tipo_producto(PDO $link, int $id = 1): array|\stdClass
+    {
+
+        $registro = array();
+        $registro['id'] = $id;
+        $registro['codigo'] = 1;
+        $registro['descripcion'] = 1;
+
+
+        $alta = (new com_tipo_producto($link))->alta_registro($registro);
         if(errores::$error){
             return (new errores())->error('Error al dar de alta ', $alta);
 
