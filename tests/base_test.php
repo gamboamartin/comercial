@@ -161,9 +161,9 @@ class base_test{
         $registro['cat_sat_uso_cfdi_id'] = $cat_sat_uso_cfdi_id;
         $registro['id'] = $id;
         $registro['codigo'] = 1;
-        $registro['descripcion'] = 1;
-        $registro['razon_social'] = 1;
-        $registro['rfc'] = 'AAA010101ABC';
+        $registro['descripcion'] = 'YADIRA MAGALY MONTAÑEZ FELIX';
+        $registro['razon_social'] = 'YADIRA MAGALY MONTAÑEZ FELIX';
+        $registro['rfc'] = 'MOFY900516NL1';
         $registro['telefono'] = '3333333333';
         $registro['numero_exterior'] = '3333333333';
 
