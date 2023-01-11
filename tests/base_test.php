@@ -31,10 +31,11 @@ class base_test{
 
         return $alta;
     }
-    public function alta_cat_sat_metodo_pago(PDO $link): array|\stdClass
+    public function alta_cat_sat_metodo_pago(PDO $link, int $id = 1): array|\stdClass
     {
 
-        $alta = (new \gamboamartin\cat_sat\tests\base_test())->alta_cat_sat_metodo_pago($link);
+        $alta = (new \gamboamartin\cat_sat\tests\base_test())->alta_cat_sat_metodo_pago(link: $link, codigo: 'PUE',
+            descripcion: 'Pago en una sola exhibición', id: $id);
         if(errores::$error){
             return (new errores())->error('Error al insertar', $alta);
         }
@@ -86,7 +87,7 @@ class base_test{
         return $alta;
     }
 
-    public function alta_com_cliente(PDO $link, int $cat_sat_forma_pago_id = 1, int $cat_sat_metodo_pago_id = 1,
+    public function alta_com_cliente(PDO $link, int $cat_sat_forma_pago_id = 1, int $cat_sat_metodo_pago_id = 2,
                                      int $cat_sat_moneda_id = 1, int $cat_sat_regimen_fiscal_id = 1,
                                      int $cat_sat_tipo_de_comprobante_id = 1, int $cat_sat_uso_cfdi_id = 1,
                                      int $com_tipo_cliente_id = 1, int $dp_calle_pertenece_id = 1,
@@ -123,7 +124,7 @@ class base_test{
         }
 
         if(!$existe) {
-            $alta = (new base_test())->alta_cat_sat_metodo_pago($link);
+            $alta = (new base_test())->alta_cat_sat_metodo_pago(link: $link, id: $cat_sat_metodo_pago_id);
             if (errores::$error) {
                 return (new errores())->error('Error al insertar', $alta);
             }
