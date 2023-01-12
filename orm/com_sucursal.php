@@ -51,6 +51,14 @@ class com_sucursal extends modelo
 
     }
 
+    private function alias(array $data): array
+    {
+        if (!isset($data['alias'])) {
+            $data['alias'] = $data['codigo'];
+        }
+        return $data;
+    }
+
     public function alta_bd(): array|stdClass
     {
         $keys = array('com_cliente_id', 'dp_calle_pertenece_id');
@@ -83,6 +91,47 @@ class com_sucursal extends modelo
         return $r_alta_bd;
     }
 
+    private function codigo_bis(string $com_cliente_rfc, array $data): array
+    {
+        if (!isset($data['codigo_bis'])) {
+            $data['codigo_bis'] = $data['codigo'].$com_cliente_rfc;
+        }
+        return $data;
+    }
+
+    private function descripcion(string $com_cliente_razon_social, string $com_cliente_rfc, array $data){
+        if (!isset($data['descripcion'])) {
+
+            $ds = $this->ds(com_cliente_razon_social: $com_cliente_razon_social, com_cliente_rfc: $com_cliente_rfc, data: $data);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al obtener descripcion', data: $ds);
+            }
+            $data['descripcion'] = $ds;
+        }
+        return $data;
+    }
+
+    private function descripcion_select_sc(string $com_cliente_razon_social, string $com_cliente_rfc, array $data){
+        if (!isset($data['descripcion_select'])) {
+
+            $ds = $this->ds(com_cliente_razon_social: $com_cliente_razon_social, com_cliente_rfc: $com_cliente_rfc, data: $data);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al obtener descripcion', data: $ds);
+            }
+
+            $data['descripcion_select'] = $ds;
+        }
+        return $data;
+    }
+
+    private function ds(string $com_cliente_razon_social, string $com_cliente_rfc, array $data): string
+    {
+        $ds = $data['codigo'];
+        $ds .= ' '.$com_cliente_rfc;
+        $ds .= ' '.$com_cliente_razon_social;
+        return trim($ds);
+    }
+
     protected function init_base(array $data): array
     {
         $com_cliente =(new com_cliente(link: $this->link))->registro(registro_id: $data['com_cliente_id']);
@@ -93,31 +142,27 @@ class com_sucursal extends modelo
         $com_cliente_rfc = $com_cliente['com_cliente_rfc'];
         $com_cliente_razon_social = $com_cliente['com_cliente_razon_social'];
 
-        if (!isset($data['descripcion'])) {
-            $ds = $data['codigo'];
-            $ds .= ' '.$com_cliente_rfc;
-            $ds .= ' '.$com_cliente_razon_social;
 
-            $data['descripcion'] = $ds;
+        $data = $this->descripcion(com_cliente_razon_social: $com_cliente_razon_social, com_cliente_rfc: $com_cliente_rfc,data:  $data);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al asignar descripcion', data: $data);
         }
 
-        if (!isset($data['codigo_bis'])) {
-            $data['codigo_bis'] = $data['codigo'].$com_cliente_rfc;
+        $data = $this->codigo_bis(com_cliente_rfc: $com_cliente_rfc,data:  $data);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al asignar codigo_bis', data: $data);
         }
 
-        if (!isset($data['descripcion_select'])) {
-
-            $ds = $data['codigo'];
-            $ds .= ' '.$com_cliente_rfc;
-            $ds .= ' '.$com_cliente_razon_social;
-
-            $data['descripcion_select'] = $ds;
-
+        $data = $this->descripcion_select_sc(com_cliente_razon_social: $com_cliente_razon_social, com_cliente_rfc: $com_cliente_rfc,data:  $data);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al asignar descripcion', data: $data);
         }
 
-        if (!isset($data['alias'])) {
-            $data['alias'] = $data['codigo'];
+        $data = $this->alias(data:  $data);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al asignar alias', data: $data);
         }
+
         return $data;
     }
 
@@ -185,14 +230,12 @@ class com_sucursal extends modelo
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al inicializar campo base', data: $registro);
         }
-        
+
         $registro = $this->limpia_campos(registro: $registro, campos_limpiar: array('dp_pais_id', 'dp_estado_id',
             'dp_municipio_id', 'dp_cp_id', 'dp_cp_id', 'dp_colonia_postal_id'));
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al limpiar campos', data: $registro);
         }
-
-
 
         $r_modifica_bd = parent::modifica_bd($registro, $id, $reactiva);
         if (errores::$error) {
