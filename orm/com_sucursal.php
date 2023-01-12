@@ -51,6 +51,12 @@ class com_sucursal extends modelo
 
     }
 
+    /**
+     * Asigna alias a data para update y alta
+     * @param array $data Registro en proceso
+     * @return array
+     *
+     */
     private function alias(array $data): array
     {
         if (!isset($data['alias'])) {
