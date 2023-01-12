@@ -85,18 +85,34 @@ class com_sucursal extends modelo
 
     protected function init_base(array $data): array
     {
+        $com_cliente =(new com_cliente(link: $this->link))->registro(registro_id: $data['com_cliente_id']);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener com_cliente', data: $com_cliente);
+        }
+
+        $com_cliente_rfc = $com_cliente['com_cliente_rfc'];
+        $com_cliente_razon_social = $com_cliente['com_cliente_razon_social'];
+
         if (!isset($data['descripcion'])) {
-            $data['descripcion'] = $data['nombre_contacto'];
+            $ds = $data['codigo'];
+            $ds .= ' '.$com_cliente_rfc;
+            $ds .= ' '.$com_cliente_razon_social;
+
+            $data['descripcion'] = $ds;
         }
 
         if (!isset($data['codigo_bis'])) {
-            $data['codigo_bis'] = $data['codigo'];
+            $data['codigo_bis'] = $data['codigo'].$com_cliente_rfc;
         }
 
         if (!isset($data['descripcion_select'])) {
-            $ds = str_replace("_", " ", $data['descripcion']);
-            $ds = ucwords($ds);
-            $data['descripcion_select'] = "{$data['codigo']} - {$ds}";
+
+            $ds = $data['codigo'];
+            $ds .= ' '.$com_cliente_rfc;
+            $ds .= ' '.$com_cliente_razon_social;
+
+            $data['descripcion_select'] = $ds;
+
         }
 
         if (!isset($data['alias'])) {
@@ -169,12 +185,14 @@ class com_sucursal extends modelo
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al inicializar campo base', data: $registro);
         }
-
+        
         $registro = $this->limpia_campos(registro: $registro, campos_limpiar: array('dp_pais_id', 'dp_estado_id',
             'dp_municipio_id', 'dp_cp_id', 'dp_cp_id', 'dp_colonia_postal_id'));
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al limpiar campos', data: $registro);
         }
+
+
 
         $r_modifica_bd = parent::modifica_bd($registro, $id, $reactiva);
         if (errores::$error) {
