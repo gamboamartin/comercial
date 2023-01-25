@@ -183,14 +183,38 @@ class controlador_com_sucursal extends _ctl_base {
             return $this->errores->error(mensaje: 'Error al inicializar alta',data:  $r_alta);
         }
 
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 4,key: 'codigo',
+            keys_selects:$keys_selects, place_holder: 'Cod');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
         $keys_selects = $this->key_select(cols:12, con_registros: true,filtro:  array(), key: 'com_cliente_id',
             keys_selects: $keys_selects, id_selected: -1, label: 'Cliente');
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
 
-        $keys_selects = $this->key_select(cols:6, con_registros: true,filtro:  array(), key: 'dp_pais_id',
-            keys_selects: $keys_selects, id_selected: -1, label: 'Pais');
+        $keys_selects = $this->key_select(cols:12, con_registros: true,filtro:  array(), key: 'com_tipo_sucursal_id',
+            keys_selects: $keys_selects, id_selected: -1, label: 'Tipo Sucursal');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->key_select(cols:6, con_registros: false,filtro:  array(), key: 'dp_calle_pertenece_id',
+            keys_selects: $keys_selects, id_selected: -1, label: 'Calle');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->key_select(cols:6, con_registros: false,filtro:  array(), key: 'dp_colonia_postal_id',
+            keys_selects: $keys_selects, id_selected: -1, label: 'Colonia Postal');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->key_select(cols:6, con_registros: false,filtro:  array(), key: 'dp_cp_id',
+            keys_selects: $keys_selects, id_selected: -1, label: 'Código Postal');
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
@@ -207,50 +231,14 @@ class controlador_com_sucursal extends _ctl_base {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
 
-        $keys_selects = $this->key_select(cols:6, con_registros: false,filtro:  array(), key: 'dp_cp_id',
-            keys_selects: $keys_selects, id_selected: -1, label: 'Código Postal');
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
-        }
-
-        $keys_selects = $this->key_select(cols:6, con_registros: false,filtro:  array(), key: 'dp_colonia_postal_id',
-            keys_selects: $keys_selects, id_selected: -1, label: 'Colonia Postal');
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
-        }
-
-        $keys_selects = $this->key_select(cols:6, con_registros: false,filtro:  array(), key: 'dp_calle_pertenece_id',
-            keys_selects: $keys_selects, id_selected: -1, label: 'Calle');
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
-        }
-
-        $keys_selects = $this->key_select(cols:12, con_registros: true,filtro:  array(), key: 'com_tipo_sucursal_id',
-            keys_selects: $keys_selects, id_selected: -1, label: 'Tipo Sucursal');
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
-        }
-
-        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 4,key: 'codigo',
-            keys_selects:$keys_selects, place_holder: 'Cod');
+        $keys_selects = $this->key_select(cols:6, con_registros: true,filtro:  array(), key: 'dp_pais_id',
+            keys_selects: $keys_selects, id_selected: -1, label: 'Pais');
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
 
         $keys_selects = (new \base\controller\init())->key_select_txt(cols: 8,key: 'nombre_contacto',
             keys_selects:$keys_selects, place_holder: 'Contacto');
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
-        }
-
-        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6,key: 'numero_interior',
-            keys_selects:$keys_selects, place_holder: 'Num Int', required: false);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
-        }
-
-        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6,key: 'numero_exterior',
-            keys_selects:$keys_selects, place_holder: 'Num Ext');
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
@@ -272,6 +260,15 @@ class controlador_com_sucursal extends _ctl_base {
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
+
+
+
+        $keys_selects = (new _base())->keys_selects(keys_selects: $keys_selects);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+
 
         return $keys_selects;
     }
