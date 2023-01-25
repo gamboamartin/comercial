@@ -9,14 +9,11 @@
 namespace gamboamartin\comercial\controllers;
 
 use base\controller\controler;
-use gamboamartin\comercial\models\com_tipo_producto;
 use gamboamartin\comercial\models\com_tipo_sucursal;
 use gamboamartin\errores\errores;
 use gamboamartin\system\_ctl_parent_sin_codigo;
 use gamboamartin\system\links_menu;
-use gamboamartin\system\system;
 use gamboamartin\template\html;
-use html\com_tipo_producto_html;
 use html\com_tipo_sucursal_html;
 use PDO;
 use stdClass;
@@ -99,7 +96,20 @@ class controlador_com_tipo_sucursal extends _ctl_parent_sin_codigo {
 
     protected function inputs_children(stdClass $registro): array|stdClass{
 
-        $this->keys_selects = $this->controlador_com_sucursal->key_selects_txt($this->keys_selects);
+
+        $keys_selects['com_tipo_sucursal_id'] = new stdClass();
+        $keys_selects['com_tipo_sucursal_id']->id_selected = $this->registro_id;
+        $keys_selects['com_tipo_sucursal_id']->disabled = true;
+
+        $keys_selects = $this->controlador_com_sucursal->key_selects_txt($keys_selects);
+        if(errores::$error){
+            $error = $this->errores->error(mensaje: 'Error al obtener keys_selects',data:  $keys_selects);
+            print_r($error);
+            exit;
+        }
+
+        $this->keys_selects = $keys_selects;
+
 
         $inputs = $this->controlador_com_sucursal->inputs(keys_selects: $this->keys_selects);
         if(errores::$error){
@@ -153,7 +163,7 @@ class controlador_com_tipo_sucursal extends _ctl_parent_sin_codigo {
         $data_view->namespace_model = 'gamboamartin\\comercial\\models';
         $data_view->name_model_children = 'com_sucursal';
 
-        $contenido_table = $this->contenido_children(data_view: $data_view, next_accion: __FUNCTION__);
+        $contenido_table = $this->contenido_children(data_view: $data_view, next_accion: __FUNCTION__, not_actions: array());
         if(errores::$error){
             return $this->retorno_error(
                 mensaje: 'Error al obtener tbody',data:  $contenido_table, header: $header,ws:  $ws);

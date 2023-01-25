@@ -22,8 +22,8 @@
                         <?php echo $controlador->inputs->select->dp_cp_id; ?>
                         <?php echo $controlador->inputs->select->dp_colonia_postal_id; ?>
                         <?php echo $controlador->inputs->select->dp_calle_pertenece_id; ?>
-                        <?php echo $controlador->inputs->com_sucursal_numero_interior; ?>
                         <?php echo $controlador->inputs->com_sucursal_numero_exterior; ?>
+                        <?php echo $controlador->inputs->com_sucursal_numero_interior; ?>
                         <?php echo $controlador->inputs->com_sucursal_telefono_1; ?>
                         <?php echo $controlador->inputs->com_sucursal_telefono_2; ?>
                         <?php echo $controlador->inputs->com_sucursal_telefono_3; ?>

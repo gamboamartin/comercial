@@ -177,6 +177,7 @@ class controlador_com_sucursal extends _ctl_base {
 
     public function key_selects_txt(array $keys_selects): array
     {
+
         $r_alta = $this->init_alta();
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al inicializar alta',data:  $r_alta);
