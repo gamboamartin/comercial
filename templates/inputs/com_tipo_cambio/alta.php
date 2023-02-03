@@ -5,5 +5,4 @@
 <?php echo $controlador->inputs->cat_sat_moneda_id; ?>
 <?php echo $controlador->inputs->fecha; ?>
 <?php echo $controlador->inputs->monto; ?>
-
-<?php include (new views())->ruta_templates.'botons/submit/alta_bd_otro.php';?>
+<?php include (new views())->ruta_templates.'botons/submit/alta_bd.php';?>

@@ -5,10 +5,7 @@
 <?php echo $controlador->inputs->cat_sat_moneda_id; ?>
 <?php echo $controlador->inputs->fecha; ?>
 <?php echo $controlador->inputs->monto; ?>
-
-
 <?php include (new views())->ruta_templates.'botons/submit/modifica_bd.php';?>
-
 <div class="col-row-12">
     <?php foreach ($controlador->buttons as $button){ ?>
         <?php echo $button; ?>

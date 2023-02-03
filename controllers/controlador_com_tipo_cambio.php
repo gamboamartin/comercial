@@ -8,6 +8,7 @@
  */
 namespace gamboamartin\comercial\controllers;
 
+use base\controller\controler;
 use gamboamartin\comercial\models\com_tipo_cambio;
 use gamboamartin\errores\errores;
 use gamboamartin\system\_ctl_base;
@@ -21,159 +22,143 @@ use Throwable;
 
 class controlador_com_tipo_cambio extends _ctl_base {
 
-
-
-    public function __construct(PDO $link, html $html = new \gamboamartin\template_1\html(), stdClass $paths_conf = new stdClass()){
+    public function __construct(PDO      $link, html $html = new \gamboamartin\template_1\html(),
+                                stdClass $paths_conf = new stdClass())
+    {
         $modelo = new com_tipo_cambio(link: $link);
-
         $html_ = new com_tipo_cambio_html(html: $html);
-        $obj_link = new links_menu(link: $link,registro_id: $this->registro_id);
+        $obj_link = new links_menu(link: $link, registro_id: $this->registro_id);
 
+        $datatables = $this->init_datatable();
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al inicializar datatable', data: $datatables);
+            print_r($error);
+            die('Error');
+        }
 
-        $datatables = new stdClass();
-        $datatables->columns = array();
-        $datatables->columns['com_tipo_cambio_id']['titulo'] = 'Id';
-        $datatables->columns['dp_pais_descripcion']['titulo'] = 'Pais';
-        $datatables->columns['cat_sat_moneda_codigo']['titulo'] = 'Moneda';
-        $datatables->columns['com_tipo_cambio_fecha']['titulo'] = 'Fecha';
-        $datatables->columns['com_tipo_cambio_monto']['titulo'] = 'Monto';
+        parent::__construct(html: $html_, link: $link, modelo: $modelo, obj_link: $obj_link, datatables: $datatables,
+            paths_conf: $paths_conf);
 
-        $datatables->filtro = array();
-        $datatables->filtro[] = 'com_tipo_cambio.id';
-        $datatables->filtro[] = 'dp_pais.descripcion';
-        $datatables->filtro[] = 'dp_moneda.codigo';
-        $datatables->filtro[] = 'com_tipo_cambio.fecha';
-
-        parent::__construct(html: $html_, link: $link, modelo: $modelo, obj_link: $obj_link,
-            datatables: $datatables, paths_conf: $paths_conf);
-
-        $this->titulo_lista = 'Tipos de cambio';
-
-
-
-        $this->lista_get_data = true;
+        $configuraciones = $this->init_configuraciones();
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al inicializar configuraciones', data: $configuraciones);
+            print_r($error);
+            die('Error');
+        }
 
     }
 
     public function alta(bool $header, bool $ws = false): array|string
     {
+        $r_alta = $this->init_alta();
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al inicializar alta', data: $r_alta, header: $header, ws: $ws);
+        }
 
-        $this->row_upd = new stdClass();
         $this->row_upd->fecha = date('Y-m-d');
 
-        $r_alta = $this->init_alta();
-        if(errores::$error){
-            return $this->retorno_error(
-                mensaje: 'Error al inicializar alta',data:  $r_alta, header: $header,ws:  $ws);
-        }
-
-        $keys_selects = $this->key_select(cols:6, con_registros: true,filtro:  array(), key: 'dp_pais_id',
-            keys_selects: array(), id_selected: -1, label: 'Pais');
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects, header: $header,ws:  $ws);
-        }
-
-        $keys_selects = $this->key_select(cols:6, con_registros: false,filtro: array(), key: 'cat_sat_moneda_id',
-            keys_selects: $keys_selects, id_selected: -1, label: 'Moneda');
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects, header: $header,ws:  $ws);
+        $keys_selects = $this->init_selects_inputs();
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al inicializar selects', data: $keys_selects, header: $header,
+                ws: $ws);
         }
 
         $inputs = $this->inputs(keys_selects: $keys_selects);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->retorno_error(
-                mensaje: 'Error al obtener inputs',data:  $inputs, header: $header,ws:  $ws);
+                mensaje: 'Error al obtener inputs', data: $inputs, header: $header, ws: $ws);
         }
 
         return $r_alta;
     }
 
-    public function alta_bd(bool $header, bool $ws = false): array|stdClass
-    {
-        $this->link->beginTransaction();
-        if(isset($_POST['dp_pais_id'])){
-            unset($_POST['dp_pais_id']);
-        }
-
-        $siguiente_view = (new actions())->init_alta_bd();
-        if(errores::$error){
-            $this->link->rollBack();
-            return $this->retorno_error(mensaje: 'Error al obtener siguiente view', data: $siguiente_view,
-                header:  $header, ws: $ws);
-        }
-
-        $seccion_retorno = $this->tabla;
-        if(isset($_POST['seccion_retorno'])){
-            $seccion_retorno = $_POST['seccion_retorno'];
-            unset($_POST['seccion_retorno']);
-        }
-        $id_retorno = -1;
-        if(isset($_POST['id_retorno'])){
-            $id_retorno = $_POST['id_retorno'];
-            unset($_POST['id_retorno']);
-        }
-
-
-        $r_alta_bd = parent::alta_bd(header: false); // TODO: Change the autogenerated stub
-        if(errores::$error){
-            $this->link->rollBack();
-            return $this->retorno_error(
-                mensaje: 'Error al insertar com_tipo_cambio',data:  $r_alta_bd, header: $header,ws:  $ws);
-        }
-        $this->link->commit();
-
-        if($header){
-            if($id_retorno === -1) {
-                $id_retorno = $r_alta_bd->registro_id;
-            }
-            $this->retorno_base(registro_id:$id_retorno, result: $r_alta_bd, siguiente_view: $siguiente_view,
-                ws:  $ws,seccion_retorno: $seccion_retorno);
-        }
-        if($ws){
-            header('Content-Type: application/json');
-            try {
-                echo json_encode($r_alta_bd, JSON_THROW_ON_ERROR);
-            }
-            catch (Throwable $e){
-                $error = (new errores())->error(mensaje: 'Error al maquetar JSON' , data: $e);
-                print_r($error);
-            }
-            exit;
-        }
-        $r_alta_bd->siguiente_view = $siguiente_view;
-        return $r_alta_bd;
-
-    }
-
     protected function campos_view(): array
     {
         $keys = new stdClass();
-        $keys->inputs = array('monto');
-        $keys->selects = array();
+        $keys->inputs = array('codigo', 'descripcion', 'monto');
         $keys->fechas = array('fecha');
+        $keys->selects = array();
 
         $init_data = array();
         $init_data['dp_pais'] = "gamboamartin\\direccion_postal";
         $init_data['cat_sat_moneda'] = "gamboamartin\\cat_sat";
-        $campos_view = $this->campos_view_base(init_data: $init_data,keys:  $keys);
 
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        $campos_view = $this->campos_view_base(init_data: $init_data, keys: $keys);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al inicializar campo view', data: $campos_view);
         }
-
 
         return $campos_view;
     }
 
+    private function init_configuraciones(): controler
+    {
+        $this->seccion_titulo = 'Tipo Cambio';
+        $this->titulo_lista = 'Registro de Tipo Cambios';
+
+        $this->lista_get_data = true;
+
+        return $this;
+    }
+
+    private function init_datatable(): stdClass
+    {
+        $columns["com_tipo_cambio_id"]["titulo"] = "Id";
+        $columns["dp_pais_descripcion"]["titulo"] = "Pais";
+        $columns["cat_sat_moneda_codigo"]["titulo"] = "Moneda";
+        $columns["com_tipo_cambio_fecha"]["titulo"] = "Fecha";
+        $columns["com_tipo_cambio_monto"]["titulo"] = "Monto";
+
+        $filtro = array("com_tipo_cambio.id", "dp_pais.descripcion", "cat_sat_moneda.codigo", "com_tipo_cambio.fecha");
+
+        $datatables = new stdClass();
+        $datatables->columns = $columns;
+        $datatables->filtro = $filtro;
+
+        return $datatables;
+    }
+
+    /**
+     * Integra los selects
+     * @param array $keys_selects Key de selcta integrar
+     * @param string $key key a validar
+     * @param string $label Etiqueta a mostrar
+     * @param int $id_selected  selected
+     * @param int $cols cols css
+     * @param bool $con_registros Intrega valores
+     * @param array $filtro Filtro de datos
+     * @return array
+     */
+    private function init_selects(array $keys_selects, string $key, string $label, int $id_selected = -1, int $cols = 6,
+                                  bool  $con_registros = true, array $filtro = array()): array
+    {
+        $keys_selects = $this->key_select(cols: $cols, con_registros: $con_registros, filtro: $filtro, key: $key,
+            keys_selects: $keys_selects, id_selected: $id_selected, label: $label);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+
+        return $keys_selects;
+    }
+
+    public function init_selects_inputs(): array
+    {
+        $keys_selects = $this->init_selects(keys_selects: array(), key: "dp_pais_id", label: "País",
+            cols: 12);
+        return $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_moneda_id", label: "Moneda",
+            cols: 12, con_registros: false);
+    }
+
     protected function key_selects_txt(array $keys_selects): array
     {
-
-        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6,key: 'fecha', keys_selects:$keys_selects, place_holder: 'Fecha');
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6,key: 'fecha',
+            keys_selects:$keys_selects, place_holder: 'Fecha');
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
 
-        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6,key: 'monto', keys_selects:$keys_selects, place_holder: 'Monto');
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6,key: 'monto',
+            keys_selects:$keys_selects, place_holder: 'Monto');
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
@@ -181,52 +166,31 @@ class controlador_com_tipo_cambio extends _ctl_base {
         return $keys_selects;
     }
 
-    public function modifica(
-        bool $header, bool $ws = false): array|stdClass
+    public function modifica(bool $header, bool $ws = false): array|stdClass
     {
-        $r_modifica = $this->init_modifica(); // TODO: Change the autogenerated stub
-        if(errores::$error){
+        $r_modifica = $this->init_modifica();
+        if (errores::$error) {
             return $this->retorno_error(
-                mensaje: 'Error al generar salida de template',data:  $r_modifica,header: $header,ws: $ws);
+                mensaje: 'Error al generar salida de template', data: $r_modifica, header: $header, ws: $ws);
         }
 
-        $filtro = array();
-        $filtro['dp_pais.id'] = $this->registro['dp_pais_id'];
-
-        $keys_selects = $this->key_select(cols:6, con_registros: true,filtro:  array(), key: 'dp_pais_id',
-            keys_selects: array(), id_selected: $this->registro['dp_pais_id'], label: 'Pais');
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects, header: $header,ws:  $ws);
+        $keys_selects = $this->init_selects_inputs();
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al inicializar selects', data: $keys_selects, header: $header,
+                ws: $ws);
         }
 
-        $keys_selects = $this->key_select(cols:6, con_registros: true,filtro: $filtro, key: 'cat_sat_moneda_id',
-            keys_selects: $keys_selects, id_selected: $this->registro['cat_sat_moneda_id'], label: 'Moneda');
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects, header: $header,ws:  $ws);
+        $keys_selects['dp_pais_id']->id_selected = $this->registro['dp_pais_id'];
+
+        $keys_selects['cat_sat_moneda_id']->con_registros = true;
+        $keys_selects['cat_sat_moneda_id']->filtro = array("dp_pais.id" => $this->registro['dp_pais_id']);
+        $keys_selects['cat_sat_moneda_id']->id_selected = $this->registro['cat_sat_moneda_id'];
+
+        $base = $this->base_upd(keys_selects: $keys_selects, params: array(), params_ajustados: array());
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al integrar base', data: $base, header: $header, ws: $ws);
         }
-
-
-        $base = $this->base_upd(keys_selects: $keys_selects, params: array(),params_ajustados: array());
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al integrar base',data:  $base, header: $header,ws:  $ws);
-        }
-
 
         return $r_modifica;
     }
-
-    public function modifica_bd(bool $header, bool $ws = false): array|stdClass
-    {
-        if(isset($_POST['dp_pais_id'])){
-            unset($_POST['dp_pais_id']);
-        }
-
-        $r_modifica_bd = parent::modifica_bd($header, $ws);
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al modificar accion',data:  $r_modifica_bd, header: false,ws: false);
-        }
-        return $r_modifica_bd;
-
-    }
-
 }
