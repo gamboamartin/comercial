@@ -115,8 +115,8 @@ class com_cliente extends _modelo_parent
         $foraneas['dp_calle_pertenece_id'] = new dp_calle_pertenece($this->link);
         $foraneas['cat_sat_regimen_fiscal_id'] = new cat_sat_regimen_fiscal($this->link);
         $foraneas['cat_sat_forma_pago_id'] = new cat_sat_forma_pago($this->link);
-        $foraneas['cat_sat_uso_cfdi_id'] = new cat_sat_tipo_de_comprobante($this->link);
-        $foraneas['cat_sat_tipo_de_comprobante_id'] = new cat_sat_uso_cfdi($this->link);
+        $foraneas['cat_sat_uso_cfdi_id'] = new cat_sat_uso_cfdi($this->link);
+        $foraneas['cat_sat_tipo_de_comprobante_id'] = new cat_sat_tipo_de_comprobante($this->link);
         $foraneas['cat_sat_metodo_pago_id'] = new cat_sat_metodo_pago($this->link);
         $foraneas['com_tipo_cliente_id'] = new com_tipo_cliente($this->link);
 
