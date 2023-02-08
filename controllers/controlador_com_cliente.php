@@ -11,7 +11,6 @@ namespace gamboamartin\comercial\controllers;
 
 use base\controller\controler;
 use gamboamartin\comercial\models\com_cliente;
-use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\errores\errores;
 use gamboamartin\system\_ctl_base;
@@ -120,6 +119,10 @@ class controlador_com_cliente extends _ctl_base
         return $keys_selects;
     }
 
+    /**
+     * Inicializa los elementos de lista
+     * @return stdClass
+     */
     private function init_datatable(): stdClass
     {
         $columns["com_cliente_id"]["titulo"] = "Id";
