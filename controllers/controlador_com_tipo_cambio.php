@@ -149,7 +149,7 @@ class controlador_com_tipo_cambio extends _ctl_base {
         $keys_selects = $this->init_selects(keys_selects: array(), key: "dp_pais_id", label: "País",
             cols: 12);
         return $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_moneda_id", label: "Moneda",
-            cols: 12);
+            cols: 12, con_registros: false);
     }
 
     protected function key_selects_txt(array $keys_selects): array
