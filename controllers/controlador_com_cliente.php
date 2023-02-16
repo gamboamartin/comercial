@@ -10,7 +10,14 @@
 namespace gamboamartin\comercial\controllers;
 
 use base\controller\controler;
+use gamboamartin\cat_sat\models\cat_sat_forma_pago;
+use gamboamartin\cat_sat\models\cat_sat_metodo_pago;
+use gamboamartin\cat_sat\models\cat_sat_moneda;
+use gamboamartin\cat_sat\models\cat_sat_regimen_fiscal;
+use gamboamartin\cat_sat\models\cat_sat_tipo_de_comprobante;
+use gamboamartin\cat_sat\models\cat_sat_uso_cfdi;
 use gamboamartin\comercial\models\com_cliente;
+use gamboamartin\comercial\models\com_tipo_cliente;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\errores\errores;
 use gamboamartin\system\_ctl_base;
@@ -45,6 +52,16 @@ class controlador_com_cliente extends _ctl_base
             print_r($error);
             die('Error');
         }
+
+        $this->parents_verifica[] = (new com_tipo_cliente(link: $this->link));
+        $this->parents_verifica[] = (new cat_sat_tipo_de_comprobante(link: $this->link));
+        $this->parents_verifica[] = (new cat_sat_uso_cfdi(link: $this->link));
+        $this->parents_verifica[] = (new cat_sat_metodo_pago(link: $this->link));
+        $this->parents_verifica[] = (new cat_sat_forma_pago(link: $this->link));
+        $this->parents_verifica[] = (new cat_sat_moneda(link: $this->link));
+        $this->parents_verifica[] = (new cat_sat_regimen_fiscal(link: $this->link));
+        $this->parents_verifica[] = (new dp_calle_pertenece(link: $this->link));
+
     }
 
     public function alta(bool $header, bool $ws = false): array|string

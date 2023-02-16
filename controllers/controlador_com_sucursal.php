@@ -8,14 +8,12 @@
  */
 namespace gamboamartin\comercial\controllers;
 
-use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\comercial\models\com_tipo_sucursal;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\errores\errores;
 use gamboamartin\system\_ctl_base;
 use gamboamartin\system\links_menu;
-use gamboamartin\system\system;
 use gamboamartin\template\html;
 use html\com_sucursal_html;
 use PDO;
@@ -55,45 +53,18 @@ class controlador_com_sucursal extends _ctl_base {
             print_r($error);
             die('Error');
         }
+
+        $this->parents_verifica[] = (new com_tipo_sucursal(link: $this->link));
+        $this->parents_verifica[] = (new dp_calle_pertenece(link: $this->link));
     }
 
     public function alta(bool $header, bool $ws = false): array|string
     {
-        $tiene_rows = (new com_tipo_sucursal(link: $this->link))->tiene_registros();
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al verificar com_tipo_sucursal',
-                data:  $tiene_rows, header: $header,ws:$ws);
-        }
-        if(!$tiene_rows){
-            return $this->retorno_error(mensaje: 'Error al verificar com_tipo_sucursal',
-                data:  $tiene_rows, header: $header,ws:$ws);
-        }
-
-        $tiene_rows = (new dp_calle_pertenece(link: $this->link))->tiene_registros();
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al verificar dp_calle_pertenece',
-                data:  $tiene_rows, header: $header,ws:$ws);
-        }
-        if(!$tiene_rows){
-            return $this->retorno_error(mensaje: 'Error al verificar dp_calle_pertenece',
-                data:  $tiene_rows, header: $header,ws:$ws);
-        }
-
-        $tiene_rows = (new com_cliente(link: $this->link))->tiene_registros();
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al verificar com_cliente',
-                data:  $tiene_rows, header: $header,ws:$ws);
-        }
-        if(!$tiene_rows){
-            return $this->retorno_error(mensaje: 'Error al verificar com_cliente',
-                data:  $tiene_rows, header: $header,ws:$ws);
-        }
 
         $r_alta =  parent::alta(header: false);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al generar template',data:  $r_alta, header: $header,ws:$ws);
         }
-
 
         $inputs = $this->genera_inputs(keys_selects:  $this->keys_selects);
         if(errores::$error){
