@@ -8,6 +8,7 @@
  */
 namespace gamboamartin\comercial\controllers;
 
+use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\comercial\models\com_tipo_sucursal;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
@@ -56,6 +57,7 @@ class controlador_com_sucursal extends _ctl_base {
 
         $this->parents_verifica[] = (new com_tipo_sucursal(link: $this->link));
         $this->parents_verifica[] = (new dp_calle_pertenece(link: $this->link));
+        $this->parents_verifica[] = (new com_cliente(link: $this->link));
         $this->verifica_parents_alta = true;
     }
 
