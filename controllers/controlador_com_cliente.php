@@ -84,6 +84,8 @@ class controlador_com_cliente extends _ctl_base
                 mensaje: 'Error al obtener inputs', data: $inputs, header: $header, ws: $ws);
         }
 
+
+
         return $r_alta;
     }
 

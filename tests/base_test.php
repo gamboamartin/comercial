@@ -4,8 +4,11 @@ use base\orm\modelo_base;
 use gamboamartin\cat_sat\models\cat_sat_forma_pago;
 use gamboamartin\cat_sat\models\cat_sat_metodo_pago;
 use gamboamartin\cat_sat\models\cat_sat_moneda;
+use gamboamartin\cat_sat\models\cat_sat_obj_imp;
+use gamboamartin\cat_sat\models\cat_sat_producto;
 use gamboamartin\cat_sat\models\cat_sat_regimen_fiscal;
 use gamboamartin\cat_sat\models\cat_sat_tipo_de_comprobante;
+use gamboamartin\cat_sat\models\cat_sat_unidad;
 use gamboamartin\cat_sat\models\cat_sat_uso_cfdi;
 use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\comercial\models\com_producto;
@@ -54,6 +57,28 @@ class base_test{
         return $alta;
     }
 
+    public function alta_cat_sat_obj_imp(PDO $link, int $id): array|\stdClass
+    {
+
+        $alta = (new \gamboamartin\cat_sat\tests\base_test())->alta_cat_sat_obj_imp(link: $link, id: $id);
+        if(errores::$error){
+            return (new errores())->error('Error al insertar', $alta);
+        }
+
+        return $alta;
+    }
+
+    public function alta_cat_sat_producto(PDO $link, int $id): array|\stdClass
+    {
+
+        $alta = (new \gamboamartin\cat_sat\tests\base_test())->alta_cat_sat_producto(link: $link, id: $id);
+        if(errores::$error){
+            return (new errores())->error('Error al insertar', $alta);
+        }
+
+        return $alta;
+    }
+
     public function alta_cat_sat_regimen_fiscal(PDO $link): array|\stdClass
     {
 
@@ -80,6 +105,17 @@ class base_test{
     {
 
         $alta = (new \gamboamartin\cat_sat\tests\base_test())->alta_cat_sat_uso_cfdi($link);
+        if(errores::$error){
+            return (new errores())->error('Error al insertar', $alta);
+        }
+
+        return $alta;
+    }
+
+    public function alta_cat_sat_unidad(PDO $link, int $id): array|\stdClass
+    {
+
+        $alta = (new \gamboamartin\cat_sat\tests\base_test())->alta_cat_sat_unidad(link: $link, id: $id);
         if(errores::$error){
             return (new errores())->error('Error al insertar', $alta);
         }
@@ -178,6 +214,18 @@ class base_test{
             }
         }
 
+        $existe = (new dp_calle_pertenece($link))->existe_by_id(registro_id: $dp_calle_pertenece_id);
+        if(errores::$error){
+            return (new errores())->error('Error al verificar si existe', $existe);
+        }
+
+        if(!$existe) {
+            $alta = (new base_test())->alta_dp_calle_pertenece(link: $link, id: $dp_calle_pertenece_id);
+            if (errores::$error) {
+                return (new errores())->error('Error al insertar', $alta);
+            }
+        }
+
 
         $registro['dp_calle_pertenece_id'] = $dp_calle_pertenece_id;
         $registro['cat_sat_moneda_id'] = $cat_sat_moneda_id;
@@ -215,6 +263,42 @@ class base_test{
 
         if(!$existe) {
             $alta = (new base_test())->alta_com_tipo_producto($link);
+            if (errores::$error) {
+                return (new errores())->error('Error al insertar', $alta);
+            }
+        }
+
+        $existe = (new cat_sat_producto($link))->existe_by_id(registro_id: $cat_sat_producto_id);
+        if(errores::$error){
+            return (new errores())->error('Error al verificar si existe', $existe);
+        }
+
+        if(!$existe) {
+            $alta = (new base_test())->alta_cat_sat_producto(link: $link, id: $cat_sat_producto_id);
+            if (errores::$error) {
+                return (new errores())->error('Error al insertar', $alta);
+            }
+        }
+
+        $existe = (new cat_sat_unidad($link))->existe_by_id(registro_id: $cat_sat_unidad_id);
+        if(errores::$error){
+            return (new errores())->error('Error al verificar si existe', $existe);
+        }
+
+        if(!$existe) {
+            $alta = (new base_test())->alta_cat_sat_unidad(link: $link, id: $cat_sat_unidad_id);
+            if (errores::$error) {
+                return (new errores())->error('Error al insertar', $alta);
+            }
+        }
+
+        $existe = (new cat_sat_obj_imp($link))->existe_by_id(registro_id: $cat_sat_obj_imp_id);
+        if(errores::$error){
+            return (new errores())->error('Error al verificar si existe', $existe);
+        }
+
+        if(!$existe) {
+            $alta = (new base_test())->alta_cat_sat_obj_imp(link: $link, id: $cat_sat_obj_imp_id);
             if (errores::$error) {
                 return (new errores())->error('Error al insertar', $alta);
             }
@@ -357,6 +441,17 @@ class base_test{
             return (new errores())->error('Error al dar de alta ', $alta);
 
         }
+        return $alta;
+    }
+
+    public function alta_dp_calle_pertenece(PDO $link, int $id): array|\stdClass
+    {
+
+        $alta = (new \gamboamartin\direccion_postal\tests\base_test())->alta_dp_calle_pertenece(link: $link, id: $id);
+        if(errores::$error){
+            return (new errores())->error('Error al insertar', $alta);
+        }
+
         return $alta;
     }
 
