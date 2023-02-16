@@ -48,6 +48,7 @@ class controlador_com_tipo_cambio extends _ctl_base {
         }
 
         $this->parents_verifica[] = new cat_sat_moneda(link: $this->link);
+        $this->verifica_parents_alta= true;
 
     }
 
