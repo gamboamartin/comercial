@@ -9,6 +9,7 @@
 namespace gamboamartin\comercial\controllers;
 
 use base\controller\controler;
+use gamboamartin\cat_sat\models\cat_sat_moneda;
 use gamboamartin\comercial\models\com_tipo_cambio;
 use gamboamartin\errores\errores;
 use gamboamartin\system\_ctl_base;
@@ -45,6 +46,8 @@ class controlador_com_tipo_cambio extends _ctl_base {
             print_r($error);
             die('Error');
         }
+
+        $this->parents_verifica[] = new cat_sat_moneda(link: $this->link);
 
     }
 
