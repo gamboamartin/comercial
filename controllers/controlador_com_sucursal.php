@@ -8,19 +8,19 @@
  */
 namespace gamboamartin\comercial\controllers;
 
+use base\controller\init;
 use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\comercial\models\com_tipo_sucursal;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\errores\errores;
-use gamboamartin\system\_ctl_base;
 use gamboamartin\system\links_menu;
 use gamboamartin\template\html;
 use html\com_sucursal_html;
 use PDO;
 use stdClass;
 
-class controlador_com_sucursal extends _ctl_base {
+class controlador_com_sucursal extends _base_comercial {
 
     public array|stdClass $keys_selects = array();
 
@@ -61,24 +61,7 @@ class controlador_com_sucursal extends _ctl_base {
         $this->verifica_parents_alta = true;
     }
 
-    public function alta(bool $header, bool $ws = false): array|string
-    {
 
-        $r_alta =  parent::alta(header: false);
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al generar template',data:  $r_alta, header: $header,ws:$ws);
-        }
-
-        $inputs = $this->genera_inputs(keys_selects:  $this->keys_selects);
-        if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al generar inputs',data:  $inputs);
-            print_r($error);
-            die('Error');
-        }
-
-
-        return $r_alta;
-    }
 
 
 
@@ -180,7 +163,7 @@ class controlador_com_sucursal extends _ctl_base {
             return $this->errores->error(mensaje: 'Error al inicializar alta',data:  $r_alta);
         }
 
-        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 4,key: 'codigo',
+        $keys_selects = (new init())->key_select_txt(cols: 4,key: 'codigo',
             keys_selects:$keys_selects, place_holder: 'Cod');
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
@@ -234,25 +217,25 @@ class controlador_com_sucursal extends _ctl_base {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
 
-        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 8,key: 'nombre_contacto',
+        $keys_selects = (new init())->key_select_txt(cols: 8,key: 'nombre_contacto',
             keys_selects:$keys_selects, place_holder: 'Contacto');
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
 
-        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 4,key: 'telefono_1',
+        $keys_selects = (new init())->key_select_txt(cols: 4,key: 'telefono_1',
             keys_selects:$keys_selects, place_holder: 'Teléfono 1');
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
 
-        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 4,key: 'telefono_2',
+        $keys_selects = (new init())->key_select_txt(cols: 4,key: 'telefono_2',
             keys_selects:$keys_selects, place_holder: 'Teléfono 2', required: false);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
 
-        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 4,key: 'telefono_3',
+        $keys_selects = (new init())->key_select_txt(cols: 4,key: 'telefono_3',
             keys_selects:$keys_selects, place_holder: 'Teléfono 3', required: false);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
