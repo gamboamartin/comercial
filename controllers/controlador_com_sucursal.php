@@ -80,22 +80,7 @@ class controlador_com_sucursal extends _ctl_base {
         return $r_alta;
     }
 
-    /**
-     * Asigan el valor de una propiedad para un input
-     * @param string $identificador Identificador input
-     * @param mixed $propiedades Propiedad de modelo a asignar
-     * @return void
-     */
-    public function asignar_propiedad(string $identificador, mixed $propiedades)
-    {
-        if (!array_key_exists($identificador,$this->keys_selects)){
-            $this->keys_selects[$identificador] = new stdClass();
-        }
 
-        foreach ($propiedades as $key => $value){
-            $this->keys_selects[$identificador]->$key = $value;
-        }
-    }
 
     private function inicializa_propiedades(): array
     {

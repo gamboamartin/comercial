@@ -66,16 +66,6 @@ class controlador_com_producto extends _ctl_base {
         return $r_alta;
     }
 
-    public function asignar_propiedad(string $identificador, mixed $propiedades)
-    {
-        if (!array_key_exists($identificador,$this->keys_selects)){
-            $this->keys_selects[$identificador] = new stdClass();
-        }
-
-        foreach ($propiedades as $key => $value){
-            $this->keys_selects[$identificador]->$key = $value;
-        }
-    }
 
     public function get_productos(bool $header, bool $ws = true): array|stdClass
     {
