@@ -91,7 +91,6 @@ class controlador_com_cliente extends _ctl_base
 
     private function init_configuraciones(): controler
     {
-        $this->seccion_titulo = 'Clientes';
         $this->titulo_lista = 'Registro de Clientes';
 
         return $this;

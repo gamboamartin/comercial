@@ -97,7 +97,6 @@ class controlador_com_tipo_cambio extends _ctl_base {
 
     private function init_configuraciones(): controler
     {
-        $this->seccion_titulo = 'Tipo Cambio';
         $this->titulo_lista = 'Registro de Tipo Cambios';
 
         $this->lista_get_data = true;
