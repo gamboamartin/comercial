@@ -18,6 +18,8 @@ class com_tipo_producto extends _modelo_parent{
             columnas: $columnas, columnas_extra: $columnas_extra, childrens: $childrens);
 
         $this->NAMESPACE = __NAMESPACE__;
+
+        $this->etiqueta = 'Tipo de producto';
     }
 
 

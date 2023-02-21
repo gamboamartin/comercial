@@ -49,6 +49,8 @@ class com_sucursal extends modelo
 
         $this->NAMESPACE = __NAMESPACE__;
 
+        $this->etiqueta = 'Sucursal';
+
     }
 
     /**

@@ -3,7 +3,6 @@
 namespace gamboamartin\comercial\models;
 
 use base\orm\_modelo_parent;
-use base\orm\modelo;
 use gamboamartin\cat_sat\models\cat_sat_forma_pago;
 use gamboamartin\cat_sat\models\cat_sat_metodo_pago;
 use gamboamartin\cat_sat\models\cat_sat_moneda;
@@ -11,11 +10,6 @@ use gamboamartin\cat_sat\models\cat_sat_regimen_fiscal;
 use gamboamartin\cat_sat\models\cat_sat_tipo_de_comprobante;
 use gamboamartin\cat_sat\models\cat_sat_uso_cfdi;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
-use gamboamartin\direccion_postal\models\dp_colonia_postal;
-use gamboamartin\direccion_postal\models\dp_cp;
-use gamboamartin\direccion_postal\models\dp_estado;
-use gamboamartin\direccion_postal\models\dp_municipio;
-use gamboamartin\direccion_postal\models\dp_pais;
 use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
@@ -45,6 +39,8 @@ class com_cliente extends _modelo_parent
             columnas: $columnas, columnas_extra: $columnas_extra, tipo_campos: $tipo_campos);
 
         $this->NAMESPACE = __NAMESPACE__;
+
+        $this->etiqueta = 'Cliente';
     }
 
     public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass

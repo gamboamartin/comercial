@@ -18,6 +18,8 @@ class com_tipo_cliente extends _modelo_parent{
             columnas: $columnas, columnas_extra: $columnas_extra, childrens: $childrens);
 
         $this->NAMESPACE = __NAMESPACE__;
+
+        $this->etiqueta = 'Tipo de cliente';
     }
 
     public function clientes(int $com_tipo_cliente_id): array

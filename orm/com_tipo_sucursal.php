@@ -19,6 +19,8 @@ class com_tipo_sucursal extends _modelo_parent{
             columnas: $columnas, columnas_extra: $columnas_extra, childrens: $childrens);
 
         $this->NAMESPACE = __NAMESPACE__;
+
+        $this->etiqueta = 'Tipo de sucursal';
     }
 
     public function sucursales(int $com_tipo_sucursal_id): array
