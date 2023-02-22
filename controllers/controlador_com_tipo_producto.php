@@ -56,6 +56,8 @@ class controlador_com_tipo_producto extends _ctl_parent_sin_codigo {
             print_r($error);
             die('Error');
         }
+
+        $this->childrens_data['com_producto']['title'] = 'Productos';
     }
 
     private function init_controladores(stdClass $paths_conf): controler

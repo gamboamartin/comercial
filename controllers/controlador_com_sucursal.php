@@ -59,9 +59,15 @@ class controlador_com_sucursal extends _base_comercial {
         $this->parents_verifica[] = (new dp_calle_pertenece(link: $this->link));
         $this->parents_verifica[] = (new com_cliente(link: $this->link));
         $this->verifica_parents_alta = true;
+
+
     }
 
 
+    /**
+     * Asigna las propiedades de la entidad para fronten
+     * @return array
+     */
     private function inicializa_propiedades(): array
     {
         $identificador = "dp_pais_id";

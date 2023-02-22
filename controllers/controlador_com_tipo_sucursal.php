@@ -53,6 +53,8 @@ class controlador_com_tipo_sucursal extends _ctl_parent_sin_codigo {
             print_r($error);
             die('Error');
         }
+
+        $this->childrens_data['com_sucursal']['title'] = 'Sucursales';
     }
 
     private function init_controladores(stdClass $paths_conf): controler

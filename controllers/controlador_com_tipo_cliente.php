@@ -54,6 +54,8 @@ class controlador_com_tipo_cliente extends _ctl_parent_sin_codigo {
             print_r($error);
             die('Error');
         }
+
+        $this->childrens_data['com_cliente']['title'] = 'Clientes';
     }
 
     private function init_controladores(stdClass $paths_conf): controler
