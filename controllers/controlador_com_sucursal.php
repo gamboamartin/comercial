@@ -65,8 +65,9 @@ class controlador_com_sucursal extends _base_comercial {
 
 
     /**
-     * Asigna las propiedades de la entidad para fronten
+     * Asigna las propiedades de la entidad para frontend
      * @return array
+     * @version 4.22.3
      */
     private function inicializa_propiedades(): array
     {
