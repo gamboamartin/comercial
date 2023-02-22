@@ -64,6 +64,8 @@ class controlador_com_cliente extends _ctl_base
 
         $this->verifica_parents_alta = true;
 
+
+
     }
 
     public function alta(bool $header, bool $ws = false): array|string
