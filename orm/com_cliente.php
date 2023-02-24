@@ -55,12 +55,6 @@ class com_cliente extends _modelo_parent
             return $this->error->error(mensaje: 'Error al inicializar foraneas', data: $this->registro);
         }
 
-        $this->registro = $this->limpia_campos(registro: $this->registro, campos_limpiar: array('dp_pais_id',
-            'dp_estado_id', 'dp_municipio_id', 'dp_cp_id', 'dp_cp_id', 'dp_colonia_postal_id'));
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al limpiar campos', data: $this->registro);
-        }
-
         $keys = array('telefono','numero_exterior');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $this->registro);
         if (errores::$error) {
@@ -75,6 +69,12 @@ class com_cliente extends _modelo_parent
 
         if(isset($this->registro["es_empleado"])){
             $es_empleado = $this->registro["es_empleado"];
+        }
+
+        $this->registro = $this->limpia_campos(registro: $this->registro, campos_limpiar: array('dp_pais_id',
+            'dp_estado_id', 'dp_municipio_id', 'dp_cp_id', 'dp_cp_id', 'dp_colonia_postal_id', 'es_empleado'));
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al limpiar campos', data: $this->registro);
         }
 
         $r_alta_bd = parent::alta_bd($keys_integra_ds);
