@@ -71,6 +71,12 @@ class com_cliente extends _modelo_parent
             $this->registro['numero_interior'] = '';
         }
 
+        $es_empleado = false;
+
+        if(isset($this->registro["es_empleado"])){
+            $es_empleado = $this->registro["es_empleado"];
+        }
+
         $r_alta_bd = parent::alta_bd($keys_integra_ds);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al insertar cliente', data: $r_alta_bd);
@@ -79,7 +85,8 @@ class com_cliente extends _modelo_parent
         $data = (new com_sucursal($this->link))->maqueta_data(codigo: $this->registro["codigo"],
             nombre_contacto: $this->registro["razon_social"], com_cliente_id: $r_alta_bd->registro_id,
             telefono: $this->registro["telefono"], dp_calle_pertenece_id: $this->registro["dp_calle_pertenece_id"],
-            numero_exterior: $this->registro["numero_exterior"], numero_interior: $this->registro["numero_interior"]);
+            numero_exterior: $this->registro["numero_exterior"], numero_interior: $this->registro["numero_interior"],
+            es_empleado: $es_empleado);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al maquetar datos de sucursal', data: $data);
         }
