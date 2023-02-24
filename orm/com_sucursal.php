@@ -202,7 +202,8 @@ class com_sucursal extends modelo
     }
 
     public function maqueta_data(string $codigo, string $nombre_contacto, int $com_cliente_id, string $telefono,
-                                 int    $dp_calle_pertenece_id, string $numero_exterior, string $numero_interior): array
+                                 int    $dp_calle_pertenece_id, string $numero_exterior, string $numero_interior,
+                                 bool $es_empleado = false): array
     {
 
         $com_tipo_sucursal= (new com_tipo_sucursal($this->link))->inserta_predeterminado(codigo: 'MAT',descripcion: 'MATRIZ');
@@ -215,7 +216,13 @@ class com_sucursal extends modelo
             return $this->error->error(mensaje: "Error al obtener el id predeterminado", data: $com_tipo_sucursal);
         }
 
-
+        if ($es_empleado){
+            (new com_tipo_sucursal(link: $this->link))->modifica_bd(registro: array("es_empleado" => "activo"),
+                id: $com_tipo_sucursal_id);
+            if (errores::$error) {
+                return $this->error->error(mensaje: "Error asignar es_empleado a tipo sucursal", data: $com_tipo_sucursal);
+            }
+        }
 
         $data['com_tipo_sucursal_id'] = $com_tipo_sucursal_id;
         $data['codigo'] = $codigo;
