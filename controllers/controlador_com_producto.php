@@ -14,9 +14,7 @@ use gamboamartin\cat_sat\models\cat_sat_unidad;
 use gamboamartin\comercial\models\com_producto;
 use gamboamartin\comercial\models\com_tipo_producto;
 use gamboamartin\errores\errores;
-use gamboamartin\system\_ctl_base;
 use gamboamartin\system\links_menu;
-use gamboamartin\system\system;
 use gamboamartin\template\html;
 use html\com_producto_html;
 use PDO;
@@ -167,6 +165,9 @@ class controlador_com_producto extends _base_comercial {
         return $keys_selects;
     }
 
+    /**
+     * @return stdClass
+     */
     public function init_datatable(): stdClass
     {
         $columns["com_producto_id"]["titulo"] = "Id";
