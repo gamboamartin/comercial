@@ -169,7 +169,7 @@ class controlador_com_producto extends _base_comercial {
      * @return stdClass
      * @version 4.40.3
      */
-    private function init_datatable(): stdClass
+    public function init_datatable(): stdClass 
     {
         $columns["com_producto_id"]["titulo"] = "Id";
         $columns["com_producto_codigo"]["titulo"] = "Código";
