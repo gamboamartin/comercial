@@ -8,8 +8,11 @@
  */
 namespace gamboamartin\comercial\controllers;
 
+use gamboamartin\cat_sat\models\cat_sat_obj_imp;
 use gamboamartin\cat_sat\models\cat_sat_producto;
+use gamboamartin\cat_sat\models\cat_sat_unidad;
 use gamboamartin\comercial\models\com_producto;
+use gamboamartin\comercial\models\com_tipo_producto;
 use gamboamartin\errores\errores;
 use gamboamartin\system\_ctl_base;
 use gamboamartin\system\links_menu;
@@ -47,6 +50,13 @@ class controlador_com_producto extends _base_comercial {
             print_r($error);
             die('Error');
         }
+
+        $this->parents_verifica[] = (new cat_sat_producto(link: $this->link));
+        $this->parents_verifica[] = (new cat_sat_unidad(link: $this->link));
+        $this->parents_verifica[] = (new cat_sat_obj_imp(link: $this->link));
+        $this->parents_verifica[] = (new com_tipo_producto(link: $this->link));
+
+        $this->verifica_parents_alta = true;
     }
 
 
