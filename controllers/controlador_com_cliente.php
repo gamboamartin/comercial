@@ -91,6 +91,10 @@ class controlador_com_cliente extends _ctl_base
         return $r_alta;
     }
 
+    /**
+     * Inicializa las configuraciones base del controler
+     * @return controler
+     */
     private function init_configuraciones(): controler
     {
         $this->titulo_lista = 'Registro de Clientes';
