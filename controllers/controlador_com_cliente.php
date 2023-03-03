@@ -64,6 +64,8 @@ class controlador_com_cliente extends _ctl_base
 
         $this->verifica_parents_alta = true;
 
+        $this->childrens_data['com_sucursal']['title'] = 'Sucursal';
+
 
 
     }
