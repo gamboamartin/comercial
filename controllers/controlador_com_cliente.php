@@ -105,6 +105,16 @@ class controlador_com_cliente extends _ctl_base
         return $this;
     }
 
+    /**
+     * @param array $keys_selects
+     * @param string $key
+     * @param string $label
+     * @param int|null $id_selected
+     * @param int $cols
+     * @param bool $con_registros
+     * @param array $filtro
+     * @return array
+     */
     private function init_selects(array $keys_selects, string $key, string $label, int|null $id_selected = -1, int $cols = 6,
                                   bool  $con_registros = true, array $filtro = array()): array
     {
