@@ -169,7 +169,7 @@ class controlador_com_producto extends _base_comercial {
      * @return stdClass
      * @version 4.40.3
      */
-    public function init_datatable(): stdClass 
+    public function init_datatable(): stdClass
     {
         $columns["com_producto_id"]["titulo"] = "Id";
         $columns["com_producto_codigo"]["titulo"] = "Código";
@@ -191,43 +191,74 @@ class controlador_com_producto extends _base_comercial {
     {
         $identificador = "cat_sat_tipo_producto_id";
         $propiedades = array("label" => "SAT - Tipo");
-        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+        $pr = $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al inicializa',data:  $pr);
+        }
 
         $identificador = "cat_sat_division_producto_id";
         $propiedades = array("label" => "SAT - División", "con_registros" => false);
-        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+        $pr =$this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al inicializa',data:  $pr);
+        }
+
 
         $identificador = "cat_sat_grupo_producto_id";
         $propiedades = array("label" => "SAT - Grupo", "con_registros" => false);
-        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+        $pr =$this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al inicializa',data:  $pr);
+        }
 
         $identificador = "cat_sat_clase_producto_id";
         $propiedades = array("label" => "SAT - Clase", "con_registros" => false);
-        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+        $pr =$this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al inicializa',data:  $pr);
+        }
 
         $identificador = "cat_sat_producto_id";
         $propiedades = array("label" => "SAT - Producto", "con_registros" => false, "cols" => 12);
-        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+        $pr =$this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al inicializa',data:  $pr);
+        }
 
         $identificador = "cat_sat_unidad_id";
         $propiedades = array("label" => "SAT - Unidad");
-        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+        $pr =$this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al inicializa',data:  $pr);
+        }
 
         $identificador = "cat_sat_obj_imp_id";
         $propiedades = array("label" => "Objeto del Impuesto");
-        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+        $pr =$this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al inicializa',data:  $pr);
+        }
 
         $identificador = "com_tipo_producto_id";
         $propiedades = array("label" => "Tipo Producto", "cols" => 8);
-        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+        $pr =$this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al inicializa',data:  $pr);
+        }
 
         $identificador = "codigo";
         $propiedades = array("place_holder" => "Código", "cols" => 4);
-        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+        $pr =$this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al inicializa',data:  $pr);
+        }
 
         $identificador = "descripcion";
         $propiedades = array("place_holder" => "Producto", "cols" => 12);
-        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+        $pr =$this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al inicializa',data:  $pr);
+        }
 
         return $this->keys_selects;
     }
