@@ -29,6 +29,8 @@ class controlador_cat_sat_moneda extends \gamboamartin\cat_sat\controllers\contr
             exit;
         }
         $this->link_com_tipo_cambio_alta_bd = $link_com_tipo_cambio_alta_bd;
+
+        $this->childrens_data['com_cliente']['title'] = 'Cliente';
     }
 
     public function tipos_de_cambio(bool $header = true, bool $ws = false): array|string
