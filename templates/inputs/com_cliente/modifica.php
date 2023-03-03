@@ -12,8 +12,9 @@
 <?php echo $controlador->inputs->dp_cp_id; ?>
 <?php echo $controlador->inputs->dp_colonia_postal_id; ?>
 <?php echo $controlador->inputs->dp_calle_pertenece_id; ?>
-<?php echo $controlador->inputs->numero_interior; ?>
+
 <?php echo $controlador->inputs->numero_exterior; ?>
+<?php echo $controlador->inputs->numero_interior; ?>
 
 <?php echo $controlador->inputs->cat_sat_uso_cfdi_id; ?>
 <?php echo $controlador->inputs->cat_sat_metodo_pago_id; ?>
