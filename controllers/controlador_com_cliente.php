@@ -94,6 +94,7 @@ class controlador_com_cliente extends _ctl_base
     /**
      * Inicializa las configuraciones base del controler
      * @return controler
+     * @version 4.32.3
      */
     private function init_configuraciones(): controler
     {

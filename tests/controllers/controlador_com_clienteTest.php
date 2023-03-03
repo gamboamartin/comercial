@@ -29,6 +29,26 @@ class controlador_com_clienteTest extends test {
         $this->paths_conf->views = '/var/www/html/organigrama/config/views.php';
     }
 
+    public function test_init_configuraciones(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 2;
+        $_SESSION['usuario_id'] = 2;
+        $_GET['session_id'] = '1';
+        $_GET['registro_id'] = '1';
+        $ctl = new controlador_com_cliente(link: $this->link, paths_conf: $this->paths_conf);
+        $ctl = new liberator($ctl);
+
+
+        $resultado = $ctl->init_configuraciones();
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
 
     public function test_init_datatable(): void
     {
