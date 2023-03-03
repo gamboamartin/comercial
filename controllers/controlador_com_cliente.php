@@ -144,6 +144,7 @@ class controlador_com_cliente extends _ctl_base
     /**
      * Inicializa los elementos de lista
      * @return stdClass
+     * @version 4.28.3
      */
     private function init_datatable(): stdClass
     {
