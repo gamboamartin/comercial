@@ -318,6 +318,9 @@ class controlador_com_cliente extends _ctl_base
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_regimen_fiscal_id",
             label: "Régimen Fiscal", id_selected: $this->registro['cat_sat_regimen_fiscal_id'], cols: 12);
 
+        $keys_selects['cat_sat_regimen_fiscal_id']->columns_ds = array(
+            'cat_sat_regimen_fiscal_codigo','cat_sat_regimen_fiscal_descripcion');
+
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_pais_id", label: "País",
             id_selected: $this->registro['dp_pais_id']);
 
@@ -353,14 +356,37 @@ class controlador_com_cliente extends _ctl_base
 
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_uso_cfdi_id", label: "Uso CFDI",
             id_selected: $this->registro['cat_sat_uso_cfdi_id'], cols: 12);
+
+        $keys_selects['cat_sat_uso_cfdi_id']->columns_ds = array(
+            'cat_sat_uso_cfdi_codigo','cat_sat_uso_cfdi_descripcion');
+
+
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_metodo_pago_id",
             label: "Método de Pago", id_selected: $this->registro['cat_sat_metodo_pago_id']);
+
+        $keys_selects['cat_sat_metodo_pago_id']->columns_ds = array(
+            'cat_sat_metodo_pago_codigo','cat_sat_metodo_pago_descripcion');
+
+
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_forma_pago_id",
             label: "Forma Pago", id_selected: $this->registro['cat_sat_forma_pago_id']);
+
+        $keys_selects['cat_sat_forma_pago_id']->columns_ds = array(
+            'cat_sat_forma_pago_codigo','cat_sat_forma_pago_descripcion');
+
+
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_tipo_de_comprobante_id",
             label: "Tipo de Comprobante", id_selected: $this->registro['cat_sat_tipo_de_comprobante_id']);
+
+        $keys_selects['cat_sat_tipo_de_comprobante_id']->columns_ds = array(
+            'cat_sat_tipo_de_comprobante_codigo','cat_sat_tipo_de_comprobante_descripcion');
+
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_moneda_id",
             label: "Moneda", id_selected: $this->registro['cat_sat_moneda_id']);
+
+        $keys_selects['cat_sat_moneda_id']->columns_ds = array(
+            'cat_sat_moneda_codigo','cat_sat_moneda_descripcion');
+
 
         $this->not_actions[] = __FUNCTION__;
 
