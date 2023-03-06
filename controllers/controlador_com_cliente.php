@@ -290,22 +290,43 @@ class controlador_com_cliente extends _ctl_base
 
         $keys_selects = $this->init_selects(keys_selects: array(), key: "com_tipo_cliente_id", label: "Tipo de Cliente",
             id_selected: $this->registro['com_tipo_cliente_id'], cols: 12);
+
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_regimen_fiscal_id",
             label: "Régimen Fiscal", id_selected: $this->registro['cat_sat_regimen_fiscal_id'], cols: 12);
+
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_pais_id", label: "País",
             id_selected: $this->registro['dp_pais_id']);
+
+        $keys_selects['dp_pais_id']->key_descripcion_select = 'dp_pais_descripcion';
+
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_estado_id", label: "Estado",
             id_selected: $this->registro['dp_estado_id'], filtro: array('dp_pais.id' => $calle['dp_pais_id']));
+
+        $keys_selects['dp_estado_id']->key_descripcion_select = 'dp_estado_descripcion';
+
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_municipio_id", label: "Municipio",
             id_selected: $this->registro['dp_municipio_id'], filtro: array('dp_estado.id' => $calle['dp_estado_id']));
+
+        $keys_selects['dp_municipio_id']->key_descripcion_select = 'dp_municipio_descripcion';
+
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_cp_id", label: "Código Postal",
             id_selected: $this->registro['dp_cp_id'], filtro: array('dp_municipio.id' => $calle['dp_municipio_id']));
+
+        $keys_selects['dp_cp_id']->key_descripcion_select = 'dp_cp_descripcion';
+
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_colonia_postal_id",
             label: "Colonia Postal", id_selected: $this->registro['dp_colonia_postal_id'],
             filtro: array('dp_cp.id' => $calle['dp_cp_id']));
+
+        $keys_selects['dp_colonia_postal_id']->key_descripcion_select = 'dp_colonia_descripcion';
+
+
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_calle_pertenece_id", label: "Calle",
             id_selected: $this->registro['dp_calle_pertenece_id'],
             filtro: array('dp_colonia_postal.id' => $calle['dp_colonia_postal_id']));
+
+        $keys_selects['dp_calle_pertenece_id']->key_descripcion_select = 'dp_calle_descripcion';
+
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_uso_cfdi_id", label: "Uso CFDI",
             id_selected: $this->registro['cat_sat_uso_cfdi_id'], cols: 12);
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_metodo_pago_id",
