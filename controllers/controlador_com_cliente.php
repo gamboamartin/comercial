@@ -254,6 +254,13 @@ class controlador_com_cliente extends _ctl_base
 
     public function modifica(bool $header, bool $ws = false): array|stdClass
     {
+
+        $urls_js = (new _init_dps())->init_js(controler: $this);
+
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al generar url js',data:  $urls_js,header: $header,ws: $ws);
+        }
+
         $r_modifica = $this->init_modifica();
         if (errores::$error) {
             return $this->retorno_error(
