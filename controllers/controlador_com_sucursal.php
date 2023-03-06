@@ -73,28 +73,31 @@ class controlador_com_sucursal extends _base_comercial {
     private function inicializa_propiedades(): array
     {
         $identificador = "dp_pais_id";
-        $propiedades = array("label" => "Pais");
+        $propiedades = array("label" => "Pais",'key_descripcion_select'=>'dp_pais_descripcion');
         $prop = $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
         if(errores::$error){
             return $this->errores->error(mensaje:  'Error al generar propiedad',data: $prop);
         }
 
         $identificador = "dp_estado_id";
-        $propiedades = array("label" => "Estado", "con_registros" => false);
+        $propiedades = array("label" => "Estado", "con_registros" => false,
+            'key_descripcion_select'=>'dp_estado_descripcion');
         $prop =$this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
         if(errores::$error){
             return $this->errores->error(mensaje:  'Error al generar propiedad',data: $prop);
         }
 
         $identificador = "dp_municipio_id";
-        $propiedades = array("label" => "Municipio", "con_registros" => false);
+        $propiedades = array("label" => "Municipio", "con_registros" => false,
+            'key_descripcion_select'=>'dp_municipio_descripcion');
         $prop =$this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
         if(errores::$error){
             return $this->errores->error(mensaje:  'Error al generar propiedad',data: $prop);
         }
 
         $identificador = "dp_cp_id";
-        $propiedades = array("label" => "Código Postal", "con_registros" => false);
+        $propiedades = array("label" => "Código Postal", "con_registros" => false,
+            'key_descripcion_select'=>'dp_cp_descripcion');
         $prop =$this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
         if(errores::$error){
             return $this->errores->error(mensaje:  'Error al generar propiedad',data: $prop);
@@ -238,35 +241,43 @@ class controlador_com_sucursal extends _base_comercial {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
 
+        $keys_selects['dp_calle_pertenece_id']->key_descripcion_select = 'dp_calle_descripcion';
+
         $keys_selects = $this->key_select(cols:6, con_registros: false,filtro:  array(), key: 'dp_colonia_postal_id',
             keys_selects: $keys_selects, id_selected: -1, label: 'Colonia Postal');
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
+        $keys_selects['dp_colonia_postal_id']->key_descripcion_select = 'dp_colonia_descripcion';
 
         $keys_selects = $this->key_select(cols:6, con_registros: false,filtro:  array(), key: 'dp_cp_id',
             keys_selects: $keys_selects, id_selected: -1, label: 'Código Postal');
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
+        $keys_selects['dp_cp_id']->key_descripcion_select = 'dp_cp_descripcion';
+
 
         $keys_selects = $this->key_select(cols:6, con_registros: false,filtro:  array(), key: 'dp_estado_id',
             keys_selects: $keys_selects, id_selected: -1, label: 'Estado');
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
+        $keys_selects['dp_estado_id']->key_descripcion_select = 'dp_estado_descripcion';
 
         $keys_selects = $this->key_select(cols:6, con_registros: false,filtro:  array(), key: 'dp_municipio_id',
             keys_selects: $keys_selects, id_selected: -1, label: 'Municipio');
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
+        $keys_selects['dp_municipio_id']->key_descripcion_select = 'dp_municipio_descripcion';
 
         $keys_selects = $this->key_select(cols:6, con_registros: true,filtro:  array(), key: 'dp_pais_id',
             keys_selects: $keys_selects, id_selected: -1, label: 'Pais');
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
+        $keys_selects['dp_pais_id']->key_descripcion_select = 'dp_pais_descripcion';
 
         $keys_selects = (new init())->key_select_txt(cols: 8,key: 'nombre_contacto',
             keys_selects:$keys_selects, place_holder: 'Contacto');
@@ -343,12 +354,13 @@ class controlador_com_sucursal extends _base_comercial {
 
         $identificador = "dp_colonia_postal_id";
         $propiedades = array("id_selected" => $calle['dp_colonia_postal_id'], "con_registros" => true,
-            "filtro" => array('dp_cp.id' => $calle['dp_cp_id']));
+            "filtro" => array('dp_cp.id' => $calle['dp_cp_id']),'key_descripcion_select'=>'dp_colonia_descripcion');
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "dp_calle_pertenece_id";
         $propiedades = array("id_selected" => $this->row_upd->dp_calle_pertenece_id, "con_registros" => true,
-            "filtro" => array('dp_colonia_postal.id' => $calle['dp_colonia_postal_id']));
+            "filtro" => array('dp_colonia_postal.id' => $calle['dp_colonia_postal_id']),
+            'key_descripcion_select'=>'dp_calle_descripcion');
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "com_cliente_id";
