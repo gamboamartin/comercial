@@ -10,6 +10,7 @@
 namespace gamboamartin\comercial\controllers;
 
 use base\controller\controler;
+use controllers\_init_dps;
 use gamboamartin\cat_sat\models\cat_sat_forma_pago;
 use gamboamartin\cat_sat\models\cat_sat_metodo_pago;
 use gamboamartin\cat_sat\models\cat_sat_moneda;
@@ -72,6 +73,13 @@ class controlador_com_cliente extends _ctl_base
 
     public function alta(bool $header, bool $ws = false): array|string
     {
+
+        $urls_js = (new _init_dps())->init_js(controler: $this);
+
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al generar url js',data:  $urls_js,header: $header,ws: $ws);
+        }
+
         $r_alta = $this->init_alta();
         if (errores::$error) {
             return $this->retorno_error(mensaje: 'Error al inicializar alta', data: $r_alta, header: $header, ws: $ws);
