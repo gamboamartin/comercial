@@ -143,6 +143,10 @@ class controlador_com_cliente extends _ctl_base
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_regimen_fiscal_id",
             label: "Régimen Fiscal", cols: 12);
 
+        $keys_selects['cat_sat_regimen_fiscal_id']->columns_descripcion_select = array(
+            'cat_sat_regimen_fiscal_codigo','cat_sat_regimen_fiscal_descripcion');
+
+
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_pais_id", label: "País");
         $keys_selects['dp_pais_id']->key_descripcion_select = 'dp_pais_descripcion';
 
@@ -170,14 +174,34 @@ class controlador_com_cliente extends _ctl_base
 
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_uso_cfdi_id", label: "Uso CFDI",
             cols: 12);
+
+        $keys_selects['cat_sat_uso_cfdi_id']->columns_ds = array(
+            'cat_sat_uso_cfdi_codigo','cat_sat_uso_cfdi_descripcion');
+
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_metodo_pago_id",
             label: "Método de Pago");
+
+        $keys_selects['cat_sat_metodo_pago_id']->columns_ds = array(
+            'cat_sat_metodo_pago_codigo','cat_sat_metodo_pago_descripcion');
+
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_forma_pago_id",
             label: "Forma Pago");
+
+        $keys_selects['cat_sat_forma_pago_id']->columns_ds = array(
+            'cat_sat_forma_pago_codigo','cat_sat_forma_pago_descripcion');
+
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_tipo_de_comprobante_id",
             label: "Tipo de Comprobante");
+
+        $keys_selects['cat_sat_tipo_de_comprobante_id']->columns_ds = array(
+            'cat_sat_tipo_de_comprobante_codigo','cat_sat_tipo_de_comprobante_descripcion');
+
+
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_moneda_id",
             label: "Moneda");
+
+        $keys_selects['cat_sat_moneda_id']->columns_ds = array(
+            'cat_sat_moneda_codigo','cat_sat_moneda_descripcion');
 
         return $keys_selects;
     }
