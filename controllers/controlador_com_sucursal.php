@@ -9,6 +9,7 @@
 namespace gamboamartin\comercial\controllers;
 
 use base\controller\init;
+use controllers\_init_dps;
 use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\comercial\models\com_tipo_sucursal;
@@ -305,6 +306,12 @@ class controlador_com_sucursal extends _base_comercial {
 
     public function modifica(bool $header, bool $ws = false): array|stdClass
     {
+        $urls_js = (new _init_dps())->init_js(controler: $this);
+
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al generar url js',data:  $urls_js,header: $header,ws: $ws);
+        }
+
         $r_modifica =  parent::modifica(header: false);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al generar template',data:  $r_modifica, header: $header,ws:$ws);
