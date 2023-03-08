@@ -1,5 +1,6 @@
 <?php
 namespace gamboamartin\comercial\models;
+use base\orm\_defaults;
 use base\orm\_modelo_parent;
 use gamboamartin\errores\errores;
 use PDO;
@@ -21,6 +22,21 @@ class com_tipo_sucursal extends _modelo_parent{
         $this->NAMESPACE = __NAMESPACE__;
 
         $this->etiqueta = 'Tipo de sucursal';
+
+        if(!isset($_SESSION['init'][$tabla])) {
+
+            $catalago = array();
+            $catalago[] = array('codigo' => 'MATRIZ', 'descripcion' => 'MATRIZ');
+
+
+            $r_alta_bd = (new _defaults())->alta_defaults(catalago: $catalago, entidad: $this);
+            if (errores::$error) {
+                $error = $this->error->error(mensaje: 'Error al insertar', data: $r_alta_bd);
+                print_r($error);
+                exit;
+            }
+            $_SESSION['init'][$tabla] = true;
+        }
     }
 
     public function sucursales(int $com_tipo_sucursal_id): array
