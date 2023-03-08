@@ -2,9 +2,11 @@
 
 namespace gamboamartin\comercial\models;
 
+use base\orm\_defaults;
 use base\orm\_modelo_parent;
 use base\orm\modelo;
 use gamboamartin\cat_sat\models\cat_sat_moneda;
+use gamboamartin\direccion_postal\models\dp_pais;
 use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
@@ -23,6 +25,33 @@ class com_tipo_cambio extends _modelo_parent
         $this->NAMESPACE = __NAMESPACE__;
 
         $this->etiqueta = 'Tipo de Cambio';
+
+        if(!isset($_SESSION['init'][$tabla])) {
+            $codigo = 'MXN';
+            if(isset($_SESSION['init']['cat_sat_moneda'])){
+                unset($_SESSION['init']['cat_sat_moneda']);
+            }
+
+            $cat_sat_moneda = (new cat_sat_moneda(link: $this->link))->registro_by_codigo(codigo: $codigo);
+            if (errores::$error) {
+                $error = $this->error->error(mensaje: 'Error al obtener cat_sat_moneda', data: $cat_sat_moneda);
+                print_r($error);
+                exit;
+            }
+
+            $catalago = array();
+            $catalago[] = array('codigo'=>'MXN '.date('Y-m-d'),'cat_sat_moneda_id' => $cat_sat_moneda['cat_sat_moneda_id'],
+                'fecha'=>date('Y-m-d'),'monto'=>1);
+
+            $r_alta_bd = (new _defaults())->alta_defaults(catalago: $catalago, entidad: $this);
+            if (errores::$error) {
+                $error = $this->error->error(mensaje: 'Error al insertar', data: $r_alta_bd);
+                print_r($error);
+                exit;
+            }
+            $_SESSION['init'][$tabla] = true;
+        }
+
     }
 
     public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
