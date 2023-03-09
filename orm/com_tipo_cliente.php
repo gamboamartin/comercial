@@ -21,15 +21,15 @@ class com_tipo_cliente extends _modelo_parent{
         $this->NAMESPACE = __NAMESPACE__;
 
         $this->etiqueta = 'Tipo de cliente';
-        /*
+
 
         if(!isset($_SESSION['init'][$tabla])) {
 
-            $catalago = array();
-            $catalago[] = array('codigo' => 'DEFAULT', 'descripcion' => 'DEFAULT');
+            $catalogo = array();
+            $catalogo[] = array('id'=>1, 'codigo' => 'DEFAULT', 'descripcion' => 'DEFAULT');
 
 
-            $r_alta_bd = (new _defaults())->alta_defaults(catalago: $catalago, entidad: $this);
+            $r_alta_bd = (new _defaults())->alta_defaults(catalogo: $catalogo, entidad: $this);
             if (errores::$error) {
                 $error = $this->error->error(mensaje: 'Error al insertar', data: $r_alta_bd);
                 print_r($error);
@@ -37,7 +37,7 @@ class com_tipo_cliente extends _modelo_parent{
             }
             $_SESSION['init'][$tabla] = true;
         }
-        */
+
 
     }
 

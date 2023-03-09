@@ -23,14 +23,14 @@ class com_tipo_sucursal extends _modelo_parent{
 
         $this->etiqueta = 'Tipo de sucursal';
 
-        /*
+
         if(!isset($_SESSION['init'][$tabla])) {
 
-            $catalago = array();
-            $catalago[] = array('codigo' => 'MATRIZ', 'descripcion' => 'MATRIZ');
+            $catalogo = array();
+            $catalogo[] = array('id'=>1,'codigo' => 'MATRIZ', 'descripcion' => 'MATRIZ');
 
 
-            $r_alta_bd = (new _defaults())->alta_defaults(catalago: $catalago, entidad: $this);
+            $r_alta_bd = (new _defaults())->alta_defaults(catalogo: $catalogo, entidad: $this);
             if (errores::$error) {
                 $error = $this->error->error(mensaje: 'Error al insertar', data: $r_alta_bd);
                 print_r($error);
@@ -38,7 +38,7 @@ class com_tipo_sucursal extends _modelo_parent{
             }
             $_SESSION['init'][$tabla] = true;
         }
-        */
+
     }
 
     public function sucursales(int $com_tipo_sucursal_id): array
