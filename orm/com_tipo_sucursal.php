@@ -23,6 +23,7 @@ class com_tipo_sucursal extends _modelo_parent{
 
         $this->etiqueta = 'Tipo de sucursal';
 
+        /*
         if(!isset($_SESSION['init'][$tabla])) {
 
             $catalago = array();
@@ -37,6 +38,7 @@ class com_tipo_sucursal extends _modelo_parent{
             }
             $_SESSION['init'][$tabla] = true;
         }
+        */
     }
 
     public function sucursales(int $com_tipo_sucursal_id): array

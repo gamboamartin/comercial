@@ -26,6 +26,7 @@ class com_tipo_cambio extends _modelo_parent
 
         $this->etiqueta = 'Tipo de Cambio';
 
+        /*
         if(!isset($_SESSION['init'][$tabla])) {
             $codigo = 'MXN';
             if(isset($_SESSION['init']['cat_sat_moneda'])){
@@ -51,6 +52,7 @@ class com_tipo_cambio extends _modelo_parent
             }
             $_SESSION['init'][$tabla] = true;
         }
+        */
 
     }
 

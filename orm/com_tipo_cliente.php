@@ -21,6 +21,7 @@ class com_tipo_cliente extends _modelo_parent{
         $this->NAMESPACE = __NAMESPACE__;
 
         $this->etiqueta = 'Tipo de cliente';
+        /*
 
         if(!isset($_SESSION['init'][$tabla])) {
 
@@ -36,6 +37,7 @@ class com_tipo_cliente extends _modelo_parent{
             }
             $_SESSION['init'][$tabla] = true;
         }
+        */
 
     }
 
