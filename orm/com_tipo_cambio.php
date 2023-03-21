@@ -27,24 +27,6 @@ class com_tipo_cambio extends _modelo_parent
         $this->etiqueta = 'Tipo de Cambio';
 
 
-        if(!isset($_SESSION['init'][$tabla])) {
-
-            if(isset($_SESSION['init']['cat_sat_moneda'])){
-                unset($_SESSION['init']['cat_sat_moneda']);
-            }
-            new cat_sat_moneda(link: $this->link);
-
-            $catalago = array();
-            $catalago[] = array('codigo'=>'MXN '.date('Y-m-d'),'cat_sat_moneda_id' => 1, 'fecha'=>date('Y-m-d'),'monto'=>1);
-
-            $r_alta_bd = (new _defaults())->alta_defaults(catalogo: $catalago, entidad: $this);
-            if (errores::$error) {
-                $error = $this->error->error(mensaje: 'Error al insertar', data: $r_alta_bd);
-                print_r($error);
-                exit;
-            }
-            $_SESSION['init'][$tabla] = true;
-        }
 
 
     }
