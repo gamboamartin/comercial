@@ -59,7 +59,7 @@ class controlador_com_sucursal extends _base_comercial {
         $this->parents_verifica[] = (new com_tipo_sucursal(link: $this->link));
         $this->parents_verifica[] = (new dp_calle_pertenece(link: $this->link));
         $this->parents_verifica[] = (new com_cliente(link: $this->link));
-        $this->parents_verifica[] = (new tg_tipo_provision(link: $this->link));
+       //this->parents_verifica[] = (new tg_tipo_provision(link: $this->link));
         $this->verifica_parents_alta = true;
 
 

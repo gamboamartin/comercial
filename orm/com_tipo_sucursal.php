@@ -23,7 +23,7 @@ class com_tipo_sucursal extends _modelo_parent{
 
         $this->etiqueta = 'Tipo de sucursal';
 
-        
+
 
     }
 
