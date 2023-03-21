@@ -145,7 +145,8 @@ class controlador_com_tipo_cliente extends _ctl_parent_sin_codigo {
         $data_view->namespace_model = 'gamboamartin\\comercial\\models';
         $data_view->name_model_children = 'com_cliente';
 
-        $contenido_table = $this->contenido_children(data_view: $data_view, next_accion: __FUNCTION__);
+        $contenido_table = $this->contenido_children(data_view: $data_view, next_accion: __FUNCTION__,
+            not_actions: $this->not_actions);
         if(errores::$error){
             return $this->retorno_error(
                 mensaje: 'Error al obtener tbody',data:  $contenido_table, header: $header,ws:  $ws);

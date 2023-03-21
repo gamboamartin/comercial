@@ -59,6 +59,7 @@ class controlador_com_sucursal extends _base_comercial {
         $this->parents_verifica[] = (new com_tipo_sucursal(link: $this->link));
         $this->parents_verifica[] = (new dp_calle_pertenece(link: $this->link));
         $this->parents_verifica[] = (new com_cliente(link: $this->link));
+        $this->parents_verifica[] = (new tg_tipo_provision(link: $this->link));
         $this->verifica_parents_alta = true;
 
 
@@ -201,6 +202,7 @@ class controlador_com_sucursal extends _base_comercial {
         $init_data['dp_colonia_postal'] = "gamboamartin\\direccion_postal";
         $init_data['dp_calle_pertenece'] = "gamboamartin\\direccion_postal";
         $init_data['com_tipo_sucursal'] = "gamboamartin\\comercial";
+        $init_data['tg_tipo_provision'] = "gamboamartin\\tg_nomina";
         $campos_view = $this->campos_view_base(init_data: $init_data,keys:  $keys);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
@@ -237,6 +239,12 @@ class controlador_com_sucursal extends _base_comercial {
 
         $keys_selects = $this->key_select(cols:6, con_registros: false,filtro:  array(), key: 'dp_calle_pertenece_id',
             keys_selects: $keys_selects, id_selected: -1, label: 'Calle');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->key_select(cols:6, con_registros: false,filtro:  array(), key: 'tg_tipo_provision',
+            keys_selects: $keys_selects, id_selected: -1, label: 'Tipo Provision');
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
