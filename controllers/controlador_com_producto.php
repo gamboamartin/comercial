@@ -190,6 +190,7 @@ class controlador_com_producto extends _base_comercial {
     /**
      * Asigna las propiedades de inputs de productos
      * @return array
+     * @version 6.0.0
      */
     private function inicializa_propiedades(): array
     {

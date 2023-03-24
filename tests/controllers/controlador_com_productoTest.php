@@ -30,6 +30,27 @@ class controlador_com_productoTest extends test {
         $this->paths_conf->views = '/var/www/html/organigrama/config/views.php';
     }
 
+    public function test_inicializa_propiedades(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'adm_accion';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 2;
+        $_SESSION['usuario_id'] = 2;
+        $_GET['session_id'] = '1';
+        $_GET['registro_id'] = '1';
+        $ctl = new controlador_com_producto(link: $this->link, paths_conf: $this->paths_conf);
+        $ctl = new liberator($ctl);
+
+
+        $resultado = $ctl->inicializa_propiedades();
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("SAT - Tipo", $resultado['cat_sat_tipo_producto_id']->label);
+        errores::$error = false;
+    }
+
 
 
     public function test_init_datatable(): void
