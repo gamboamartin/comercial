@@ -57,6 +57,30 @@ class controlador_com_producto extends _base_comercial {
         $this->verifica_parents_alta = true;
     }
 
+    final public function aplica_predial(bool $header, bool $ws): array|stdClass
+    {
+        $en_transaccion = false;
+        if($this->link->inTransaction()){
+            $en_transaccion = true;
+        }
+
+        if(!$en_transaccion){
+            $this->link->beginTransaction();
+        }
+
+        $upd = $this->row_upd(key: __FUNCTION__);
+        if(errores::$error){
+            $this->link->rollBack();
+            return $this->retorno_error(mensaje: 'Error al obtener row upd',data:  $upd, header: $header,ws:  $ws);
+        }
+        $this->link->commit();
+
+        $_SESSION[$upd->salida][]['mensaje'] = $upd->mensaje.' del id '.$this->registro_id;
+        $this->header_out(result: $upd, header: $header,ws:  $ws);
+
+        return $upd;
+    }
+
 
 
     public function get_productos(bool $header, bool $ws = true): array|stdClass
