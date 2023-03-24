@@ -40,7 +40,7 @@ class controlador_com_producto extends _base_comercial {
         parent::__construct(html:$html, link: $link,modelo:  $modelo, obj_link: $obj_link, datatables: $datatables,
             paths_conf: $paths_conf);
 
-        $this->titulo_lista = 'Sucursal';
+        $this->titulo_lista = 'Productos';
 
         $propiedades = $this->inicializa_propiedades();
         if(errores::$error){
@@ -169,7 +169,7 @@ class controlador_com_producto extends _base_comercial {
      * @return stdClass
      * @version 4.40.3
      */
-    public function init_datatable(): stdClass
+    final public function init_datatable(): stdClass
     {
         $columns["com_producto_id"]["titulo"] = "Id";
         $columns["com_producto_codigo"]["titulo"] = "Código";
@@ -187,6 +187,10 @@ class controlador_com_producto extends _base_comercial {
         return $datatables;
     }
 
+    /**
+     * Asigna las propiedades de inputs de productos
+     * @return array
+     */
     private function inicializa_propiedades(): array
     {
         $identificador = "cat_sat_tipo_producto_id";
