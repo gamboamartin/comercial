@@ -251,7 +251,8 @@ class base_test{
         return $alta;
     }
 
-    public function alta_com_producto(PDO $link, int $cat_sat_obj_imp_id = 1, int $cat_sat_producto_id = 1,
+    public function alta_com_producto(PDO $link, string $aplica_cuenta_predial = 'inactivo',
+                                      int $cat_sat_obj_imp_id = 1, int $cat_sat_producto_id = 1,
                                       int $cat_sat_unidad_id = 1, int $com_tipo_producto_id = 1,
                                       int $id = 1): array|\stdClass
     {
@@ -312,6 +313,7 @@ class base_test{
         $registro['cat_sat_unidad_id'] = $cat_sat_unidad_id;
         $registro['cat_sat_obj_imp_id'] = $cat_sat_obj_imp_id;
         $registro['com_tipo_producto_id'] = $com_tipo_producto_id;
+        $registro['aplica_cuenta_predial'] = $aplica_cuenta_predial;
 
 
         $alta = (new com_producto($link))->alta_registro($registro);
