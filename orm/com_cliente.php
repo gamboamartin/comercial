@@ -99,7 +99,12 @@ class com_cliente extends _modelo_parent
         return $r_alta_bd;
     }
 
-    protected function init_base(array $data): array
+    /**
+     * Inicializa los elementos base de un cliente
+     * @param array $data Datos de registro
+     * @return array
+     */
+    final protected function init_base(array $data): array
     {
         if (isset($data['razon_social']) && !isset($data['descripcion'])) {
             $data['descripcion'] = $data['razon_social'];
