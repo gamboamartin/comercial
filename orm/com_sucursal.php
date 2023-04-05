@@ -132,7 +132,7 @@ class com_sucursal extends modelo
         return $data;
     }
 
-    private function ds(string $com_cliente_razon_social, string $com_cliente_rfc, array $data): string
+    final public function ds(string $com_cliente_razon_social, string $com_cliente_rfc, array $data): string
     {
         $ds = $data['codigo'];
         $ds .= ' '.$com_cliente_rfc;
@@ -260,7 +260,7 @@ class com_sucursal extends modelo
         return $r_modifica_bd;
     }
 
-    public function sucursales(int $com_cliente_id): array|stdClass
+    final public function sucursales(int $com_cliente_id): array|stdClass
     {
         if ($com_cliente_id <= 0) {
             return $this->error->error(mensaje: 'Error $com_cliente_id debe ser mayor a 0', data: $com_cliente_id);
