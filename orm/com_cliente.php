@@ -191,11 +191,12 @@ class com_cliente extends _modelo_parent
             return $this->error->error(mensaje: 'Error al obtener cliente', data: $com_cliente);
         }
 
-        $sucursales = (new com_sucursal(link: $this->link))->sucursales(com_cliente_id: $id);
+        $r_sucursales = (new com_sucursal(link: $this->link))->sucursales(com_cliente_id: $id);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al obtener sucursales', data: $sucursales);
+            return $this->error->error(mensaje: 'Error al obtener sucursales', data: $r_sucursales);
         }
 
+        $sucursales = $r_sucursales->registros;
         foreach ($sucursales as $sucursal){
             $data = array();
             $data['codigo'] = $sucursal['com_sucursal_codigo'];
@@ -203,7 +204,9 @@ class com_cliente extends _modelo_parent
             $com_sucursal_descripcion = (new com_sucursal(link: $this->link))->ds(
                 com_cliente_razon_social: $com_cliente->razon_social,com_cliente_rfc:  $com_cliente->rfc, data: $data);
 
+            $com_sucursal_upd['codigo'] = $sucursal['com_sucursal_codigo'];
             $com_sucursal_upd['descripcion'] = $com_sucursal_descripcion;
+            $com_sucursal_upd['com_cliente_id'] = $id;
 
             $r_com_sucursal = (new com_sucursal(link: $this->link))->modifica_bd(registro: $com_sucursal_upd,
                 id:  $sucursal['com_sucursal_id']);
@@ -212,10 +215,6 @@ class com_cliente extends _modelo_parent
             }
 
         }
-
-
-
-
 
 
         return $r_modifica_bd;
