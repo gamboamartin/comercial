@@ -18,6 +18,7 @@ use gamboamartin\cat_sat\models\cat_sat_regimen_fiscal;
 use gamboamartin\cat_sat\models\cat_sat_tipo_de_comprobante;
 use gamboamartin\cat_sat\models\cat_sat_uso_cfdi;
 use gamboamartin\comercial\models\com_cliente;
+use gamboamartin\comercial\models\com_email_cte;
 use gamboamartin\comercial\models\com_tipo_cliente;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\errores\errores;
@@ -25,11 +26,15 @@ use gamboamartin\system\_ctl_base;
 use gamboamartin\system\links_menu;
 use gamboamartin\template\html;
 use html\com_cliente_html;
+use html\com_email_cte_html;
 use PDO;
 use stdClass;
 
 class controlador_com_cliente extends _ctl_base
 {
+    public string $link_com_email_cte_alta_bd = '';
+    public string $button_com_cliente_correo = '';
+
     public function __construct(PDO      $link, html $html = new \gamboamartin\template_1\html(),
                                 stdClass $paths_conf = new stdClass())
     {
@@ -46,6 +51,13 @@ class controlador_com_cliente extends _ctl_base
 
         parent::__construct(html: $html, link: $link, modelo: $modelo, obj_link: $obj_link, datatables: $datatables,
             paths_conf: $paths_conf);
+
+        $init_controladores = $this->init_controladores(paths_conf: $paths_conf);
+        if(errores::$error){
+            $error = $this->errores->error(mensaje: 'Error al inicializar controladores',data:  $init_controladores);
+            print_r($error);
+            die('Error');
+        }
 
         $configuraciones = $this->init_configuraciones();
         if (errores::$error) {
@@ -66,6 +78,14 @@ class controlador_com_cliente extends _ctl_base
         $this->verifica_parents_alta = true;
 
         $this->childrens_data['com_sucursal']['title'] = 'Sucursal';
+
+        $this->link_com_email_cte_alta_bd = $this->obj_link->link_alta_bd(link: $this->link, seccion: 'com_email_cte');
+        if(errores::$error){
+            $error = $this->errores->error(mensaje: 'Error al obtener link',data:  $this->link_com_email_cte_alta_bd);
+            print_r($error);
+            exit;
+        }
+
 
 
 
@@ -100,6 +120,133 @@ class controlador_com_cliente extends _ctl_base
 
         return $r_alta;
     }
+    protected function campos_view(): array
+    {
+        $keys = new stdClass();
+        $keys->inputs = array('codigo', 'razon_social', 'rfc', 'telefono', 'numero_exterior', 'numero_interior');
+        $keys->selects = array();
+
+        $init_data = array();
+        $init_data['dp_pais'] = "gamboamartin\\direccion_postal";
+        $init_data['dp_estado'] = "gamboamartin\\direccion_postal";
+        $init_data['dp_municipio'] = "gamboamartin\\direccion_postal";
+        $init_data['dp_cp'] = "gamboamartin\\direccion_postal";
+        $init_data['dp_colonia_postal'] = "gamboamartin\\direccion_postal";
+        $init_data['dp_calle_pertenece'] = "gamboamartin\\direccion_postal";
+        $init_data['cat_sat_regimen_fiscal'] = "gamboamartin\\cat_sat";
+        $init_data['cat_sat_moneda'] = "gamboamartin\\cat_sat";
+        $init_data['cat_sat_forma_pago'] = "gamboamartin\\cat_sat";
+        $init_data['cat_sat_metodo_pago'] = "gamboamartin\\cat_sat";
+        $init_data['cat_sat_uso_cfdi'] = "gamboamartin\\cat_sat";
+        $init_data['cat_sat_tipo_de_comprobante'] = "gamboamartin\\cat_sat";
+        $init_data['com_tipo_cliente'] = "gamboamartin\\comercial";
+        $campos_view = $this->campos_view_base(init_data: $init_data, keys: $keys);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al inicializar campo view', data: $campos_view);
+        }
+
+        return $campos_view;
+    }
+
+
+    public function correo(bool $header, bool $ws = false){
+
+        $row_upd = $this->modelo->registro(registro_id: $this->registro_id,retorno_obj: true, columnas_en_bruto: true);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener registro', data: $row_upd);
+        }
+
+
+        $this->inputs = new stdClass();
+        $com_cliente_id = (new com_cliente_html(html: $this->html_base))->select_com_cliente_id(cols: 12,
+            con_registros: true, id_selected: $this->registro_id, link: $this->link,
+            disabled: true, filtro: array('com_cliente.id'=>$this->registro_id));
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar input', data: $com_cliente_id);
+        }
+
+        $this->inputs->com_cliente_id = $com_cliente_id;
+
+        $com_cliente_rfc = (new com_cliente_html(html: $this->html_base))->input_rfc(cols: 12,row_upd: $row_upd,
+            value_vacio: false, disabled: true);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar input', data: $com_cliente_rfc);
+        }
+
+        $this->inputs->com_cliente_rfc = $com_cliente_rfc;
+
+        $com_cliente_razon_social= (new com_cliente_html(html: $this->html_base))->input_razon_social(cols: 12,
+            row_upd: $row_upd, value_vacio: false, disabled: true);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar input', data: $com_cliente_rfc);
+        }
+
+        $this->inputs->com_cliente_razon_social = $com_cliente_razon_social;
+
+        $com_email_cte_descripcion= (new com_email_cte_html(html: $this->html_base))->input_email(cols: 12,
+            row_upd:  new stdClass(),value_vacio:  false, name: 'descripcion');
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar input', data: $com_email_cte_descripcion);
+        }
+
+        $this->inputs->com_email_cte_descripcion = $com_email_cte_descripcion;
+
+        $hidden_row_id = $this->html->hidden(name: 'com_cliente_id',value:  $this->registro_id);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar input', data: $hidden_row_id);
+        }
+
+        $hidden_seccion_retorno = $this->html->hidden(name: 'seccion_retorno',value:  $this->tabla);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar input', data: $hidden_seccion_retorno);
+        }
+        $hidden_id_retorno = $this->html->hidden(name: 'id_retorno',value:  $this->registro_id);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar input', data: $hidden_id_retorno);
+        }
+
+        $this->inputs->hidden_row_id = $hidden_row_id;
+        $this->inputs->hidden_seccion_retorno = $hidden_seccion_retorno;
+        $this->inputs->hidden_id_retorno = $hidden_id_retorno;
+
+        $filtro['com_cliente.id'] = $this->registro_id;
+
+        $r_email_cte = (new com_email_cte(link: $this->link))->filtro_and(filtro: $filtro);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener correos', data: $r_email_cte);
+        }
+
+        $emails_ctes = $r_email_cte->registros;
+
+        foreach ($emails_ctes as $indice=>$email_cte){
+            $params = $this->params_button_partida(com_cliente_id: $this->registro_id);
+            if (errores::$error) {
+                return $this->errores->error(mensaje: 'Error al generar params', data: $params);
+            }
+
+            $link_elimina = $this->html->button_href(accion: 'elimina_bd', etiqueta: 'Eliminar',
+                registro_id: $email_cte['com_email_cte_id'],
+                seccion: 'com_email_cte', style: 'danger',icon: 'bi bi-trash',
+                muestra_icono_btn: true, muestra_titulo_btn: false, params: $params);
+            if (errores::$error) {
+                return $this->errores->error(mensaje: 'Error al generar link elimina_bd para partida', data: $link_elimina);
+            }
+            $emails_ctes[$indice]['elimina_bd'] = $link_elimina;
+        }
+
+
+        $this->registros['emails_ctes'] = $emails_ctes;
+
+
+        $button_com_cliente_correo =  $this->html->button_href(accion: 'modifica', etiqueta: 'Ir a Cliente',
+            registro_id: $this->registro_id,
+            seccion: 'com_cliente', style: 'warning', params: array());
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al generar link', data: $button_com_cliente_correo);
+        }
+
+        $this->button_com_cliente_correo = $button_com_cliente_correo;
+    }
 
     /**
      * Inicializa las configuraciones base del controler
@@ -109,6 +256,13 @@ class controlador_com_cliente extends _ctl_base
     private function init_configuraciones(): controler
     {
         $this->titulo_lista = 'Registro de Clientes';
+
+        return $this;
+    }
+
+    private function init_controladores(stdClass $paths_conf): controler
+    {
+        $this->controlador_com_email_cte= new controlador_com_email_cte(link:$this->link, paths_conf: $paths_conf);
 
         return $this;
     }
@@ -230,33 +384,7 @@ class controlador_com_cliente extends _ctl_base
         return $datatables;
     }
 
-    protected function campos_view(): array
-    {
-        $keys = new stdClass();
-        $keys->inputs = array('codigo', 'razon_social', 'rfc', 'telefono', 'numero_exterior', 'numero_interior');
-        $keys->selects = array();
 
-        $init_data = array();
-        $init_data['dp_pais'] = "gamboamartin\\direccion_postal";
-        $init_data['dp_estado'] = "gamboamartin\\direccion_postal";
-        $init_data['dp_municipio'] = "gamboamartin\\direccion_postal";
-        $init_data['dp_cp'] = "gamboamartin\\direccion_postal";
-        $init_data['dp_colonia_postal'] = "gamboamartin\\direccion_postal";
-        $init_data['dp_calle_pertenece'] = "gamboamartin\\direccion_postal";
-        $init_data['cat_sat_regimen_fiscal'] = "gamboamartin\\cat_sat";
-        $init_data['cat_sat_moneda'] = "gamboamartin\\cat_sat";
-        $init_data['cat_sat_forma_pago'] = "gamboamartin\\cat_sat";
-        $init_data['cat_sat_metodo_pago'] = "gamboamartin\\cat_sat";
-        $init_data['cat_sat_uso_cfdi'] = "gamboamartin\\cat_sat";
-        $init_data['cat_sat_tipo_de_comprobante'] = "gamboamartin\\cat_sat";
-        $init_data['com_tipo_cliente'] = "gamboamartin\\comercial";
-        $campos_view = $this->campos_view_base(init_data: $init_data, keys: $keys);
-        if (errores::$error) {
-            return $this->errores->error(mensaje: 'Error al inicializar campo view', data: $campos_view);
-        }
-
-        return $campos_view;
-    }
 
     protected function key_selects_txt(array $keys_selects): array
     {
@@ -396,6 +524,15 @@ class controlador_com_cliente extends _ctl_base
         }
 
         return $r_modifica;
+    }
+
+    private function params_button_partida(int $com_cliente_id): array
+    {
+        $params = array();
+        $params['seccion_retorno'] = 'com_cliente';
+        $params['accion_retorno'] = 'correo';
+        $params['id_retorno'] = $com_cliente_id;
+        return $params;
     }
 
 

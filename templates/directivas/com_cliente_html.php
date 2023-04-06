@@ -205,14 +205,15 @@ class com_cliente_html extends html_controler {
         return $div;
     }
 
-    public function input_razon_social(int $cols, stdClass $row_upd, bool $value_vacio): array|string
+    public function input_razon_social(int $cols, stdClass $row_upd, bool $value_vacio, bool $disabled = false): array|string
     {
         $valida = $this->directivas->valida_cols(cols: $cols);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
         }
 
-        $html =$this->directivas->input_text_required(disabled: false,name: 'razon_social',place_holder: 'Razon social', row_upd: $row_upd, value_vacio: $value_vacio);
+        $html =$this->directivas->input_text_required(disabled: $disabled,name: 'razon_social',
+            place_holder: 'Razon social', row_upd: $row_upd, value_vacio: $value_vacio);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
         }
@@ -225,14 +226,15 @@ class com_cliente_html extends html_controler {
         return $div;
     }
 
-    public function input_rfc(int $cols, stdClass $row_upd, bool $value_vacio): array|string
+    public function input_rfc(int $cols, stdClass $row_upd, bool $value_vacio, bool $disabled = false): array|string
     {
         $valida = $this->directivas->valida_cols(cols: $cols);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar columnas', data: $valida);
         }
 
-        $html =$this->directivas->input_text_required(disabled: false,name: 'rfc',place_holder: 'Rfc', row_upd: $row_upd, value_vacio: $value_vacio);
+        $html =$this->directivas->input_text_required(disabled: $disabled,name: 'rfc',place_holder: 'Rfc',
+            row_upd: $row_upd, value_vacio: $value_vacio);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
         }
@@ -465,12 +467,12 @@ class com_cliente_html extends html_controler {
     }
 
     public function select_com_cliente_id(int $cols, bool $con_registros, int $id_selected, PDO $link,
-                                          bool $disabled = false): array|string
+                                          bool $disabled = false, array $filtro = array()): array|string
     {
         $modelo = new com_cliente(link: $link);
 
-        $select = $this->select_catalogo(cols:$cols,con_registros:$con_registros,id_selected:$id_selected,
-            modelo: $modelo, disabled: $disabled, label: 'Cliente', required: true);
+        $select = $this->select_catalogo(cols: $cols, con_registros: $con_registros, id_selected: $id_selected,
+            modelo: $modelo, disabled: $disabled, filtro: $filtro, label: 'Cliente', required: true);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }
