@@ -39,7 +39,7 @@ class com_email_cte_html extends html_controler {
         $modelo = new com_email_cte(link: $link);
 
         $select = $this->select_catalogo(cols:$cols,con_registros:$con_registros,id_selected:$id_selected,
-            modelo: $modelo,label: 'Tipo sucursal');
+            modelo: $modelo,label: 'Email');
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }
