@@ -151,7 +151,7 @@ class controlador_com_cliente extends _ctl_base
 
     public function correo(bool $header, bool $ws = false){
 
-        $row_upd = $this->modelo->registro(registro_id: $this->registro_id,retorno_obj: true, columnas_en_bruto: true);
+        $row_upd = $this->modelo->registro(registro_id: $this->registro_id, columnas_en_bruto: true, retorno_obj: true);
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al obtener registro', data: $row_upd);
         }

@@ -466,6 +466,15 @@ class com_cliente_html extends html_controler {
         return $selects;
     }
 
+    /**
+     * @param int $cols
+     * @param bool $con_registros
+     * @param int $id_selected
+     * @param PDO $link
+     * @param bool $disabled
+     * @param array $filtro
+     * @return array|string
+     */
     public function select_com_cliente_id(int $cols, bool $con_registros, int $id_selected, PDO $link,
                                           bool $disabled = false, array $filtro = array()): array|string
     {
