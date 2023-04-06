@@ -79,12 +79,14 @@ class controlador_com_cliente extends _ctl_base
 
         $this->childrens_data['com_sucursal']['title'] = 'Sucursal';
 
-        $this->link_com_email_cte_alta_bd = $this->obj_link->link_alta_bd(link: $this->link, seccion: 'com_email_cte');
+        $link_com_email_cte_alta_bd = $this->obj_link->link_alta_bd(link: $this->link, seccion: 'com_email_cte');
         if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al obtener link',data:  $this->link_com_email_cte_alta_bd);
+            $error = $this->errores->error(mensaje: 'Error al obtener link',data:  $link_com_email_cte_alta_bd);
             print_r($error);
             exit;
         }
+        $this->link_com_email_cte_alta_bd = $link_com_email_cte_alta_bd;
+
 
 
 
