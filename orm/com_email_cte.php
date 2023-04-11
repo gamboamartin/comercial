@@ -41,17 +41,23 @@ class com_email_cte extends _modelo_parent{
      * Genera un codigo aleatorio
      * @param string $descripcion Descripcion de registro
      * @return array|string
+     * @version 7.4.1
      */
     private function codigo(string $descripcion): array|string
     {
+        $descripcion = trim($descripcion);
         $rand = mt_rand(10000, 99999);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al al integrar rand', data: $rand);
         }
-        return $descripcion.$rand;
+        return trim($descripcion.$rand);
     }
 
-    private function integra_codigo(){
+    /**
+     * @return array
+     */
+    private function integra_codigo(): array
+    {
         if(!isset($this->registro['codigo'])) {
             $codigo = $this->codigo(descripcion: $this->registro['descripcion']);
             if (errores::$error) {
