@@ -54,7 +54,9 @@ class com_email_cte extends _modelo_parent{
     }
 
     /**
+     * Integra el codigo default
      * @return array
+     * 
      */
     private function integra_codigo(): array
     {
