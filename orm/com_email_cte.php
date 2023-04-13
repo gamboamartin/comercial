@@ -56,11 +56,19 @@ class com_email_cte extends _modelo_parent{
     /**
      * Integra el codigo default
      * @return array
-     * 
+     * @version 7.6.1
+     *
      */
     private function integra_codigo(): array
     {
+        $keys = array('descripcion');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $this->registro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
+        }
+
         if(!isset($this->registro['codigo'])) {
+
             $codigo = $this->codigo(descripcion: $this->registro['descripcion']);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al al integrar codigo', data: $codigo);

@@ -53,6 +53,28 @@ class com_email_cteTest extends test {
 
     }
 
+    public function test_integra_codigo(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 1;
+        $_GET['session_id'] = '1';
+        $_GET['registro_id'] = '1';
+        $modelo = new com_email_cte($this->link);
+        $modelo->registro['descripcion'] = 'A';
+        $modelo = new liberator($modelo);
+
+        $resultado = $modelo->integra_codigo();
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+
+
+        errores::$error = false;
+    }
+
 
 }
 
