@@ -140,6 +140,11 @@ class com_sucursal extends modelo
         return trim($ds);
     }
 
+    /**
+     * Elimina un cliente mas las sucursales dentro del cliente
+     * @param int $id Identificador del cliente
+     * @return array|stdClass
+     */
     final public function elimina_bd(int $id): array|stdClass
     {
 
