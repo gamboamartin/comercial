@@ -118,8 +118,22 @@ class com_cliente extends _modelo_parent
         $com_sucursal_upd['com_cliente_id'] = $com_cliente_id;
 
         if($sucursal['com_tipo_sucursal_descripcion'] === 'MATRIZ') {
-            $com_sucursal_upd['dp_calle_pertenece_id'] = $com_cliente->dp_calle_pertenece_id;
+            $com_sucursal_upd = $this->com_sucursal_upd_dom(com_cliente: $com_cliente,com_sucursal_upd: $com_sucursal_upd);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al maquetar sucursal', data: $com_sucursal_upd);
+            }
         }
+        return $com_sucursal_upd;
+    }
+
+    private function com_sucursal_upd_dom(stdClass $com_cliente, array $com_sucursal_upd): array
+    {
+        $com_sucursal_upd['dp_calle_pertenece_id'] = $com_cliente->dp_calle_pertenece_id;
+        $com_sucursal_upd['numero_exterior'] = $com_cliente->numero_exterior;
+        $com_sucursal_upd['numero_interior'] = $com_cliente->numero_interior;
+        $com_sucursal_upd['telefono_1'] = $com_cliente->telefono_1;
+        $com_sucursal_upd['telefono_2'] = $com_cliente->telefono_2;
+        $com_sucursal_upd['telefono_3'] = $com_cliente->telefono_3;
         return $com_sucursal_upd;
     }
 
