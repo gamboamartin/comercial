@@ -234,6 +234,10 @@ class com_cliente extends _modelo_parent
             $com_sucursal_upd['descripcion'] = $com_sucursal_descripcion;
             $com_sucursal_upd['com_cliente_id'] = $id;
 
+            if($sucursal['com_tipo_sucursal_descripcion'] === 'MATRIZ') {
+                $com_sucursal_upd['dp_calle_pertenece_id'] = $com_cliente['dp_calle_pertenece_id'];
+            }
+
             $r_com_sucursal = (new com_sucursal(link: $this->link))->modifica_bd(registro: $com_sucursal_upd,
                 id:  $sucursal['com_sucursal_id']);
             if (errores::$error) {
