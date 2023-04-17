@@ -99,6 +99,30 @@ class com_cliente extends _modelo_parent
         return $r_alta_bd;
     }
 
+    private function com_sucursal_descripcion(stdClass $com_cliente, array $sucursal){
+        $data = array();
+        $data['codigo'] = $sucursal['com_sucursal_codigo'];
+
+        $com_sucursal_descripcion = (new com_sucursal(link: $this->link))->ds(
+            com_cliente_razon_social: $com_cliente->razon_social,com_cliente_rfc:  $com_cliente->rfc, data: $data);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener com_sucursal_descripcion', data: $com_sucursal_descripcion);
+        }
+        return $com_sucursal_descripcion;
+    }
+
+    private function com_sucursal_upd(stdClass $com_cliente, int $com_cliente_id, string $com_sucursal_descripcion, array $sucursal): array
+    {
+        $com_sucursal_upd['codigo'] = $sucursal['com_sucursal_codigo'];
+        $com_sucursal_upd['descripcion'] = $com_sucursal_descripcion;
+        $com_sucursal_upd['com_cliente_id'] = $com_cliente_id;
+
+        if($sucursal['com_tipo_sucursal_descripcion'] === 'MATRIZ') {
+            $com_sucursal_upd['dp_calle_pertenece_id'] = $com_cliente->dp_calle_pertenece_id;
+        }
+        return $com_sucursal_upd;
+    }
+
     /**
      * Elimina un cliente mas las sucursales dentro del cliente
      * @param int $id Identificador del cliente
@@ -189,6 +213,33 @@ class com_cliente extends _modelo_parent
     public function modifica_bd(array $registro, int $id, bool $reactiva = false,
                                 array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
     {
+
+        $registro = $this->registro_cliente_upd(registro: $registro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al limpiar campos', data: $registro);
+        }
+
+        $r_modifica_bd = parent::modifica_bd(registro: $registro,id:  $id, reactiva: $reactiva,
+            keys_integra_ds:  $keys_integra_ds);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al modificar cliente', data: $r_modifica_bd);
+        }
+
+        $com_cliente = $this->registro(registro_id: $id, columnas_en_bruto: true, retorno_obj: true);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener cliente', data: $com_cliente);
+        }
+
+        $r_com_sucursal = $this->upd_sucursales(com_cliente:$com_cliente,com_cliente_id:  $id);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al modificar sucursales', data: $r_com_sucursal);
+        }
+
+
+        return $r_modifica_bd;
+    }
+
+    private function registro_cliente_upd(array $registro){
         $registro = $this->init_base(data: $registro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al inicializar campo base', data: $registro);
@@ -204,49 +255,53 @@ class com_cliente extends _modelo_parent
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al limpiar campos', data: $registro);
         }
+        return $registro;
+    }
 
-
-        $r_modifica_bd = parent::modifica_bd(registro: $registro,id:  $id, reactiva: $reactiva,
-            keys_integra_ds:  $keys_integra_ds);
+    private function row_com_sucursal_upd(stdClass $com_cliente, int $com_cliente_id, array $sucursal){
+        $com_sucursal_descripcion = $this->com_sucursal_descripcion(com_cliente: $com_cliente, sucursal: $sucursal);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al modificar cliente', data: $r_modifica_bd);
+            return $this->error->error(mensaje: 'Error al obtener com_sucursal_descripcion', data: $com_sucursal_descripcion);
         }
 
-        $com_cliente = $this->registro(registro_id: $id, columnas_en_bruto: true, retorno_obj: true);
+
+        $com_sucursal_upd = $this->com_sucursal_upd(com_cliente: $com_cliente,com_cliente_id:  $com_cliente_id,
+            com_sucursal_descripcion:  $com_sucursal_descripcion,sucursal:  $sucursal);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al obtener cliente', data: $com_cliente);
+            return $this->error->error(mensaje: 'Error al maquetar row', data: $com_sucursal_upd);
+        }
+        return $com_sucursal_upd;
+    }
+
+    private function upd_sucursal(stdClass $com_cliente, int $com_cliente_id, array $sucursal){
+        $com_sucursal_upd = $this->row_com_sucursal_upd(com_cliente: $com_cliente,com_cliente_id:  $com_cliente_id,sucursal:  $sucursal);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al maquetar row', data: $com_sucursal_upd);
         }
 
-        $r_sucursales = (new com_sucursal(link: $this->link))->sucursales(com_cliente_id: $id);
+        $r_com_sucursal = (new com_sucursal(link: $this->link))->modifica_bd(registro: $com_sucursal_upd,
+            id:  $sucursal['com_sucursal_id']);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al modificar sucursales', data: $r_com_sucursal);
+        }
+        return $r_com_sucursal;
+    }
+
+    private function upd_sucursales(stdClass $com_cliente, int $com_cliente_id){
+        $r_com_sucursales = array();
+        $r_sucursales = (new com_sucursal(link: $this->link))->sucursales(com_cliente_id: $com_cliente_id);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener sucursales', data: $r_sucursales);
         }
 
         $sucursales = $r_sucursales->registros;
         foreach ($sucursales as $sucursal){
-            $data = array();
-            $data['codigo'] = $sucursal['com_sucursal_codigo'];
-
-            $com_sucursal_descripcion = (new com_sucursal(link: $this->link))->ds(
-                com_cliente_razon_social: $com_cliente->razon_social,com_cliente_rfc:  $com_cliente->rfc, data: $data);
-
-            $com_sucursal_upd['codigo'] = $sucursal['com_sucursal_codigo'];
-            $com_sucursal_upd['descripcion'] = $com_sucursal_descripcion;
-            $com_sucursal_upd['com_cliente_id'] = $id;
-
-            if($sucursal['com_tipo_sucursal_descripcion'] === 'MATRIZ') {
-                $com_sucursal_upd['dp_calle_pertenece_id'] = $com_cliente['dp_calle_pertenece_id'];
-            }
-
-            $r_com_sucursal = (new com_sucursal(link: $this->link))->modifica_bd(registro: $com_sucursal_upd,
-                id:  $sucursal['com_sucursal_id']);
+            $r_com_sucursal = $this->upd_sucursal(com_cliente: $com_cliente,com_cliente_id:  $com_cliente_id,sucursal:  $sucursal);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al modificar sucursales', data: $r_com_sucursal);
             }
-
+            $r_com_sucursales[] = $r_com_sucursal;
         }
-
-
-        return $r_modifica_bd;
+        return $r_com_sucursales;
     }
 }
