@@ -2,6 +2,7 @@
 namespace gamboamartin\comercial\models;
 use base\orm\_modelo_parent;
 use gamboamartin\cat_sat\models\cat_sat_clase_producto;
+use gamboamartin\cat_sat\models\cat_sat_conf_imps;
 use gamboamartin\cat_sat\models\cat_sat_division_producto;
 use gamboamartin\cat_sat\models\cat_sat_grupo_producto;
 use gamboamartin\cat_sat\models\cat_sat_obj_imp;
@@ -19,9 +20,9 @@ class com_producto extends _modelo_parent {
         $columnas = array($tabla=>false,'cat_sat_obj_imp'=>$tabla,'cat_sat_producto'=>$tabla, 'cat_sat_unidad'=>$tabla,
             'com_tipo_producto'=>$tabla, 'cat_sat_clase_producto' => 'cat_sat_producto',
             'cat_sat_grupo_producto' => 'cat_sat_clase_producto', 'cat_sat_division_producto' => 'cat_sat_grupo_producto',
-            'cat_sat_tipo_producto' => 'cat_sat_division_producto');
+            'cat_sat_tipo_producto' => 'cat_sat_division_producto','cat_sat_conf_imps'=>$tabla);
         $campos_obligatorios = array('cat_sat_producto_id','cat_sat_unidad_id','cat_sat_obj_imp_id',
-            'com_tipo_producto_id');
+            'com_tipo_producto_id','cat_sat_conf_imps_id');
 
         $campos_view['cat_sat_tipo_producto_id'] = array('type' => 'selects', 'model' => new cat_sat_tipo_producto($link));
         $campos_view['cat_sat_division_producto_id'] = array('type' => 'selects', 'model' => new cat_sat_division_producto($link));
@@ -30,6 +31,7 @@ class com_producto extends _modelo_parent {
         $campos_view['cat_sat_producto_id'] = array('type' => 'selects', 'model' => new cat_sat_producto($link));
         $campos_view['cat_sat_unidad_id'] = array('type' => 'selects', 'model' => new cat_sat_unidad($link));
         $campos_view['cat_sat_obj_imp_id'] = array('type' => 'selects', 'model' => new cat_sat_obj_imp($link));
+        $campos_view['cat_sat_conf_imps_id'] = array('type' => 'selects', 'model' => new cat_sat_conf_imps($link));
         $campos_view['com_tipo_producto_id'] = array('type' => 'selects', 'model' => new com_tipo_producto($link));
         $campos_view['codigo'] = array('type' => 'inputs');
         $campos_view['descripcion'] = array('type' => 'inputs');
@@ -44,13 +46,15 @@ class com_producto extends _modelo_parent {
 
     public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
     {
+
         $this->registro = $this->campos_base(data:$this->registro, modelo: $this);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar campo base',data: $this->registro);
         }
 
-        $this->registro = $this->limpia_campos(registro: $this->registro, campos_limpiar: array('cat_sat_tipo_producto_id',
-            'cat_sat_division_producto_id','cat_sat_grupo_producto_id','cat_sat_clase_producto_id'));
+        $this->registro = $this->limpia_campos(registro: $this->registro, campos_limpiar:
+            array('cat_sat_tipo_producto_id', 'cat_sat_division_producto_id','cat_sat_grupo_producto_id',
+                'cat_sat_clase_producto_id'));
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al limpiar campos', data: $this->registro);
         }
@@ -72,6 +76,12 @@ class com_producto extends _modelo_parent {
         return $registro;
     }
 
+    /**
+     * Limpia los campos no insertables
+     * @param array $registro Registro en proceso
+     * @param array $campos_limpiar Campos a limpiar
+     * @return array
+     */
     private function limpia_campos(array $registro, array $campos_limpiar): array
     {
         foreach ($campos_limpiar as $valor) {

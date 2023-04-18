@@ -110,6 +110,7 @@ class controlador_com_producto extends _base_comercial {
         $init_data['com_tipo_producto'] = "gamboamartin\\comercial";
         $init_data['cat_sat_unidad'] = "gamboamartin\\cat_sat";
         $init_data['cat_sat_obj_imp'] = "gamboamartin\\cat_sat";
+        $init_data['cat_sat_conf_imps'] = "gamboamartin\\cat_sat";
         $campos_view = $this->campos_view_base(init_data: $init_data,keys:  $keys);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
@@ -174,6 +175,12 @@ class controlador_com_producto extends _base_comercial {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
 
+        $keys_selects = $this->key_select(cols:12, con_registros: true,filtro:  array(), key: 'cat_sat_conf_imps_id',
+            keys_selects: $keys_selects, id_selected: -1, label: 'Conf de Impuestos');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
         $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6,key: 'codigo',
             keys_selects:$keys_selects, place_holder: 'Cod');
         if(errores::$error){
@@ -186,6 +193,8 @@ class controlador_com_producto extends _base_comercial {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
 
+
+
         return $keys_selects;
     }
 
@@ -197,12 +206,13 @@ class controlador_com_producto extends _base_comercial {
     {
         $columns["com_producto_id"]["titulo"] = "Id";
         $columns["com_producto_codigo"]["titulo"] = "Código";
+        $columns["cat_sat_producto_codigo"]["titulo"] = "Código SAT";
         $columns["cat_sat_producto_descripcion"]["titulo"] = "SAT Producto";
         $columns["cat_sat_unidad_descripcion"]["titulo"] = "SAT Unidad";
         $columns["cat_sat_obj_imp_descripcion"]["titulo"] = "SAT ObjetoImp";
         $columns["com_producto_descripcion"]["titulo"] = "Producto";
 
-        $filtro = array("com_producto.id","com_producto.codigo", "com_producto.descripcion");
+        $filtro = array("com_producto.id","com_producto.codigo", "com_producto.descripcion",'cat_sat_producto.codigo');
 
         $datatables = new stdClass();
         $datatables->columns = $columns;
@@ -255,14 +265,14 @@ class controlador_com_producto extends _base_comercial {
         }
 
         $identificador = "cat_sat_unidad_id";
-        $propiedades = array("label" => "SAT - Unidad");
+        $propiedades = array("label" => "SAT - Unidad",  "cols" => 12);
         $pr =$this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al inicializa',data:  $pr);
         }
 
         $identificador = "cat_sat_obj_imp_id";
-        $propiedades = array("label" => "Objeto del Impuesto");
+        $propiedades = array("label" => "Objeto del Impuesto", "cols" => 12);
         $pr =$this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al inicializa',data:  $pr);
@@ -270,6 +280,13 @@ class controlador_com_producto extends _base_comercial {
 
         $identificador = "com_tipo_producto_id";
         $propiedades = array("label" => "Tipo Producto", "cols" => 8);
+        $pr =$this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al inicializa',data:  $pr);
+        }
+
+        $identificador = "cat_sat_conf_imps_id";
+        $propiedades = array("label" => "Conf Impuestos", "cols" => 12);
         $pr =$this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al inicializa',data:  $pr);
@@ -338,6 +355,10 @@ class controlador_com_producto extends _base_comercial {
 
         $identificador = "com_tipo_producto_id";
         $propiedades = array("id_selected" => $this->row_upd->com_tipo_producto_id);
+        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
+
+        $identificador = "cat_sat_conf_imps_id";
+        $propiedades = array("id_selected" => $this->row_upd->cat_sat_conf_imps_id);
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $inputs = $this->genera_inputs(keys_selects:  $this->keys_selects);

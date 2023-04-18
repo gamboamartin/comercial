@@ -9,5 +9,5 @@
 <?php echo $controlador->inputs->com_tipo_producto_id; ?>
 <?php echo $controlador->inputs->descripcion; ?>
 <?php echo $controlador->inputs->cat_sat_unidad_id; ?>
-<?php echo $controlador->inputs->cat_sat_obj_imp_id; ?>
+<?php echo $controlador->inputs->cat_sat_conf_imps_id; ?>
 <?php include (new views())->ruta_templates.'botons/submit/modifica_bd.php';?>
