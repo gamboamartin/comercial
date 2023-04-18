@@ -126,5 +126,25 @@ class com_clienteTest extends test {
 
     }
 
+    public function test_init_base(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = '1';
+        $modelo = new com_cliente($this->link);
+        $modelo = new liberator($modelo);
+
+        $data = array();
+        $resultado = $modelo->init_base($data);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+
+        errores::$error = false;
+    }
+
 }
 

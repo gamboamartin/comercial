@@ -162,6 +162,7 @@ class com_cliente extends _modelo_parent
      * Inicializa los elementos base de un cliente
      * @param array $data Datos de registro
      * @return array
+     * @version 7.15.1
      */
     final protected function init_base(array $data): array
     {
@@ -172,6 +173,10 @@ class com_cliente extends _modelo_parent
         return $data;
     }
 
+    /**
+     * @param array $data
+     * @return array
+     */
     private function inicializa_foraneas(array $data): array
     {
         if (isset($data['status'])) {
