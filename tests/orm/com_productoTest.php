@@ -24,6 +24,28 @@ class com_productoTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_limpia_campos(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 1;
+        $_GET['session_id'] = '1';
+        $_GET['registro_id'] = '1';
+        $modelo = new com_producto($this->link);
+        $modelo = new liberator($modelo);
+
+        $registro = array('a'=>'b');
+        $campos_limpiar = array('a');
+        $resultado = $modelo->limpia_campos($registro, $campos_limpiar);
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+    }
+
 
     public function test_registro(): void
     {

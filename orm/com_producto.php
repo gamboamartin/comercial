@@ -81,6 +81,7 @@ class com_producto extends _modelo_parent {
      * @param array $registro Registro en proceso
      * @param array $campos_limpiar Campos a limpiar
      * @return array
+     * @version 7.14.1
      */
     private function limpia_campos(array $registro, array $campos_limpiar): array
     {
