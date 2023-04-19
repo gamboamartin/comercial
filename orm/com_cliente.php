@@ -27,7 +27,8 @@ class com_cliente extends _modelo_parent
             'cat_sat_tipo_de_comprobante' => $tabla);
 
         $campos_obligatorios = array('cat_sat_moneda_id', 'cat_sat_regimen_fiscal_id', 'cat_sat_moneda_id',
-            'cat_sat_forma_pago_id', 'cat_sat_uso_cfdi_id', 'cat_sat_tipo_de_comprobante_id', 'cat_sat_metodo_pago_id');
+            'cat_sat_forma_pago_id', 'cat_sat_uso_cfdi_id', 'cat_sat_tipo_de_comprobante_id', 'cat_sat_metodo_pago_id',
+            'telefono');
 
         $columnas_extra['com_cliente_n_sucursales'] =
             "(SELECT COUNT(*) FROM com_sucursal WHERE com_sucursal.com_cliente_id = com_cliente.id)";
@@ -128,12 +129,18 @@ class com_cliente extends _modelo_parent
 
     private function com_sucursal_upd_dom(stdClass $com_cliente, array $com_sucursal_upd): array
     {
+        $keys = array('dp_calle_pertenece_id','numero_exterior','telefono');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $com_cliente);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar cliente', data: $valida);
+        }
+
         $com_sucursal_upd['dp_calle_pertenece_id'] = $com_cliente->dp_calle_pertenece_id;
         $com_sucursal_upd['numero_exterior'] = $com_cliente->numero_exterior;
         $com_sucursal_upd['numero_interior'] = $com_cliente->numero_interior;
-        $com_sucursal_upd['telefono_1'] = $com_cliente->telefono_1;
-        $com_sucursal_upd['telefono_2'] = $com_cliente->telefono_2;
-        $com_sucursal_upd['telefono_3'] = $com_cliente->telefono_3;
+        $com_sucursal_upd['telefono_1'] = $com_cliente->telefono;
+        $com_sucursal_upd['telefono_2'] = $com_cliente->telefono;
+        $com_sucursal_upd['telefono_3'] = $com_cliente->telefono;
         return $com_sucursal_upd;
     }
 
