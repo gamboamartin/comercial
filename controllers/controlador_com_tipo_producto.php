@@ -12,6 +12,7 @@ use base\controller\controler;
 use gamboamartin\comercial\models\com_tipo_producto;
 use gamboamartin\errores\errores;
 use gamboamartin\system\_ctl_parent_sin_codigo;
+use gamboamartin\system\html_controler;
 use gamboamartin\system\links_menu;
 
 use gamboamartin\template\html;
@@ -20,7 +21,7 @@ use html\com_tipo_producto_html;
 use PDO;
 use stdClass;
 
-class controlador_com_tipo_producto extends _ctl_parent_sin_codigo {
+class controlador_com_tipo_producto extends _base_sin_cod {
 
     public array|stdClass $keys_selects = array();
     public controlador_com_producto $controlador_com_producto;
@@ -31,24 +32,11 @@ class controlador_com_tipo_producto extends _ctl_parent_sin_codigo {
                                 stdClass $paths_conf = new stdClass()){
         $modelo = new com_tipo_producto(link: $link);
         $html_ = new com_tipo_producto_html(html: $html);
-        $obj_link = new links_menu(link: $link,registro_id: $this->registro_id);
 
-        $datatables = $this->init_datatable();
-        if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al inicializar datatable',data: $datatables);
-            print_r($error);
-            die('Error');
-        }
 
-        parent::__construct(html:$html_, link: $link,modelo:  $modelo, obj_link: $obj_link, datatables: $datatables,
-            paths_conf: $paths_conf);
+        parent::__construct(html_: $html_,link:  $link,modelo:  $modelo, paths_conf: $paths_conf);
 
-        $init_controladores = $this->init_controladores(paths_conf: $paths_conf);
-        if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al inicializar controladores',data:  $init_controladores);
-            print_r($error);
-            die('Error');
-        }
+
 
         $init_links = $this->init_links();
         if(errores::$error){
