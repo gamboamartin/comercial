@@ -552,6 +552,11 @@ class base_test{
             return (new errores())->error('Error al eliminar', $del);
         }
 
+        $del = $this->del_com_tmp_cte_dp($link);
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
+        }
+
         $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_cliente');
         if(errores::$error){
             return (new errores())->error('Error al eliminar', $del);
@@ -579,13 +584,13 @@ class base_test{
         return $del;
     }
 
-    public function del_com_producto_id(PDO $link, int $id): array
+    public function del_com_tmp_cte_dp(PDO $link): array
     {
-        $del = $this->elimina_registro($link, 'gamboamartin\\comercial\\models\\com_producto',id: $id);
-        if(errores::$error){
-            return (new errores())->error('Error al eliminar producto', $del);
-        }
 
+        $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_tmp_cte_dp');
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
+        }
         return $del;
     }
 
