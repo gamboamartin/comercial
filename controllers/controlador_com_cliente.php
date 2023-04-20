@@ -493,6 +493,10 @@ class controlador_com_cliente extends _ctl_base
         $keys_selects = $this->init_selects(keys_selects: array(), key: "com_tipo_cliente_id", label: "Tipo de Cliente",
             id_selected: $this->registro['com_tipo_cliente_id'], cols: 12);
 
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener keys_selects', data: $keys_selects);
+        }
+
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_regimen_fiscal_id",
             label: "Régimen Fiscal", id_selected: $this->registro['cat_sat_regimen_fiscal_id'], cols: 12);
 
@@ -615,7 +619,6 @@ class controlador_com_cliente extends _ctl_base
                 }
                 $com_tmp_cte_dp = (object)$r_com_tmp_cte_dp->registros[0];
             }
-
 
 
         }
