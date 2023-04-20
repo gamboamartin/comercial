@@ -46,10 +46,25 @@ class com_cliente extends _modelo_parent
 
     public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
     {
+
+        $keys_tmp = array('dp_estado','dp_municipio','dp_cp','dp_colonia','dp_calle');
+        $row_tmp = array();
+        foreach ($keys_tmp as $key){
+            if(isset($this->registro[$key])){
+                $value = trim($this->registro[$key]);
+                if($value !== ''){
+                    $row_tmp[$key] = $value;
+                }
+                unset($this->registro[$key]);
+            }
+        }
+
+
         $this->registro = $this->init_base(data: $this->registro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al inicializar campo base', data: $this->registro);
         }
+
 
         $this->registro = $this->inicializa_foraneas(data: $this->registro);
         if (errores::$error) {
@@ -95,6 +110,15 @@ class com_cliente extends _modelo_parent
         $alta_sucursal = (new com_sucursal($this->link))->alta_registro(registro: $data);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al insertar sucursal', data: $alta_sucursal);
+        }
+
+        if(count($row_tmp)>0){
+            $row_tmp['com_cliente_id'] = $r_alta_bd->registro_id;
+            $alta_tmp_dom = (new com_tmp_cte_dp(link: $this->link))->alta_registro(registro: $row_tmp);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al insertar tmp dom', data: $alta_tmp_dom);
+            }
+
         }
 
         return $r_alta_bd;

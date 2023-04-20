@@ -6,12 +6,42 @@
 <?php echo $controlador->inputs->rfc; ?>
 <?php echo $controlador->inputs->telefono; ?>
 <?php echo $controlador->inputs->cat_sat_regimen_fiscal_id; ?>
-<?php echo $controlador->inputs->dp_pais_id; ?>
-<?php echo $controlador->inputs->dp_estado_id; ?>
-<?php echo $controlador->inputs->dp_municipio_id; ?>
-<?php echo $controlador->inputs->dp_cp_id; ?>
-<?php echo $controlador->inputs->dp_colonia_postal_id; ?>
-<?php echo $controlador->inputs->dp_calle_pertenece_id; ?>
+
+<div id="dp_pais_cont">
+    <?php echo $controlador->inputs->dp_pais_id; ?>
+</div>
+<div id="dp_estado_cont">
+    <?php echo $controlador->inputs->dp_estado_id; ?>
+</div>
+<div id="dp_municipio_cont">
+        <?php echo $controlador->inputs->dp_municipio_id; ?>
+</div>
+<div id="dp_cp_cont">
+        <?php echo $controlador->inputs->dp_cp_id; ?>
+</div>
+<div id="dp_colonia_postal_cont">
+        <?php echo $controlador->inputs->dp_colonia_postal_id; ?>
+</div>
+<div id="dp_calle_pertenece_cont">
+        <?php echo $controlador->inputs->dp_calle_pertenece_id; ?>
+</div>
+
+<div id="dp_estado_cont_tmp">
+    <?php echo $controlador->inputs->dp_estado; ?>
+</div>
+<div id="dp_municipio_cont_tmp">
+        <?php echo $controlador->inputs->dp_municipio; ?>
+</div>
+<div id="dp_cp_cont_tmp">
+        <?php echo $controlador->inputs->dp_cp; ?>
+</div>
+<div id="dp_colonia_cont_tmp">
+        <?php echo $controlador->inputs->dp_colonia; ?>
+</div>
+<div id="dp_calle_cont_tmp">
+        <?php echo $controlador->inputs->dp_calle; ?>
+</div>
+
 
 <?php echo $controlador->inputs->numero_exterior; ?>
 <?php echo $controlador->inputs->numero_interior; ?>
