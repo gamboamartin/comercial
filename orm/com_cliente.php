@@ -10,6 +10,7 @@ use gamboamartin\cat_sat\models\cat_sat_regimen_fiscal;
 use gamboamartin\cat_sat\models\cat_sat_tipo_de_comprobante;
 use gamboamartin\cat_sat\models\cat_sat_uso_cfdi;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
+use gamboamartin\direccion_postal\models\dp_colonia_postal;
 use gamboamartin\direccion_postal\models\dp_cp;
 use gamboamartin\errores\errores;
 use PDO;
@@ -68,6 +69,16 @@ class com_cliente extends _modelo_parent
 
             $row_tmp['dp_cp_id'] = $dp_cp->dp_cp_id;
             $row_tmp['dp_cp'] = $dp_cp->dp_cp_descripcion;
+        }
+
+        if(isset($this->registro['dp_colonia_postal_id']) && trim($this->registro['dp_colonia_postal_id']) !=='' && (int)$this->registro['dp_cp_id'] !== 105){
+            $cp_colonia_postal = (new dp_colonia_postal(link: $this->link))->registro(registro_id:$this->registro['dp_colonia_postal_id'], retorno_obj: true);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al obtener dp_cp', data: $cp_colonia_postal);
+            }
+
+            $row_tmp['dp_colonia_postal_id'] = $cp_colonia_postal->dp_colonia_postal_id;
+            $row_tmp['dp_colonia'] = $cp_colonia_postal->dp_colonia_descripcion;
         }
 
 

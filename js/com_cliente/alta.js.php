@@ -286,6 +286,7 @@
 
         if(dp_calle_pertenece_id === '100'){
 
+            dp_cp_tmp.prop( "disabled", true );
             dp_calle_ct.removeClass( "col-sm-4" );
             dp_calle_ct.removeClass( "col-sm-6" );
             dp_calle_ct.removeClass( "col-sm-12" );
