@@ -203,9 +203,6 @@
         dp_colonia_postal_id_sl.prop( "disabled", false );
         dp_calle_pertenece_id_sl.prop( "disabled", false );
 
-        dp_cp_ct.removeClass( "col-sm-4" );
-        dp_cp_ct.addClass( "col-sm-12" );
-
 
 
         dp_colonia_contenedor.show();
@@ -219,6 +216,21 @@
 
             dp_colonia_postal_id_sl.prop( "disabled", true );
             dp_calle_pertenece_id_sl.prop( "disabled", true );
+
+            dp_cp_ct.removeClass( "col-sm-4" );
+            dp_cp_ct.removeClass( "col-sm-6" );
+            dp_cp_ct.removeClass( "col-sm-12" );
+            dp_cp_ct.addClass( "col-sm-6" );
+
+            dp_colonia_ct.removeClass( "col-sm-4" );
+            dp_colonia_ct.removeClass( "col-sm-6" );
+            dp_colonia_ct.removeClass( "col-sm-12" );
+            dp_colonia_ct.addClass( "col-sm-6" );
+
+            dp_calle_ct.removeClass( "col-sm-4" );
+            dp_calle_ct.removeClass( "col-sm-6" );
+            dp_calle_ct.removeClass( "col-sm-12" );
+            dp_calle_ct.addClass( "col-sm-6" );
 
 
             dp_colonia_contenedor.hide();
