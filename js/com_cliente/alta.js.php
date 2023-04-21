@@ -256,6 +256,7 @@
 
 
             dp_calle_pertenece_id_sl.prop( "disabled", true );
+            dp_cp_tmp.prop( "disabled", true );
 
 
             dp_calle_ct.removeClass( "col-sm-6" );
@@ -267,6 +268,7 @@
 
             dp_colonia_contenedor_tmp.show();
             dp_calle_contenedor_tmp.show();
+
         }
     });
 
@@ -281,7 +283,7 @@
             dp_calle_ct.removeClass( "col-sm-4" );
             dp_calle_ct.removeClass( "col-sm-6" );
             dp_calle_ct.removeClass( "col-sm-12" );
-            dp_calle_ct.addClass( "col-sm-12" ); 
+            dp_calle_ct.addClass( "col-sm-12" );
 
             dp_calle_contenedor_tmp.show();
         }
