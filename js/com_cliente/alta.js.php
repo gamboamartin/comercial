@@ -19,6 +19,12 @@
     let dp_calle_pertenece_id_sl = $("#dp_calle_pertenece_id");
 
 
+    let dp_estado_tmp = $("#dp_estado");
+    let dp_municipio_tmp = $("#dp_municipio");
+    let dp_cp_tmp = $("#dp_cp");
+    let dp_colonia_tmp = $("#dp_colonia");
+    let dp_calle_tmp = $("#dp_calle");
+
     let dp_estado_ct = $("#dp_estado").parent().parent();
     let dp_municipio_ct = $("#dp_municipio").parent().parent();
     let dp_cp_ct = $("#dp_cp").parent().parent();
@@ -210,7 +216,7 @@
 
         dp_colonia_contenedor_tmp.hide();
         dp_calle_contenedor_tmp.hide();
-    dp_cp_contenedor_tmp.hide();
+        dp_cp_contenedor_tmp.hide();
 
         if(dp_cp_id === '11'){
 
