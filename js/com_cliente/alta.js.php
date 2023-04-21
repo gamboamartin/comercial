@@ -278,6 +278,10 @@
 
         if(dp_calle_pertenece_id === '100'){
 
+            dp_calle_ct.removeClass( "col-sm-4" );
+            dp_calle_ct.removeClass( "col-sm-6" );
+            dp_calle_ct.removeClass( "col-sm-12" );
+            dp_calle_ct.addClass( "col-sm-12" ); 
 
             dp_calle_contenedor_tmp.show();
         }
