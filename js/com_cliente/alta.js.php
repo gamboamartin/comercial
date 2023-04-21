@@ -23,6 +23,7 @@
     let dp_municipio_ct = $("#dp_municipio").parent().parent();
     let dp_cp_ct = $("#dp_cp").parent().parent();
     let dp_colonia_ct = $("#dp_colonia").parent().parent();
+    let dp_calle_ct = $("#dp_calle").parent().parent();
 
 
 
@@ -245,8 +246,9 @@
             dp_calle_pertenece_id_sl.prop( "disabled", true );
 
 
-            dp_colonia_ct.removeClass( "col-sm-4" );
-            dp_colonia_ct.addClass( "col-sm-12" );
+            dp_calle_ct.removeClass( "col-sm-6" );
+            dp_calle_ct.removeClass( "col-sm-4" );
+            dp_calle_ct.addClass( "col-sm-12" );
 
 
             dp_calle_contenedor.hide();
