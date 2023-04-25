@@ -3,8 +3,11 @@ let sl_cat_sat_division_producto = $("#cat_sat_division_producto_id");
 let sl_cat_sat_grupo_producto = $("#cat_sat_grupo_producto_id");
 let sl_cat_sat_clase_producto = $("#cat_sat_clase_producto_id");
 let sl_cat_sat_producto = $("#cat_sat_producto_id");
+let cat_sat_producto_id_tmp_ct = $("#cat_sat_producto_id_tmp");
 
 let txt_descripcion = $("#descripcion");
+
+cat_sat_producto_id_tmp_ct.hide();
 
 let asigna_divisiones = (cat_sat_tipo_producto_id = '') => {
     let url = get_url("cat_sat_division_producto","get_divisiones", {cat_sat_tipo_producto_id: cat_sat_tipo_producto_id});

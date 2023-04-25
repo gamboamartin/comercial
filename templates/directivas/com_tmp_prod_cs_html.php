@@ -12,7 +12,7 @@ use stdClass;
 class com_tmp_prod_cs_html extends html_controler {
 
     public function input_cat_sat_producto(int $cols, stdClass $row_upd, bool $value_vacio, bool $disabled = false,
-                                string $place_holder = 'Producto'): array|string
+                                string $place_holder = 'Producto', bool $required = false): array|string
     {
 
         $valida = (new directivas(html: $this->html_base))->valida_cols(cols: $cols);
@@ -21,7 +21,7 @@ class com_tmp_prod_cs_html extends html_controler {
         }
 
         $html =$this->directivas->input_text(disabled: $disabled, name: 'cat_sat_producto', place_holder: $place_holder,
-            required: false, row_upd: $row_upd, value_vacio: $value_vacio);
+            required: $required, row_upd: $row_upd, value_vacio: $value_vacio);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
         }
