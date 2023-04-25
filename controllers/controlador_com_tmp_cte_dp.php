@@ -8,20 +8,10 @@
  */
 namespace gamboamartin\comercial\controllers;
 
-use base\controller\controler;
-use gamboamartin\comercial\models\com_cliente;
-use gamboamartin\comercial\models\com_tipo_sucursal;
 use gamboamartin\comercial\models\com_tmp_cte_dp;
-use gamboamartin\direccion_postal\models\dp_calle;
-use gamboamartin\direccion_postal\models\dp_calle_pertenece;
-use gamboamartin\direccion_postal\models\dp_colonia;
-use gamboamartin\direccion_postal\models\dp_colonia_postal;
-use gamboamartin\direccion_postal\models\dp_cp;
 use gamboamartin\errores\errores;
-use gamboamartin\system\row;
 use gamboamartin\template\html;
 use html\com_cliente_html;
-use html\com_tipo_sucursal_html;
 use html\com_tmp_cte_dp_html;
 use PDO;
 use stdClass;
@@ -207,9 +197,6 @@ class controlador_com_tmp_cte_dp extends _base_sin_cod {
         }
 
         return $regenera;
-
-
-
 
 
 

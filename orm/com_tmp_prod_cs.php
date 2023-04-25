@@ -3,14 +3,6 @@ namespace gamboamartin\comercial\models;
 
 use base\orm\_modelo_parent;
 use gamboamartin\cat_sat\models\cat_sat_producto;
-use gamboamartin\direccion_postal\models\dp_calle;
-use gamboamartin\direccion_postal\models\dp_calle_pertenece;
-use gamboamartin\direccion_postal\models\dp_colonia;
-use gamboamartin\direccion_postal\models\dp_colonia_postal;
-use gamboamartin\direccion_postal\models\dp_cp;
-use gamboamartin\direccion_postal\models\dp_estado;
-use gamboamartin\direccion_postal\models\dp_municipio;
-use gamboamartin\direccion_postal\models\dp_pais;
 use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
@@ -63,7 +55,14 @@ class com_tmp_prod_cs extends _modelo_parent{
         return $r_alta_bd;
     }
 
-    private function asigna_cat_sat_producto(array $filtro, array $tmp_upd){
+    /**
+     * Asigna el id del producto del sat para producto comercial
+     * @param array $filtro filtro a integrar
+     * @param array $tmp_upd arreglo previo para actualizacion
+     * @return array
+     */
+    private function asigna_cat_sat_producto(array $filtro, array $tmp_upd): array
+    {
         $r_cat_sat_producto = (new cat_sat_producto(link: $this->link))->filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar si existe', data: $r_cat_sat_producto);
@@ -74,6 +73,12 @@ class com_tmp_prod_cs extends _modelo_parent{
     }
 
 
+    /**
+     * Verifica si existe key temporal para actualizacion
+     * @param array $keys
+     * @param stdClass $tmp
+     * @return bool
+     */
     private function existe_data_key(array $keys, stdClass $tmp): bool
     {
         $existe_data = true;
@@ -88,8 +93,14 @@ class com_tmp_prod_cs extends _modelo_parent{
     }
 
 
-
-    private function integra_cat_sat_producto(array $filtro, array $tmp_upd){
+    /**
+     * Verifica si existe le producto del sat en base de datos conforme al filtro
+     * @param array $filtro filtro para integracion
+     * @param array $tmp_upd arreglo previamente cargado para la actualizacion del producto
+     * @return array
+     */
+    private function integra_cat_sat_producto(array $filtro, array $tmp_upd): array
+    {
         $existe_cat_sat_producto = (new cat_sat_producto(link: $this->link))->existe(filtro: $filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar si existe', data: $existe_cat_sat_producto);
@@ -111,14 +122,14 @@ class com_tmp_prod_cs extends _modelo_parent{
 
         foreach ($entidades as $entidad){
             $key_id = $entidad->tabla.'_id';
-            $key_descripcion = $entidad->tabla.'_descripcion';
+            $key_codigo = $entidad->tabla.'_codigo';
 
             if(isset($registro[$key_id]) && (int)$registro[$key_id] > 1){
-                $row_dp = $entidad->registro(registro_id: $registro[$key_id]);
+                $row_cat_sat = $entidad->registro(registro_id: $registro[$key_id]);
                 if(errores::$error){
-                    return $this->error->error(mensaje: 'Error al obtener row_dp',data:  $row_dp);
+                    return $this->error->error(mensaje: 'Error al obtener row_dp',data:  $row_cat_sat);
                 }
-                $registro[$entidad->tabla] = $row_dp[$key_descripcion];
+                $registro[$entidad->tabla] = $row_cat_sat[$key_codigo];
             }
         }
 
@@ -144,25 +155,21 @@ class com_tmp_prod_cs extends _modelo_parent{
 
 
     private function tmp_upd_cat_sat_producto(stdClass $tmp, array $tmp_upd){
-        $keys = array();
-        $keys[] = 'cat_sat_producto_id';
+        $cat_sat_producto_codigo = $tmp->cat_sat_producto;
 
+        $filtro['cat_sat_producto.codigo'] = $cat_sat_producto_codigo;
 
-        $existe_data_cat_sat_producto = $this->existe_data_key(keys: $keys,tmp: $tmp);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al validar si existe data', data: $existe_data_cat_sat_producto);
+        $existe_cat_sat_producto = (new cat_sat_producto(link: $this->link))->existe(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si existe',data:  $existe_cat_sat_producto);
         }
 
 
-        if($existe_data_cat_sat_producto){
-            $filtro = array();
-            $filtro['cat_sat_producto.id'] = $tmp->cat_sat_producto_id;
-
-            $tmp_upd = $this->integra_cat_sat_producto(filtro: $filtro, tmp_upd: $tmp_upd);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al validar si existe', data: $tmp_upd);
+        if($existe_cat_sat_producto) {
+            $tmp_upd = $this->get_tmp_cat_sat_producto(filtro: $filtro);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al asignar tmp_upd', data: $tmp_upd);
             }
-
         }
         return $tmp_upd;
     }
@@ -232,6 +239,29 @@ class com_tmp_prod_cs extends _modelo_parent{
 
     }
 
+    private function get_cat_sat_producto(array $filtro){
+        $r_cat_sat_producto = (new cat_sat_producto(link: $this->link))->filtro_and(filtro: $filtro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener r_cat_sat_producto', data: $r_cat_sat_producto);
+        }
+        if($r_cat_sat_producto->n_registros === 0){
+            return $this->error->error(mensaje: 'Error no existe r_cat_sat_producto', data: $r_cat_sat_producto);
+        }
+        return $r_cat_sat_producto->registros[0];
+    }
+
+    private function get_tmp_cat_sat_producto(array $filtro){
+        $cat_sat_producto = $this->get_cat_sat_producto(filtro: $filtro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener tmp_upd', data: $cat_sat_producto);
+        }
+        $tmp_upd = $this->tmp_upd(cat_sat_producto: $cat_sat_producto);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al asignar tmp_upd', data: $tmp_upd);
+        }
+        return $tmp_upd;
+    }
+
     final public function regenera(int $com_tmp_prod_cs_id){
         $tmp = $this->registro(registro_id: $com_tmp_prod_cs_id, columnas_en_bruto: true, retorno_obj: true);
         if(errores::$error){
@@ -243,14 +273,14 @@ class com_tmp_prod_cs extends _modelo_parent{
             return $this->error->error(mensaje: 'Error al regenerar',data:  $upd);
         }
 
-        $regenera_cte = $this->ajusta_data_producto(com_tmp_prod_cs_id: $com_tmp_prod_cs_id, tmp: $tmp);
+        $regenera_prod = $this->ajusta_data_producto(com_tmp_prod_cs_id: $com_tmp_prod_cs_id, tmp: $tmp);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al eliminar temporal',data:  $regenera_cte);
+            return $this->error->error(mensaje: 'Error al eliminar temporal',data:  $regenera_prod);
         }
 
         $data = new stdClass();
         $data->upd = $upd;
-        $data->regenera_cte = $regenera_cte;
+        $data->regenera_prod = $regenera_prod;
         return $data;
     }
 
