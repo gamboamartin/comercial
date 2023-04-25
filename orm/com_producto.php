@@ -47,6 +47,8 @@ class com_producto extends _modelo_parent {
     public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
     {
 
+        $integra_tmp = false;
+        $cat_sat_producto_data = '';
         if(isset($this->registro['cat_sat_producto'])){
             if(trim($this->registro['cat_sat_producto'] !=='')){
                 $filtro['cat_sat_producto.codigo'] = $this->registro['cat_sat_producto'];
@@ -68,6 +70,11 @@ class com_producto extends _modelo_parent {
                     $cat_sat_producto = $r_cat_sat_producto->registros[0];
                     $this->registro['cat_sat_producto_id'] = $cat_sat_producto['cat_sat_producto_id'];
                 }
+                else{
+                    $cat_sat_producto_data = $this->registro['cat_sat_producto'];
+                    $integra_tmp = true;
+                }
+                unset($this->registro['cat_sat_producto']);
             }
         }
 
@@ -82,11 +89,20 @@ class com_producto extends _modelo_parent {
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al limpiar campos', data: $this->registro);
         }
-
         $r_alta_bd =  parent::alta_bd();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al insertar producto', data: $r_alta_bd);
         }
+
+        if($integra_tmp){
+            $com_tmp_prod_cs_ins['com_producto_id'] = $r_alta_bd->com_producto_id;
+            $com_tmp_prod_cs_ins['cat_sat_producto'] = $cat_sat_producto_data;
+            $r_alta_com_tmp = (new com_tmp_prod_cs(link: $this->link))->alta_registro(registro: $com_tmp_prod_cs_ins);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al insertar producto temporal', data: $r_alta_com_tmp);
+            }
+        }
+
         return $r_alta_bd;
     }
 
