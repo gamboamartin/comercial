@@ -31,6 +31,7 @@ use html\com_email_cte_html;
 use html\com_tmp_cte_dp_html;
 use PDO;
 use stdClass;
+use Throwable;
 
 class controlador_com_cliente extends _ctl_base
 {
@@ -595,54 +596,20 @@ class controlador_com_cliente extends _ctl_base
             return $this->retorno_error(mensaje: 'Error al integrar base', data: $base, header: $header, ws: $ws);
         }
 
-        $filtro['com_tmp_cte_dp.com_cliente_id'] = $this->registro_id;
-
-
-        $existe_com_tmp_cte_dp = (new com_tmp_cte_dp(link: $this->link))->existe(filtro: $filtro);
+        $this->link->beginTransaction();
+        $data_tmp = (new com_tmp_cte_dp(link: $this->link))->genera_datos(com_cliente_id: $this->registro_id);
         if (errores::$error) {
+            $this->link->rollBack();
             return $this->retorno_error(
-                mensaje: 'Error al validar com_tmp', data: $existe_com_tmp_cte_dp, header: $header, ws: $ws);
+                mensaje: 'Error al obtener com_tmp', data: $data_tmp, header: $header, ws: $ws);
         }
-
-        $com_tmp_cte_dp = new stdClass();
-        if($existe_com_tmp_cte_dp) {
-
-            $this->existe_dom_tmp = true;
-
-            $r_com_tmp_cte_dp = (new com_tmp_cte_dp(link: $this->link))->filtro_and(columnas_en_bruto: true, filtro: $filtro);
-            if (errores::$error) {
-                return $this->retorno_error(
-                    mensaje: 'Error al obtener com_tmp', data: $r_com_tmp_cte_dp, header: $header, ws: $ws);
-            }
-            $com_tmp_cte_dp = (object)$r_com_tmp_cte_dp->registros[0];
-
-            $regenera = (new com_tmp_cte_dp(link: $this->link))->regenera($com_tmp_cte_dp->id);
-            if (errores::$error) {
-                return $this->retorno_error(
-                    mensaje: 'Error al regenerar com_tmp', data: $regenera, header: $header, ws: $ws);
-            }
-
-            $existe_com_tmp_cte_dp = (new com_tmp_cte_dp(link: $this->link))->existe(filtro: $filtro);
-            if (errores::$error) {
-                return $this->retorno_error(
-                    mensaje: 'Error al validar com_tmp', data: $existe_com_tmp_cte_dp, header: $header, ws: $ws);
-            }
-
-            if($existe_com_tmp_cte_dp) {
-                $this->existe_dom_tmp = true;
-                $r_com_tmp_cte_dp = (new com_tmp_cte_dp(link: $this->link))->filtro_and(columnas_en_bruto: true, filtro: $filtro);
-                if (errores::$error) {
-                    return $this->retorno_error(
-                        mensaje: 'Error al obtener com_tmp', data: $r_com_tmp_cte_dp, header: $header, ws: $ws);
-                }
-                $com_tmp_cte_dp = (object)$r_com_tmp_cte_dp->registros[0];
-            }
+        $this->link->commit();
 
 
-        }
+        $this->existe_dom_tmp = $data_tmp->existe_dom_tmp;
 
 
-        $dp_estado = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_estado(cols: 4,row_upd:  $com_tmp_cte_dp,value_vacio:  false);
+        $dp_estado = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_estado(cols: 4,row_upd:  $data_tmp->com_tmp_cte_dp,value_vacio:  false);
         if (errores::$error) {
             return $this->retorno_error(
                 mensaje: 'Error al obtener inputs', data: $dp_estado, header: $header, ws: $ws);
@@ -650,7 +617,7 @@ class controlador_com_cliente extends _ctl_base
 
         $this->inputs->dp_estado = $dp_estado;
 
-        $dp_municipio = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_municipio(cols: 4,row_upd:  $com_tmp_cte_dp,value_vacio:  false);
+        $dp_municipio = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_municipio(cols: 4,row_upd:  $data_tmp->com_tmp_cte_dp,value_vacio:  false);
         if (errores::$error) {
             return $this->retorno_error(
                 mensaje: 'Error al obtener inputs', data: $dp_estado, header: $header, ws: $ws);
@@ -658,7 +625,7 @@ class controlador_com_cliente extends _ctl_base
 
         $this->inputs->dp_municipio = $dp_municipio;
 
-        $dp_cp = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_cp(cols: 4,row_upd:  $com_tmp_cte_dp,value_vacio:  false, required: true);
+        $dp_cp = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_cp(cols: 4,row_upd:  $data_tmp->com_tmp_cte_dp,value_vacio:  false, required: true);
         if (errores::$error) {
             return $this->retorno_error(
                 mensaje: 'Error al obtener inputs', data: $dp_cp, header: $header, ws: $ws);
@@ -666,7 +633,7 @@ class controlador_com_cliente extends _ctl_base
 
         $this->inputs->dp_cp = $dp_cp;
 
-        $dp_colonia = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_colonia(cols: 6,row_upd:  $com_tmp_cte_dp,value_vacio:  false);
+        $dp_colonia = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_colonia(cols: 6,row_upd:  $data_tmp->com_tmp_cte_dp,value_vacio:  false);
         if (errores::$error) {
             return $this->retorno_error(
                 mensaje: 'Error al obtener inputs', data: $dp_colonia, header: $header, ws: $ws);
@@ -674,7 +641,7 @@ class controlador_com_cliente extends _ctl_base
 
         $this->inputs->dp_colonia = $dp_colonia;
 
-        $dp_calle = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_calle(cols: 6,row_upd:  $com_tmp_cte_dp,value_vacio:  false);
+        $dp_calle = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_calle(cols: 6,row_upd:  $data_tmp->com_tmp_cte_dp,value_vacio:  false);
         if (errores::$error) {
             return $this->retorno_error(
                 mensaje: 'Error al obtener inputs', data: $dp_calle, header: $header, ws: $ws);
@@ -692,6 +659,39 @@ class controlador_com_cliente extends _ctl_base
         $params['accion_retorno'] = 'correo';
         $params['id_retorno'] = $com_cliente_id;
         return $params;
+    }
+
+    public function regenera_dom(bool $header, bool $ws = false){
+
+        $this->link->beginTransaction();
+        $data_tmp = (new com_tmp_cte_dp(link: $this->link))->genera_datos(com_cliente_id: $this->registro_id);
+        if (errores::$error) {
+            $this->link->rollBack();
+            return $this->retorno_error(
+                mensaje: 'Error al obtener com_tmp', data: $data_tmp, header: $header, ws: $ws);
+        }
+        $this->link->commit();
+
+        if($header){
+
+            $this->retorno_base(registro_id:$this->registro_id, result: $data_tmp, siguiente_view: 'modifica',
+                ws:  $ws,seccion_retorno: $this->tabla);
+        }
+        if($ws){
+            header('Content-Type: application/json');
+            try {
+                echo json_encode($data_tmp, JSON_THROW_ON_ERROR);
+            }
+            catch (Throwable $e){
+                $error = (new errores())->error(mensaje: 'Error al maquetar JSON' , data: $e);
+                print_r($error);
+            }
+            exit;
+        }
+
+        return $data_tmp;
+
+
     }
 
 

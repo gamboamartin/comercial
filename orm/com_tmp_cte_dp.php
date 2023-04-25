@@ -439,6 +439,64 @@ class com_tmp_cte_dp extends _modelo_parent{
 
     }
 
+    private function data_tmp(stdClass $data_tmp, array $filtro){
+        $existe_com_tmp_cte_dp = $this->existe(filtro: $filtro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar com_tmp', data: $existe_com_tmp_cte_dp);
+        }
+
+        if($existe_com_tmp_cte_dp) {
+            $data_tmp = $this->get_tmp(filtro: $filtro);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al obtener com_tmp', data: $data_tmp);
+            }
+        }
+        return $data_tmp;
+    }
+
+    private function genera_data_tmp(stdClass $data_tmp, array $filtro){
+        $data_tmp = $this->data_tmp(data_tmp: $data_tmp,filtro:  $filtro);
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al obtener com_tmp', data: $data_tmp);
+        }
+
+        $regenera = $this->regenera($data_tmp->com_tmp_cte_dp->id);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al regenerar com_tmp', data: $regenera);
+        }
+
+        $data_tmp = $this->data_tmp(data_tmp: $data_tmp,filtro:  $filtro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener com_tmp', data: $data_tmp);
+        }
+        return $data_tmp;
+    }
+
+    private function get_tmp(array $filtro){
+        $r_com_tmp_cte_dp = $this->filtro_and(columnas_en_bruto: true, filtro: $filtro);
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al obtener com_tmp', data: $r_com_tmp_cte_dp);
+        }
+        $data = new stdClass();
+        $data->existe_dom_tmp = true;
+        $data->com_tmp_cte_dp = (object)$r_com_tmp_cte_dp->registros[0];;
+        return $data;
+    }
+
+    /**
+     * Inicializa las datos temporales de un cliente
+     * @return stdClass
+     */
+    private function init_data_tmp(): stdClass
+    {
+        $data_tmp = new stdClass();
+        $data_tmp->com_tmp_cte_dp = new stdClass();
+        $data_tmp->existe_dom_tmp = false;
+        return $data_tmp;
+    }
+
     final public function regenera(int $com_tmp_cte_dp_id){
         $tmp = $this->registro(registro_id: $com_tmp_cte_dp_id, columnas_en_bruto: true, retorno_obj: true);
         if(errores::$error){
@@ -459,6 +517,37 @@ class com_tmp_cte_dp extends _modelo_parent{
         $data->upd = $upd;
         $data->regenera_cte = $regenera_cte;
         return $data;
+    }
+
+    private function regenera_base_tmp(stdClass $data_tmp, array $filtro){
+        $existe_com_tmp_cte_dp = $this->existe(filtro: $filtro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar com_tmp', data: $existe_com_tmp_cte_dp);
+        }
+
+        if($existe_com_tmp_cte_dp) {
+            $data_tmp = $this->genera_data_tmp(data_tmp: $data_tmp,filtro:  $filtro);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al obtener com_tmp', data: $data_tmp);
+            }
+        }
+        return $data_tmp;
+    }
+
+    final public  function genera_datos(int $com_cliente_id){
+        $filtro['com_tmp_cte_dp.com_cliente_id'] = $com_cliente_id;
+
+        $data_tmp = $this->init_data_tmp();
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al inicializa data_tmp', data: $data_tmp);
+        }
+
+        $data_tmp = $this->regenera_base_tmp(data_tmp: $data_tmp,filtro:  $filtro);
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al obtener com_tmp', data: $data_tmp);
+        }
+        return $data_tmp;
     }
 
 
