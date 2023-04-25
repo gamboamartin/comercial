@@ -2,10 +2,9 @@
 namespace html;
 
 use gamboamartin\comercial\controllers\controlador_com_producto;
+use gamboamartin\comercial\models\com_producto;
 use gamboamartin\errores\errores;
 use gamboamartin\system\html_controler;
-use models\com_producto;
-use models\com_sucursal;
 use PDO;
 use stdClass;
 

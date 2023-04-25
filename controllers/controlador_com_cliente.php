@@ -39,6 +39,8 @@ class controlador_com_cliente extends _ctl_base
 
     public bool $existe_dom_tmp = false;
 
+    public controlador_com_email_cte $controlador_com_email_cte;
+
     public function __construct(PDO      $link, html $html = new \gamboamartin\template_1\html(),
                                 stdClass $paths_conf = new stdClass())
     {
@@ -111,57 +113,10 @@ class controlador_com_cliente extends _ctl_base
             return $this->retorno_error(mensaje: 'Error al inicializar alta', data: $r_alta, header: $header, ws: $ws);
         }
 
-        $keys_selects = $this->init_selects_inputs();
+        $inputs = $this->data_form();
         if (errores::$error) {
-            return $this->retorno_error(mensaje: 'Error al inicializar selects', data: $r_alta, header: $header, ws: $ws);
+            return $this->retorno_error(mensaje: 'Error al obtener inputs', data: $inputs, header: $header, ws: $ws);
         }
-
-        $inputs = $this->inputs(keys_selects: $keys_selects);
-        if (errores::$error) {
-            return $this->retorno_error(
-                mensaje: 'Error al obtener inputs', data: $inputs, header: $header, ws: $ws);
-        }
-
-        $dp_estado = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_estado(cols: 4,row_upd:  $this->row_upd,value_vacio:  false);
-        if (errores::$error) {
-            return $this->retorno_error(
-                mensaje: 'Error al obtener inputs', data: $dp_estado, header: $header, ws: $ws);
-        }
-
-        $this->inputs->dp_estado = $dp_estado;
-
-        $dp_municipio = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_municipio(cols: 4,row_upd:  $this->row_upd,value_vacio:  false);
-        if (errores::$error) {
-            return $this->retorno_error(
-                mensaje: 'Error al obtener inputs', data: $dp_estado, header: $header, ws: $ws);
-        }
-
-        $this->inputs->dp_municipio = $dp_municipio;
-
-        $dp_cp = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_cp(cols: 4,row_upd:  $this->row_upd,value_vacio:  false, required: true);
-        if (errores::$error) {
-            return $this->retorno_error(
-                mensaje: 'Error al obtener inputs', data: $dp_cp, header: $header, ws: $ws);
-        }
-
-        $this->inputs->dp_cp = $dp_cp;
-
-        $dp_colonia = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_colonia(cols: 6,row_upd:  $this->row_upd,value_vacio:  false);
-        if (errores::$error) {
-            return $this->retorno_error(
-                mensaje: 'Error al obtener inputs', data: $dp_colonia, header: $header, ws: $ws);
-        }
-
-        $this->inputs->dp_colonia = $dp_colonia;
-
-        $dp_calle = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_calle(cols: 6,row_upd:  $this->row_upd,value_vacio:  false);
-        if (errores::$error) {
-            return $this->retorno_error(
-                mensaje: 'Error al obtener inputs', data: $dp_calle, header: $header, ws: $ws);
-        }
-
-        $this->inputs->dp_calle = $dp_calle;
-
 
 
         return $r_alta;
@@ -298,6 +253,25 @@ class controlador_com_cliente extends _ctl_base
         }
 
         $this->button_com_cliente_correo = $button_com_cliente_correo;
+        return $this->inputs;
+    }
+
+    private function data_form(): array|stdClass
+    {
+        $keys_selects = $this->init_selects_inputs();
+        if (errores::$error) {return $this->errores->error(mensaje: 'Error al inicializar selects', data: $keys_selects);
+        }
+
+        $inputs = $this->inputs(keys_selects: $keys_selects);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener inputs', data: $inputs);
+        }
+
+        $inputs = $this->inputs_dom_tmp();
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener inputs', data: $inputs);
+        }
+        return $inputs;
     }
 
     /**
@@ -434,6 +408,45 @@ class controlador_com_cliente extends _ctl_base
         $datatables->filtro = $filtro;
 
         return $datatables;
+    }
+
+    private function inputs_dom_tmp(): array|stdClass
+    {
+        $dp_estado = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_estado(cols: 4,row_upd:  $this->row_upd,value_vacio:  false);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener inputs', data: $dp_estado);
+        }
+
+        $this->inputs->dp_estado = $dp_estado;
+
+        $dp_municipio = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_municipio(cols: 4,row_upd:  $this->row_upd,value_vacio:  false);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener inputs', data: $dp_estado);
+        }
+
+        $this->inputs->dp_municipio = $dp_municipio;
+
+        $dp_cp = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_cp(cols: 4,row_upd:  $this->row_upd,value_vacio:  false, required: true);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener inputs', data: $dp_cp);
+        }
+
+        $this->inputs->dp_cp = $dp_cp;
+
+        $dp_colonia = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_colonia(cols: 6,row_upd:  $this->row_upd,value_vacio:  false);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener inputs', data: $dp_colonia);
+        }
+
+        $this->inputs->dp_colonia = $dp_colonia;
+
+        $dp_calle = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_calle(cols: 6,row_upd:  $this->row_upd,value_vacio:  false);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener inputs', data: $dp_calle);
+        }
+
+        $this->inputs->dp_calle = $dp_calle;
+        return $this->inputs;
     }
 
     protected function key_selects_txt(array $keys_selects): array
