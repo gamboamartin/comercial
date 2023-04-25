@@ -12,7 +12,7 @@ use stdClass;
 class com_tmp_prod_cs_html extends html_controler {
 
     public function input_cat_sat_producto(int $cols, stdClass $row_upd, bool $value_vacio, bool $disabled = false,
-                                string $place_holder = 'Producto', bool $required = false): array|string
+                                string $place_holder = 'Producto SAT', bool $required = false): array|string
     {
 
         $valida = (new directivas(html: $this->html_base))->valida_cols(cols: $cols);

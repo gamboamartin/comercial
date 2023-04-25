@@ -3,7 +3,9 @@ let sl_cat_sat_division_producto = $("#cat_sat_division_producto_id");
 let sl_cat_sat_grupo_producto = $("#cat_sat_grupo_producto_id");
 let sl_cat_sat_clase_producto = $("#cat_sat_clase_producto_id");
 let sl_cat_sat_producto = $("#cat_sat_producto_id");
+
 let cat_sat_producto_id_tmp_ct = $("#cat_sat_producto_id_tmp");
+let cat_sat_producto_tmp = $("#cat_sat_producto");
 
 let txt_descripcion = $("#descripcion");
 
@@ -85,8 +87,21 @@ sl_cat_sat_tipo_producto.change(function () {
 });
 
 sl_cat_sat_division_producto.change(function () {
+
+    cat_sat_producto_tmp.prop( "disabled", true );
+    cat_sat_producto_id_tmp_ct.hide();
+
     let selected = $(this).find('option:selected');
     asigna_grupos(selected.val());
+
+    let cat_sat_division_producto_id = selected.val();
+
+    if(cat_sat_division_producto_id === '99' || cat_sat_division_producto_id === '98'){
+        cat_sat_producto_tmp.prop( "disabled", false );
+        cat_sat_producto_id_tmp_ct.show();
+    }
+
+
 });
 
 sl_cat_sat_grupo_producto.change(function () {
