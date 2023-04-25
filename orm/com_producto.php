@@ -100,7 +100,7 @@ class com_producto extends _modelo_parent {
         }
 
         if($integra_tmp){
-            $com_tmp_prod_cs_ins['com_producto_id'] = $r_alta_bd->com_producto_id;
+            $com_tmp_prod_cs_ins['com_producto_id'] = $r_alta_bd->registro_id;
             $com_tmp_prod_cs_ins['cat_sat_producto'] = $cat_sat_producto_data;
             $r_alta_com_tmp = (new com_tmp_prod_cs(link: $this->link))->alta_registro(registro: $com_tmp_prod_cs_ins);
             if(errores::$error){

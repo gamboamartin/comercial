@@ -576,6 +576,10 @@ class base_test{
 
     public function del_com_producto(PDO $link): array
     {
+        $del = $this->del_com_tmp_prod_cs($link);
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
+        }
 
         $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_producto');
         if(errores::$error){
@@ -626,6 +630,16 @@ class base_test{
         $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_tipo_producto');
         if(errores::$error){
             return (new errores())->error('Error al eliminar tipo producto', $del);
+        }
+        return $del;
+    }
+
+    public function del_com_tmp_prod_cs(PDO $link): array
+    {
+
+        $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_tmp_prod_cs');
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
         }
         return $del;
     }

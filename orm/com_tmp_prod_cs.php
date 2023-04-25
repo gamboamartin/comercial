@@ -11,7 +11,7 @@ class com_tmp_prod_cs extends _modelo_parent{
 
     public function __construct(PDO $link, array $childrens = array()){
         $tabla = 'com_tmp_prod_cs';
-        $columnas = array($tabla=>false);
+        $columnas = array($tabla=>false,'com_producto'=>$tabla,'cat_sat_producto'=>$tabla);
         $campos_obligatorios = array();
         $childrens = array();
         $columnas_extra = array();

@@ -13,6 +13,7 @@ use gamboamartin\cat_sat\models\cat_sat_producto;
 use gamboamartin\cat_sat\models\cat_sat_unidad;
 use gamboamartin\comercial\models\com_producto;
 use gamboamartin\comercial\models\com_tipo_producto;
+use gamboamartin\comercial\models\com_tmp_prod_cs;
 use gamboamartin\errores\errores;
 use gamboamartin\system\links_menu;
 use gamboamartin\template\html;
@@ -339,6 +340,13 @@ class controlador_com_producto extends _base_comercial {
             return $this->retorno_error(mensaje: 'Error al generar template',data:  $r_modifica, header: $header,ws:$ws);
         }
 
+        $filtro['com_producto.id'] = $this->registro_id;
+
+        $existe_tmp = (new com_tmp_prod_cs(link: $this->link))->existe(filtro: $filtro);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al validar si existe',data:  $existe_tmp, header: $header, ws: $ws);
+        }
+
         $producto = (new cat_sat_producto($this->link))->get_producto($this->row_upd->cat_sat_producto_id);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al obtener $producto',data:  $producto);
@@ -365,7 +373,7 @@ class controlador_com_producto extends _base_comercial {
 
         $identificador = "cat_sat_producto_id";
         $propiedades = array("id_selected" => $this->row_upd->cat_sat_producto_id, "con_registros" => true,
-            "filtro" => array('cat_sat_clase_producto.id' => $producto['cat_sat_clase_producto_id']));
+            "filtro" => array('cat_sat_clase_producto.id' => $producto['cat_sat_clase_producto_id']), 'cols'=>6);
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "cat_sat_unidad_id";
@@ -388,6 +396,38 @@ class controlador_com_producto extends _base_comercial {
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al inicializar inputs',data:  $inputs);
         }
+
+
+
+        $cat_sat_producto = '';
+
+
+        if($existe_tmp){
+
+            $r_com_tmp_prod_cs = (new com_tmp_prod_cs(link: $this->link))->filtro_and(filtro: $filtro);
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al obtener',data:  $r_com_tmp_prod_cs);
+            }
+
+            $this->inputs->cat_sat_division_producto_id = '';
+            $this->inputs->cat_sat_grupo_producto_id = '';
+            $this->inputs->cat_sat_clase_producto_id = '';
+            $this->inputs->cat_sat_producto_id = '';
+
+
+            $this->row_upd->cat_sat_producto = $r_com_tmp_prod_cs->registros[0]['com_tmp_prod_cs_cat_sat_producto'];
+
+            $cat_sat_producto = (new com_tmp_prod_cs_html(html: $this->html_base))->input_cat_sat_producto(
+                cols: 12, row_upd: $this->row_upd, value_vacio: false, disabled: true);
+
+            if(errores::$error){
+                return $this->retorno_error(mensaje: 'Error al obtener input',data:  $cat_sat_producto, header: $header,ws:  $ws);
+            }
+
+        }
+
+        $this->inputs->cat_sat_producto = $cat_sat_producto;
+
 
         return $r_modifica;
     }
