@@ -284,5 +284,35 @@ class com_tmp_prod_cs extends _modelo_parent{
         return $data;
     }
 
+    private function regenera_base(array $filtro){
+        $r_com_tmp_prod_cs = $this->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener temporal',data:  $r_com_tmp_prod_cs);
+        }
+        $com_tmp_prod_cs = $r_com_tmp_prod_cs->registros[0];
+
+        $regenera = $this->regenera(com_tmp_prod_cs_id: $com_tmp_prod_cs['com_tmp_prod_cs_id']);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al regenerar temporal',data:  $regenera);
+        }
+        return $regenera;
+    }
+
+    final public function regenera_por_producto(int $com_producto_id){
+        $regenera = new stdClass();
+        $filtro['com_producto.id'] = $com_producto_id;
+        $existe_tmp = $this->existe(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si existe',data:  $existe_tmp);
+        }
+        if($existe_tmp){
+            $regenera = $this->regenera_base(filtro: $filtro);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al regenerar temporal',data:  $regenera);
+            }
+        }
+        return $regenera;
+    }
+
 
 }
