@@ -47,6 +47,30 @@ class com_producto extends _modelo_parent {
     public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
     {
 
+        if(isset($this->registro['cat_sat_producto'])){
+            if(trim($this->registro['cat_sat_producto'] !=='')){
+                $filtro['cat_sat_producto.codigo'] = $this->registro['cat_sat_producto'];
+                $existe = (new cat_sat_producto(link: $this->link))->existe(filtro: $filtro);
+                if(errores::$error){
+                    return $this->error->error(mensaje: 'Error al validar si existe producto',data: $existe);
+                }
+                if($existe){
+                    $r_cat_sat_producto = (new cat_sat_producto(link: $this->link))->filtro_and(filtro: $filtro);
+                    if(errores::$error){
+                        return $this->error->error(mensaje: 'Error al al obtener producto',data: $r_cat_sat_producto);
+                    }
+                    if((int)$r_cat_sat_producto->n_registros  === 0){
+                        return $this->error->error(mensaje: 'Error no existe el producto',data: $r_cat_sat_producto);
+                    }
+                    if((int)$r_cat_sat_producto->n_registros  > 1){
+                        return $this->error->error(mensaje: 'Error existe mas de un producto',data: $r_cat_sat_producto);
+                    }
+                    $cat_sat_producto = $r_cat_sat_producto->registros[0];
+                    $this->registro['cat_sat_producto_id'] = $cat_sat_producto['cat_sat_producto_id'];
+                }
+            }
+        }
+
         $this->registro = $this->campos_base(data:$this->registro, modelo: $this);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar campo base',data: $this->registro);

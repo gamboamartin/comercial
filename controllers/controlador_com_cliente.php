@@ -286,6 +286,11 @@ class controlador_com_cliente extends _ctl_base
         return $this;
     }
 
+    /**
+     * Inicializa los controladores a utilizar
+     * @param stdClass $paths_conf Archivos de rutas de configuracion
+     * @return controler
+     */
     private function init_controladores(stdClass $paths_conf): controler
     {
         $this->controlador_com_email_cte= new controlador_com_email_cte(link:$this->link, paths_conf: $paths_conf);
