@@ -77,6 +77,11 @@ class com_producto extends _modelo_parent {
                 unset($this->registro['cat_sat_producto']);
             }
         }
+        if(!isset($this->registro['cat_sat_producto_id']) || trim($this->registro['cat_sat_producto_id']) === ''){
+            $this->registro['cat_sat_producto_id'] = '97999999';
+        }
+
+
 
         $this->registro = $this->campos_base(data:$this->registro, modelo: $this);
         if(errores::$error){

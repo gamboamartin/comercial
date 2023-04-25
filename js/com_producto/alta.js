@@ -23,6 +23,8 @@ let asigna_divisiones = (cat_sat_tipo_producto_id = '') => {
         sl_cat_sat_clase_producto.empty();
 
         integra_new_option(sl_cat_sat_division_producto,'Seleccione una division','-1');
+        integra_new_option(sl_cat_sat_division_producto,'SIN DIVISION','9999999999');
+
         integra_new_option(sl_cat_sat_grupo_producto,'Seleccione un grupo','-1');
         integra_new_option(sl_cat_sat_clase_producto,'Seleccione una clase','-1');
 
@@ -43,6 +45,8 @@ let asigna_grupos = (cat_sat_division_producto_id = '') => {
         sl_cat_sat_clase_producto.empty();
 
         integra_new_option(sl_cat_sat_grupo_producto,'Seleccione un grupo','-1');
+        integra_new_option(sl_cat_sat_grupo_producto,'SIN GRUPO','9999999999');
+
         integra_new_option(sl_cat_sat_clase_producto,'Seleccione una clase','-1');
 
         $.each(data.registros, function( index, grupo ) {
@@ -60,6 +64,7 @@ let asigna_clases = (cat_sat_grupo_producto_id = '') => {
         sl_cat_sat_clase_producto.empty();
 
         integra_new_option(sl_cat_sat_clase_producto,'Seleccione una clase','-1');
+        integra_new_option(sl_cat_sat_clase_producto,'SIN CLASE','9999999999');
 
         $.each(data.registros, function( index, clase ) {
             integra_new_option(sl_cat_sat_clase_producto,clase.cat_sat_clase_producto_descripcion_select,clase.cat_sat_clase_producto_id);
@@ -75,6 +80,7 @@ let asigna_productos = (cat_sat_clase_producto_id = '') => {
         sl_cat_sat_producto.empty();
 
         integra_new_option(sl_cat_sat_producto,'Seleccione un producto','-1');
+        integra_new_option(sl_cat_sat_producto,'SIN PRODUCTO','9999999999');
 
         $.each(data.registros, function( index, producto ) {
             integra_new_option(sl_cat_sat_producto,producto.cat_sat_producto_descripcion_select,producto.cat_sat_producto_id,
@@ -108,7 +114,7 @@ sl_cat_sat_division_producto.change(function () {
 
     let cat_sat_division_producto_id = selected.val();
 
-    if(cat_sat_division_producto_id === '99' || cat_sat_division_producto_id === '98'){
+    if(cat_sat_division_producto_id === '9999999999'){
         cat_sat_producto_tmp.prop( "disabled", false );
         cat_sat_producto_id_tmp_ct.show();
 
@@ -120,6 +126,12 @@ sl_cat_sat_division_producto.change(function () {
         $("#cat_sat_clase_producto_id_ct").hide();
         $("#cat_sat_producto_id_ct").hide();
 
+        let cat_sat_producto_ct = $("#cat_sat_producto").parent().parent();
+        cat_sat_producto_ct.removeClass( "col-sm-4" );
+        cat_sat_producto_ct.removeClass( "col-sm-6" );
+        cat_sat_producto_ct.removeClass( "col-sm-12" );
+
+        cat_sat_producto_ct.addClass( "col-sm-12" );
 
     }
 
@@ -127,18 +139,128 @@ sl_cat_sat_division_producto.change(function () {
 });
 
 sl_cat_sat_grupo_producto.change(function () {
+
+    cat_sat_producto_tmp.prop( "disabled", true );
+    cat_sat_producto_id_tmp_ct.hide();
+
+    sl_cat_sat_grupo_producto.prop('disabled', false);
+    sl_cat_sat_clase_producto.prop('disabled', false);
+    sl_cat_sat_producto.prop('disabled', false);
+
+    $("#cat_sat_grupo_producto_id_ct").show();
+    $("#cat_sat_clase_producto_id_ct").show();
+    $("#cat_sat_producto_id_ct").show();
+
     let selected = $(this).find('option:selected');
     asigna_clases(selected.val());
+
+
+    let cat_sat_grupo_producto_id = selected.val();
+
+    if(cat_sat_grupo_producto_id === '9999999999'){
+        cat_sat_producto_tmp.prop( "disabled", false );
+        cat_sat_producto_id_tmp_ct.show();
+
+
+        sl_cat_sat_clase_producto.prop('disabled', true);
+        sl_cat_sat_producto.prop('disabled', true);
+
+
+        $("#cat_sat_clase_producto_id_ct").hide();
+        $("#cat_sat_producto_id_ct").hide();
+
+        let cat_sat_producto_ct = $("#cat_sat_producto").parent().parent();
+        cat_sat_producto_ct.removeClass( "col-sm-4" );
+        cat_sat_producto_ct.removeClass( "col-sm-6" );
+        cat_sat_producto_ct.removeClass( "col-sm-12" );
+
+        cat_sat_producto_ct.addClass( "col-sm-6" );
+
+    }
+
+
 });
 
 sl_cat_sat_clase_producto.change(function () {
+
+    cat_sat_producto_tmp.prop( "disabled", true );
+    cat_sat_producto_id_tmp_ct.hide();
+
+    sl_cat_sat_grupo_producto.prop('disabled', false);
+    sl_cat_sat_clase_producto.prop('disabled', false);
+    sl_cat_sat_producto.prop('disabled', false);
+
+    $("#cat_sat_grupo_producto_id_ct").show();
+    $("#cat_sat_clase_producto_id_ct").show();
+    $("#cat_sat_producto_id_ct").show();
+
+
     let selected = $(this).find('option:selected');
     asigna_productos(selected.val());
+
+    let cat_sat_clase_producto_id = selected.val();
+
+    if(cat_sat_clase_producto_id === '9999999999'){
+        cat_sat_producto_tmp.prop( "disabled", false );
+        cat_sat_producto_id_tmp_ct.show();
+
+
+        sl_cat_sat_producto.prop('disabled', true);
+
+
+
+        $("#cat_sat_producto_id_ct").hide();
+
+        let cat_sat_producto_ct = $("#cat_sat_producto").parent().parent();
+        cat_sat_producto_ct.removeClass( "col-sm-4" );
+        cat_sat_producto_ct.removeClass( "col-sm-6" );
+        cat_sat_producto_ct.removeClass( "col-sm-12" );
+
+        cat_sat_producto_ct.addClass( "col-sm-12" );
+
+    }
+
+
 });
 
 sl_cat_sat_producto.change(function () {
+
+    cat_sat_producto_tmp.prop( "disabled", true );
+    cat_sat_producto_id_tmp_ct.hide();
+
+    sl_cat_sat_grupo_producto.prop('disabled', false);
+    sl_cat_sat_clase_producto.prop('disabled', false);
+    sl_cat_sat_producto.prop('disabled', false);
+
+    $("#cat_sat_grupo_producto_id_ct").show();
+    $("#cat_sat_clase_producto_id_ct").show();
+    $("#cat_sat_producto_id_ct").show();
+
     let selected = $(this).find('option:selected');
     let descripcion = selected.data(`cat_sat_producto_descripcion`);
 
-    txt_descripcion.val(descripcion)
+    txt_descripcion.val(descripcion);
+
+    let cat_sat_producto_id = selected.val();
+
+    if(cat_sat_producto_id === '9999999999'){
+        cat_sat_producto_tmp.prop( "disabled", false );
+        cat_sat_producto_id_tmp_ct.show();
+
+
+        sl_cat_sat_producto.prop('disabled', true);
+
+
+
+        $("#cat_sat_producto_id_ct").hide();
+
+        let cat_sat_producto_ct = $("#cat_sat_producto").parent().parent();
+        cat_sat_producto_ct.removeClass( "col-sm-4" );
+        cat_sat_producto_ct.removeClass( "col-sm-6" );
+        cat_sat_producto_ct.removeClass( "col-sm-12" );
+
+        cat_sat_producto_ct.addClass( "col-sm-12" );
+
+    }
+
 });
