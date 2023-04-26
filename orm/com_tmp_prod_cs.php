@@ -10,6 +10,7 @@ use stdClass;
 class com_tmp_prod_cs extends _modelo_parent{
 
     public function __construct(PDO $link, array $childrens = array()){
+        $this->es_sincronizable = true;
         $tabla = 'com_tmp_prod_cs';
         $columnas = array($tabla=>false,'com_producto'=>$tabla,'cat_sat_producto'=>$tabla);
         $campos_obligatorios = array();
