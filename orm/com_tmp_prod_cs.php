@@ -17,9 +17,12 @@ class com_tmp_prod_cs extends _modelo_parent{
         $childrens = array();
         $columnas_extra = array();
 
+        $campos_view['com_producto_id'] = array('type' => 'selects', 'model' => new com_producto($link));
+        $campos_view['cat_sat_producto_id'] = array('type' => 'selects', 'model' => new cat_sat_producto($link));
+        $campos_view['cat_sat_producto'] = array('type' => 'inputs');
 
         parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios,
-            columnas: $columnas, columnas_extra: $columnas_extra, childrens: $childrens);
+            columnas: $columnas, campos_view: $campos_view, columnas_extra: $columnas_extra, childrens: $childrens);
 
         $this->NAMESPACE = __NAMESPACE__;
 

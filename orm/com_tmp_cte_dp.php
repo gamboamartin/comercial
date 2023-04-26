@@ -24,9 +24,25 @@ class com_tmp_cte_dp extends _modelo_parent{
         $childrens = array();
         $columnas_extra = array();
 
+        $campos_view['com_cliente_id'] = array('type' => 'selects', 'model' => new com_cliente($link));
+        $campos_view['dp_pais_id'] = array('type' => 'selects', 'model' => new dp_pais($link));
+        $campos_view['dp_estado_id'] = array('type' => 'selects', 'model' => new dp_estado($link));
+        $campos_view['dp_municipio_id'] = array('type' => 'selects', 'model' => new dp_municipio($link));
+        $campos_view['dp_cp_id'] = array('type' => 'selects', 'model' => new dp_cp($link));
+        $campos_view['dp_colonia_id'] = array('type' => 'selects', 'model' => new dp_colonia($link));
+        $campos_view['dp_calle_id'] = array('type' => 'selects', 'model' => new dp_calle($link));
+        $campos_view['dp_colonia_postal_id'] = array('type' => 'selects', 'model' => new dp_colonia_postal($link));
+        $campos_view['dp_calle_pertenece_id'] = array('type' => 'selects', 'model' => new dp_calle_pertenece($link));
+        $campos_view['dp_pais'] = array('type' => 'inputs');
+        $campos_view['dp_estado'] = array('type' => 'inputs');
+        $campos_view['dp_municipio'] = array('type' => 'inputs');
+        $campos_view['dp_cp'] = array('type' => 'inputs');
+        $campos_view['dp_colonia'] = array('type' => 'inputs');
+        $campos_view['dp_calle'] = array('type' => 'inputs');
+
 
         parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios,
-            columnas: $columnas, columnas_extra: $columnas_extra, childrens: $childrens);
+            columnas: $columnas, campos_view: $campos_view, columnas_extra: $columnas_extra, childrens: $childrens);
 
         $this->NAMESPACE = __NAMESPACE__;
 
