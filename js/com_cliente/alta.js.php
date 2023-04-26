@@ -58,6 +58,12 @@
     dp_colonia_contenedor_tmp.hide();
     dp_calle_contenedor_tmp.hide();
 
+    dp_estado_tmp.prop("disabled",true);
+    dp_municipio_tmp.prop("disabled",true);
+    dp_colonia_tmp.prop("disabled",true);
+    dp_cp_tmp.prop("disabled",true);
+    dp_calle_tmp.prop("disabled",true);
+
     dp_pais_id_sl.change(function() {
         dp_pais_id = $(this).val();
         dp_estado_id_sl.prop( "disabled", false );
@@ -71,6 +77,12 @@
         dp_cp_contenedor.show();
         dp_colonia_contenedor.show();
         dp_calle_contenedor.show();
+
+        dp_estado_tmp.prop("disabled",true);
+        dp_municipio_tmp.prop("disabled",true);
+        dp_colonia_tmp.prop("disabled",true);
+        dp_cp_tmp.prop("disabled",true);
+        dp_calle_tmp.prop("disabled",true);
 
         dp_estado_contenedor_tmp.hide();
         dp_municipio_contenedor_tmp.hide();
@@ -108,6 +120,12 @@
             dp_colonia_contenedor_tmp.show();
             dp_calle_contenedor_tmp.show();
 
+            dp_estado_tmp.prop("disabled",false);
+            dp_municipio_tmp.prop("disabled",false);
+            dp_colonia_tmp.prop("disabled",false);
+            dp_cp_tmp.prop("disabled",false);
+            dp_calle_tmp.prop("disabled",false);
+
 
         }
 
@@ -120,6 +138,12 @@
         dp_cp_id_sl.prop( "disabled", false );
         dp_colonia_postal_id_sl.prop( "disabled", false );
         dp_calle_pertenece_id_sl.prop( "disabled", false );
+
+        dp_estado_tmp.prop("disabled",true);
+        dp_municipio_tmp.prop("disabled",true);
+        dp_colonia_tmp.prop("disabled",true);
+        dp_cp_tmp.prop("disabled",true);
+        dp_calle_tmp.prop("disabled",true);
 
 
         dp_municipio_contenedor.show();
@@ -158,6 +182,11 @@
             dp_cp_contenedor_tmp.show();
             dp_colonia_contenedor_tmp.show();
             dp_calle_contenedor_tmp.show();
+
+            dp_municipio_tmp.prop("disabled",false);
+            dp_colonia_tmp.prop("disabled",false);
+            dp_cp_tmp.prop("disabled",false);
+            dp_calle_tmp.prop("disabled",false);
         }
 
     });
@@ -169,6 +198,12 @@
         dp_cp_id_sl.prop( "disabled", false );
         dp_colonia_postal_id_sl.prop( "disabled", false );
         dp_calle_pertenece_id_sl.prop( "disabled", false );
+
+        dp_estado_tmp.prop("disabled",true);
+        dp_municipio_tmp.prop("disabled",true);
+        dp_colonia_tmp.prop("disabled",true);
+        dp_cp_tmp.prop("disabled",true);
+        dp_calle_tmp.prop("disabled",true);
 
         dp_cp_contenedor.show();
         dp_colonia_contenedor.show();
@@ -199,6 +234,11 @@
         dp_cp_contenedor_tmp.show();
         dp_colonia_contenedor_tmp.show();
         dp_calle_contenedor_tmp.show();
+
+        dp_colonia_tmp.prop("disabled",false);
+        dp_cp_tmp.prop("disabled",false);
+        dp_calle_tmp.prop("disabled",false);
+
     }
 
     });
@@ -208,6 +248,12 @@
 
         dp_colonia_postal_id_sl.prop( "disabled", false );
         dp_calle_pertenece_id_sl.prop( "disabled", false );
+
+        dp_estado_tmp.prop("disabled",true);
+        dp_municipio_tmp.prop("disabled",true);
+        dp_colonia_tmp.prop("disabled",true);
+        dp_cp_tmp.prop("disabled",true);
+        dp_calle_tmp.prop("disabled",true);
 
 
 
@@ -245,6 +291,10 @@
              dp_cp_contenedor_tmp.show();
             dp_colonia_contenedor_tmp.show();
             dp_calle_contenedor_tmp.show();
+
+            dp_colonia_tmp.prop("disabled",false);
+            dp_cp_tmp.prop("disabled",false);
+            dp_calle_tmp.prop("disabled",false);
         }
     });
 
@@ -252,6 +302,12 @@
         dp_colonia_postal_id = $(this).val();
 
         dp_calle_pertenece_id_sl.prop( "disabled", false );
+
+        dp_estado_tmp.prop("disabled",true);
+        dp_municipio_tmp.prop("disabled",true);
+        dp_colonia_tmp.prop("disabled",true);
+        dp_cp_tmp.prop("disabled",true);
+        dp_calle_tmp.prop("disabled",true);
 
         dp_calle_contenedor.show();
 
@@ -275,6 +331,9 @@
             dp_colonia_contenedor_tmp.show();
             dp_calle_contenedor_tmp.show();
 
+            dp_colonia_tmp.prop("disabled",false);
+            dp_calle_tmp.prop("disabled",false);
+
         }
     });
 
@@ -282,6 +341,12 @@
         dp_calle_pertenece_id = $(this).val();
 
         dp_calle_contenedor_tmp.hide();
+
+        dp_estado_tmp.prop("disabled",true);
+        dp_municipio_tmp.prop("disabled",true);
+        dp_colonia_tmp.prop("disabled",true);
+        dp_cp_tmp.prop("disabled",true);
+        dp_calle_tmp.prop("disabled",true);
 
 
         if(dp_calle_pertenece_id === '100'){
@@ -291,8 +356,10 @@
             dp_calle_ct.removeClass( "col-sm-6" );
             dp_calle_ct.removeClass( "col-sm-12" );
             dp_calle_ct.addClass( "col-sm-12" );
-
             dp_calle_contenedor_tmp.show();
+
+            dp_colonia_tmp.prop("disabled",false);
+            dp_calle_tmp.prop("disabled",false);
         }
 });
 
