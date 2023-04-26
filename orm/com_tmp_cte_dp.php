@@ -17,6 +17,7 @@ use stdClass;
 class com_tmp_cte_dp extends _modelo_parent{
 
     public function __construct(PDO $link, array $childrens = array()){
+        $this->es_sincronizable = true;
         $tabla = 'com_tmp_cte_dp';
         $columnas = array($tabla=>false);
         $campos_obligatorios = array();
