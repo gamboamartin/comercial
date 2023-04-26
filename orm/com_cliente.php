@@ -214,7 +214,7 @@ class com_cliente extends _modelo_parent
             return $data;
         }
 
-        $foraneas['cat_sat_moneda_id'] = new cat_sat_moneda($this->link);
+       // $foraneas['cat_sat_moneda_id'] = new cat_sat_moneda($this->link);
         $foraneas['dp_calle_pertenece_id'] = new dp_calle_pertenece($this->link);
         $foraneas['cat_sat_regimen_fiscal_id'] = new cat_sat_regimen_fiscal($this->link);
         $foraneas['cat_sat_forma_pago_id'] = new cat_sat_forma_pago($this->link);
