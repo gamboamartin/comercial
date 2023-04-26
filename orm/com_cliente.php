@@ -49,51 +49,12 @@ class com_cliente extends _modelo_parent
     public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
     {
 
-
-
-        $keys_tmp = array('dp_estado','dp_municipio','dp_cp','dp_colonia','dp_calle');
-        $row_tmp = array();
-        foreach ($keys_tmp as $key){
-            if(isset($this->registro[$key])){
-                $value = trim($this->registro[$key]);
-                if($value !== ''){
-                    $row_tmp[$key] = $value;
-                }
-                unset($this->registro[$key]);
-            }
+        $data_tmp =  (new _cliente_row_tmp())->row_tmp(link: $this->link,registro:  $this->registro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al asignar tmp', data: $data_tmp);
         }
-
-
-        if(count($row_tmp) > 0) {
-            if (isset($this->registro['dp_cp_id'])) {
-                if (trim($this->registro['dp_cp_id']) !== '') {
-                    if ((int)$this->registro['dp_cp_id'] !== 11) {
-                        if (!isset($row_tmp['dp_cp']) || trim($row_tmp['dp_cp']) !== '') {
-                            $dp_cp = (new dp_cp(link: $this->link))->registro(registro_id: $this->registro['dp_cp_id']);
-                            if (errores::$error) {
-                                return $this->error->error(mensaje: 'Error al obtener cp', data: $dp_cp);
-                            }
-                            $row_tmp['dp_cp'] = $dp_cp['dp_cp_codigo'];
-                        }
-                    }
-                }
-            }
-
-            if (isset($this->registro['dp_colonia_postal_id'])) {
-                if (trim($this->registro['dp_colonia_postal_id']) !== '') {
-                    if ((int)$this->registro['dp_colonia_postal_id'] !== 105) {
-                        if (!isset($row_tmp['dp_colonia_postal']) || trim($row_tmp['dp_colonia_postal']) !== '') {
-                            $dp_colonia_postal = (new dp_colonia_postal(link: $this->link))->registro(registro_id: $this->registro['dp_colonia_postal_id']);
-                            if (errores::$error) {
-                                return $this->error->error(mensaje: 'Error al obtener dp_colonia_postal', data: $dp_colonia_postal);
-                            }
-                            $row_tmp['dp_colonia'] = $dp_colonia_postal['dp_colonia_descripcion'];
-                        }
-                    }
-                }
-            }
-        }
-
+        $this->registro = $data_tmp->registro;
+        $row_tmp = $data_tmp->row_tmp;
 
         $this->registro = $this->init_base(data: $this->registro);
         if (errores::$error) {
@@ -159,6 +120,8 @@ class com_cliente extends _modelo_parent
         return $r_alta_bd;
     }
 
+
+
     private function com_sucursal_descripcion(stdClass $com_cliente, array $sucursal){
         $data = array();
         $data['codigo'] = $sucursal['com_sucursal_codigo'];
@@ -202,6 +165,8 @@ class com_cliente extends _modelo_parent
         $com_sucursal_upd['telefono_3'] = $com_cliente->telefono;
         return $com_sucursal_upd;
     }
+
+
 
     /**
      * Elimina un cliente mas las sucursales dentro del cliente
@@ -357,6 +322,9 @@ class com_cliente extends _modelo_parent
         }
         return $com_sucursal_upd;
     }
+
+
+
 
     private function upd_sucursal(stdClass $com_cliente, int $com_cliente_id, array $sucursal){
         $com_sucursal_upd = $this->row_com_sucursal_upd(com_cliente: $com_cliente,com_cliente_id:  $com_cliente_id,sucursal:  $sucursal);
