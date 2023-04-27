@@ -62,7 +62,7 @@ class com_cliente extends _modelo_parent
         }
 
 
-        $this->registro = $this->inicializa_foraneas(data: $this->registro);
+        $this->registro = $this->inicializa_foraneas(data: $this->registro, funcion_llamada: __FUNCTION__);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al inicializar foraneas', data: $this->registro);
         }
@@ -206,15 +206,16 @@ class com_cliente extends _modelo_parent
 
     /**
      * @param array $data
+     * @param string $funcion_llamada
      * @return array
      */
-    private function inicializa_foraneas(array $data): array
+    private function inicializa_foraneas(array $data, string $funcion_llamada): array
     {
         if (isset($data['status'])) {
             return $data;
         }
 
-       // $foraneas['cat_sat_moneda_id'] = new cat_sat_moneda($this->link);
+        $foraneas['cat_sat_moneda_id'] = new cat_sat_moneda($this->link);
         $foraneas['dp_calle_pertenece_id'] = new dp_calle_pertenece($this->link);
         $foraneas['cat_sat_regimen_fiscal_id'] = new cat_sat_regimen_fiscal($this->link);
         $foraneas['cat_sat_forma_pago_id'] = new cat_sat_forma_pago($this->link);
@@ -225,9 +226,9 @@ class com_cliente extends _modelo_parent
 
         foreach ($foraneas as $key => $modelo_pred) {
 
-            $codigo = 'PRED';
+            /*$codigo = 'PRED';
             if($key ==='cat_sat_moneda_id') {
-                $codigo = 'XXX';
+                $codigo = 'PRE';
             }
             if($key ==='cat_sat_regimen_fiscal_id') {
                 $codigo = '999';
@@ -236,14 +237,16 @@ class com_cliente extends _modelo_parent
             $ins_pred = $modelo_pred->inserta_predeterminado(codigo: $codigo);
             if (errores::$error) {
                 return $this->error->error(mensaje: "Error al insertar predeterminada en modelo ".$this->tabla, data: $ins_pred);
-            }
+            }*/
 
-            if (!isset($data[$key]) || $data[$key] === -1) {
-                $predeterminado = ($modelo_pred)->id_predeterminado();
-                if (errores::$error) {
-                    return $this->error->error(mensaje: "Error al $key predeterminada en modelo ".$this->tabla, data: $predeterminado);
+            if($funcion_llamada === 'alta_bd') {
+                if (!isset($data[$key]) || $data[$key] === -1) {
+                    $predeterminado = ($modelo_pred)->id_predeterminado();
+                    if (errores::$error) {
+                        return $this->error->error(mensaje: "Error al $key predeterminada en modelo " . $this->tabla, data: $predeterminado);
+                    }
+                    $data[$key] = $predeterminado;
                 }
-                $data[$key] = $predeterminado;
             }
         }
 
@@ -295,7 +298,7 @@ class com_cliente extends _modelo_parent
             return $this->error->error(mensaje: 'Error al inicializar campo base', data: $registro);
         }
 
-        $registro = $this->inicializa_foraneas(data: $registro);
+        $registro = $this->inicializa_foraneas(data: $registro, funcion_llamada: 'modifica_bd');
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al inicializar foraneas', data: $registro);
         }
