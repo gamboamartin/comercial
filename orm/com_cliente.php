@@ -205,8 +205,9 @@ class com_cliente extends _modelo_parent
     }
 
     /**
-     * @param array $data
-     * @param string $funcion_llamada
+     * Inicializa las foraneas base de un cliente siempre y cuando sea ejecutado en alta bd
+     * @param array $data Registro
+     * @param string $funcion_llamada Funcion base de llamada alta_bd o modifica_bd
      * @return array
      */
     private function inicializa_foraneas(array $data, string $funcion_llamada): array
@@ -225,19 +226,6 @@ class com_cliente extends _modelo_parent
         $foraneas['com_tipo_cliente_id'] = new com_tipo_cliente($this->link);
 
         foreach ($foraneas as $key => $modelo_pred) {
-
-            /*$codigo = 'PRED';
-            if($key ==='cat_sat_moneda_id') {
-                $codigo = 'PRE';
-            }
-            if($key ==='cat_sat_regimen_fiscal_id') {
-                $codigo = '999';
-            }
-
-            $ins_pred = $modelo_pred->inserta_predeterminado(codigo: $codigo);
-            if (errores::$error) {
-                return $this->error->error(mensaje: "Error al insertar predeterminada en modelo ".$this->tabla, data: $ins_pred);
-            }*/
 
             if($funcion_llamada === 'alta_bd') {
                 if (!isset($data[$key]) || $data[$key] === -1) {
