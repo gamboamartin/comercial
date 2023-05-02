@@ -12,7 +12,7 @@ class com_email_cte extends _modelo_parent{
         $columnas = array($tabla=>false,'com_cliente'=>$tabla);
         $campos_obligatorios = array();
 
-        $tipo_campos['descripcion'] = 'email';
+        $tipo_campos['descripcion'] = 'correo';
 
         parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios,
             columnas: $columnas, tipo_campos: $tipo_campos, childrens: $childrens);
