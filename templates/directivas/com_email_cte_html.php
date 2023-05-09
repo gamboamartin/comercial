@@ -34,12 +34,13 @@ class com_email_cte_html extends html_controler {
 
         return $div;
     }
-    public function select_com_email_cte_id(int $cols, bool $con_registros, int $id_selected, PDO $link): array|string
+    public function select_com_email_cte_id(int $cols, bool $con_registros, int $id_selected, PDO $link,
+                                            bool $required = false): array|string
     {
         $modelo = new com_email_cte(link: $link);
 
         $select = $this->select_catalogo(cols:$cols,con_registros:$con_registros,id_selected:$id_selected,
-            modelo: $modelo,label: 'Email');
+            modelo: $modelo,label: 'Email', required: $required);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }
