@@ -393,7 +393,7 @@ class controlador_com_cliente extends _ctl_base
      * @return stdClass
      * @version 4.28.3
      */
-    private function init_datatable(): stdClass
+    protected function init_datatable(): stdClass
     {
         $columns["com_cliente_id"]["titulo"] = "Id";
         $columns["com_cliente_codigo"]["titulo"] = "Código";
