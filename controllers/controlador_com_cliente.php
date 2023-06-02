@@ -271,6 +271,18 @@ class controlador_com_cliente extends _ctl_base
         return $inputs;
     }
 
+    public function get_cliente(bool $header, bool $ws = true): array|stdClass
+    {
+        $keys['com_cliente'] = array('id', 'descripcion', 'codigo', 'rfc');
+
+        $salida = $this->get_out(header: $header, keys: $keys, ws: $ws);
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al generar salida', data: $salida, header: $header, ws: $ws);
+        }
+
+        return $salida;
+    }
+
     /**
      * Inicializa las configuraciones base del controler
      * @return controler
@@ -282,6 +294,7 @@ class controlador_com_cliente extends _ctl_base
 
         return $this;
     }
+
 
     /**
      * Inicializa los controladores a utilizar
