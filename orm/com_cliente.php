@@ -3,6 +3,7 @@
 namespace gamboamartin\comercial\models;
 
 use base\orm\_modelo_parent;
+use gamboamartin\cat_sat\models\_validacion;
 use gamboamartin\cat_sat\models\cat_sat_forma_pago;
 use gamboamartin\cat_sat\models\cat_sat_metodo_pago;
 use gamboamartin\cat_sat\models\cat_sat_moneda;
@@ -10,8 +11,6 @@ use gamboamartin\cat_sat\models\cat_sat_regimen_fiscal;
 use gamboamartin\cat_sat\models\cat_sat_tipo_de_comprobante;
 use gamboamartin\cat_sat\models\cat_sat_uso_cfdi;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
-use gamboamartin\direccion_postal\models\dp_colonia_postal;
-use gamboamartin\direccion_postal\models\dp_cp;
 use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
@@ -87,6 +86,11 @@ class com_cliente extends _modelo_parent
             'dp_estado_id', 'dp_municipio_id', 'dp_cp_id', 'dp_cp_id', 'dp_colonia_postal_id', 'es_empleado'));
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al limpiar campos', data: $this->registro);
+        }
+
+        $valida = (new _validacion())->valida_metodo_pago(link: $this->link, registro: $this->registro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
 
         $r_alta_bd = parent::alta_bd($keys_integra_ds);
@@ -269,6 +273,11 @@ class com_cliente extends _modelo_parent
         $com_cliente = $this->registro(registro_id: $id, columnas_en_bruto: true, retorno_obj: true);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener cliente', data: $com_cliente);
+        }
+
+        $valida = (new _validacion())->valida_metodo_pago(link: $this->link, registro: (array)$com_cliente);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
 
         $r_com_sucursal = $this->upd_sucursales(com_cliente:$com_cliente,com_cliente_id:  $id);
