@@ -17,6 +17,8 @@
     let dp_cp_id_sl = $("#dp_cp_id");
     let dp_colonia_postal_id_sl = $("#dp_colonia_postal_id");
     let dp_calle_pertenece_id_sl = $("#dp_calle_pertenece_id");
+    let cat_sat_metodo_pago_id_sl = $("#cat_sat_metodo_pago_id");
+    let cat_sat_forma_pago_id_sl = $("#cat_sat_forma_pago_id");
 
 
     let dp_estado_tmp = $("#dp_estado");
@@ -63,6 +65,36 @@
     dp_colonia_tmp.prop("disabled",true);
     dp_cp_tmp.prop("disabled",true);
     dp_calle_tmp.prop("disabled",true);
+
+    let metodo_pago_permitido = <?php echo(json_encode((new \gamboamartin\cat_sat\models\_validacion())->metodo_pago_permitido)); ?>;
+    let formas_pagos_permitidas = [];
+
+    let cat_sat_metodo_pago_codigo = '';
+    let cat_sat_forma_pago_codigo = '';
+
+    cat_sat_metodo_pago_id_sl.change(function() {
+        cat_sat_metodo_pago_codigo = $('option:selected', this).data("cat_sat_metodo_pago_codigo");
+        formas_pagos_permitidas = metodo_pago_permitido[cat_sat_metodo_pago_codigo];
+
+    });
+
+    cat_sat_forma_pago_id_sl.change(function() {
+        cat_sat_forma_pago_codigo = $('option:selected', this).data("cat_sat_forma_pago_codigo");
+        let permitido = false;
+        $.each(formas_pagos_permitidas, function(i, item) {
+            if(item == cat_sat_forma_pago_codigo){
+                permitido = true;
+            }
+        });
+
+        if(!permitido){
+            cat_sat_forma_pago_id_sl.val(null);
+            $('#myModal').modal('show')
+        }
+
+    });
+
+
 
     dp_pais_id_sl.change(function() {
         dp_pais_id = $(this).val();

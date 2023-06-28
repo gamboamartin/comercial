@@ -96,8 +96,6 @@ class controlador_com_cliente extends _ctl_base
 
 
 
-
-
     }
 
     public function alta(bool $header, bool $ws = false): array|string
@@ -118,8 +116,6 @@ class controlador_com_cliente extends _ctl_base
         if (errores::$error) {
             return $this->retorno_error(mensaje: 'Error al obtener inputs', data: $inputs, header: $header, ws: $ws);
         }
-
-
 
         return $r_alta;
     }
