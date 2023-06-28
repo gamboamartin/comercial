@@ -120,6 +120,7 @@ class controlador_com_cliente extends _ctl_base
         }
 
 
+
         return $r_alta;
     }
 
@@ -258,6 +259,13 @@ class controlador_com_cliente extends _ctl_base
         $keys_selects = $this->init_selects_inputs();
         if (errores::$error) {return $this->errores->error(mensaje: 'Error al inicializar selects', data: $keys_selects);
         }
+
+        $data_extra_cat_sat_metodo_pago[] = 'cat_sat_metodo_pago_codigo';
+        $keys_selects['cat_sat_metodo_pago_id']->extra_params_keys = $data_extra_cat_sat_metodo_pago;
+
+        $data_extra_cat_sat_forma_pago[] = 'cat_sat_forma_pago_codigo';
+        $keys_selects['cat_sat_forma_pago_id']->extra_params_keys = $data_extra_cat_sat_forma_pago;
+
 
         $inputs = $this->inputs(keys_selects: $keys_selects);
         if (errores::$error) {
