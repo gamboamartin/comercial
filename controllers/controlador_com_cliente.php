@@ -306,6 +306,7 @@ class controlador_com_cliente extends _ctl_base
      * Inicializa los controladores a utilizar
      * @param stdClass $paths_conf Archivos de rutas de configuracion
      * @return controler
+     * @version 10.3.0
      */
     private function init_controladores(stdClass $paths_conf): controler
     {
