@@ -9,6 +9,7 @@ use gamboamartin\cat_sat\models\cat_sat_obj_imp;
 use gamboamartin\cat_sat\models\cat_sat_producto;
 use gamboamartin\cat_sat\models\cat_sat_regimen_fiscal;
 use gamboamartin\cat_sat\models\cat_sat_tipo_de_comprobante;
+use gamboamartin\cat_sat\models\cat_sat_tipo_persona;
 use gamboamartin\cat_sat\models\cat_sat_unidad;
 use gamboamartin\cat_sat\models\cat_sat_uso_cfdi;
 use gamboamartin\comercial\models\com_cliente;
@@ -28,6 +29,17 @@ class base_test{
     {
 
         $alta = (new \gamboamartin\cat_sat\tests\base_test())->alta_cat_sat_conf_imps(link: $link, id: $id);
+        if(errores::$error){
+            return (new errores())->error('Error al insertar', $alta);
+        }
+
+        return $alta;
+    }
+
+    public function alta_cat_sat_tipo_persona(PDO $link, int $id): array|\stdClass
+    {
+
+        $alta = (new \gamboamartin\cat_sat\tests\base_test())->alta_cat_sat_tipo_persona(link: $link, id: $id);
         if(errores::$error){
             return (new errores())->error('Error al insertar', $alta);
         }
@@ -137,9 +149,9 @@ class base_test{
     public function alta_com_cliente(PDO $link, int $cat_sat_forma_pago_id = 1,
                                      string $cat_sat_metodo_pago_codigo = 'PUE', int $cat_sat_metodo_pago_id = 2,
                                      int $cat_sat_moneda_id = 1, int $cat_sat_regimen_fiscal_id = 1,
-                                     int $cat_sat_tipo_de_comprobante_id = 1, int $cat_sat_uso_cfdi_id = 1,
-                                     int $com_tipo_cliente_id = 1, int $dp_calle_pertenece_id = 1,
-                                     int $id = 1): array|\stdClass
+                                     int $cat_sat_tipo_de_comprobante_id = 1, int $cat_sat_tipo_persona_id = 1,
+                                     int $cat_sat_uso_cfdi_id = 1, int $com_tipo_cliente_id = 1,
+                                     int $dp_calle_pertenece_id = 1, int $id = 1): array|\stdClass
     {
 
         $existe = (new cat_sat_moneda($link))->existe_by_id(registro_id: $cat_sat_moneda_id);
@@ -239,6 +251,18 @@ class base_test{
             }
         }
 
+        $existe = (new cat_sat_tipo_persona($link))->existe_by_id(registro_id: $cat_sat_tipo_persona_id);
+        if(errores::$error){
+            return (new errores())->error('Error al verificar si existe', $existe);
+        }
+
+        if(!$existe) {
+            $alta = (new base_test())->alta_cat_sat_tipo_persona(link: $link, id: $cat_sat_tipo_persona_id);
+            if (errores::$error) {
+                return (new errores())->error('Error al insertar', $alta);
+            }
+        }
+
 
         $registro['dp_calle_pertenece_id'] = $dp_calle_pertenece_id;
         $registro['cat_sat_moneda_id'] = $cat_sat_moneda_id;
@@ -248,6 +272,7 @@ class base_test{
         $registro['cat_sat_regimen_fiscal_id'] = $cat_sat_regimen_fiscal_id;
         $registro['cat_sat_uso_cfdi_id'] = $cat_sat_uso_cfdi_id;
         $registro['cat_sat_forma_pago_id'] = $cat_sat_forma_pago_id;
+        $registro['cat_sat_tipo_persona_id'] = $cat_sat_tipo_persona_id;
         $registro['id'] = $id;
         $registro['codigo'] = 1;
         $registro['descripcion'] = 'YADIRA MAGALY MONTAÑEZ FELIX';
