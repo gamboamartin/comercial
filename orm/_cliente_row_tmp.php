@@ -96,9 +96,9 @@ class _cliente_row_tmp{
         $row_tmp = array();
         foreach ($keys_tmp as $key){
             if(isset($registro[$key])){
-                $value = trim($registro[$key]);
-                if($value !== ''){
-                    $row_tmp[$key] = $value;
+                $row_tmp = $this->integra_row_upd(key: $key,registro:  $registro,row_tmp:  $row_tmp);
+                if (errores::$error) {
+                    return $this->error->error(mensaje: 'Error al integrar row tmp', data: $row_tmp);
                 }
                 unset($registro[$key]);
             }
@@ -147,6 +147,15 @@ class _cliente_row_tmp{
         $data->registro = $registro;
         $data->row_tmp = $row_tmp;
         return $data;
+    }
+
+    private function integra_row_upd(string $key, array $registro, array $row_tmp): array
+    {
+        $value = trim($registro[$key]);
+        if($value !== ''){
+            $row_tmp[$key] = $value;
+        }
+        return $row_tmp;
     }
 
 
