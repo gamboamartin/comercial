@@ -5,6 +5,7 @@
 <?php echo $controlador->inputs->razon_social; ?>
 <?php echo $controlador->inputs->rfc; ?>
 <?php echo $controlador->inputs->telefono; ?>
+<?php echo $controlador->inputs->cat_sat_tipo_persona_id; ?>
 <?php echo $controlador->inputs->cat_sat_regimen_fiscal_id; ?>
 
 <div id="dp_pais_cont">

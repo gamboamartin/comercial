@@ -16,6 +16,7 @@ use gamboamartin\cat_sat\models\cat_sat_metodo_pago;
 use gamboamartin\cat_sat\models\cat_sat_moneda;
 use gamboamartin\cat_sat\models\cat_sat_regimen_fiscal;
 use gamboamartin\cat_sat\models\cat_sat_tipo_de_comprobante;
+use gamboamartin\cat_sat\models\cat_sat_tipo_persona;
 use gamboamartin\cat_sat\models\cat_sat_uso_cfdi;
 use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\comercial\models\com_email_cte;
@@ -81,6 +82,7 @@ class controlador_com_cliente extends _ctl_base
         $this->parents_verifica[] = (new cat_sat_moneda(link: $this->link));
         $this->parents_verifica[] = (new cat_sat_regimen_fiscal(link: $this->link));
         $this->parents_verifica[] = (new dp_calle_pertenece(link: $this->link));
+        $this->parents_verifica[] = (new cat_sat_tipo_persona(link: $this->link));
 
         $this->verifica_parents_alta = true;
 
@@ -93,7 +95,6 @@ class controlador_com_cliente extends _ctl_base
             exit;
         }
         $this->link_com_email_cte_alta_bd = $link_com_email_cte_alta_bd;
-
 
 
     }
@@ -141,6 +142,7 @@ class controlador_com_cliente extends _ctl_base
         $init_data['cat_sat_uso_cfdi'] = "gamboamartin\\cat_sat";
         $init_data['cat_sat_tipo_de_comprobante'] = "gamboamartin\\cat_sat";
         $init_data['com_tipo_cliente'] = "gamboamartin\\comercial";
+        $init_data['cat_sat_tipo_persona'] = "gamboamartin\\cat_sat";
         $campos_view = $this->campos_view_base(init_data: $init_data, keys: $keys);
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al inicializar campo view', data: $campos_view);
@@ -342,6 +344,9 @@ class controlador_com_cliente extends _ctl_base
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_regimen_fiscal_id",
             label: "Régimen Fiscal", cols: 12);
 
+        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_tipo_persona_id",
+            label: "Tipo Persona", cols: 12);
+
         $keys_selects['cat_sat_regimen_fiscal_id']->columns_descripcion_select = array(
             'cat_sat_regimen_fiscal_codigo','cat_sat_regimen_fiscal_descripcion');
 
@@ -531,6 +536,9 @@ class controlador_com_cliente extends _ctl_base
 
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_regimen_fiscal_id",
             label: "Régimen Fiscal", id_selected: $this->registro['cat_sat_regimen_fiscal_id'], cols: 12);
+
+        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_tipo_persona_id",
+            label: "Tipo Persona", id_selected: $this->registro['cat_sat_tipo_persona_id'], cols: 12);
 
         $keys_selects['cat_sat_regimen_fiscal_id']->columns_ds = array(
             'cat_sat_regimen_fiscal_codigo','cat_sat_regimen_fiscal_descripcion');
