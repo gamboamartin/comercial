@@ -75,7 +75,12 @@ class com_clienteTest extends test {
             exit;
         }
 
-
+        $alta = (new base_test())->alta_cat_sat_conf_reg_tp($this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
 
         $alta = (new base_test())->alta_com_cliente($this->link);
         if(errores::$error){

@@ -146,6 +146,20 @@ class base_test{
         return $alta;
     }
 
+    public function alta_cat_sat_conf_reg_tp(PDO $link, int $cat_sat_regimen_fiscal_id = 1,
+                                             int $cat_sat_tipo_persona_id = 1, int $id = 1): array|\stdClass
+    {
+
+        $alta = (new \gamboamartin\cat_sat\tests\base_test())->alta_cat_sat_conf_reg_tp(link: $link,
+            cat_sat_regimen_fiscal_id: $cat_sat_regimen_fiscal_id,
+            cat_sat_tipo_persona_id: $cat_sat_tipo_persona_id, id: $id);
+        if(errores::$error){
+            return (new errores())->error('Error al insertar', $alta);
+        }
+
+        return $alta;
+    }
+
     public function alta_com_cliente(PDO $link, int $cat_sat_forma_pago_id = 1,
                                      string $cat_sat_metodo_pago_codigo = 'PUE', int $cat_sat_metodo_pago_id = 2,
                                      int $cat_sat_moneda_id = 1, int $cat_sat_regimen_fiscal_id = 1,

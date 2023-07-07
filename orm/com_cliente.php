@@ -48,6 +48,9 @@ class com_cliente extends _modelo_parent
     public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
     {
 
+        /**
+         * REFACTORIZAR
+         */
         $data_tmp =  (new _cliente_row_tmp())->row_tmp(link: $this->link,registro:  $this->registro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al asignar tmp', data: $data_tmp);
@@ -89,6 +92,11 @@ class com_cliente extends _modelo_parent
         }
 
         $valida = (new _validacion())->valida_metodo_pago(link: $this->link, registro: $this->registro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
+        }
+
+        $valida = (NEW _validacion())->valida_conf_tipo_persona(link: $this->link,registro:  $this->registro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
@@ -268,6 +276,12 @@ class com_cliente extends _modelo_parent
             keys_integra_ds:  $keys_integra_ds);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al modificar cliente', data: $r_modifica_bd);
+        }
+
+        $valida = (NEW _validacion())->valida_conf_tipo_persona(link: $this->link,
+            registro:  (array)$r_modifica_bd->registro_actualizado);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
 
         $com_cliente = $this->registro(registro_id: $id, columnas_en_bruto: true, retorno_obj: true);
