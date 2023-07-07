@@ -149,6 +149,13 @@ class _cliente_row_tmp{
         return $data;
     }
 
+    /**
+     * Ajusta los campos de un registro en proceso de validacion
+     * @param string $key Key del row
+     * @param array $registro registro en proceso
+     * @param array $row_tmp registro temporal
+     * @return array
+     */
     private function integra_row_upd(string $key, array $registro, array $row_tmp): array
     {
         $value = trim($registro[$key]);
