@@ -91,5 +91,81 @@ class com_sucursalTest extends test {
 
     }
 
+    public function test_modifica_bd(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 2;
+        $_GET['session_id'] = '1';
+        $modelo = new com_sucursal($this->link);
+        //$modelo = new liberator($modelo);
+
+        /*$del = (new base_test())->del_cat_sat_moneda($this->link);
+        if (errores::$error) {
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new base_test())->del_cat_sat_metodo_pago($this->link);
+        if (errores::$error) {
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new base_test())->del_cat_sat_moneda($this->link);
+        if (errores::$error) {
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new base_test())->del_com_cliente($this->link);
+        if (errores::$error) {
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new base_test())->del_com_sucursal($this->link);
+        if (errores::$error) {
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }*/
+
+        $registro = array();
+        $id = 1;
+
+        $registro['dp_calle_pertenece_id'] = 1;
+
+        $resultado = $modelo->modifica_bd(registro: $registro,id:  $id);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("1", $resultado->registro_actualizado->dp_calle_pertenece_id);
+
+        errores::$error = false;
+
+        $registro = array();
+        $id = 1;
+
+        $registro['dp_calle_pertenece_id'] = 2;
+        $registro['com_tipo_sucursal_id'] = 9;
+
+        $resultado = $modelo->modifica_bd(registro: $registro,id:  $id);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("2", $resultado->registro_actualizado->dp_calle_pertenece_id);
+        $this->assertEquals("9", $resultado->registro_actualizado->com_tipo_sucursal_id);
+
+
+        errores::$error = false;
+
+    }
+
 }
 

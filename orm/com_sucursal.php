@@ -108,7 +108,14 @@ class com_sucursal extends modelo
     }
 
     private function descripcion(string $com_cliente_razon_social, string $com_cliente_rfc, array $data){
+        $keys = array('codigo');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $data);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar codigo', data: $valida);
+        }
+
         if (!isset($data['descripcion'])) {
+
 
             $ds = $this->ds(com_cliente_razon_social: $com_cliente_razon_social, com_cliente_rfc: $com_cliente_rfc, data: $data);
             if (errores::$error) {
@@ -120,6 +127,12 @@ class com_sucursal extends modelo
     }
 
     private function descripcion_select_sc(string $com_cliente_razon_social, string $com_cliente_rfc, array $data){
+        $keys = array('codigo');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $data);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar codigo', data: $valida);
+        }
+
         if (!isset($data['descripcion_select'])) {
 
             $ds = $this->ds(com_cliente_razon_social: $com_cliente_razon_social, com_cliente_rfc: $com_cliente_rfc, data: $data);
@@ -132,8 +145,14 @@ class com_sucursal extends modelo
         return $data;
     }
 
-    final public function ds(string $com_cliente_razon_social, string $com_cliente_rfc, array $data): string
+    final public function ds(string $com_cliente_razon_social, string $com_cliente_rfc, array $data): string|array
     {
+        $keys = array('codigo');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $data);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar codigo', data: $valida);
+        }
+
         $ds = $data['codigo'];
         $ds .= ' '.$com_cliente_rfc;
         $ds .= ' '.$com_cliente_razon_social;
@@ -144,6 +163,19 @@ class com_sucursal extends modelo
 
     protected function init_base(array $data): array
     {
+        $keys[] = 'com_cliente_id';
+
+        $valida = $this->validacion->valida_ids(keys: $keys, registro: $data);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar $data', data: $valida);
+        }
+
+        $keys[] =  'codigo';
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $data);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar codigo', data: $valida);
+        }
+
         $com_cliente =(new com_cliente(link: $this->link))->registro(registro_id: $data['com_cliente_id']);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener com_cliente', data: $com_cliente);
@@ -243,21 +275,60 @@ class com_sucursal extends modelo
 
     public function modifica_bd(array $registro, int $id, bool $reactiva = false): array|stdClass
     {
+
+        if($id<=0){
+            return $this->error->error(mensaje: 'Error id debe ser mayor a 0', data: $id);
+        }
+
+        $registro_previo = $this->registro(registro_id: $id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener registro previo', data: $registro_previo);
+        }
+
+        if(!isset($registro['com_cliente_id'])){
+            $registro['com_cliente_id'] = $registro_previo['com_cliente_id'];
+        }
+        if(!isset($registro['codigo'])){
+            $registro['codigo'] = $registro_previo['com_sucursal_codigo'];
+        }
+
+        $keys[] = 'com_cliente_id';
+
+        $valida = $this->validacion->valida_ids(keys: $keys, registro: $registro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar $data', data: $valida);
+        }
+
+        $keys[] = 'codigo';
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $registro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar codigo', data: $valida);
+        }
+
         $registro = $this->init_base(data: $registro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al inicializar campo base', data: $registro);
         }
 
         $registro = $this->limpia_campos(registro: $registro, campos_limpiar: array('dp_pais_id', 'dp_estado_id',
-            'dp_municipio_id', 'dp_cp_id', 'dp_cp_id', 'dp_colonia_postal_id'));
+            'dp_municipio_id', 'dp_cp_id', 'dp_colonia_postal_id'));
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al limpiar campos', data: $registro);
         }
 
-        $r_modifica_bd = parent::modifica_bd($registro, $id, $reactiva);
+        $r_modifica_bd = parent::modifica_bd(registro: $registro,id:  $id,reactiva:  $reactiva);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al modificar producto', data: $r_modifica_bd);
         }
+
+        if($r_modifica_bd->registro_actualizado->com_tipo_sucursal_descripcion === 'MATRIZ'){
+            $modifica_cliente = (new com_cliente(link: $this->link))->modifica_dp_calle_pertenece(
+                dp_calle_pertenece_id: $r_modifica_bd->registro_actualizado->dp_calle_pertenece_id, id: $id);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al modificar cliente ', data: $modifica_cliente);
+            }
+        }
+
 
         return $r_modifica_bd;
     }

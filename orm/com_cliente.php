@@ -293,14 +293,23 @@ class com_cliente extends _modelo_parent
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
-
         $r_com_sucursal = $this->upd_sucursales(com_cliente:$com_cliente,com_cliente_id:  $id);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al modificar sucursales', data: $r_com_sucursal);
         }
 
 
+
         return $r_modifica_bd;
+    }
+
+    final public function modifica_dp_calle_pertenece(int $dp_calle_pertenece_id, int $id){
+        $registro['dp_calle_pertenece_id'] = $dp_calle_pertenece_id;
+        $r_upd = parent::modifica_bd(registro: $registro,id:  $id);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al modificar domicilio', data: $r_upd);
+        }
+        return $r_upd;
     }
 
     private function registro_cliente_upd(array $registro){
