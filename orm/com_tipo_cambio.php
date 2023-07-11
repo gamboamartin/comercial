@@ -26,8 +26,12 @@ class com_tipo_cambio extends _modelo_parent
 
         $this->etiqueta = 'Tipo de Cambio';
 
-
-
+        $alta_moneda = $this->tipo_cambio_hoy_ins();
+        if(errores::$error){
+            $error = $this->error->error(mensaje: 'Error al insertar tipo de cambio', data: $alta_moneda);
+            print_r($error);
+            exit;
+        }
 
     }
 
@@ -50,6 +54,27 @@ class com_tipo_cambio extends _modelo_parent
         }
 
         return $r_alta_bd;
+    }
+
+    private function alta_tipo_cambio_default(string $cat_sat_moneda_codigo, string $hoy){
+        $com_tipo_cambio_ins = $this->genera_com_tipo_cambio_ins(cat_sat_moneda_codigo: $cat_sat_moneda_codigo,hoy:  $hoy);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener tipo de cambio', data: $com_tipo_cambio_ins);
+        }
+
+        $alta_moneda = $this->alta_registro(registro: $com_tipo_cambio_ins);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al insertar tipo de cambio', data: $alta_moneda);
+        }
+        return $alta_moneda;
+    }
+
+    private function com_tipo_cambio_ins(array $cat_sat_moneda, string $hoy): array
+    {
+        $com_tipo_cambio_ins['fecha'] = $hoy;
+        $com_tipo_cambio_ins['cat_sat_moneda_id'] = $cat_sat_moneda['cat_sat_moneda_id'];
+        $com_tipo_cambio_ins['monto'] = 1;
+        return $com_tipo_cambio_ins;
     }
 
 
@@ -77,6 +102,44 @@ class com_tipo_cambio extends _modelo_parent
         $descripcion .= $cat_sat_moneda['cat_sat_moneda_codigo'] . ' ';
         $descripcion .= $data['fecha'];
         return trim($descripcion);
+    }
+
+    private function existe_default_hoy(){
+        $hoy = date('Y-m-d');
+        $cat_sat_moneda_codigo = 'MXN';
+
+        $filtro['com_tipo_cambio.fecha'] = $hoy;
+        $filtro['cat_sat_moneda.codigo'] = $cat_sat_moneda_codigo;
+
+        $existe = $this->existe(filtro: $filtro);
+        if(errores::$error){
+           return $this->error->error(mensaje: 'Error al validar si existe', data: $existe);
+        }
+        return $existe;
+    }
+
+    private function existe_moneda(string $cat_sat_moneda_codigo){
+        $filtro = array();
+        $filtro['cat_sat_moneda.codigo'] = $cat_sat_moneda_codigo;
+
+        $existe = (new cat_sat_moneda(link: $this->link))->existe(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar moneda', data: $existe);
+        }
+        return $existe;
+    }
+
+    private function genera_com_tipo_cambio_ins(string $cat_sat_moneda_codigo, string $hoy){
+        $cat_sat_moneda = (new cat_sat_moneda(link: $this->link))->registro_by_codigo(codigo: $cat_sat_moneda_codigo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener moneda', data: $cat_sat_moneda);
+        }
+
+        $com_tipo_cambio_ins = $this->com_tipo_cambio_ins(cat_sat_moneda: $cat_sat_moneda,hoy:  $hoy);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener tipo de cambio', data: $com_tipo_cambio_ins);
+        }
+        return $com_tipo_cambio_ins;
     }
 
     private function genera_descripcion_base(array $data): array|string
@@ -111,6 +174,22 @@ class com_tipo_cambio extends _modelo_parent
         return $data;
     }
 
+    private function inserta_tipo_cambio(string $cat_sat_moneda_codigo, string $hoy){
+        $alta_moneda = new stdClass();
+        $existe = $this->existe_moneda(cat_sat_moneda_codigo: $cat_sat_moneda_codigo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar moneda', data: $existe);
+        }
+        if($existe){
+            $alta_moneda = $this->alta_tipo_cambio_default(cat_sat_moneda_codigo: $cat_sat_moneda_codigo,hoy:  $hoy);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al insertar tipo de cambio', data: $alta_moneda);
+
+            }
+        }
+        return $alta_moneda;
+    }
+
     public function modifica_bd(array $registro, int $id, bool $reactiva = false,
                                 array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
     {
@@ -131,5 +210,25 @@ class com_tipo_cambio extends _modelo_parent
         }
 
         return $r_modifica_bd;
+    }
+
+    private function tipo_cambio_hoy_ins(){
+        $alta_moneda = new stdClass();
+        $hoy = date('Y-m-d');
+        $cat_sat_moneda_codigo = 'MXN';
+
+        $existe = $this->existe_default_hoy();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si existe', data: $existe);
+        }
+
+        if(!$existe){
+            $alta_moneda = $this->inserta_tipo_cambio(cat_sat_moneda_codigo: $cat_sat_moneda_codigo,hoy:  $hoy);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al insertar tipo de cambio', data: $alta_moneda);
+            }
+        }
+
+        return $alta_moneda;
     }
 }
