@@ -116,7 +116,6 @@ class com_sucursal extends modelo
 
         if (!isset($data['descripcion'])) {
 
-
             $ds = $this->ds(com_cliente_razon_social: $com_cliente_razon_social, com_cliente_rfc: $com_cliente_rfc, data: $data);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al obtener descripcion', data: $ds);
@@ -145,6 +144,13 @@ class com_sucursal extends modelo
         return $data;
     }
 
+    /**
+     * Obtiene la descripcion select de un registro transaccionado
+     * @param string $com_cliente_razon_social Razon social del cliente
+     * @param string $com_cliente_rfc Rfc del cliente
+     * @param array $data Datos previos cargados
+     * @return string|array
+     */
     final public function ds(string $com_cliente_razon_social, string $com_cliente_rfc, array $data): string|array
     {
         $keys = array('codigo');
@@ -185,7 +191,8 @@ class com_sucursal extends modelo
         $com_cliente_razon_social = $com_cliente['com_cliente_razon_social'];
 
 
-        $data = $this->descripcion(com_cliente_razon_social: $com_cliente_razon_social, com_cliente_rfc: $com_cliente_rfc,data:  $data);
+        $data = $this->descripcion(com_cliente_razon_social: $com_cliente_razon_social,
+            com_cliente_rfc: $com_cliente_rfc,data:  $data);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar descripcion', data: $data);
         }
@@ -323,7 +330,8 @@ class com_sucursal extends modelo
 
         if($r_modifica_bd->registro_actualizado->com_tipo_sucursal_descripcion === 'MATRIZ'){
             $modifica_cliente = (new com_cliente(link: $this->link))->modifica_dp_calle_pertenece(
-                dp_calle_pertenece_id: $r_modifica_bd->registro_actualizado->dp_calle_pertenece_id, id: $id);
+                dp_calle_pertenece_id: $r_modifica_bd->registro_actualizado->dp_calle_pertenece_id,
+                id: $r_modifica_bd->registro_actualizado->com_cliente_id);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al modificar cliente ', data: $modifica_cliente);
             }
