@@ -3,6 +3,7 @@ namespace gamboamartin\comercial\models;
 use gamboamartin\direccion_postal\models\dp_colonia_postal;
 use gamboamartin\direccion_postal\models\dp_cp;
 use gamboamartin\errores\errores;
+use gamboamartin\validacion\validacion;
 use PDO;
 use stdClass;
 
@@ -155,9 +156,21 @@ class _cliente_row_tmp{
      * @param array $registro registro en proceso
      * @param array $row_tmp registro temporal
      * @return array
+     * @version 10.9.1
      */
     private function integra_row_upd(string $key, array $registro, array $row_tmp): array
     {
+        $key = trim($key);
+        if($key === ''){
+            return $this->error->error(mensaje: 'Error key esta vacio', data: $key);
+        }
+
+        $keys[] = $key;
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $registro,valida_vacio: false);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
+        }
+
         $value = trim($registro[$key]);
         if($value !== ''){
             $row_tmp[$key] = $value;

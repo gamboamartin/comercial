@@ -37,8 +37,11 @@ class com_cliente extends _modelo_parent
         $tipo_campos = array();
         $tipo_campos['rfc'] = 'rfc';
 
+        $atributos_criticos[] = 'cat_sat_tipo_persona_id';
+
         parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios,
-            columnas: $columnas, columnas_extra: $columnas_extra, tipo_campos: $tipo_campos);
+            columnas: $columnas, columnas_extra: $columnas_extra, tipo_campos: $tipo_campos,
+            atributos_criticos: $atributos_criticos);
 
         $this->NAMESPACE = __NAMESPACE__;
 
