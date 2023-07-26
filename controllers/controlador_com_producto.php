@@ -144,6 +144,31 @@ class controlador_com_producto extends _base_comercial {
         return $campos_view;
     }
 
+    public function es_automatico(bool $header, bool $ws = true): array|stdClass
+    {
+        $en_transaccion = false;
+        if($this->link->inTransaction()){
+            $en_transaccion = true;
+        }
+
+        if(!$en_transaccion){
+            $this->link->beginTransaction();
+        }
+
+        $upd = $this->row_upd(key: __FUNCTION__);
+        if(errores::$error){
+            $this->link->rollBack();
+            return $this->retorno_error(mensaje: 'Error al obtener row upd',data:  $upd, header: $header,ws:  $ws);
+        }
+        $this->link->commit();
+
+        $_SESSION[$upd->salida][]['mensaje'] = $upd->mensaje.' del id '.$this->registro_id;
+        $this->header_out(result: $upd, header: $header,ws:  $ws);
+
+        return $upd;
+
+    }
+
 
     public function key_selects_txt(array $keys_selects): array
     {
