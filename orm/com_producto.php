@@ -35,6 +35,7 @@ class com_producto extends _modelo_parent {
         $campos_view['com_tipo_producto_id'] = array('type' => 'selects', 'model' => new com_tipo_producto($link));
         $campos_view['codigo'] = array('type' => 'inputs');
         $campos_view['descripcion'] = array('type' => 'inputs');
+        $campos_view['precio'] = array('type' => 'inputs');
 
 
         $atributos_criticos[] = 'es_automatico';
@@ -43,6 +44,7 @@ class com_producto extends _modelo_parent {
         $atributos_criticos[] = 'cat_sat_unidad_id';
         $atributos_criticos[] = 'com_tipo_producto_id';
         $atributos_criticos[] = 'cat_sat_conf_imps_id';
+        $atributos_criticos[] = 'precio';
 
         parent::__construct(link: $link,tabla:  $tabla, campos_obligatorios: $campos_obligatorios,
             columnas: $columnas, campos_view: $campos_view, atributos_criticos: $atributos_criticos);
@@ -100,6 +102,9 @@ class com_producto extends _modelo_parent {
         if(!isset($this->registro['es_automatico'])){
             $this->registro['es_automatico'] = 'inactivo';
         }
+        if(!isset($this->registro['precio'])){
+            $this->registro['precio'] = 1;
+        }
 
         $r_alta_bd =  parent::alta_bd();
         if(errores::$error){
@@ -131,7 +136,13 @@ class com_producto extends _modelo_parent {
         return $r_cat_sat_producto->registros[0];
     }
 
-    private function existe_cat_sat_producto(string $cat_sat_producto_codigo){
+    /**
+     * Verifica si existe un producto por el codigo
+     * @param string $cat_sat_producto_codigo Codigo del sat
+     * @return array|bool
+     */
+    private function existe_cat_sat_producto(string $cat_sat_producto_codigo): bool|array
+    {
         $filtro['cat_sat_producto.codigo'] = $cat_sat_producto_codigo;
         $existe = (new cat_sat_producto(link: $this->link))->existe(filtro: $filtro);
         if(errores::$error){
