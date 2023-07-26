@@ -581,6 +581,18 @@ class base_test{
         return $del;
     }
 
+    public function del_cat_sat_conf_reg_tp(PDO $link): array
+    {
+
+
+
+        $del =(new \gamboamartin\cat_sat\tests\base_test())->del_cat_sat_conf_reg_tp($link);
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
+        }
+        return $del;
+    }
+
     public function del_com_cliente(PDO $link): array
     {
 

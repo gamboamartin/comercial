@@ -37,9 +37,15 @@ class com_producto extends _modelo_parent {
         $campos_view['descripcion'] = array('type' => 'inputs');
 
 
+        $atributos_criticos[] = 'es_automatico';
+        $atributos_criticos[] = 'cat_sat_obj_imp_id';
+        $atributos_criticos[] = 'cat_sat_producto_id';
+        $atributos_criticos[] = 'cat_sat_unidad_id';
+        $atributos_criticos[] = 'com_tipo_producto_id';
+        $atributos_criticos[] = 'cat_sat_conf_imps_id';
 
         parent::__construct(link: $link,tabla:  $tabla, campos_obligatorios: $campos_obligatorios,
-            columnas: $columnas, campos_view: $campos_view);
+            columnas: $columnas, campos_view: $campos_view, atributos_criticos: $atributos_criticos);
 
         $this->NAMESPACE = __NAMESPACE__;
 
@@ -53,23 +59,18 @@ class com_producto extends _modelo_parent {
         $cat_sat_producto_data = '';
         if(isset($this->registro['cat_sat_producto'])){
             if(trim($this->registro['cat_sat_producto'] !=='')){
-                $filtro['cat_sat_producto.codigo'] = $this->registro['cat_sat_producto'];
-                $existe = (new cat_sat_producto(link: $this->link))->existe(filtro: $filtro);
+
+                $existe = $this->existe_cat_sat_producto(cat_sat_producto_codigo: $this->registro['cat_sat_producto']);
                 if(errores::$error){
                     return $this->error->error(mensaje: 'Error al validar si existe producto',data: $existe);
                 }
                 if($existe){
-                    $r_cat_sat_producto = (new cat_sat_producto(link: $this->link))->filtro_and(filtro: $filtro);
+                    $filtro['cat_sat_producto.codigo'] = $this->registro['cat_sat_producto'];
+                    $cat_sat_producto = $this->cat_sat_producto(filtro: $filtro);
                     if(errores::$error){
-                        return $this->error->error(mensaje: 'Error al al obtener producto',data: $r_cat_sat_producto);
+                        return $this->error->error(mensaje: 'Error al obtener cat_sat_producto',data: $cat_sat_producto);
                     }
-                    if((int)$r_cat_sat_producto->n_registros  === 0){
-                        return $this->error->error(mensaje: 'Error no existe el producto',data: $r_cat_sat_producto);
-                    }
-                    if((int)$r_cat_sat_producto->n_registros  > 1){
-                        return $this->error->error(mensaje: 'Error existe mas de un producto',data: $r_cat_sat_producto);
-                    }
-                    $cat_sat_producto = $r_cat_sat_producto->registros[0];
+
                     $this->registro['cat_sat_producto_id'] = $cat_sat_producto['cat_sat_producto_id'];
                 }
                 else{
@@ -84,7 +85,6 @@ class com_producto extends _modelo_parent {
         }
 
 
-
         $this->registro = $this->campos_base(data:$this->registro, modelo: $this);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar campo base',data: $this->registro);
@@ -96,21 +96,48 @@ class com_producto extends _modelo_parent {
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al limpiar campos', data: $this->registro);
         }
+
+        if(!isset($this->registro['es_automatico'])){
+            $this->registro['es_automatico'] = 'inactivo';
+        }
+
         $r_alta_bd =  parent::alta_bd();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al insertar producto', data: $r_alta_bd);
         }
 
         if($integra_tmp){
-            $com_tmp_prod_cs_ins['com_producto_id'] = $r_alta_bd->registro_id;
-            $com_tmp_prod_cs_ins['cat_sat_producto'] = $cat_sat_producto_data;
-            $r_alta_com_tmp = (new com_tmp_prod_cs(link: $this->link))->alta_registro(registro: $com_tmp_prod_cs_ins);
+            $r_alta_com_tmp = $this->inserta_producto_tmp(cat_sat_producto_data: $cat_sat_producto_data,
+                com_producto_id: $r_alta_bd->registro_id);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al insertar producto temporal', data: $r_alta_com_tmp);
             }
         }
 
         return $r_alta_bd;
+    }
+
+    private function cat_sat_producto(array $filtro){
+        $r_cat_sat_producto = (new cat_sat_producto(link: $this->link))->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al al obtener producto',data: $r_cat_sat_producto);
+        }
+        if((int)$r_cat_sat_producto->n_registros  === 0){
+            return $this->error->error(mensaje: 'Error no existe el producto',data: $r_cat_sat_producto);
+        }
+        if((int)$r_cat_sat_producto->n_registros  > 1){
+            return $this->error->error(mensaje: 'Error existe mas de un producto',data: $r_cat_sat_producto);
+        }
+        return $r_cat_sat_producto->registros[0];
+    }
+
+    private function existe_cat_sat_producto(string $cat_sat_producto_codigo){
+        $filtro['cat_sat_producto.codigo'] = $cat_sat_producto_codigo;
+        $existe = (new cat_sat_producto(link: $this->link))->existe(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si existe producto',data: $existe);
+        }
+        return $existe;
     }
 
     public function get_producto(int $com_producto_id): array|stdClass|int
@@ -121,6 +148,16 @@ class com_producto extends _modelo_parent {
         }
 
         return $registro;
+    }
+
+    private function inserta_producto_tmp(string $cat_sat_producto_data, int $com_producto_id){
+        $com_tmp_prod_cs_ins['com_producto_id'] = $com_producto_id;
+        $com_tmp_prod_cs_ins['cat_sat_producto'] = $cat_sat_producto_data;
+        $r_alta_com_tmp = (new com_tmp_prod_cs(link: $this->link))->alta_registro(registro: $com_tmp_prod_cs_ins);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al insertar producto temporal', data: $r_alta_com_tmp);
+        }
+        return $r_alta_com_tmp;
     }
 
     /**

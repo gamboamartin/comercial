@@ -74,6 +74,12 @@ class com_clienteTest extends test {
             print_r($error);
             exit;
         }
+        $del = (new base_test())->del_cat_sat_conf_reg_tp($this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar metodo pago', $del);
+            print_r($error);
+            exit;
+        }
 
         $alta = (new base_test())->alta_cat_sat_conf_reg_tp($this->link);
         if(errores::$error){
