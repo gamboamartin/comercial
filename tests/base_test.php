@@ -633,8 +633,21 @@ class base_test{
         if(errores::$error){
             return (new errores())->error('Error al eliminar', $del);
         }
+        $del = $this->del_com_conf_precio($link);
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
+        }
 
         $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_producto');
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
+        }
+        return $del;
+    }
+    public function del_com_conf_precio(PDO $link): array
+    {
+
+        $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_conf_precio');
         if(errores::$error){
             return (new errores())->error('Error al eliminar', $del);
         }
