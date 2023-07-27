@@ -355,4 +355,13 @@ class com_sucursal extends modelo
         }
         return $r_com_sucursal;
     }
+
+    final public function sucursales_by_tipo_cliente(int $com_tipo_cliente_id){
+        $filtro['com_tipo_cliente.id'] = $com_tipo_cliente_id;
+        $r_com_sucursal = $this->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener clientes',data:  $r_com_sucursal);
+        }
+        return $r_com_sucursal->registros;
+    }
 }
