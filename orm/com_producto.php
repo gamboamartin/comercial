@@ -136,6 +136,40 @@ class com_producto extends _modelo_parent {
         return $r_cat_sat_producto->registros[0];
     }
 
+    private function com_conf_precio(int $com_producto_id, int $com_tipo_cliente_id){
+        $filtro['com_producto.id'] = $com_producto_id;
+        $filtro['com_tipo_cliente.id'] = $com_tipo_cliente_id;
+        $r_com_conf_precio = (new com_conf_precio(link: $this->link))->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener r_com_conf_precio',data:  $r_com_conf_precio);
+        }
+        if($r_com_conf_precio->n_registros > 1){
+            return $this->error->error(mensaje: 'Error existe mas de un precio',data:  $r_com_conf_precio);
+        }
+        if($r_com_conf_precio->n_registros === 0){
+            return $this->error->error(mensaje: 'Error no existe precio',data:  $r_com_conf_precio);
+        }
+        $precio = $r_com_conf_precio->registros[0]['com_conf_precio_precio'];
+        return round($precio,2);
+    }
+
+    private function com_precio_cliente(int $com_cliente_id, int $com_producto_id){
+        $filtro['com_cliente.id'] = $com_cliente_id;
+        $filtro['com_producto.id'] = $com_producto_id;
+        $r_com_precio_cliente = (new com_precio_cliente(link: $this->link))->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener r_com_precio_cliente',data:  $r_com_precio_cliente);
+        }
+        if($r_com_precio_cliente->n_registros > 1){
+            return $this->error->error(mensaje: 'Error existe mas de un precio',data:  $r_com_precio_cliente);
+        }
+        if($r_com_precio_cliente->n_registros === 0){
+            return $this->error->error(mensaje: 'Error no existe precio',data:  $r_com_precio_cliente);
+        }
+        $precio = $r_com_precio_cliente->registros[0]['com_precio_cliente_precio'];
+        return round($precio,2);
+    }
+
     /**
      * Verifica si existe un producto por el codigo
      * @param string $cat_sat_producto_codigo Codigo del sat
@@ -147,6 +181,35 @@ class com_producto extends _modelo_parent {
         $existe = (new cat_sat_producto(link: $this->link))->existe(filtro: $filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar si existe producto',data: $existe);
+        }
+        return $existe;
+    }
+
+    private function existe_com_conf_precio(int $com_producto_id, int $com_tipo_cliente_id){
+
+        $filtro['com_tipo_cliente.id'] = $com_tipo_cliente_id;
+        $filtro['com_producto.id'] = $com_producto_id;
+        $existe = (new com_conf_precio(link: $this->link))->existe(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al verificar precio',data:  $existe);
+        }
+        return $existe;
+    }
+
+    /**
+     * Valida si existe una configuracion de precio por cliente
+     * @param int $com_cliente_id
+     * @param int $com_producto_id
+     * @return array|bool
+     */
+    private function existe_com_precio_cliente(int $com_cliente_id, int $com_producto_id): bool|array
+    {
+        $filtro['com_cliente.id'] = $com_cliente_id;
+        $filtro['com_producto.id'] = $com_producto_id;
+
+        $existe = (new com_precio_cliente(link: $this->link))->existe(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al verificar precio',data:  $existe);
         }
         return $existe;
     }
@@ -222,52 +285,54 @@ class com_producto extends _modelo_parent {
             return $this->error->error(mensaje: 'Error al obtener cliente',data:  $com_cliente);
         }
 
-        $precio = $com_producto->precio;
+        $precio = $this->precio_final(com_cliente: $com_cliente,com_producto:  $com_producto);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener precio',data:  $precio);
+        }
 
 
-        $filtro['com_cliente.id'] = $com_cliente_id;
-        $filtro['com_producto.id'] = $com_producto_id;
+        return round($precio,2);
+    }
 
-        $existe = (new com_precio_cliente(link: $this->link))->existe(filtro: $filtro);
+    private function precio_cliente(int $com_cliente_id, int $com_producto_id, float $precio){
+        $existe = $this->existe_com_precio_cliente(com_cliente_id: $com_cliente_id,com_producto_id:  $com_producto_id);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al verificar precio',data:  $existe);
         }
         if($existe){
-            $r_com_precio_cliente = (new com_precio_cliente(link: $this->link))->filtro_and(filtro: $filtro);
+            $precio = $this->com_precio_cliente(com_cliente_id: $com_cliente_id,com_producto_id:  $com_producto_id);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al obtener r_com_precio_cliente',data:  $r_com_precio_cliente);
+                return $this->error->error(mensaje: 'Error al obtener precio',data:  $precio);
             }
-            if($r_com_precio_cliente->n_registros > 1){
-                return $this->error->error(mensaje: 'Error existe mas de un precio',data:  $r_com_precio_cliente);
-            }
-            if($r_com_precio_cliente->n_registros === 0){
-                return $this->error->error(mensaje: 'Error no existe precio',data:  $r_com_precio_cliente);
-            }
-            $precio = $r_com_precio_cliente->registros[0]['com_precio_cliente_precio'];
         }
-        else{
-            $filtro = array();
-            $filtro['com_tipo_cliente.id'] = $com_cliente->com_tipo_cliente_id;
-            $filtro['com_producto.id'] = $com_producto_id;
-            $existe = (new com_conf_precio(link: $this->link))->existe(filtro: $filtro);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al verificar precio',data:  $existe);
-            }
-            if($existe){
-                $r_com_conf_precio = (new com_conf_precio(link: $this->link))->filtro_and(filtro: $filtro);
-                if(errores::$error){
-                    return $this->error->error(mensaje: 'Error al obtener r_com_conf_precio',data:  $r_com_conf_precio);
-                }
-                if($r_com_conf_precio->n_registros > 1){
-                    return $this->error->error(mensaje: 'Error existe mas de un precio',data:  $r_com_conf_precio);
-                }
-                if($r_com_conf_precio->n_registros === 0){
-                    return $this->error->error(mensaje: 'Error no existe precio',data:  $r_com_conf_precio);
-                }
-                $precio = $r_com_conf_precio->registros[0]['com_conf_precio_precio'];
-            }
+        return $precio;
+    }
 
+    private function precio_final(stdClass $com_cliente, stdClass $com_producto){
+        $precio = $com_producto->precio;
+        $precio = $this->precio_cliente(com_cliente_id: $com_cliente->id,com_producto_id:  $com_producto->id, precio: $precio);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener precio',data:  $precio);
         }
-        return round($precio,2);
+        $precio = $this->precio_tipo_cliente(com_producto_id: $com_producto->id,
+            com_tipo_cliente_id:  $com_cliente->com_tipo_cliente_id,precio:  $precio);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener precio',data:  $precio);
+        }
+        return $precio;
+    }
+
+    private function precio_tipo_cliente(int $com_producto_id, int $com_tipo_cliente_id, float $precio){
+        $existe = $this->existe_com_conf_precio(com_producto_id: $com_producto_id,com_tipo_cliente_id:  $com_tipo_cliente_id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al verificar precio',data:  $existe);
+        }
+        if($existe){
+            $precio = $this->com_conf_precio(com_producto_id: $com_producto_id, com_tipo_cliente_id: $com_tipo_cliente_id);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener precio',data:  $precio);
+            }
+        }
+        return $precio;
     }
 }
