@@ -5,15 +5,15 @@ use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
 
-class com_conf_precio extends _modelo_parent{
+class com_precio_cliente extends _modelo_parent{
 
     public function __construct(PDO $link, array $childrens = array()){
-        $tabla = 'com_conf_precio';
-        $columnas = array($tabla=>false,'com_producto'=>$tabla,'com_tipo_cliente'=>$tabla);
-        $campos_obligatorios = array('com_producto_id','com_tipo_cliente_id');
+        $tabla = 'com_precio_cliente';
+        $columnas = array($tabla=>false,'com_producto'=>$tabla,'com_cliente'=>$tabla);
+        $campos_obligatorios = array('com_producto_id','com_cliente_id');
         $tipo_campos = array();
         $atributos_criticos[] = 'com_producto_id';
-        $atributos_criticos[] = 'com_tipo_cliente_id';
+        $atributos_criticos[] = 'com_cliente_id';
         $atributos_criticos[] = 'precio';
 
 
@@ -23,7 +23,7 @@ class com_conf_precio extends _modelo_parent{
 
         $this->NAMESPACE = __NAMESPACE__;
 
-        $this->etiqueta = 'Precios por tipo';
+        $this->etiqueta = 'Precios por cliente';
 
     }
 
@@ -35,14 +35,14 @@ class com_conf_precio extends _modelo_parent{
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener producto',data:  $com_producto);
         }
-        $com_tipo_cliente = (new com_tipo_cliente(link: $this->link))->registro(registro_id: $this->registro['com_tipo_cliente_id'],
+        $com_cliente = (new com_cliente(link: $this->link))->registro(registro_id: $this->registro['com_cliente_id'],
             columnas_en_bruto: true,retorno_obj: true);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener producto',data:  $com_producto);
+            return $this->error->error(mensaje: 'Error al obtener com_cliente',data:  $com_cliente);
         }
 
         if(!isset($this->registro['descripcion'])){
-            $descripcion = $com_producto->descripcion.' '.$com_tipo_cliente->descripcion;
+            $descripcion = $com_producto->descripcion.' '.$com_cliente->razon_social;
             $this->registro['descripcion'] = $descripcion;
         }
 
@@ -51,33 +51,33 @@ class com_conf_precio extends _modelo_parent{
             return $this->error->error(mensaje: 'Error al al integrar codigo', data: $registro);
         }
         $filtro['com_producto.id'] = $this->registro['com_producto_id'];
-        $filtro['com_tipo_cliente.id'] = $this->registro['com_tipo_cliente_id'];
-        $existe = (new com_conf_precio(link: $this->link))->existe(filtro: $filtro);
+        $filtro['com_cliente.id'] = $this->registro['com_cliente_id'];
+        $existe = (new com_precio_cliente(link: $this->link))->existe(filtro: $filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar',data:  $existe);
         }
 
         if($existe){
-            $r_com_con_precio = (new com_conf_precio(link: $this->link))->filtro_and(filtro: $filtro);
+            $r_com_precio_cliente = (new com_precio_cliente(link: $this->link))->filtro_and(filtro: $filtro);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al obtener registro',data:  $r_com_con_precio);
+                return $this->error->error(mensaje: 'Error al obtener registro',data:  $r_com_precio_cliente);
             }
-            if($r_com_con_precio->n_registros === 0){
-                return $this->error->error(mensaje: 'Error no existe registro',data:  $r_com_con_precio);
+            if($r_com_precio_cliente->n_registros === 0){
+                return $this->error->error(mensaje: 'Error no existe registro',data:  $r_com_precio_cliente);
             }
-            if($r_com_con_precio->n_registros > 1){
-                return $this->error->error(mensaje: 'Error existe mas de un registro',data:  $r_com_con_precio);
+            if($r_com_precio_cliente->n_registros > 1){
+                return $this->error->error(mensaje: 'Error existe mas de un registro',data:  $r_com_precio_cliente);
             }
 
-            $this->registro_id = $r_com_con_precio->registros[0]['com_con_precio_id'];
+            $this->registro_id = $r_com_precio_cliente->registros[0]['com_precio_cliente_id'];
 
 
             $r_alta_bd = new stdClass();
             $r_alta_bd->mensaje = "Registro existente previamente";
             $r_alta_bd->registro_id = $this->registro_id;
             $r_alta_bd->sql = 'NO SE EJECUTO TRANSACCION YA EXISTIA EL REGISTRO';
-            $r_alta_bd->registro = $r_com_con_precio->registros[0];
-            $r_alta_bd->registro_obj = (object)$r_com_con_precio->registros[0];
+            $r_alta_bd->registro = $r_com_precio_cliente->registros[0];
+            $r_alta_bd->registro_obj = (object)$r_com_precio_cliente->registros[0];
             $r_alta_bd->registro_ins = $this->registro;
             $r_alta_bd->campos = $this->campos_tabla;
         }
