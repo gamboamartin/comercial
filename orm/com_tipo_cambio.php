@@ -225,6 +225,30 @@ class com_tipo_cambio extends _modelo_parent
         return $r_modifica_bd;
     }
 
+    final public function tipo_cambio(int $cat_sat_moneda_id, string $fecha){
+        $cat_sat_moneda = (new cat_sat_moneda(link: $this->link))->registro(registro_id:$cat_sat_moneda_id );
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener moneda',data:  $cat_sat_moneda);
+        }
+
+        $filtro_tc['com_tipo_cambio.fecha'] = $fecha;
+        $filtro_tc['cat_sat_moneda.codigo'] = $cat_sat_moneda['cat_sat_moneda_codigo'];
+
+        $r_com_tipo_cambio = $this->filtro_and(filtro: $filtro_tc);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener tipo de cambio',data:  $r_com_tipo_cambio);
+        }
+
+        if($r_com_tipo_cambio->n_registros > 1){
+            return $this->error->error(mensaje: 'Error existe mas de un tipo de cambio',data:  $r_com_tipo_cambio);
+        }
+        if($r_com_tipo_cambio->n_registros === 0){
+            return $this->error->error(mensaje: 'Error no existe tipo de cambio',data:  $r_com_tipo_cambio);
+        }
+
+        return $r_com_tipo_cambio->registros[0];
+    }
+
     private function tipo_cambio_hoy_ins(string $cat_sat_moneda_codigo){
         $alta_moneda = new stdClass();
         $hoy = date('Y-m-d');
