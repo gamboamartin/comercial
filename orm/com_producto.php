@@ -185,7 +185,14 @@ class com_producto extends _modelo_parent {
         return $existe;
     }
 
-    private function existe_com_conf_precio(int $com_producto_id, int $com_tipo_cliente_id){
+    /**
+     * Verifica si existe una configuracion de precio
+     * @param int $com_producto_id
+     * @param int $com_tipo_cliente_id
+     * @return array|bool
+     */
+    private function existe_com_conf_precio(int $com_producto_id, int $com_tipo_cliente_id): bool|array
+    {
 
         $filtro['com_tipo_cliente.id'] = $com_tipo_cliente_id;
         $filtro['com_producto.id'] = $com_producto_id;
@@ -273,7 +280,15 @@ class com_producto extends _modelo_parent {
         return $r_modifica_bd;
     }
 
-    final public function precio(int $com_cliente_id, int $com_producto_id){
+    /**
+     * Obtiene el precio final del producto para el cliente asignado dado la siguiente prioridad primero precio por
+     * cliente despues precio por configuracion de tipo de cliente y por ultimo el precio asignado al producto
+     * @param int $com_cliente_id
+     * @param int $com_producto_id
+     * @return array|float
+     */
+    final public function precio(int $com_cliente_id, int $com_producto_id): float|array
+    {
 
         $com_producto = $this->registro(registro_id: $com_producto_id, columnas_en_bruto: true, retorno_obj: true);
         if(errores::$error){
@@ -310,12 +325,14 @@ class com_producto extends _modelo_parent {
 
     private function precio_final(stdClass $com_cliente, stdClass $com_producto){
         $precio = $com_producto->precio;
-        $precio = $this->precio_cliente(com_cliente_id: $com_cliente->id,com_producto_id:  $com_producto->id, precio: $precio);
+
+        $precio = $this->precio_tipo_cliente(com_producto_id: $com_producto->id,
+            com_tipo_cliente_id:  $com_cliente->com_tipo_cliente_id,precio:  $precio);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener precio',data:  $precio);
         }
-        $precio = $this->precio_tipo_cliente(com_producto_id: $com_producto->id,
-            com_tipo_cliente_id:  $com_cliente->com_tipo_cliente_id,precio:  $precio);
+
+        $precio = $this->precio_cliente(com_cliente_id: $com_cliente->id,com_producto_id:  $com_producto->id, precio: $precio);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener precio',data:  $precio);
         }
