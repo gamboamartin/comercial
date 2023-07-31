@@ -76,10 +76,13 @@ class com_producto extends _modelo_parent {
                     }
 
                     $this->registro['cat_sat_producto_id'] = $cat_sat_producto['cat_sat_producto_id'];
+                    $this->registro['codigo_sat'] = $cat_sat_producto['cat_sat_producto_codigo'];
+
                 }
                 else{
                     $cat_sat_producto_data = $this->registro['cat_sat_producto'];
                     $integra_tmp = true;
+                    $this->registro['codigo_sat'] = $this->registro['cat_sat_producto'];
                 }
                 unset($this->registro['cat_sat_producto']);
             }
@@ -87,6 +90,7 @@ class com_producto extends _modelo_parent {
         if(!isset($this->registro['cat_sat_producto_id']) || trim($this->registro['cat_sat_producto_id']) === ''){
             $this->registro['cat_sat_producto_id'] = '97999999';
         }
+
         if(!isset($this->registro['cat_sat_conf_imps_id'])){
             $this->registro['cat_sat_conf_imps_id'] = 1;
         }
