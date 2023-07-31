@@ -15,6 +15,7 @@ use stdClass;
 
 class com_producto extends _modelo_parent {
 
+
     public function __construct(PDO $link){
         $tabla = 'com_producto';
         $columnas = array($tabla=>false,'cat_sat_obj_imp'=>$tabla,'cat_sat_producto'=>$tabla, 'cat_sat_unidad'=>$tabla,
@@ -45,6 +46,7 @@ class com_producto extends _modelo_parent {
         $atributos_criticos[] = 'com_tipo_producto_id';
         $atributos_criticos[] = 'cat_sat_conf_imps_id';
         $atributos_criticos[] = 'precio';
+        $atributos_criticos[] = 'codigo_sat';
 
         parent::__construct(link: $link,tabla:  $tabla, campos_obligatorios: $campos_obligatorios,
             columnas: $columnas, campos_view: $campos_view, atributos_criticos: $atributos_criticos);
@@ -84,6 +86,9 @@ class com_producto extends _modelo_parent {
         }
         if(!isset($this->registro['cat_sat_producto_id']) || trim($this->registro['cat_sat_producto_id']) === ''){
             $this->registro['cat_sat_producto_id'] = '97999999';
+        }
+        if(!isset($this->registro['cat_sat_conf_imps_id'])){
+            $this->registro['cat_sat_conf_imps_id'] = 1;
         }
 
 

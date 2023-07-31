@@ -26,6 +26,7 @@ use Throwable;
 class controlador_com_producto extends _base_comercial {
 
     public array|stdClass $keys_selects = array();
+    public string $link_com_producto_alta_bd = '';
 
     public function __construct(PDO $link, html $html = new \gamboamartin\template_1\html(),
                                 stdClass $paths_conf = new stdClass()){
@@ -69,13 +70,19 @@ class controlador_com_producto extends _base_comercial {
         }
 
         $cat_sat_producto = (new com_tmp_prod_cs_html(html: $this->html_base))->input_cat_sat_producto(
-            cols: 12, row_upd: $this->row_upd, value_vacio: false, disabled: true);
+            cols: 6, row_upd: $this->row_upd, value_vacio: false, disabled: false);
 
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al obtener input',data:  $cat_sat_producto, header: $header,ws:  $ws);
         }
 
         $this->inputs->cat_sat_producto = $cat_sat_producto;
+
+        $link_com_com_producto_alta_bd = $this->obj_link->link_alta_bd(link: $this->link,seccion: $this->seccion);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener link',data:  $link_com_com_producto_alta_bd, header: $header,ws:  $ws);
+        }
+        $this->link_com_producto_alta_bd = $link_com_com_producto_alta_bd;
 
 
         return $r_alta;
@@ -105,8 +112,6 @@ class controlador_com_producto extends _base_comercial {
 
         return $upd;
     }
-
-
 
     public function get_productos(bool $header, bool $ws = true): array|stdClass
     {
@@ -321,21 +326,21 @@ class controlador_com_producto extends _base_comercial {
         }
 
         $identificador = "cat_sat_unidad_id";
-        $propiedades = array("label" => "SAT - Unidad",  "cols" => 12);
+        $propiedades = array("label" => "SAT - Unidad",  "cols" => 6);
         $pr =$this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al inicializa',data:  $pr);
         }
 
         $identificador = "cat_sat_obj_imp_id";
-        $propiedades = array("label" => "Objeto del Impuesto", "cols" => 12);
+        $propiedades = array("label" => "Objeto del Impuesto", "cols" => 6);
         $pr =$this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al inicializa',data:  $pr);
         }
 
         $identificador = "com_tipo_producto_id";
-        $propiedades = array("label" => "Tipo Producto", "cols" => 8);
+        $propiedades = array("label" => "Tipo Producto", "cols" => 6);
         $pr =$this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al inicializa',data:  $pr);
@@ -349,7 +354,7 @@ class controlador_com_producto extends _base_comercial {
         }
 
         $identificador = "codigo";
-        $propiedades = array("place_holder" => "Código", "cols" => 4);
+        $propiedades = array("place_holder" => "Código", "cols" => 6);
         $pr =$this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al inicializa',data:  $pr);
@@ -363,7 +368,7 @@ class controlador_com_producto extends _base_comercial {
         }
 
         $identificador = "precio";
-        $propiedades = array("place_holder" => "Precio", "cols" => 12);
+        $propiedades = array("place_holder" => "Precio", "cols" => 6);
         $pr =$this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al inicializa',data:  $pr);
