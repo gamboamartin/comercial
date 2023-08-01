@@ -27,6 +27,7 @@ class controlador_com_producto extends _base_comercial {
 
     public array|stdClass $keys_selects = array();
     public string $link_com_producto_alta_bd = '';
+    public string $link_com_producto_modifica_bd = '';
 
     public function __construct(PDO $link, html $html = new \gamboamartin\template_1\html(),
                                 stdClass $paths_conf = new stdClass()){
@@ -254,8 +255,6 @@ class controlador_com_producto extends _base_comercial {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
 
-
-
         return $keys_selects;
     }
 
@@ -442,7 +441,6 @@ class controlador_com_producto extends _base_comercial {
         }
 
 
-
         $cat_sat_producto = '';
 
 
@@ -462,16 +460,60 @@ class controlador_com_producto extends _base_comercial {
             $this->row_upd->cat_sat_producto = $r_com_tmp_prod_cs->registros[0]['com_tmp_prod_cs_cat_sat_producto'];
 
             $cat_sat_producto = (new com_tmp_prod_cs_html(html: $this->html_base))->input_cat_sat_producto(
-                cols: 12, row_upd: $this->row_upd, value_vacio: false, disabled: true);
+                cols: 6, row_upd: $this->row_upd, value_vacio: false, disabled: true);
 
             if(errores::$error){
                 return $this->retorno_error(mensaje: 'Error al obtener input',data:  $cat_sat_producto, header: $header,ws:  $ws);
             }
 
+            $producto_ejecutado = (new com_producto(link: $this->link))->registro(registro_id: $this->registro_id,
+                columnas_en_bruto: true, retorno_obj: true);
+
+            if(errores::$error){
+                return $this->retorno_error(mensaje: 'Error al obtener producto',data:  $producto_ejecutado, header: $header,ws:  $ws);
+            }
+
+            $filtro = array();
+            $filtro['cat_sat_producto.codigo'] = $producto_ejecutado->codigo_sat;
+            $existe = (new cat_sat_producto(link: $this->link))->existe(filtro: $filtro);
+            if(errores::$error){
+                return $this->retorno_error(mensaje: 'Error al validar si existe producto',data:  $existe, header: $header,ws:  $ws);
+            }
+
+            if($existe){
+                $cat_sat_producto = (new cat_sat_producto(link: $this->link))->registro_by_codigo(codigo: $producto_ejecutado->codigo_sat);
+                if(errores::$error){
+                    return $this->retorno_error(mensaje: 'Error al validar si existe producto',data:  $existe, header: $header,ws:  $ws);
+                }
+
+                $row_upd['cat_sat_producto_id'] = $cat_sat_producto['cat_sat_producto_id'];
+                $upd = (new com_producto(link: $this->link))->modifica_bd(registro: $row_upd,id:  $this->registro_id);
+                if(errores::$error){
+                    return $this->retorno_error(mensaje: 'Error al actualizar',data:  $upd, header: $header,ws:  $ws);
+                }
+
+                $filtro = array();
+                $filtro['com_producto.id'] = $this->registro_id;
+                $del_tmp = (new com_tmp_prod_cs(link: $this->link))->elimina_con_filtro_and(filtro: $filtro);
+                if(errores::$error){
+                    return $this->retorno_error(mensaje: 'Error al eliminar temporal',data:  $del_tmp, header: $header,ws:  $ws);
+                }
+
+            }
+
+
         }
 
         $this->inputs->cat_sat_producto = $cat_sat_producto;
 
+        $link_com_producto_modifica_bd = $this->obj_link->link_con_id(accion: 'modifica_bd',link:  $this->link,
+            registro_id:  $this->registro_id,seccion: $this->seccion);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener link_com_producto_modifica_bd',
+                data:  $link_com_producto_modifica_bd, header: $header,ws:  $ws);
+        }
+
+        $this->link_com_producto_modifica_bd = $link_com_producto_modifica_bd;
 
         return $r_modifica;
     }
