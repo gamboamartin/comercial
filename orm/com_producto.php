@@ -315,7 +315,13 @@ class com_producto extends _modelo_parent {
         return $existe;
     }
 
-    private function existe_producto_ejecucion(int $com_producto_id){
+    /**
+     * Valida si existe un producto de sat en una transaccion de ajuste
+     * @param int $com_producto_id Producto a validar
+     * @return array|bool
+     */
+    private function existe_producto_ejecucion(int $com_producto_id): bool|array
+    {
         $producto_ejecutado = $this->registro(registro_id: $com_producto_id, columnas_en_bruto: true, retorno_obj: true);
 
         if(errores::$error){

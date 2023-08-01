@@ -462,33 +462,5 @@ class controlador_com_producto extends _base_comercial {
         return $r_modifica;
     }
 
-    public function regenera_sat(bool $header, bool $ws = false){
-        $this->link->beginTransaction();
-        $regenera = (new com_tmp_prod_cs(link: $this->link))->regenera_por_producto(com_producto_id: $this->registro_id);
-        if(errores::$error){
-            $this->link->rollBack();
-            return $this->retorno_error(mensaje: 'Error al regenerar temporal',data:  $regenera, header: $header,ws:  $ws);
-        }
-        $this->link->commit();
-
-        if($header){
-            $this->retorno_base(registro_id:$this->registro_id, result: $regenera, siguiente_view: 'modifica',
-                ws:  $ws,seccion_retorno: $this->tabla);
-        }
-        if($ws){
-            header('Content-Type: application/json');
-            try {
-                echo json_encode($regenera, JSON_THROW_ON_ERROR);
-            }
-            catch (Throwable $e){
-                $error = (new errores())->error(mensaje: 'Error al maquetar JSON' , data: $e);
-                print_r($error);
-            }
-            exit;
-        }
-
-        return $regenera;
-
-    }
 
 }
