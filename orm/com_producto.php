@@ -56,6 +56,46 @@ class com_producto extends _modelo_parent {
         $this->etiqueta = 'Producto';
     }
 
+    private function actualiza_producto_ejecucion(int $com_producto_id){
+        $producto_ejecutado = $this->registro(registro_id: $com_producto_id, columnas_en_bruto: true, retorno_obj: true);
+
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener producto',data:  $producto_ejecutado);
+        }
+        $upd = $this->ajusta_temporal(
+            codigo_sat: $producto_ejecutado->codigo_sat,com_producto_id: $com_producto_id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al actualizar',data:  $upd);
+        }
+        $upd->producto_ejecutado = $producto_ejecutado;
+        return $upd;
+    }
+
+    private function actualiza_producto_sat(int $cat_sat_producto_id){
+        $row_upd['cat_sat_producto_id'] = $cat_sat_producto_id;
+        $upd = (new com_producto(link: $this->link))->modifica_bd(registro: $row_upd,id:  $this->registro_id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al actualizar',data:  $upd);
+        }
+        return $upd;
+    }
+
+    private function ajusta_temporal(string $codigo_sat, int $com_producto_id){
+        $upd = $this->modifica_cat_sat_producto(codigo_sat: $codigo_sat);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al actualizar',data:  $upd);
+        }
+
+        $del_tmp = $this->elimina_temporal(com_producto_id: $com_producto_id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al eliminar temporal',data:  $del_tmp);
+        }
+        $data = new stdClass();
+        $data->upd = $upd;
+        $data->del_tmp = $del_tmp;
+        return $data;
+    }
+
     public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
     {
 
@@ -179,6 +219,16 @@ class com_producto extends _modelo_parent {
         return round($precio,2);
     }
 
+    private function elimina_temporal(int $com_producto_id){
+
+        $filtro['com_producto.id'] = $com_producto_id;
+        $del_tmp = (new com_tmp_prod_cs(link: $this->link))->elimina_con_filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al eliminar temporal',data:  $del_tmp);
+        }
+        return $del_tmp;
+    }
+
     /**
      * Verifica si existe un producto por el codigo
      * @param string $cat_sat_producto_codigo Codigo del sat
@@ -226,6 +276,20 @@ class com_producto extends _modelo_parent {
         $existe = (new com_precio_cliente(link: $this->link))->existe(filtro: $filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al verificar precio',data:  $existe);
+        }
+        return $existe;
+    }
+
+    private function existe_producto_ejecucion(int $com_producto_id){
+        $producto_ejecutado = $this->registro(registro_id: $com_producto_id, columnas_en_bruto: true, retorno_obj: true);
+
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener producto',data:  $producto_ejecutado);
+        }
+
+        $existe = $this->existe_cat_sat_producto(cat_sat_producto_codigo: $producto_ejecutado->codigo_sat);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si existe producto',data:  $existe);
         }
         return $existe;
     }
@@ -287,6 +351,19 @@ class com_producto extends _modelo_parent {
         }
 
         return $r_modifica_bd;
+    }
+
+    private function modifica_cat_sat_producto(string $codigo_sat){
+        $cat_sat_producto = (new cat_sat_producto(link: $this->link))->registro_by_codigo(codigo: $codigo_sat);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si existe producto',data:  $cat_sat_producto);
+        }
+
+        $upd = $this->actualiza_producto_sat(cat_sat_producto_id: $cat_sat_producto['cat_sat_producto_id']);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al actualizar',data:  $upd);
+        }
+        return $upd;
     }
 
     /**
@@ -360,5 +437,21 @@ class com_producto extends _modelo_parent {
             }
         }
         return $precio;
+    }
+
+    final public function transacciona_tmp(int $com_producto_id){
+        $upd = new stdClass();
+        $existe = $this->existe_producto_ejecucion(com_producto_id: $com_producto_id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si existe producto',data:  $existe);
+        }
+
+        if($existe){
+            $upd = $this->actualiza_producto_ejecucion(com_producto_id: $com_producto_id);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al actualizar',data:  $upd);
+            }
+        }
+        return $upd;
     }
 }

@@ -440,68 +440,20 @@ class controlador_com_producto extends _base_comercial {
             return $this->errores->error(mensaje: 'Error al inicializar inputs',data:  $inputs);
         }
 
-
-        $cat_sat_producto = '';
-
-
+        $this->row_upd->cat_sat_producto = $this->row_upd->codigo_sat;
         if($existe_tmp){
 
-            $r_com_tmp_prod_cs = (new com_tmp_prod_cs(link: $this->link))->filtro_and(filtro: $filtro);
+            $tmp_transaccion = (new com_producto(link: $this->link))->transacciona_tmp(com_producto_id: $this->registro_id);
             if(errores::$error){
-                return $this->errores->error(mensaje: 'Error al obtener',data:  $r_com_tmp_prod_cs);
+                return $this->retorno_error(mensaje: 'Error al actualizar',data:  $tmp_transaccion, header: $header,ws:  $ws);
             }
 
-            $this->inputs->cat_sat_division_producto_id = '';
-            $this->inputs->cat_sat_grupo_producto_id = '';
-            $this->inputs->cat_sat_clase_producto_id = '';
-            $this->inputs->cat_sat_producto_id = '';
+        }
 
-
-            $this->row_upd->cat_sat_producto = $r_com_tmp_prod_cs->registros[0]['com_tmp_prod_cs_cat_sat_producto'];
-
-            $cat_sat_producto = (new com_tmp_prod_cs_html(html: $this->html_base))->input_cat_sat_producto(
-                cols: 6, row_upd: $this->row_upd, value_vacio: false, disabled: true);
-
-            if(errores::$error){
-                return $this->retorno_error(mensaje: 'Error al obtener input',data:  $cat_sat_producto, header: $header,ws:  $ws);
-            }
-
-            $producto_ejecutado = (new com_producto(link: $this->link))->registro(registro_id: $this->registro_id,
-                columnas_en_bruto: true, retorno_obj: true);
-
-            if(errores::$error){
-                return $this->retorno_error(mensaje: 'Error al obtener producto',data:  $producto_ejecutado, header: $header,ws:  $ws);
-            }
-
-            $filtro = array();
-            $filtro['cat_sat_producto.codigo'] = $producto_ejecutado->codigo_sat;
-            $existe = (new cat_sat_producto(link: $this->link))->existe(filtro: $filtro);
-            if(errores::$error){
-                return $this->retorno_error(mensaje: 'Error al validar si existe producto',data:  $existe, header: $header,ws:  $ws);
-            }
-
-            if($existe){
-                $cat_sat_producto = (new cat_sat_producto(link: $this->link))->registro_by_codigo(codigo: $producto_ejecutado->codigo_sat);
-                if(errores::$error){
-                    return $this->retorno_error(mensaje: 'Error al validar si existe producto',data:  $existe, header: $header,ws:  $ws);
-                }
-
-                $row_upd['cat_sat_producto_id'] = $cat_sat_producto['cat_sat_producto_id'];
-                $upd = (new com_producto(link: $this->link))->modifica_bd(registro: $row_upd,id:  $this->registro_id);
-                if(errores::$error){
-                    return $this->retorno_error(mensaje: 'Error al actualizar',data:  $upd, header: $header,ws:  $ws);
-                }
-
-                $filtro = array();
-                $filtro['com_producto.id'] = $this->registro_id;
-                $del_tmp = (new com_tmp_prod_cs(link: $this->link))->elimina_con_filtro_and(filtro: $filtro);
-                if(errores::$error){
-                    return $this->retorno_error(mensaje: 'Error al eliminar temporal',data:  $del_tmp, header: $header,ws:  $ws);
-                }
-
-            }
-
-
+        $cat_sat_producto = (new com_producto_html(html: $this->html_base))->input_text_required(cols: 6,disabled: true,
+            name: 'codigo_sat',place_holder:  'Codigo SAT',row_upd:  $this->row_upd,value_vacio: false);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al generar input',data:  $cat_sat_producto, header: $header,ws:  $ws);
         }
 
         $this->inputs->cat_sat_producto = $cat_sat_producto;
