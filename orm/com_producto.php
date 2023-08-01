@@ -129,6 +129,26 @@ class com_producto extends _modelo_parent {
         }
         if(!isset($this->registro['cat_sat_producto_id']) || trim($this->registro['cat_sat_producto_id']) === ''){
             $this->registro['cat_sat_producto_id'] = '97999999';
+
+            $filtro = array();
+            $filtro['cat_sat_producto.codigo'] = '97999999';
+            $existe = (new cat_sat_producto(link: $this->link))->existe(filtro: $filtro);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar si existe',data: $existe);
+            }
+            if(!$existe){
+                $cat_sat_producto_ins['id'] = '97999999';
+                $cat_sat_producto_ins['descripcion'] = 'PREDETERMINADO';
+                $cat_sat_producto_ins['codigo'] = '97999999';
+                $cat_sat_producto_ins['cat_sat_clase_producto_id'] = '979999';
+
+                $alta = (new cat_sat_producto(link: $this->link))->alta_registro(registro: $cat_sat_producto_ins);
+                if(errores::$error){
+                    return $this->error->error(mensaje: 'Error al insertar cat_sat_producto',data: $alta);
+                }
+
+            }
+
         }
 
         if(!isset($this->registro['cat_sat_conf_imps_id'])){
