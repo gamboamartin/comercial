@@ -91,10 +91,11 @@ class base_test{
         return $alta;
     }
 
-    public function alta_cat_sat_producto(PDO $link, int $id): array|\stdClass
+    public function alta_cat_sat_producto(PDO $link, string $codigo = '01010101', int $id = 1): array|\stdClass
     {
 
-        $alta = (new \gamboamartin\cat_sat\tests\base_test())->alta_cat_sat_producto(link: $link, id: $id);
+        $alta = (new \gamboamartin\cat_sat\tests\base_test())->alta_cat_sat_producto(link: $link,
+            codigo: $codigo, id: $id);
         if(errores::$error){
             return (new errores())->error('Error al insertar', $alta);
         }
@@ -575,6 +576,22 @@ class base_test{
         }
 
         $del =(new \gamboamartin\cat_sat\tests\base_test())->del_cat_sat_moneda($link);
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
+        }
+        return $del;
+    }
+
+    public function del_cat_sat_producto(PDO $link): array
+    {
+        $del = (new base_test())->del_com_producto($link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del =(new \gamboamartin\cat_sat\tests\base_test())->del_cat_sat_producto($link);
         if(errores::$error){
             return (new errores())->error('Error al eliminar', $del);
         }

@@ -171,7 +171,13 @@ class com_producto extends _modelo_parent {
         return $r_alta_bd;
     }
 
-    private function cat_sat_producto(array $filtro){
+    /**
+     * Obtiene un producto del catalogo sat
+     * @param array $filtro filtro para obtener producto
+     * @return array
+     */
+    private function cat_sat_producto(array $filtro): array
+    {
         $r_cat_sat_producto = (new cat_sat_producto(link: $this->link))->filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al al obtener producto',data: $r_cat_sat_producto);
@@ -219,6 +225,27 @@ class com_producto extends _modelo_parent {
         return round($precio,2);
     }
 
+    final public function ejecuta_upd_tmp(int $com_producto_id){
+
+        $tmp_transaccion = new stdClass();
+        $filtro['com_producto.id'] = $com_producto_id;
+
+        $existe_tmp = (new com_tmp_prod_cs(link: $this->link))->existe(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si existe',data:  $existe_tmp);
+        }
+
+        if($existe_tmp){
+
+            $tmp_transaccion = $this->transacciona_tmp(com_producto_id: $com_producto_id);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al actualizar',data:  $tmp_transaccion);
+            }
+
+        }
+        return $tmp_transaccion;
+    }
+
     private function elimina_temporal(int $com_producto_id){
 
         $filtro['com_producto.id'] = $com_producto_id;
@@ -233,9 +260,17 @@ class com_producto extends _modelo_parent {
      * Verifica si existe un producto por el codigo
      * @param string $cat_sat_producto_codigo Codigo del sat
      * @return array|bool
+     * @version 12.4.0
      */
     private function existe_cat_sat_producto(string $cat_sat_producto_codigo): bool|array
     {
+        $cat_sat_producto_codigo = trim($cat_sat_producto_codigo);
+        if($cat_sat_producto_codigo === ''){
+            return $this->error->error(mensaje: 'Error cat_sat_producto_codigo esta vacio',
+                data: $cat_sat_producto_codigo);
+        }
+
+
         $filtro['cat_sat_producto.codigo'] = $cat_sat_producto_codigo;
         $existe = (new cat_sat_producto(link: $this->link))->existe(filtro: $filtro);
         if(errores::$error){
@@ -439,7 +474,7 @@ class com_producto extends _modelo_parent {
         return $precio;
     }
 
-    final public function transacciona_tmp(int $com_producto_id){
+    private function transacciona_tmp(int $com_producto_id){
         $upd = new stdClass();
         $existe = $this->existe_producto_ejecucion(com_producto_id: $com_producto_id);
         if(errores::$error){

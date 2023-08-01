@@ -24,6 +24,48 @@ class com_productoTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_existe_cat_sat_producto(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 1;
+        $_GET['session_id'] = '1';
+        $_GET['registro_id'] = '1';
+        $modelo = new com_producto($this->link);
+        $modelo = new liberator($modelo);
+
+        $del = (new base_test())->del_cat_sat_producto(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al eliminar',data:  $del);
+            print_r($error);
+            exit;
+        }
+
+        $cat_sat_producto_codigo = '12345678';
+        $resultado = $modelo->existe_cat_sat_producto($cat_sat_producto_codigo);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertNotTrue($resultado);
+
+        $alta = (new base_test())->alta_cat_sat_producto(link: $this->link, codigo: '12345678', id: 12345678);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al insertar',data:  $alta);
+            print_r($error);
+            exit;
+        }
+
+        $cat_sat_producto_codigo = '12345678';
+        $resultado = $modelo->existe_cat_sat_producto($cat_sat_producto_codigo);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+
+        errores::$error = false;
+    }
+
     public function test_limpia_campos(): void
     {
         errores::$error = false;

@@ -383,13 +383,6 @@ class controlador_com_producto extends _base_comercial {
             return $this->retorno_error(mensaje: 'Error al generar template',data:  $r_modifica, header: $header,ws:$ws);
         }
 
-        $filtro['com_producto.id'] = $this->registro_id;
-
-        $existe_tmp = (new com_tmp_prod_cs(link: $this->link))->existe(filtro: $filtro);
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al validar si existe',data:  $existe_tmp, header: $header, ws: $ws);
-        }
-
         $producto = (new cat_sat_producto($this->link))->get_producto($this->row_upd->cat_sat_producto_id);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al obtener $producto',data:  $producto);
@@ -441,14 +434,13 @@ class controlador_com_producto extends _base_comercial {
         }
 
         $this->row_upd->cat_sat_producto = $this->row_upd->codigo_sat;
-        if($existe_tmp){
 
-            $tmp_transaccion = (new com_producto(link: $this->link))->transacciona_tmp(com_producto_id: $this->registro_id);
-            if(errores::$error){
-                return $this->retorno_error(mensaje: 'Error al actualizar',data:  $tmp_transaccion, header: $header,ws:  $ws);
-            }
 
+        $tmp_transaccion = (new com_producto(link: $this->link))->ejecuta_upd_tmp(com_producto_id: $this->registro_id);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al actualizar',data:  $tmp_transaccion, header: $header,ws:  $ws);
         }
+
 
         $cat_sat_producto = (new com_producto_html(html: $this->html_base))->input_text_required(cols: 6,disabled: true,
             name: 'codigo_sat',place_holder:  'Codigo SAT',row_upd:  $this->row_upd,value_vacio: false);
