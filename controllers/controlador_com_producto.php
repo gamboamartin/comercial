@@ -459,6 +459,8 @@ class controlador_com_producto extends _base_comercial {
 
         $this->link_com_producto_modifica_bd = $link_com_producto_modifica_bd;
 
+
+
         return $r_modifica;
     }
 
