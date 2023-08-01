@@ -266,6 +266,11 @@ class com_producto extends _modelo_parent {
         return $tmp_transaccion;
     }
 
+    /**
+     * Elimina un registro de tipo producto elimina sus dependientes com_precio_cliente
+     * @param int $id Identificador del producto
+     * @return array|stdClass
+     */
     public function elimina_bd(int $id): array|stdClass
     {
         $filtro['com_producto.id'] = $id;
