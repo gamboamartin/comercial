@@ -9,12 +9,13 @@ class com_precio_cliente extends _modelo_parent{
 
     public function __construct(PDO $link, array $childrens = array()){
         $tabla = 'com_precio_cliente';
-        $columnas = array($tabla=>false,'com_producto'=>$tabla,'com_cliente'=>$tabla);
-        $campos_obligatorios = array('com_producto_id','com_cliente_id');
+        $columnas = array($tabla=>false,'com_producto'=>$tabla,'com_cliente'=>$tabla,'cat_sat_conf_imps'=>$tabla);
+        $campos_obligatorios = array('com_producto_id','com_cliente_id','cat_sat_conf_imps_id');
         $tipo_campos = array();
         $atributos_criticos[] = 'com_producto_id';
         $atributos_criticos[] = 'com_cliente_id';
         $atributos_criticos[] = 'precio';
+        $atributos_criticos[] = 'cat_sat_conf_imps_id';
 
 
         parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios,
