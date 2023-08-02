@@ -229,6 +229,18 @@ class com_producto extends _modelo_parent {
     }
 
     private function com_precio_cliente(int $com_cliente_id, int $com_producto_id){
+
+        $com_precio_cliente_row = $this->com_precio_cliente_row(com_cliente_id: $com_cliente_id,
+            com_producto_id:  $com_producto_id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener com_precio_cliente',data:  $com_precio_cliente_row);
+        }
+
+        $precio = $com_precio_cliente_row['com_precio_cliente_precio'];
+        return round($precio,2);
+    }
+
+    private function com_precio_cliente_row(int $com_cliente_id, int $com_producto_id){
         $filtro['com_cliente.id'] = $com_cliente_id;
         $filtro['com_producto.id'] = $com_producto_id;
         $r_com_precio_cliente = (new com_precio_cliente(link: $this->link))->filtro_and(filtro: $filtro);
@@ -241,8 +253,7 @@ class com_producto extends _modelo_parent {
         if($r_com_precio_cliente->n_registros === 0){
             return $this->error->error(mensaje: 'Error no existe precio',data:  $r_com_precio_cliente);
         }
-        $precio = $r_com_precio_cliente->registros[0]['com_precio_cliente_precio'];
-        return round($precio,2);
+        return $r_com_precio_cliente->registros[0];
     }
 
     final public function ejecuta_upd_tmp(int $com_producto_id){
@@ -488,6 +499,22 @@ class com_producto extends _modelo_parent {
             }
         }
         return $precio;
+    }
+
+    final public function precio_cliente_row(int $com_cliente_id, int $com_producto_id){
+        $precio_cliente_row = array();
+        $existe = $this->existe_com_precio_cliente(com_cliente_id: $com_cliente_id,com_producto_id:  $com_producto_id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al verificar precio',data:  $existe);
+        }
+        if($existe){
+            $precio_cliente_row = $this->com_precio_cliente_row(com_cliente_id: $com_cliente_id,
+                com_producto_id:  $com_producto_id);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener precio',data:  $precio_cliente_row);
+            }
+        }
+        return $precio_cliente_row;
     }
 
     private function precio_final(stdClass $com_cliente, stdClass $com_producto){
