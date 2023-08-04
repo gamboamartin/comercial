@@ -225,7 +225,14 @@ class com_tipo_cambio extends _modelo_parent
         return $r_modifica_bd;
     }
 
-    final public function tipo_cambio(int $cat_sat_moneda_id, string $fecha){
+    /**
+     * Obtiene el tipo de cambio de una moneda por dia
+     * @param int $cat_sat_moneda_id Moneda a verificar tipo de cambio
+     * @param string $fecha Fecha de tipo de cambio
+     * @return array
+     */
+    final public function tipo_cambio(int $cat_sat_moneda_id, string $fecha): array
+    {
         $cat_sat_moneda = (new cat_sat_moneda(link: $this->link))->registro(registro_id:$cat_sat_moneda_id );
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener moneda',data:  $cat_sat_moneda);
