@@ -441,16 +441,17 @@ class base_test{
         return $alta;
     }
 
-    public function alta_com_tipo_cambio(PDO $link, int $id = 1): array|\stdClass
+    public function alta_com_tipo_cambio(PDO $link, int $cat_sat_moneda_id = 1, string $codigo = '1', string $fecha = '2020-01-01',
+                                         int $id = 1): array|\stdClass
     {
 
         $registro = array();
         $registro['id'] = $id;
-        $registro['codigo'] = 1;
+        $registro['codigo'] = $codigo;
         $registro['descripcion'] = 1;
-        $registro['cat_sat_moneda_id'] = 1;
+        $registro['cat_sat_moneda_id'] = $cat_sat_moneda_id;
         $registro['monto'] = 1;
-        $registro['fecha'] = '2020-01-01';
+        $registro['fecha'] = $fecha;
 
 
         $alta = (new com_tipo_cambio($link))->alta_registro($registro);

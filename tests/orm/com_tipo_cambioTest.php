@@ -60,5 +60,42 @@ class com_tipo_cambioTest extends test {
 
     }
 
+    public function test_tipo_cambio(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 1;
+        $_GET['session_id'] = '1';
+        $modelo = new com_tipo_cambio($this->link);
+        //$modelo = new liberator($modelo);
+
+        $del = (new base_test())->del_com_tipo_cambio($this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $alta = (new base_test())->alta_com_tipo_cambio(link: $this->link, codigo: 'MXN',
+            fecha: date('Y-m-d'));
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+        $cat_sat_moneda_id = 1;
+        $fecha = date('Y-m-d');
+        $resultado = $modelo->tipo_cambio($cat_sat_moneda_id, $fecha);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("1", $resultado['com_tipo_cambio_id']);
+
+        errores::$error = false;
+    }
+
 }
 

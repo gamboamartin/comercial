@@ -230,9 +230,18 @@ class com_tipo_cambio extends _modelo_parent
      * @param int $cat_sat_moneda_id Moneda a verificar tipo de cambio
      * @param string $fecha Fecha de tipo de cambio
      * @return array
+     * @version 2.12.1
      */
     final public function tipo_cambio(int $cat_sat_moneda_id, string $fecha): array
     {
+        if($cat_sat_moneda_id <= 0){
+            return $this->error->error(mensaje: 'Error cat_sat_moneda_id debe ser mayor a 0',data:  $cat_sat_moneda_id);
+        }
+
+        $fecha = trim($fecha);
+        if($fecha === ''){
+            return $this->error->error(mensaje: 'Error fecha esta vacia',data:  $fecha);
+        }
         $cat_sat_moneda = (new cat_sat_moneda(link: $this->link))->registro(registro_id:$cat_sat_moneda_id );
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener moneda',data:  $cat_sat_moneda);
