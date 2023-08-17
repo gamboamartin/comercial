@@ -25,7 +25,7 @@ class com_cliente extends _modelo_parent
             'dp_calle_pertenece' => $tabla, 'dp_colonia_postal' => 'dp_calle_pertenece', 'dp_cp' => 'dp_colonia_postal',
             'dp_municipio' => 'dp_cp', 'dp_estado' => 'dp_municipio', 'dp_pais' => 'dp_estado', 'com_tipo_cliente' => $tabla,
             'cat_sat_uso_cfdi' => $tabla, 'cat_sat_metodo_pago' => $tabla, 'cat_sat_forma_pago' => $tabla,
-            'cat_sat_tipo_de_comprobante' => $tabla,'cat_sat_tipo_persona'=>$tabla);
+            'cat_sat_tipo_de_comprobante' => $tabla,'cat_sat_tipo_persona'=>$tabla,'dp_calle'=>'dp_calle_pertenece');
 
         $campos_obligatorios = array('cat_sat_moneda_id', 'cat_sat_regimen_fiscal_id', 'cat_sat_moneda_id',
             'cat_sat_forma_pago_id', 'cat_sat_uso_cfdi_id', 'cat_sat_tipo_de_comprobante_id', 'cat_sat_metodo_pago_id',
