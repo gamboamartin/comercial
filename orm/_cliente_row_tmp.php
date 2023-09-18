@@ -25,9 +25,10 @@ class _cliente_row_tmp{
     }
 
     /**
-     * @param PDO $link
-     * @param array $registro
-     * @param array $row_tmp
+     * Ajusta un codigo postal validando si es tmp
+     * @param PDO $link Conexion a la base de datos
+     * @param array $registro Registro en proceso
+     * @param array $row_tmp Registro temporal
      * @return array
      */
     private function ajusta_cp(PDO $link, array $registro, array $row_tmp): array
@@ -47,9 +48,13 @@ class _cliente_row_tmp{
      * @param PDO $link Conexion a la base de datos
      * @param array $row_tmp Registro temporal de asignacion
      * @return array
+     * @version 17.5.0
      */
     private function asigna_cp_pred(int $dp_cp_id, PDO $link, array $row_tmp): array
     {
+        if($dp_cp_id <= 0){
+            return $this->error->error(mensaje: 'Error dp_cp_id debe ser mayor a 0', data: $dp_cp_id);
+        }
         if ($dp_cp_id !== 11) {
             $row_tmp = $this->asigna_dp_cp(dp_cp_id: $dp_cp_id, link: $link, row_tmp: $row_tmp);
             if (errores::$error) {
