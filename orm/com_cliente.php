@@ -265,9 +265,20 @@ class com_cliente extends _modelo_parent
         return $data;
     }
 
+    /**
+     * Limpia elementos no insertables
+     * @param array $registro Registro en proceso
+     * @param array $campos_limpiar campos a quitar de registro
+     * @return array
+     * @version 17.6.0
+     */
     private function limpia_campos(array $registro, array $campos_limpiar): array
     {
         foreach ($campos_limpiar as $valor) {
+            $valor = trim($valor);
+            if($valor === ''){
+                return $this->error->error(mensaje: "Error valor esta vacio" . $this->tabla, data: $valor);
+            }
             if (isset($registro[$valor])) {
                 unset($registro[$valor]);
             }

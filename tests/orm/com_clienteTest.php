@@ -210,5 +210,27 @@ class com_clienteTest extends test {
         errores::$error = false;
     }
 
+    public function test_limpia_campos(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = '1';
+        $modelo = new com_cliente($this->link);
+        $modelo = new liberator($modelo);
+
+        $registro = array();
+        $campos_limpiar = array('a');
+
+        $resultado = $modelo->limpia_campos($registro, $campos_limpiar);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+
+        errores::$error = false;
+    }
+
 }
 

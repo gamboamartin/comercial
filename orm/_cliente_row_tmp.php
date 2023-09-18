@@ -85,9 +85,10 @@ class _cliente_row_tmp{
     }
 
     /**
-     * @param int $dp_colonia_postal_id
-     * @param PDO $link
-     * @param array $row_tmp
+     * Asigna el id de la colonia temporal a ajustar
+     * @param int $dp_colonia_postal_id Colonia id
+     * @param PDO $link Conexion a la base de datos
+     * @param array $row_tmp Registro temporal de asignacion
      * @return array
      */
     private function asigna_dp_colonia_tmp(int $dp_colonia_postal_id, PDO $link, array $row_tmp): array
@@ -180,9 +181,10 @@ class _cliente_row_tmp{
     }
 
     /**
-     * @param PDO $link
-     * @param array $registro
-     * @param array $row_tmp
+     * Ajusta o integra un cp temporal
+     * @param PDO $link Conexion a la base de datos
+     * @param array $registro Registro en proceso
+     * @param array $row_tmp Registro temporal
      * @return array
      */
     private function cp_tmp(PDO $link, array $registro, array $row_tmp): array
