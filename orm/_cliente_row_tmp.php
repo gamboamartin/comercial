@@ -73,7 +73,15 @@ class _cliente_row_tmp{
         return $row_tmp;
     }
 
-    private function asigna_dp_cp(int $dp_cp_id, PDO $link, array $row_tmp){
+    /**
+     * Asigna un cp en caso de que este no exista
+     * @param int $dp_cp_id Id a integrar
+     * @param PDO $link Conexion a la base de datos
+     * @param array $row_tmp Registro temporal de domicilios
+     * @return array
+     */
+    private function asigna_dp_cp(int $dp_cp_id, PDO $link, array $row_tmp): array
+    {
         if (!isset($row_tmp['dp_cp']) || trim($row_tmp['dp_cp']) !== '') {
             $row_tmp = $this->asigna_dp_cp_tmp(dp_cp_id: $dp_cp_id, link: $link, row_tmp: $row_tmp);
             if (errores::$error) {
@@ -89,9 +97,13 @@ class _cliente_row_tmp{
      * @param PDO $link Conexion a la base de datos
      * @param array $row_tmp Registro tmp
      * @return array
+     * @version 17.3.0
      */
     private function asigna_dp_cp_tmp(int $dp_cp_id, PDO $link, array $row_tmp): array
     {
+        if($dp_cp_id <= 0){
+            return $this->error->error(mensaje: 'Error dp_cp_id debe ser mayor a 0', data: $dp_cp_id);
+        }
         $dp_cp = (new dp_cp(link: $link))->registro(registro_id: $dp_cp_id);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener cp', data: $dp_cp);
