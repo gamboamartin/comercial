@@ -225,9 +225,16 @@ class com_cliente extends _modelo_parent
      * @param array $data Registro
      * @param string $funcion_llamada Funcion base de llamada alta_bd o modifica_bd
      * @return array
+     * @version 17.1.0
      */
     private function inicializa_foraneas(array $data, string $funcion_llamada): array
     {
+        $funcion_llamada = trim($funcion_llamada);
+        if($funcion_llamada === ''){
+            return $this->error->error(mensaje: "Error al funcion_llamada esta vacia" . $this->tabla,
+                data: $funcion_llamada);
+        }
+
         if (isset($data['status'])) {
             return $data;
         }
@@ -247,7 +254,8 @@ class com_cliente extends _modelo_parent
                 if (!isset($data[$key]) || $data[$key] === -1) {
                     $predeterminado = ($modelo_pred)->id_predeterminado();
                     if (errores::$error) {
-                        return $this->error->error(mensaje: "Error al $key predeterminada en modelo " . $this->tabla, data: $predeterminado);
+                        return $this->error->error(mensaje: "Error al $key predeterminada en modelo " . $this->tabla,
+                            data: $predeterminado);
                     }
                     $data[$key] = $predeterminado;
                 }

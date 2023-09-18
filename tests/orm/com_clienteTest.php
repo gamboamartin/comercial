@@ -1,6 +1,7 @@
 <?php
 namespace gamboamartin\comercial\test\orm;
 
+use gamboamartin\cat_sat\tests\base;
 use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\comercial\test\base_test;
 use gamboamartin\errores\errores;
@@ -135,6 +136,58 @@ class com_clienteTest extends test {
         errores::$error = false;
 
 
+    }
+
+    public function test_inicializa_foraneas(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 2;
+        $_SESSION['usuario_id'] = 2;
+        $_GET['session_id'] = '1';
+        $modelo = new com_cliente($this->link);
+        $modelo = new liberator($modelo);
+
+        $del = (new base_test())->del_cat_sat_moneda(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al eliminar',data:  $del);
+            print_r($error);
+            exit;
+        }
+        $del = (new base_test())->del_cat_sat_metodo_pago(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al eliminar',data:  $del);
+            print_r($error);
+            exit;
+        }
+
+
+        $alta = (new base_test())->alta_cat_sat_moneda(link: $this->link, id: 161, predeterminado: 'activo');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al insertar',data:  $alta);
+            print_r($error);
+            exit;
+        }
+
+        $alta = (new base_test())->alta_cat_sat_metodo_pago(link: $this->link, id: 1, predeterminado: 'activo');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al insertar',data:  $alta);
+            print_r($error);
+            exit;
+        }
+
+        $data = array();
+        $funcion_llamada = 'alta_bd';
+        $resultado = $modelo->inicializa_foraneas($data, $funcion_llamada);
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(161, $resultado['cat_sat_moneda_id']);
+
+
+        errores::$error = false;
     }
 
     public function test_init_base(): void

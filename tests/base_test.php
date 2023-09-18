@@ -57,11 +57,12 @@ class base_test{
 
         return $alta;
     }
-    public function alta_cat_sat_metodo_pago(PDO $link, string $codigo = 'PUE', int $id = 1): array|\stdClass
+    public function alta_cat_sat_metodo_pago(PDO $link, string $codigo = 'PUE', int $id = 1,
+                                             string $predeterminado = 'inactivo'): array|\stdClass
     {
 
         $alta = (new \gamboamartin\cat_sat\tests\base_test())->alta_cat_sat_metodo_pago(link: $link, codigo: $codigo,
-            descripcion: 'Pago en una sola exhibición', id: $id);
+            descripcion: 'Pago en una sola exhibición', id: $id, predeterminado: $predeterminado);
         if(errores::$error){
             return (new errores())->error('Error al insertar', $alta);
         }
@@ -69,10 +70,11 @@ class base_test{
         return $alta;
     }
 
-    public function alta_cat_sat_moneda(PDO $link): array|\stdClass
+    public function alta_cat_sat_moneda(PDO $link, int $id = 1, string $predeterminado = 'inactivo'): array|\stdClass
     {
 
-        $alta = (new \gamboamartin\cat_sat\tests\base_test())->alta_cat_sat_moneda($link);
+        $alta = (new \gamboamartin\cat_sat\tests\base_test())->alta_cat_sat_moneda(link: $link,id: $id,
+            predeterminado: $predeterminado);
         if(errores::$error){
             return (new errores())->error('Error al insertar', $alta);
         }

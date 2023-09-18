@@ -91,6 +91,11 @@ class _cliente_row_tmp{
         $row_tmp['dp_cp'] = $dp_cp['dp_cp_codigo'];
         return $row_tmp;
     }
+
+    /**
+     * @param array $registro
+     * @return stdClass
+     */
     private function asigna_row_tmp(array $registro): stdClass
     {
         $keys_tmp = array('dp_estado','dp_municipio','dp_cp','dp_colonia','dp_calle');
