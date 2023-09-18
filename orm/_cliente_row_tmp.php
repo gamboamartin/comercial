@@ -24,7 +24,14 @@ class _cliente_row_tmp{
         return $row_tmp;
     }
 
-    private function ajusta_cp(PDO $link, array $registro, array $row_tmp){
+    /**
+     * @param PDO $link
+     * @param array $registro
+     * @param array $row_tmp
+     * @return array
+     */
+    private function ajusta_cp(PDO $link, array $registro, array $row_tmp): array
+    {
         if (trim($registro['dp_cp_id']) !== '') {
             $row_tmp = $this->asigna_cp_pred(dp_cp_id: $registro['dp_cp_id'], link: $link, row_tmp: $row_tmp);
             if (errores::$error) {
@@ -34,7 +41,15 @@ class _cliente_row_tmp{
         return $row_tmp;
     }
 
-    private function asigna_cp_pred(int $dp_cp_id, PDO $link, array $row_tmp){
+    /**
+     * Asigna un cp predeterminado
+     * @param int $dp_cp_id Identificador a asignar
+     * @param PDO $link Conexion a la base de datos
+     * @param array $row_tmp Registro temporal de asignacion
+     * @return array
+     */
+    private function asigna_cp_pred(int $dp_cp_id, PDO $link, array $row_tmp): array
+    {
         if ($dp_cp_id !== 11) {
             $row_tmp = $this->asigna_dp_cp(dp_cp_id: $dp_cp_id, link: $link, row_tmp: $row_tmp);
             if (errores::$error) {
@@ -64,7 +79,14 @@ class _cliente_row_tmp{
         return $row_tmp;
     }
 
-    private function asigna_dp_colonia_tmp(int $dp_colonia_postal_id, PDO $link, array $row_tmp){
+    /**
+     * @param int $dp_colonia_postal_id
+     * @param PDO $link
+     * @param array $row_tmp
+     * @return array
+     */
+    private function asigna_dp_colonia_tmp(int $dp_colonia_postal_id, PDO $link, array $row_tmp): array
+    {
         $dp_colonia_postal = (new dp_colonia_postal(link: $link))->registro(registro_id: $dp_colonia_postal_id);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener dp_colonia_postal', data: $dp_colonia_postal);
@@ -79,9 +101,14 @@ class _cliente_row_tmp{
      * @param PDO $link Conexion a la base de datos
      * @param array $row_tmp Registro temporal de domicilios
      * @return array
+     * @version 17.4.0
      */
     private function asigna_dp_cp(int $dp_cp_id, PDO $link, array $row_tmp): array
     {
+        if($dp_cp_id <= 0){
+            return $this->error->error(mensaje: 'Error dp_cp_id debe ser mayor a 0', data: $dp_cp_id);
+        }
+
         if (!isset($row_tmp['dp_cp']) || trim($row_tmp['dp_cp']) !== '') {
             $row_tmp = $this->asigna_dp_cp_tmp(dp_cp_id: $dp_cp_id, link: $link, row_tmp: $row_tmp);
             if (errores::$error) {
@@ -147,7 +174,14 @@ class _cliente_row_tmp{
         return $row_tmp;
     }
 
-    private function cp_tmp(PDO $link, array $registro, array $row_tmp){
+    /**
+     * @param PDO $link
+     * @param array $registro
+     * @param array $row_tmp
+     * @return array
+     */
+    private function cp_tmp(PDO $link, array $registro, array $row_tmp): array
+    {
         if (isset($registro['dp_cp_id'])) {
             $row_tmp = $this->ajusta_cp(link: $link, registro: $registro, row_tmp: $row_tmp);
             if (errores::$error) {
