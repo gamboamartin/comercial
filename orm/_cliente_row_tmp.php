@@ -83,7 +83,15 @@ class _cliente_row_tmp{
         return $row_tmp;
     }
 
-    private function asigna_dp_cp_tmp(int $dp_cp_id, PDO $link, array $row_tmp){
+    /**
+     * Asigna un id de cp temporal
+     * @param int $dp_cp_id Id a asignar
+     * @param PDO $link Conexion a la base de datos
+     * @param array $row_tmp Registro tmp
+     * @return array
+     */
+    private function asigna_dp_cp_tmp(int $dp_cp_id, PDO $link, array $row_tmp): array
+    {
         $dp_cp = (new dp_cp(link: $link))->registro(registro_id: $dp_cp_id);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener cp', data: $dp_cp);
@@ -93,8 +101,10 @@ class _cliente_row_tmp{
     }
 
     /**
-     * @param array $registro
+     * Limpia campos de un registro temporal
+     * @param array $registro Registro en proceso
      * @return stdClass
+     * @version 17.2.0
      */
     private function asigna_row_tmp(array $registro): stdClass
     {

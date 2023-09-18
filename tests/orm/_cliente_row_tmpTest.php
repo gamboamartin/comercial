@@ -22,6 +22,28 @@ class _cliente_row_tmpTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_asigna_row_tmp(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 1;
+        $_GET['session_id'] = '1';
+        $obj = new _cliente_row_tmp();
+        $obj = new liberator($obj);
+
+
+        $registro = array();
+        $resultado = $obj->asigna_row_tmp($registro);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado->row_tmp);
+
+        errores::$error = false;
+    }
+
     /**
      */
     public function test_integra_row_upd(): void
