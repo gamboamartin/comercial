@@ -54,6 +54,34 @@ class com_clienteTest extends test {
 
     }
 
+    public function test_com_sucursal_upd(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = '1';
+        $modelo = new com_cliente($this->link);
+        $modelo = new liberator($modelo);
+
+        $com_cliente = new stdClass();
+        $com_cliente_id = 1;
+        $com_sucursal_descripcion = 'r';
+        $sucursal = array();
+        $sucursal['com_sucursal_codigo'] = 'R';
+        $sucursal['com_tipo_sucursal_descripcion'] = 'o';
+
+        $resultado = $modelo->com_sucursal_upd($com_cliente, $com_cliente_id, $com_sucursal_descripcion, $sucursal);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("R", $resultado['codigo']);
+        $this->assertEquals("r", $resultado['descripcion']);
+        $this->assertEquals("1", $resultado['com_cliente_id']);
+
+        errores::$error = false;
+    }
+
     public function test_com_sucursal_upd_dom(): void
     {
         errores::$error = false;
@@ -303,6 +331,62 @@ class com_clienteTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertEmpty($resultado);
 
+        errores::$error = false;
+    }
+
+    public function test_row_com_sucursal_upd(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = '1';
+        $modelo = new com_cliente($this->link);
+        $modelo = new liberator($modelo);
+
+        $com_cliente = new stdClass();
+        $com_cliente_id = 1;
+        $sucursal = array();
+        $sucursal['com_sucursal_codigo'] = 'Q';
+        $sucursal['com_tipo_sucursal_descripcion'] = 'E';
+        $com_cliente->razon_social = 'O';
+        $com_cliente->rfc = 'T';
+
+
+        $resultado = $modelo->row_com_sucursal_upd($com_cliente, $com_cliente_id, $sucursal);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('Q',$resultado['codigo']);
+        $this->assertEquals('Q T O',$resultado['descripcion']);
+        $this->assertEquals('1',$resultado['com_cliente_id']);
+
+        errores::$error = false;
+    }
+
+    public function test_valida_data_sucursal(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = '1';
+        $modelo = new com_cliente($this->link);
+        $modelo = new liberator($modelo);
+
+        $com_cliente = new stdClass();
+        $sucursal = array();
+        $sucursal['com_sucursal_codigo'] = 'Q';
+        $sucursal['com_tipo_sucursal_descripcion'] = 'E';
+        $com_cliente->razon_social = 'O';
+        $com_cliente->rfc = 'T';
+
+
+        $resultado = $modelo->valida_data_sucursal($com_cliente, $sucursal);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
         errores::$error = false;
     }
 

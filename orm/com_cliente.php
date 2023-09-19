@@ -141,19 +141,12 @@ class com_cliente extends _modelo_parent
      * @param stdClass $com_cliente Registro de tipo cliente
      * @param array $sucursal Registro de tipo sucursal
      * @return array|string
-     * @version 17.4.0
      */
     private function com_sucursal_descripcion(stdClass $com_cliente, array $sucursal): array|string
     {
-        $keys = array('com_sucursal_codigo');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $sucursal);
+        $valida = $this->valida_data_sucursal(com_cliente: $com_cliente,sucursal:  $sucursal);;
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al al validar sucursal', data: $valida);
-        }
-        $keys = array('razon_social','rfc');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $com_cliente);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al al validar com_cliente', data: $valida);
+            return $this->error->error(mensaje: 'Error al al validar datos', data: $valida);
         }
 
         $data = array();
@@ -175,10 +168,25 @@ class com_cliente extends _modelo_parent
      * @param string $com_sucursal_descripcion Descripcion de la sucursal
      * @param array $sucursal Registro de sucursal previo
      * @return array
+     * @version 17.16.0
      */
     private function com_sucursal_upd(stdClass $com_cliente, int $com_cliente_id, string $com_sucursal_descripcion,
                                       array $sucursal): array
     {
+        $keys = array('com_sucursal_codigo','com_tipo_sucursal_descripcion');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $sucursal);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar sucursal', data: $valida);
+        }
+        if($com_cliente_id<=0){
+            return $this->error->error(mensaje: 'Error com_cliente_id debe ser mayor a 0', data: $com_cliente_id);
+        }
+        $com_sucursal_descripcion = trim($com_sucursal_descripcion);
+        if($com_sucursal_descripcion === ''){
+            return $this->error->error(mensaje: 'Error com_sucursal_descripcion esta vacia',
+                data: $com_sucursal_descripcion);
+        }
+
         $com_sucursal_upd['codigo'] = $sucursal['com_sucursal_codigo'];
         $com_sucursal_upd['descripcion'] = $com_sucursal_descripcion;
         $com_sucursal_upd['com_cliente_id'] = $com_cliente_id;
@@ -405,12 +413,27 @@ class com_cliente extends _modelo_parent
      * @param int $com_cliente_id Identificador de cliente
      * @param array $sucursal Sucursal a actualizar
      * @return array
+     * @version 17.16.0
      */
     private function row_com_sucursal_upd(stdClass $com_cliente, int $com_cliente_id, array $sucursal): array
     {
+        $valida = $this->valida_data_sucursal(com_cliente: $com_cliente,sucursal:  $sucursal);;
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al al validar datos', data: $valida);
+        }
+        $keys = array('com_sucursal_codigo','com_tipo_sucursal_descripcion');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $sucursal);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar sucursal', data: $valida);
+        }
+        if($com_cliente_id<=0){
+            return $this->error->error(mensaje: 'Error com_cliente_id debe ser mayor a 0', data: $com_cliente_id);
+        }
+
         $com_sucursal_descripcion = $this->com_sucursal_descripcion(com_cliente: $com_cliente, sucursal: $sucursal);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al obtener com_sucursal_descripcion', data: $com_sucursal_descripcion);
+            return $this->error->error(mensaje: 'Error al obtener com_sucursal_descripcion',
+                data: $com_sucursal_descripcion);
         }
 
 
@@ -455,5 +478,27 @@ class com_cliente extends _modelo_parent
             $r_com_sucursales[] = $r_com_sucursal;
         }
         return $r_com_sucursales;
+    }
+
+    /**
+     * Valida que los datos basicos esten bien integrados para la actualizacion de une sucursal
+     * @param array|stdClass $com_cliente Registro de cliente
+     * @param array|stdClass $sucursal Registro sucursal
+     * @return array|true
+     * @version 17.16.0
+     */
+    private function valida_data_sucursal(array|stdClass $com_cliente, array|stdClass $sucursal): bool|array
+    {
+        $keys = array('com_sucursal_codigo');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $sucursal);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al al validar sucursal', data: $valida);
+        }
+        $keys = array('razon_social','rfc');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $com_cliente);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al al validar com_cliente', data: $valida);
+        }
+        return true;
     }
 }
