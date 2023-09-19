@@ -5,6 +5,7 @@ use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\comercial\test\base_test;
 use gamboamartin\errores\errores;
 
+use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 
 
@@ -86,6 +87,32 @@ class com_sucursalTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("1", $resultado->registro_id);
 
+        errores::$error = false;
+
+
+    }
+
+    public function test_alias(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 1;
+        $_GET['session_id'] = '1';
+        $modelo = new com_sucursal($this->link);
+        $modelo = new liberator($modelo);
+
+
+        $data = array();
+        $data['codigo'] = 'X';
+
+        $resultado = $modelo->alias($data);
+        $this->assertIsaRRAY($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("X", $resultado['codigo']);
+        $this->assertEquals("X", $resultado['alias']);
         errores::$error = false;
 
 

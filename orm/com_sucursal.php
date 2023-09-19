@@ -59,10 +59,16 @@ class com_sucursal extends modelo
      * Asigna alias a data para update y alta
      * @param array $data Registro en proceso
      * @return array
+     * @version 17.5.0
      *
      */
     private function alias(array $data): array
     {
+        $keys = array('codigo');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $data);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar data', data: $valida);
+        }
         if (!isset($data['alias'])) {
             $data['alias'] = $data['codigo'];
         }
@@ -101,6 +107,11 @@ class com_sucursal extends modelo
         return $r_alta_bd;
     }
 
+    /**
+     * @param string $com_cliente_rfc
+     * @param array $data
+     * @return array
+     */
     private function codigo_bis(string $com_cliente_rfc, array $data): array
     {
         if (!isset($data['codigo_bis'])) {
@@ -110,9 +121,10 @@ class com_sucursal extends modelo
     }
 
     /**
-     * @param string $com_cliente_razon_social
-     * @param string $com_cliente_rfc
-     * @param array $data
+     * Integra una descripcion
+     * @param string $com_cliente_razon_social Razon social del cliente
+     * @param string $com_cliente_rfc Rfc del cliente
+     * @param array $data Datos previos de carga
      * @return array
      */
     private function descripcion(string $com_cliente_razon_social, string $com_cliente_rfc, array $data): array
@@ -135,7 +147,14 @@ class com_sucursal extends modelo
         return $data;
     }
 
-    private function descripcion_select_sc(string $com_cliente_razon_social, string $com_cliente_rfc, array $data){
+    /**
+     * @param string $com_cliente_razon_social
+     * @param string $com_cliente_rfc
+     * @param array $data
+     * @return array
+     */
+    private function descripcion_select_sc(string $com_cliente_razon_social, string $com_cliente_rfc, array $data): array
+    {
         $keys = array('codigo');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $data);
         if (errores::$error) {

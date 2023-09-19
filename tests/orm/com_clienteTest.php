@@ -54,6 +54,31 @@ class com_clienteTest extends test {
 
     }
 
+    public function test_com_sucursal_upd_dom(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = '1';
+        $modelo = new com_cliente($this->link);
+        $modelo = new liberator($modelo);
+
+        $com_cliente = new stdClass();
+        $com_sucursal_upd = array();
+        $com_cliente->dp_calle_pertenece_id = 1;
+        $com_cliente->numero_exterior = 1;
+        $com_cliente->telefono = 1;
+        $resultado = $modelo->com_sucursal_upd_dom($com_cliente, $com_sucursal_upd);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("1", $resultado['dp_calle_pertenece_id']);
+
+        errores::$error = false;
+
+    }
+
 
     public function test_desactiva_bd(): void
     {
