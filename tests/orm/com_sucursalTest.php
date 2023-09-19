@@ -91,6 +91,7 @@ class com_sucursalTest extends test {
 
     }
 
+
     public function test_ds(): void
     {
         errores::$error = false;

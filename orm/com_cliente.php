@@ -141,25 +141,39 @@ class com_cliente extends _modelo_parent
      * @param stdClass $com_cliente Registro de tipo cliente
      * @param array $sucursal Registro de tipo sucursal
      * @return array|string
+     * @version 17.4.0
      */
     private function com_sucursal_descripcion(stdClass $com_cliente, array $sucursal): array|string
     {
+        $keys = array('com_sucursal_codigo');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $sucursal);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al al validar sucursal', data: $valida);
+        }
+        $keys = array('razon_social','rfc');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $com_cliente);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al al validar com_cliente', data: $valida);
+        }
+
         $data = array();
         $data['codigo'] = $sucursal['com_sucursal_codigo'];
 
         $com_sucursal_descripcion = (new com_sucursal(link: $this->link))->ds(
             com_cliente_razon_social: $com_cliente->razon_social,com_cliente_rfc:  $com_cliente->rfc, data: $data);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener com_sucursal_descripcion', data: $com_sucursal_descripcion);
+            return $this->error->error(mensaje: 'Error al obtener com_sucursal_descripcion',
+                data: $com_sucursal_descripcion);
         }
         return $com_sucursal_descripcion;
     }
 
     /**
-     * @param stdClass $com_cliente
-     * @param int $com_cliente_id
-     * @param string $com_sucursal_descripcion
-     * @param array $sucursal
+     * Integra los elementos a actualizar de una sucursal basada en los datos de un cliente
+     * @param stdClass $com_cliente Registro de cliente
+     * @param int $com_cliente_id Identificador del cliente
+     * @param string $com_sucursal_descripcion Descripcion de la sucursal
+     * @param array $sucursal Registro de sucursal previo
      * @return array
      */
     private function com_sucursal_upd(stdClass $com_cliente, int $com_cliente_id, string $com_sucursal_descripcion,
@@ -381,7 +395,14 @@ class com_cliente extends _modelo_parent
         return $registro;
     }
 
-    private function row_com_sucursal_upd(stdClass $com_cliente, int $com_cliente_id, array $sucursal){
+    /**
+     * @param stdClass $com_cliente
+     * @param int $com_cliente_id
+     * @param array $sucursal
+     * @return array
+     */
+    private function row_com_sucursal_upd(stdClass $com_cliente, int $com_cliente_id, array $sucursal): array
+    {
         $com_sucursal_descripcion = $this->com_sucursal_descripcion(com_cliente: $com_cliente, sucursal: $sucursal);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener com_sucursal_descripcion', data: $com_sucursal_descripcion);

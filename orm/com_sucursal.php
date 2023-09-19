@@ -109,7 +109,14 @@ class com_sucursal extends modelo
         return $data;
     }
 
-    private function descripcion(string $com_cliente_razon_social, string $com_cliente_rfc, array $data){
+    /**
+     * @param string $com_cliente_razon_social
+     * @param string $com_cliente_rfc
+     * @param array $data
+     * @return array
+     */
+    private function descripcion(string $com_cliente_razon_social, string $com_cliente_rfc, array $data): array
+    {
         $keys = array('codigo');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $data);
         if (errores::$error) {
@@ -118,7 +125,8 @@ class com_sucursal extends modelo
 
         if (!isset($data['descripcion'])) {
 
-            $ds = $this->ds(com_cliente_razon_social: $com_cliente_razon_social, com_cliente_rfc: $com_cliente_rfc, data: $data);
+            $ds = $this->ds(com_cliente_razon_social: $com_cliente_razon_social, com_cliente_rfc: $com_cliente_rfc,
+                data: $data);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al obtener descripcion', data: $ds);
             }

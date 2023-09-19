@@ -28,6 +28,32 @@ class com_clienteTest extends test {
         $this->paths_conf->views = '/var/www/html/organigrama/config/views.php';
     }
 
+    public function test_com_sucursal_descripcion(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_GET['session_id'] = '1';
+        $modelo = new com_cliente($this->link);
+        $modelo = new liberator($modelo);
+
+        $com_cliente = new stdClass();
+        $sucursal = array();
+        $sucursal['com_sucursal_codigo'] = 'A';
+        $com_cliente->razon_social = 'B';
+        $com_cliente->rfc = 'D';
+        $resultado = $modelo->com_sucursal_descripcion($com_cliente, $sucursal);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("A D B", $resultado);
+
+        errores::$error = false;
+
+    }
+
 
     public function test_desactiva_bd(): void
     {
