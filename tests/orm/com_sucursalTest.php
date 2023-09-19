@@ -91,6 +91,30 @@ class com_sucursalTest extends test {
 
     }
 
+    public function test_ds(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 1;
+        $_GET['session_id'] = '1';
+        $modelo = new com_sucursal($this->link);
+        //$modelo = new liberator($modelo);
+
+
+        $com_cliente_razon_social = 'c';
+        $com_cliente_rfc = 'b';
+        $data = array();
+        $data['codigo']  ='x';
+        $resultado = $modelo->ds($com_cliente_razon_social, $com_cliente_rfc, $data);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("x b c", $resultado);
+        errores::$error = false;
+    }
+
     public function test_modifica_bd(): void
     {
         errores::$error = false;
@@ -103,40 +127,6 @@ class com_sucursalTest extends test {
         $modelo = new com_sucursal($this->link);
         //$modelo = new liberator($modelo);
 
-        /*$del = (new base_test())->del_cat_sat_moneda($this->link);
-        if (errores::$error) {
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }
-
-        $del = (new base_test())->del_cat_sat_metodo_pago($this->link);
-        if (errores::$error) {
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }
-
-        $del = (new base_test())->del_cat_sat_moneda($this->link);
-        if (errores::$error) {
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }
-
-        $del = (new base_test())->del_com_cliente($this->link);
-        if (errores::$error) {
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }
-
-        $del = (new base_test())->del_com_sucursal($this->link);
-        if (errores::$error) {
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }*/
 
         $registro = array();
         $id = 1;

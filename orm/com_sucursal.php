@@ -152,6 +152,7 @@ class com_sucursal extends modelo
      * @param string $com_cliente_rfc Rfc del cliente
      * @param array $data Datos previos cargados
      * @return string|array
+     * @version 17.3.0
      */
     final public function ds(string $com_cliente_razon_social, string $com_cliente_rfc, array $data): string|array
     {
@@ -160,10 +161,21 @@ class com_sucursal extends modelo
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar codigo', data: $valida);
         }
+        $com_cliente_rfc = trim($com_cliente_rfc);
+        if($com_cliente_rfc === ''){
+            return $this->error->error(mensaje: 'Error com_cliente_rfc esta vacio', data: $com_cliente_rfc);
+        }
+        $com_cliente_razon_social = trim($com_cliente_razon_social);
+        if($com_cliente_razon_social === ''){
+            return $this->error->error(mensaje: 'Error com_cliente_razon_social esta vacio',
+                data: $com_cliente_razon_social);
+        }
+
 
         $ds = $data['codigo'];
         $ds .= ' '.$com_cliente_rfc;
         $ds .= ' '.$com_cliente_razon_social;
+        $ds = trim($ds);
         return trim($ds);
     }
 

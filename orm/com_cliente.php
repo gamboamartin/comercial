@@ -155,14 +155,23 @@ class com_cliente extends _modelo_parent
         return $com_sucursal_descripcion;
     }
 
-    private function com_sucursal_upd(stdClass $com_cliente, int $com_cliente_id, string $com_sucursal_descripcion, array $sucursal): array
+    /**
+     * @param stdClass $com_cliente
+     * @param int $com_cliente_id
+     * @param string $com_sucursal_descripcion
+     * @param array $sucursal
+     * @return array
+     */
+    private function com_sucursal_upd(stdClass $com_cliente, int $com_cliente_id, string $com_sucursal_descripcion,
+                                      array $sucursal): array
     {
         $com_sucursal_upd['codigo'] = $sucursal['com_sucursal_codigo'];
         $com_sucursal_upd['descripcion'] = $com_sucursal_descripcion;
         $com_sucursal_upd['com_cliente_id'] = $com_cliente_id;
 
         if($sucursal['com_tipo_sucursal_descripcion'] === 'MATRIZ') {
-            $com_sucursal_upd = $this->com_sucursal_upd_dom(com_cliente: $com_cliente,com_sucursal_upd: $com_sucursal_upd);
+            $com_sucursal_upd = $this->com_sucursal_upd_dom(com_cliente: $com_cliente,
+                com_sucursal_upd: $com_sucursal_upd);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al maquetar sucursal', data: $com_sucursal_upd);
             }
@@ -170,6 +179,12 @@ class com_cliente extends _modelo_parent
         return $com_sucursal_upd;
     }
 
+    /**
+     * Valida que sean correctos los elementos de la direccion de un cliente
+     * @param stdClass $com_cliente Registro de tipo cliente
+     * @param array $com_sucursal_upd registro a actualizar de sucursal
+     * @return array
+     */
     private function com_sucursal_upd_dom(stdClass $com_cliente, array $com_sucursal_upd): array
     {
         $keys = array('dp_calle_pertenece_id','numero_exterior','telefono');
