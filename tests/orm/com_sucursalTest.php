@@ -167,5 +167,74 @@ class com_sucursalTest extends test {
 
     }
 
+    public function test_sucursales(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 1;
+        $_GET['session_id'] = '1';
+        $modelo = new com_sucursal($this->link);
+        //$modelo = new liberator($modelo);
+
+
+
+        /*$del = (new base_test())->del_cat_sat_moneda($this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new base_test())->del_cat_sat_metodo_pago($this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new base_test())->del_cat_sat_moneda($this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new base_test())->del_com_cliente($this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new base_test())->del_com_sucursal($this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+
+        $alta = (new base_test())->alta_com_sucursal($this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }*/
+
+        $com_cliente_id = 1;
+        $resultado = $modelo->sucursales($com_cliente_id);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(1, $resultado->registros[0]['com_sucursal_id']);
+        $this->assertEquals(1, $resultado->registros[0]['com_cliente_id']);
+
+
+
+        errores::$error = false;
+    }
+
 }
 

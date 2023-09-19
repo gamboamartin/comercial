@@ -136,9 +136,14 @@ class com_cliente extends _modelo_parent
         return $r_alta_bd;
     }
 
-
-
-    private function com_sucursal_descripcion(stdClass $com_cliente, array $sucursal){
+    /**
+     * Obtiene la descripcion de una sucursal
+     * @param stdClass $com_cliente Registro de tipo cliente
+     * @param array $sucursal Registro de tipo sucursal
+     * @return array|string
+     */
+    private function com_sucursal_descripcion(stdClass $com_cliente, array $sucursal): array|string
+    {
         $data = array();
         $data['codigo'] = $sucursal['com_sucursal_codigo'];
 

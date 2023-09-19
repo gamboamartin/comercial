@@ -343,6 +343,12 @@ class com_sucursal extends modelo
         return $r_modifica_bd;
     }
 
+    /**
+     * Obtiene las sucursales de un cliente
+     * @param int $com_cliente_id Cliente para obtencion de sucursales
+     * @return array|stdClass
+     * @version 17.12.0
+     */
     final public function sucursales(int $com_cliente_id): array|stdClass
     {
         if ($com_cliente_id <= 0) {
