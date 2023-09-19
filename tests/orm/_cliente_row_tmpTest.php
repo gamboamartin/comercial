@@ -140,6 +140,31 @@ class _cliente_row_tmpTest extends test {
         errores::$error = false;
     }
 
+    public function test_cp_tmp(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 1;
+        $_GET['session_id'] = '1';
+        $obj = new _cliente_row_tmp();
+        $obj = new liberator($obj);
+
+
+        $registro = array();
+        $link = $this->link;
+        $row_tmp = array();
+        $registro['dp_cp_id'] = 1;
+        $resultado = $obj->cp_tmp($link, $registro, $row_tmp);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(45010,$resultado['dp_cp']);
+
+        errores::$error = false;
+    }
+
     /**
      */
     public function test_integra_row_upd(): void

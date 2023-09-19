@@ -70,9 +70,10 @@ class _cliente_row_tmp{
     }
 
     /**
-     * @param int $dp_colonia_postal_id
-     * @param PDO $link
-     * @param array $row_tmp
+     * Asigna la colonia temporal
+     * @param int $dp_colonia_postal_id Colonia id
+     * @param PDO $link Conexion a la base de datos
+     * @param array $row_tmp Registro temporal de insersion
      * @return array
      */
     private function asigna_dp_colonia(int $dp_colonia_postal_id, PDO $link, array $row_tmp): array
@@ -198,6 +199,7 @@ class _cliente_row_tmp{
      * @param array $registro Registro en proceso
      * @param array $row_tmp Registro temporal
      * @return array
+     * @version 17.8.0
      */
     private function cp_tmp(PDO $link, array $registro, array $row_tmp): array
     {
