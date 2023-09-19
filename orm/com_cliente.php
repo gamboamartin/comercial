@@ -335,7 +335,14 @@ class com_cliente extends _modelo_parent
         return $r_upd;
     }
 
-    private function registro_cliente_upd(array $registro){
+    /**
+     * Ajusta los elementos para una modificacion
+     * @param array $registro Registro en proceso
+     * @return array
+     * @version 17.11.0
+     */
+    private function registro_cliente_upd(array $registro): array
+    {
         $registro = $this->init_base(data: $registro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al inicializar campo base', data: $registro);

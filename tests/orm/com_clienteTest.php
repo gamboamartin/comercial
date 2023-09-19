@@ -232,5 +232,28 @@ class com_clienteTest extends test {
         errores::$error = false;
     }
 
+    public function test_registro_cliente_upd(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 1;
+        $_GET['session_id'] = '1';
+        $obj = new com_cliente(link: $this->link);
+        $obj = new liberator($obj);
+
+
+        $registro = array();
+
+        $resultado = $obj->registro_cliente_upd($registro);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+
+        errores::$error = false;
+    }
+
 }
 

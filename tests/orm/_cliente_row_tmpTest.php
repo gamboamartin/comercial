@@ -241,8 +241,8 @@ class _cliente_row_tmpTest extends test {
 
         errores::$error = false;
 
-
     }
+
 
 
 
