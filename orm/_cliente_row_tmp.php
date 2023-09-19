@@ -14,7 +14,14 @@ class _cliente_row_tmp{
         $this->error = new errores();
     }
 
-    private function ajusta_colonia(PDO $link, array $registro, array $row_tmp){
+    /**
+     * @param PDO $link
+     * @param array $registro
+     * @param array $row_tmp
+     * @return array
+     */
+    private function ajusta_colonia(PDO $link, array $registro, array $row_tmp): array
+    {
         if (trim($registro['dp_colonia_postal_id']) !== '') {
             $row_tmp = $this->asigna_colonia_pred(dp_colonia_postal_id: $registro['dp_colonia_postal_id'], link: $link, row_tmp: $row_tmp);
             if (errores::$error) {
@@ -75,11 +82,17 @@ class _cliente_row_tmp{
      * @param PDO $link Conexion a la base de datos
      * @param array $row_tmp Registro temporal de insersion
      * @return array
+     * @version 17.20.0
      */
     private function asigna_dp_colonia(int $dp_colonia_postal_id, PDO $link, array $row_tmp): array
     {
+        if($dp_colonia_postal_id <= 0){
+            return $this->error->error(mensaje: 'Error dp_colonia_postal_id es menor a 0', data: $dp_colonia_postal_id);
+        }
+
         if (!isset($row_tmp['dp_colonia_postal']) || trim($row_tmp['dp_colonia_postal']) !== '') {
-            $row_tmp = $this->asigna_dp_colonia_tmp(dp_colonia_postal_id: $dp_colonia_postal_id, link: $link, row_tmp: $row_tmp);
+            $row_tmp = $this->asigna_dp_colonia_tmp(dp_colonia_postal_id: $dp_colonia_postal_id, link: $link,
+                row_tmp: $row_tmp);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al asignar cp', data: $row_tmp);
             }
@@ -88,15 +101,17 @@ class _cliente_row_tmp{
     }
 
     /**
-     * @param int $dp_colonia_postal_id
-     * @param PDO $link
-     * @param array $row_tmp
+     * Asigna la colonia predeterminada
+     * @param int $dp_colonia_postal_id id de colonia
+     * @param PDO $link Conexion a la base de datos
+     * @param array $row_tmp Registro temporal de insersion
      * @return array
      */
     private function asigna_colonia_pred(int $dp_colonia_postal_id, PDO $link, array $row_tmp): array
     {
         if ($dp_colonia_postal_id !== 105) {
-            $row_tmp = $this->asigna_dp_colonia(dp_colonia_postal_id: $dp_colonia_postal_id, link: $link, row_tmp: $row_tmp);
+            $row_tmp = $this->asigna_dp_colonia(dp_colonia_postal_id: $dp_colonia_postal_id, link: $link,
+                row_tmp: $row_tmp);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al asignar cp', data: $row_tmp);
             }

@@ -46,6 +46,30 @@ class _cliente_row_tmpTest extends test {
         errores::$error = false;
     }
 
+    public function test_asigna_dp_colonia(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 1;
+        $_GET['session_id'] = '1';
+        $obj = new _cliente_row_tmp();
+        $obj = new liberator($obj);
+
+
+        $dp_colonia_postal_id = 23;
+        $link = $this->link;
+        $row_tmp = array();
+        $resultado = $obj->asigna_dp_colonia($dp_colonia_postal_id, $link, $row_tmp);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("Residencial Revolución",$resultado['dp_colonia']);
+
+        errores::$error = false;
+    }
+
     public function test_asigna_dp_colonia_tmp(): void
     {
         errores::$error = false;
