@@ -87,7 +87,14 @@ class _cliente_row_tmp{
         return $row_tmp;
     }
 
-    private function asigna_colonia_pred(int $dp_colonia_postal_id, PDO $link, array $row_tmp){
+    /**
+     * @param int $dp_colonia_postal_id
+     * @param PDO $link
+     * @param array $row_tmp
+     * @return array
+     */
+    private function asigna_colonia_pred(int $dp_colonia_postal_id, PDO $link, array $row_tmp): array
+    {
         if ($dp_colonia_postal_id !== 105) {
             $row_tmp = $this->asigna_dp_colonia(dp_colonia_postal_id: $dp_colonia_postal_id, link: $link, row_tmp: $row_tmp);
             if (errores::$error) {
@@ -103,9 +110,13 @@ class _cliente_row_tmp{
      * @param PDO $link Conexion a la base de datos
      * @param array $row_tmp Registro temporal de asignacion
      * @return array
+     * @version 17.9.0
      */
     private function asigna_dp_colonia_tmp(int $dp_colonia_postal_id, PDO $link, array $row_tmp): array
     {
+        if($dp_colonia_postal_id <= 0){
+            return $this->error->error(mensaje: 'Error dp_colonia_postal_id es menor a 0', data: $dp_colonia_postal_id);
+        }
         $dp_colonia_postal = (new dp_colonia_postal(link: $link))->registro(registro_id: $dp_colonia_postal_id);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener dp_colonia_postal', data: $dp_colonia_postal);
