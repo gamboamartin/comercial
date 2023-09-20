@@ -350,6 +350,7 @@ class com_cliente extends _modelo_parent
      * @param bool $reactiva Si reactiva no valida transacciones restrictivas
      * @param array $keys_integra_ds Datos para selects
      * @return array|stdClass
+     * @version 17.19.0
      */
     public function modifica_bd(array $registro, int $id, bool $reactiva = false,
                                 array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
