@@ -410,9 +410,15 @@ class com_tmp_cte_dp extends _modelo_parent{
      * Actualiza los datos de un cliente
      * @param stdClass $tmp registro temporal
      * @return array|stdClass
+     * @version 17.20.0
      */
     private function upd_cliente(stdClass $tmp): array|stdClass
     {
+        $keys = array('dp_calle_pertenece_id','com_cliente_id');
+        $valida = $this->validacion->valida_ids(keys: $keys,registro:  $tmp);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al valida tmp',data:  $valida);
+        }
         $com_cliente_ins['dp_calle_pertenece_id'] = $tmp->dp_calle_pertenece_id;
         $r_com_cliente = (new com_cliente(link: $this->link))->modifica_bd(registro: $com_cliente_ins,
             id: $tmp->com_cliente_id);
