@@ -350,6 +350,14 @@ class com_sucursal extends modelo
         return $data;
     }
 
+    /**
+     * Modifica una sucursal
+     * @param array $registro Registro en proceso
+     * @param int $id Identificador de sucursal
+     * @param bool $reactiva Si reactiva no valida transacciones de etapa
+     * @return array|stdClass
+     * @version 17.18.0
+     */
     public function modifica_bd(array $registro, int $id, bool $reactiva = false): array|stdClass
     {
 

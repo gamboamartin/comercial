@@ -182,6 +182,16 @@ class com_cliente extends _modelo_parent
         if($com_cliente_id<=0){
             return $this->error->error(mensaje: 'Error com_cliente_id debe ser mayor a 0', data: $com_cliente_id);
         }
+
+        $keys = array('dp_calle_pertenece_id','numero_exterior','telefono');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $com_cliente);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar cliente', data: $valida);
+        }
+        if(!isset($com_cliente->numero_interior)){
+            $com_cliente->numero_interior = '';
+        }
+
         $com_sucursal_descripcion = trim($com_sucursal_descripcion);
         if($com_sucursal_descripcion === ''){
             return $this->error->error(mensaje: 'Error com_sucursal_descripcion esta vacia',
@@ -333,13 +343,32 @@ class com_cliente extends _modelo_parent
         return $registro;
     }
 
+    /**
+     * Modifica un registro de cliente
+     * @param array $registro  Datos a actualizar
+     * @param int $id Identificador
+     * @param bool $reactiva Si reactiva no valida transacciones restrictivas
+     * @param array $keys_integra_ds Datos para selects
+     * @return array|stdClass
+     */
     public function modifica_bd(array $registro, int $id, bool $reactiva = false,
                                 array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
     {
+        if($id<=0){
+            return $this->error->error(mensaje: 'Error id debe ser mayor a 0', data: $id);
+        }
+        $registro_previo = $this->registro(registro_id: $id, columnas_en_bruto: true, retorno_obj: true);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener registro previo', data: $registro_previo);
+        }
 
         $registro = $this->registro_cliente_upd(registro: $registro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al limpiar campos', data: $registro);
+        }
+
+        if(!isset($registro['descripcion'])){
+            $registro['descripcion'] = $registro_previo->descripcion;;
         }
 
         $r_modifica_bd = parent::modifica_bd(registro: $registro,id:  $id, reactiva: $reactiva,
@@ -368,13 +397,33 @@ class com_cliente extends _modelo_parent
             return $this->error->error(mensaje: 'Error al modificar sucursales', data: $r_com_sucursal);
         }
 
-
-
         return $r_modifica_bd;
     }
 
-    final public function modifica_dp_calle_pertenece(int $dp_calle_pertenece_id, int $id){
+    /**
+     * Modifica los datos de domicilio de un cliente
+     * @param int $dp_calle_pertenece_id Calle a modificar
+     * @param int $id Id de cliente
+     * @return array|stdClass
+     * @version 17.18.0
+     */
+    final public function modifica_dp_calle_pertenece(int $dp_calle_pertenece_id, int $id): array|stdClass
+    {
+        if($id <=0){
+            return $this->error->error(mensaje: 'Error id debe ser mayor a 0', data: $id);
+        }
+        if($dp_calle_pertenece_id <=0){
+            return $this->error->error(mensaje: 'Error dp_calle_pertenece_id debe ser mayor a 0',
+                data: $dp_calle_pertenece_id);
+        }
+
+        $registro_original = $this->registro(registro_id: $id, columnas_en_bruto: true, retorno_obj: true);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener cliente', data: $registro_original);
+        }
+
         $registro['dp_calle_pertenece_id'] = $dp_calle_pertenece_id;
+        $registro['descripcion'] = $registro_original->descripcion;
         $r_upd = parent::modifica_bd(registro: $registro,id:  $id);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al modificar domicilio', data: $r_upd);
@@ -418,17 +467,19 @@ class com_cliente extends _modelo_parent
      */
     private function row_com_sucursal_upd(stdClass $com_cliente, int $com_cliente_id, array $sucursal): array
     {
-        $valida = $this->valida_data_sucursal(com_cliente: $com_cliente,sucursal:  $sucursal);;
+        $valida = $this->valida_data_upd_sucursal(com_cliente: $com_cliente,com_cliente_id:  $com_cliente_id,
+            sucursal:  $sucursal);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al al validar datos', data: $valida);
         }
-        $keys = array('com_sucursal_codigo','com_tipo_sucursal_descripcion');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $sucursal);
+
+        $keys = array('dp_calle_pertenece_id','numero_exterior','telefono');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $com_cliente);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar sucursal', data: $valida);
+            return $this->error->error(mensaje: 'Error al validar cliente', data: $valida);
         }
-        if($com_cliente_id<=0){
-            return $this->error->error(mensaje: 'Error com_cliente_id debe ser mayor a 0', data: $com_cliente_id);
+        if(!isset($com_cliente->numero_interior)){
+            $com_cliente->numero_interior = '';
         }
 
         $com_sucursal_descripcion = $this->com_sucursal_descripcion(com_cliente: $com_cliente, sucursal: $sucursal);
@@ -447,10 +498,37 @@ class com_cliente extends _modelo_parent
     }
 
 
+    /**
+     * Actualiza los datos de las sucursales
+     * @param stdClass $com_cliente Registro de cliente
+     * @param int $com_cliente_id Identificador de cliente
+     * @param array $sucursal Sucursal a modificar
+     * @return array|stdClass
+     * @version 17.18.0
+     */
+    private function upd_sucursal(stdClass $com_cliente, int $com_cliente_id, array $sucursal): array|stdClass
+    {
+        $valida = $this->valida_data_upd_sucursal(com_cliente: $com_cliente,com_cliente_id:  $com_cliente_id,
+            sucursal:  $sucursal);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al al validar datos', data: $valida);
+        }
+        $keys = array('com_sucursal_id');
+        $valida = $this->validacion->valida_ids(keys: $keys,registro:  $sucursal);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error validar $sucursal', data: $valida);
+        }
+        $keys = array('dp_calle_pertenece_id','numero_exterior','telefono');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $com_cliente);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar cliente', data: $valida);
+        }
+        if(!isset($com_cliente->numero_interior)){
+            $com_cliente->numero_interior = '';
+        }
 
-
-    private function upd_sucursal(stdClass $com_cliente, int $com_cliente_id, array $sucursal){
-        $com_sucursal_upd = $this->row_com_sucursal_upd(com_cliente: $com_cliente,com_cliente_id:  $com_cliente_id,sucursal:  $sucursal);
+        $com_sucursal_upd = $this->row_com_sucursal_upd(com_cliente: $com_cliente,com_cliente_id:
+            $com_cliente_id,sucursal:  $sucursal);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al maquetar row', data: $com_sucursal_upd);
         }
@@ -463,7 +541,28 @@ class com_cliente extends _modelo_parent
         return $r_com_sucursal;
     }
 
-    private function upd_sucursales(stdClass $com_cliente, int $com_cliente_id){
+    /**
+     * Actualiza las sucursales de un cliente
+     * @param stdClass $com_cliente Registro de cliente
+     * @param int $com_cliente_id Identificador de cliente
+     * @return array
+     * @version 17.18.0
+     */
+    private function upd_sucursales(stdClass $com_cliente, int $com_cliente_id): array
+    {
+        if ($com_cliente_id <= 0) {
+            return $this->error->error(mensaje: 'Error $com_cliente_id debe ser mayor a 0', data: $com_cliente_id);
+        }
+        $keys = array('dp_calle_pertenece_id','numero_exterior','telefono');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $com_cliente);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar cliente', data: $valida);
+        }
+        if(!isset($com_cliente->numero_interior)){
+            $com_cliente->numero_interior = '';
+        }
+
+
         $r_com_sucursales = array();
         $r_sucursales = (new com_sucursal(link: $this->link))->sucursales(com_cliente_id: $com_cliente_id);
         if (errores::$error) {
@@ -472,7 +571,14 @@ class com_cliente extends _modelo_parent
 
         $sucursales = $r_sucursales->registros;
         foreach ($sucursales as $sucursal){
-            $r_com_sucursal = $this->upd_sucursal(com_cliente: $com_cliente,com_cliente_id:  $com_cliente_id,sucursal:  $sucursal);
+            $valida = $this->valida_data_upd_sucursal(com_cliente: $com_cliente,com_cliente_id:  $com_cliente_id,
+                sucursal:  $sucursal);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al al validar datos', data: $valida);
+            }
+
+            $r_com_sucursal = $this->upd_sucursal(com_cliente: $com_cliente,com_cliente_id:  $com_cliente_id,
+                sucursal:  $sucursal);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al modificar sucursales', data: $r_com_sucursal);
             }
@@ -499,6 +605,32 @@ class com_cliente extends _modelo_parent
         $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $com_cliente);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al al validar com_cliente', data: $valida);
+        }
+        return true;
+    }
+
+    /**
+     * Valida los elementos para transaccionar sobre una sucursal
+     * @param array|stdClass $com_cliente Registro de cliente
+     * @param int $com_cliente_id Identificador de cliente
+     * @param array|stdClass $sucursal Sucursal a afectar
+     * @return array|true
+     * @version 17.18.0
+     */
+    private function valida_data_upd_sucursal(array|stdClass $com_cliente, int $com_cliente_id,
+                                              array|stdClass $sucursal): bool|array
+    {
+        $valida = $this->valida_data_sucursal(com_cliente: $com_cliente,sucursal:  $sucursal);;
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al al validar datos', data: $valida);
+        }
+        $keys = array('com_sucursal_codigo','com_tipo_sucursal_descripcion');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $sucursal);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar sucursal', data: $valida);
+        }
+        if($com_cliente_id<=0){
+            return $this->error->error(mensaje: 'Error com_cliente_id debe ser mayor a 0', data: $com_cliente_id);
         }
         return true;
     }

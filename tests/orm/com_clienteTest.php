@@ -66,6 +66,9 @@ class com_clienteTest extends test {
         $modelo = new liberator($modelo);
 
         $com_cliente = new stdClass();
+        $com_cliente->dp_calle_pertenece_id= 1;
+        $com_cliente->numero_exterior= 1;
+        $com_cliente->telefono= 1;
         $com_cliente_id = 1;
         $com_sucursal_descripcion = 'r';
         $sucursal = array();
@@ -73,6 +76,7 @@ class com_clienteTest extends test {
         $sucursal['com_tipo_sucursal_descripcion'] = 'o';
 
         $resultado = $modelo->com_sucursal_upd($com_cliente, $com_cliente_id, $com_sucursal_descripcion, $sucursal);
+
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("R", $resultado['codigo']);
@@ -311,6 +315,77 @@ class com_clienteTest extends test {
         errores::$error = false;
     }
 
+    public function test_modifica_bd(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 2;
+        $_GET['session_id'] = '1';
+        $modelo = new com_cliente($this->link);
+        //$modelo = new liberator($modelo);
+
+        $del = (new base_test())->del_com_cliente(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al del',data:  $del);
+            print_r($error);
+            exit;
+        }
+        $del = (new base_test())->del_cat_sat_moneda(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al del',data:  $del);
+            print_r($error);
+            exit;
+        }
+        $del = (new base_test())->del_cat_sat_metodo_pago(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al del',data:  $del);
+            print_r($error);
+            exit;
+        }
+
+        $alta = (new base_test())->alta_com_cliente(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al insertar',data:  $alta);
+            print_r($error);
+            exit;
+        }
+
+        $registro = array();
+        $id = 1;
+        $resultado = $modelo->modifica_bd($registro, $id);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(1,$resultado->registro_actualizado->dp_calle_pertenece_id);
+
+        errores::$error = false;
+    }
+
+    public function test_modifica_dp_calle_pertenece(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 2;
+        $_GET['session_id'] = '1';
+        $modelo = new com_cliente($this->link);
+        //$modelo = new liberator($modelo);
+
+        $id = 1;
+        $dp_calle_pertenece_id = 1;
+        $resultado = $modelo->modifica_dp_calle_pertenece($dp_calle_pertenece_id, $id);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(1,$resultado->registro_actualizado->dp_calle_pertenece_id);
+
+        errores::$error = false;
+
+    }
+
     public function test_registro_cliente_upd(): void
     {
         errores::$error = false;
@@ -352,15 +427,84 @@ class com_clienteTest extends test {
         $sucursal['com_tipo_sucursal_descripcion'] = 'E';
         $com_cliente->razon_social = 'O';
         $com_cliente->rfc = 'T';
+        $com_cliente->dp_calle_pertenece_id = '1';
+        $com_cliente->numero_exterior = '1';
+        $com_cliente->telefono = '1';
 
 
         $resultado = $modelo->row_com_sucursal_upd($com_cliente, $com_cliente_id, $sucursal);
+
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('Q',$resultado['codigo']);
         $this->assertEquals('Q T O',$resultado['descripcion']);
         $this->assertEquals('1',$resultado['com_cliente_id']);
 
+        errores::$error = false;
+    }
+
+    public function test_upd_sucursal(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 2;
+        $_GET['session_id'] = '1';
+        $modelo = new com_cliente($this->link);
+        $modelo = new liberator($modelo);
+
+
+        $alta = (new base_test())->alta_com_sucursal(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al insertar',data:  $alta);
+            print_r($error);
+            exit;
+        }
+
+        $com_cliente = new stdClass();
+        $com_cliente_id = 1;
+        $sucursal = array();
+        $sucursal['com_sucursal_codigo'] = 'A';
+        $sucursal['com_tipo_sucursal_descripcion'] = 'D';
+        $sucursal['com_sucursal_id'] = '1';
+        $com_cliente->razon_social = 'B';
+        $com_cliente->rfc = 'C';
+        $com_cliente->dp_calle_pertenece_id = '1';
+        $com_cliente->numero_exterior = '1';
+        $com_cliente->telefono = '1';
+        $resultado = $modelo->upd_sucursal($com_cliente, $com_cliente_id, $sucursal);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('A C B', $resultado->registro_actualizado->com_sucursal_descripcion);
+        errores::$error = false;
+
+    }
+
+    public function test_upd_sucursales(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 2;
+        $_GET['session_id'] = '1';
+        $modelo = new com_cliente($this->link);
+        $modelo = new liberator($modelo);
+
+        $com_cliente = new stdClass();
+        $com_cliente->razon_social = 'A';
+        $com_cliente->rfc = 'A';
+        $com_cliente->dp_calle_pertenece_id = '1';
+        $com_cliente->numero_exterior = '1';
+        $com_cliente->telefono = '1';
+        $com_cliente_id = 1;
+        $resultado = $modelo->upd_sucursales($com_cliente, $com_cliente_id);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('A A A', $resultado[0]->registro_actualizado->com_sucursal_descripcion);
         errores::$error = false;
     }
 
@@ -388,6 +532,34 @@ class com_clienteTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertTrue($resultado);
         errores::$error = false;
+    }
+
+    public function test_valida_data_upd_sucursal(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 2;
+        $_GET['session_id'] = '1';
+        $modelo = new com_cliente($this->link);
+        $modelo = new liberator($modelo);
+
+        $com_cliente = new stdClass();
+        $com_cliente_id = 1;
+        $sucursal = array();
+        $sucursal['com_sucursal_codigo'] = 'A';
+        $sucursal['com_tipo_sucursal_descripcion'] = 'D';
+        $sucursal['com_sucursal_id'] = '1';
+        $com_cliente->razon_social = 'B';
+        $com_cliente->rfc = 'C';
+        $resultado = $modelo->valida_data_upd_sucursal($com_cliente, $com_cliente_id, $sucursal);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+
     }
 
 }
