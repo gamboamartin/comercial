@@ -26,7 +26,7 @@ class com_sucursal extends modelo
             'com_tipo_sucursal' => $tabla, 'com_tipo_cliente'=>'com_cliente');
 
         $campos_obligatorios = array('descripcion', 'codigo', 'descripcion_select', 'alias', 'codigo_bis',
-            'numero_exterior', 'com_cliente_id', 'dp_calle_pertenece_id');
+            'numero_exterior', 'com_cliente_id', 'dp_calle_pertenece_id','com_tipo_sucursal_id');
 
         $tipo_campos = array();
 
@@ -75,12 +75,22 @@ class com_sucursal extends modelo
         return $data;
     }
 
+    /**
+     * Inserta una sucursal
+     * @return array|stdClass
+     * @version 17.17.0
+     */
     public function alta_bd(): array|stdClass
     {
         $keys = array('com_cliente_id', 'dp_calle_pertenece_id');
         $valida = $this->validacion->valida_ids(keys: $keys, registro: $this->registro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
+        }
+
+        $valida = $this->valida_base_sucursal(registro: $this->registro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
 
         $this->registro = $this->init_base(data: $this->registro);
@@ -94,7 +104,8 @@ class com_sucursal extends modelo
             return $this->error->error(mensaje: 'Error al limpiar campos', data: $this->registro);
         }
 
-        $ins_pred = (new com_tipo_sucursal(link: $this->link))->inserta_predeterminado(codigo: 'MAT',descripcion: 'MATRIZ');
+        $ins_pred = (new com_tipo_sucursal(link: $this->link))->inserta_predeterminado(codigo: 'MAT',
+            descripcion: 'MATRIZ');
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al insertar predeterminado', data: $ins_pred);
         }
@@ -102,18 +113,30 @@ class com_sucursal extends modelo
 
         $r_alta_bd = parent::alta_bd();
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al insertar cliente', data: $r_alta_bd);
+            return $this->error->error(mensaje: 'Error al insertar sucursal', data: $r_alta_bd);
         }
         return $r_alta_bd;
     }
 
     /**
-     * @param string $com_cliente_rfc
-     * @param array $data
+     * Integra un codigo bis si no existe
+     * @param string $com_cliente_rfc RFC del cliente
+     * @param array $data Datos de sucursal
      * @return array
+     * @version 17.17.0
      */
     private function codigo_bis(string $com_cliente_rfc, array $data): array
     {
+        $keys = array('codigo');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $data);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar data',data:  $valida);
+        }
+        $com_cliente_rfc = trim($com_cliente_rfc);
+        if($com_cliente_rfc === ''){
+            return $this->error->error(mensaje: 'Error com_cliente_rfc esta vacio',data:  $com_cliente_rfc);
+        }
+
         if (!isset($data['codigo_bis'])) {
             $data['codigo_bis'] = $data['codigo'].$com_cliente_rfc;
         }
@@ -125,14 +148,16 @@ class com_sucursal extends modelo
      * @param string $com_cliente_razon_social Razon social del cliente
      * @param string $com_cliente_rfc Rfc del cliente
      * @param array $data Datos previos de carga
-     * @return array
+     * @return array|bool
+     * @version 17.17.0
      */
-    private function descripcion(string $com_cliente_razon_social, string $com_cliente_rfc, array $data): array
+    private function descripcion(string $com_cliente_razon_social, string $com_cliente_rfc, array $data): array|bool
     {
-        $keys = array('codigo');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $data);
+
+        $valida = $this->valida_data_descripciones(com_cliente_razon_social: $com_cliente_razon_social,
+            com_cliente_rfc: $com_cliente_rfc, data: $data);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al validar codigo', data: $valida);
+            return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
 
         if (!isset($data['descripcion'])) {
@@ -148,22 +173,31 @@ class com_sucursal extends modelo
     }
 
     /**
-     * @param string $com_cliente_razon_social
-     * @param string $com_cliente_rfc
-     * @param array $data
+     * Integra una descripcion select
+     * @param string $com_cliente_razon_social Razon social del cliente
+     * @param string $com_cliente_rfc Rfc del cliente
+     * @param array $data Datos de sucursal
      * @return array
+     * @version 17.17.0
      */
-    private function descripcion_select_sc(string $com_cliente_razon_social, string $com_cliente_rfc, array $data): array
+    private function descripcion_select_sc(string $com_cliente_razon_social, string $com_cliente_rfc,
+                                           array $data): array
     {
         $keys = array('codigo');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $data);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar codigo', data: $valida);
         }
+        $valida = $this->valida_data_descripciones(com_cliente_razon_social: $com_cliente_razon_social,
+            com_cliente_rfc: $com_cliente_rfc, data: $data);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
+        }
 
         if (!isset($data['descripcion_select'])) {
 
-            $ds = $this->ds(com_cliente_razon_social: $com_cliente_razon_social, com_cliente_rfc: $com_cliente_rfc, data: $data);
+            $ds = $this->ds(com_cliente_razon_social: $com_cliente_razon_social, com_cliente_rfc: $com_cliente_rfc,
+                data: $data);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al obtener descripcion', data: $ds);
             }
@@ -183,21 +217,11 @@ class com_sucursal extends modelo
      */
     final public function ds(string $com_cliente_razon_social, string $com_cliente_rfc, array $data): string|array
     {
-        $keys = array('codigo');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $data);
+        $valida = $this->valida_data_descripciones(com_cliente_razon_social: $com_cliente_razon_social,
+            com_cliente_rfc: $com_cliente_rfc, data: $data);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al validar codigo', data: $valida);
+            return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
-        $com_cliente_rfc = trim($com_cliente_rfc);
-        if($com_cliente_rfc === ''){
-            return $this->error->error(mensaje: 'Error com_cliente_rfc esta vacio', data: $com_cliente_rfc);
-        }
-        $com_cliente_razon_social = trim($com_cliente_razon_social);
-        if($com_cliente_razon_social === ''){
-            return $this->error->error(mensaje: 'Error com_cliente_razon_social esta vacio',
-                data: $com_cliente_razon_social);
-        }
-
 
         $ds = $data['codigo'];
         $ds .= ' '.$com_cliente_rfc;
@@ -206,21 +230,18 @@ class com_sucursal extends modelo
         return trim($ds);
     }
 
-
-
-    protected function init_base(array $data): array
+    /**
+     * Inicializa los datos para una transaccion de sucursal
+     * @param array $data Datos de sucursal
+     * @return array
+     * @version 17.17.0
+     */
+    private function init_base(array $data): array
     {
-        $keys[] = 'com_cliente_id';
 
-        $valida = $this->validacion->valida_ids(keys: $keys, registro: $data);
+        $valida = $this->valida_base_sucursal(registro: $data);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al validar $data', data: $valida);
-        }
-
-        $keys[] =  'codigo';
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $data);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al validar codigo', data: $valida);
+            return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
 
         $com_cliente =(new com_cliente(link: $this->link))->registro(registro_id: $data['com_cliente_id']);
@@ -243,7 +264,8 @@ class com_sucursal extends modelo
             return $this->error->error(mensaje: 'Error al asignar codigo_bis', data: $data);
         }
 
-        $data = $this->descripcion_select_sc(com_cliente_razon_social: $com_cliente_razon_social, com_cliente_rfc: $com_cliente_rfc,data:  $data);
+        $data = $this->descripcion_select_sc(com_cliente_razon_social: $com_cliente_razon_social,
+            com_cliente_rfc: $com_cliente_rfc,data:  $data);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar descripcion', data: $data);
         }
@@ -256,6 +278,13 @@ class com_sucursal extends modelo
         return $data;
     }
 
+    /**
+     * Limpia los campos de una sucursal
+     * @param array $registro registro a limpiar campos
+     * @param array $campos_limpiar Campos a limpiar
+     * @return array
+     * @version 17.17.0
+     */
     private function limpia_campos(array $registro, array $campos_limpiar): array
     {
         foreach ($campos_limpiar as $valor) {
@@ -340,17 +369,9 @@ class com_sucursal extends modelo
             $registro['codigo'] = $registro_previo['com_sucursal_codigo'];
         }
 
-        $keys[] = 'com_cliente_id';
-
-        $valida = $this->validacion->valida_ids(keys: $keys, registro: $registro);
+        $valida = $this->valida_base_sucursal(registro: $registro);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al validar $data', data: $valida);
-        }
-
-        $keys[] = 'codigo';
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $registro);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al validar codigo', data: $valida);
+            return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
         }
 
         $registro = $this->init_base(data: $registro);
@@ -408,5 +429,55 @@ class com_sucursal extends modelo
             return $this->error->error(mensaje: 'Error al obtener clientes',data:  $r_com_sucursal);
         }
         return $r_com_sucursal->registros;
+    }
+
+    /**
+     * Valida los elementos base para actualizar inicializa una sucursal
+     * @param array $registro Registro en proceso
+     * @return array|true
+     * @version 17.17.0
+     */
+    private function valida_base_sucursal(array $registro): bool|array
+    {
+        $keys[] = 'com_cliente_id';
+
+        $valida = $this->validacion->valida_ids(keys: $keys, registro: $registro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar $data', data: $valida);
+        }
+
+        $keys[] = 'codigo';
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $registro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar codigo', data: $valida);
+        }
+        return true;
+    }
+
+    /**
+     * Valida los elementos de una descripcion sean correctos
+     * @param string $com_cliente_razon_social Razon social del cliente
+     * @param string $com_cliente_rfc Rfc del cliente
+     * @param array $data Datos de sucursal
+     * @return array|true
+     * @version 17.17.0
+     */
+    private function valida_data_descripciones(string $com_cliente_razon_social, string $com_cliente_rfc, array $data): bool|array
+    {
+        $keys = array('codigo');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $data);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar codigo', data: $valida);
+        }
+        $com_cliente_rfc = trim($com_cliente_rfc);
+        if($com_cliente_rfc === ''){
+            return $this->error->error(mensaje: 'Error com_cliente_rfc esta vacio', data: $com_cliente_rfc);
+        }
+        $com_cliente_razon_social = trim($com_cliente_razon_social);
+        if($com_cliente_razon_social === ''){
+            return $this->error->error(mensaje: 'Error com_cliente_razon_social esta vacio',
+                data: $com_cliente_razon_social);
+        }
+        return true;
     }
 }

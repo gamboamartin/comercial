@@ -141,6 +141,7 @@ class com_cliente extends _modelo_parent
      * @param stdClass $com_cliente Registro de tipo cliente
      * @param array $sucursal Registro de tipo sucursal
      * @return array|string
+     * @version 17.16.0
      */
     private function com_sucursal_descripcion(stdClass $com_cliente, array $sucursal): array|string
     {
