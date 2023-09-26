@@ -167,7 +167,7 @@ class base_test{
                                      string $cat_sat_metodo_pago_codigo = 'PUE', int $cat_sat_metodo_pago_id = 2,
                                      int $cat_sat_moneda_id = 1, int $cat_sat_regimen_fiscal_id = 1,
                                      int $cat_sat_tipo_de_comprobante_id = 1, int $cat_sat_tipo_persona_id = 1,
-                                     int $cat_sat_uso_cfdi_id = 1, int $com_tipo_cliente_id = 1,
+                                     int $cat_sat_uso_cfdi_id = 1, string $codigo = '1', int $com_tipo_cliente_id = 1,
                                      int $dp_calle_pertenece_id = 1, int $id = 1): array|\stdClass
     {
 
@@ -291,7 +291,7 @@ class base_test{
         $registro['cat_sat_forma_pago_id'] = $cat_sat_forma_pago_id;
         $registro['cat_sat_tipo_persona_id'] = $cat_sat_tipo_persona_id;
         $registro['id'] = $id;
-        $registro['codigo'] = 1;
+        $registro['codigo'] = $codigo;
         $registro['descripcion'] = 'YADIRA MAGALY MONTAÑEZ FELIX';
         $registro['razon_social'] = 'YADIRA MAGALY MONTAÑEZ FELIX';
         $registro['rfc'] = 'MOFY900516NL1';
