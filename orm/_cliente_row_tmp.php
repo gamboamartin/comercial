@@ -106,9 +106,13 @@ class _cliente_row_tmp{
      * @param PDO $link Conexion a la base de datos
      * @param array $row_tmp Registro temporal de insersion
      * @return array
+     * @version 18.4.0
      */
-    private function asigna_colonia_pred(int $dp_colonia_postal_id, PDO $link, array $row_tmp): array
+    PUBLIC function asigna_colonia_pred(int $dp_colonia_postal_id, PDO $link, array $row_tmp): array
     {
+        if($dp_colonia_postal_id <= 0){
+            return $this->error->error(mensaje: 'Error dp_colonia_postal_id es menor a 0', data: $dp_colonia_postal_id);
+        }
         if ($dp_colonia_postal_id !== 105) {
             $row_tmp = $this->asigna_dp_colonia(dp_colonia_postal_id: $dp_colonia_postal_id, link: $link,
                 row_tmp: $row_tmp);

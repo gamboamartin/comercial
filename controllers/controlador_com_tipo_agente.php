@@ -9,6 +9,7 @@
 namespace gamboamartin\comercial\controllers;
 
 use base\controller\controler;
+use base\controller\init;
 use gamboamartin\comercial\models\com_tipo_agente;
 use gamboamartin\errores\errores;
 use gamboamartin\template\html;
@@ -102,13 +103,8 @@ class controlador_com_tipo_agente extends _base_sin_cod {
 
     protected function key_selects_txt(array $keys_selects): array
     {
-        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 4,key: 'codigo',
-            keys_selects:$keys_selects, place_holder: 'Cod');
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
-        }
 
-        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 8,key: 'descripcion',
+        $keys_selects = (new init())->key_select_txt(cols: 12,key: 'descripcion',
             keys_selects:$keys_selects, place_holder: 'Tipo Agente');
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
