@@ -37,15 +37,13 @@ class controlador_com_tipo_agente extends _base_sin_cod {
             die('Error');
         }
 
+        $this->controlador_com_agente= new controlador_com_agente(link:$this->link, paths_conf: $paths_conf);
+
         $this->childrens_data['com_agente']['title'] = 'Agentes';
+
+
     }
 
-    private function init_controladores(stdClass $paths_conf): controler
-    {
-        $this->controlador_com_cliente= new controlador_com_cliente(link:$this->link, paths_conf: $paths_conf);
-
-        return $this;
-    }
 
     public function init_datatable(): stdClass
     {
@@ -64,7 +62,7 @@ class controlador_com_tipo_agente extends _base_sin_cod {
 
     private function init_links(): array|string
     {
-        $this->obj_link->genera_links($this);
+        $this->obj_link->genera_links(controler: $this);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al generar links para tipo cliente',data:  $this->obj_link);
         }
@@ -86,7 +84,12 @@ class controlador_com_tipo_agente extends _base_sin_cod {
             return $this->errores->error(mensaje: 'Error al obtener template',data:  $r_template);
         }
 
-        $keys_selects = $this->controlador_com_agente->init_selects_inputs();
+        $row = new stdClass();
+
+        $row->com_tipo_agente_id = $this->registro_id;
+        $disableds[] = 'com_tipo_agente_id';
+
+        $keys_selects = $this->controlador_com_agente->init_selects_inputs(disableds: $disableds, row: $row);
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al inicializar selects',data:  $keys_selects);
         }
@@ -96,19 +99,15 @@ class controlador_com_tipo_agente extends _base_sin_cod {
             return $this->errores->error(mensaje: 'Error al obtener inputs',data:  $inputs);
         }
 
+
         $this->inputs = $inputs;
+
 
         return $this->inputs;
     }
 
     protected function key_selects_txt(array $keys_selects): array
     {
-
-        $keys_selects = (new init())->key_select_txt(cols: 12,key: 'descripcion',
-            keys_selects:$keys_selects, place_holder: 'Tipo Agente');
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
-        }
 
         return $keys_selects;
     }
