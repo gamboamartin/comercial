@@ -68,6 +68,16 @@ class com_agente extends _modelo_parent{
 
     }
 
+    final public function com_agentes_session(){
+        $filtro['adm_usuario.id'] = $_SESSION['usuario_id'];
+        $filtro['com_agente.status'] = 'activo';
+        $r_com_agentes = $this->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener com_agentes',data:  $r_com_agentes);
+        }
+        return $r_com_agentes->registros;
+    }
+
     public function prospectos(int $com_agente_id): array
     {
         if($com_agente_id <= 0){

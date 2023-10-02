@@ -459,7 +459,7 @@ class com_sucursal extends modelo
      * @return array|true
      * @version 17.17.0
      */
-    private function valida_base_sucursal(array $registro): bool|array
+    final public function valida_base_sucursal(array $registro): bool|array
     {
         $keys[] = 'com_cliente_id';
 

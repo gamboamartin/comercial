@@ -28,6 +28,43 @@ class com_clienteTest extends test {
         $this->paths_conf->views = '/var/www/html/organigrama/config/views.php';
     }
 
+    public function test_alta_bd(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 2;
+        $_GET['session_id'] = '1';
+
+        $alta = (new base_test())->del_com_cliente($this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+        $modelo = new com_cliente($this->link);
+        //$modelo = new liberator($modelo);
+
+        $modelo->registro['cat_sat_moneda_id'] = 1;
+        $modelo->registro['cat_sat_metodo_pago_id'] = 2;
+        $modelo->registro['cat_sat_forma_pago_id'] = 1;
+        $modelo->registro['telefono'] = 1;
+        $modelo->registro['numero_exterior'] = 1;
+        $modelo->registro['cat_sat_regimen_fiscal_id'] = 1;
+        $modelo->registro['cat_sat_tipo_persona_id'] = 1;
+        $modelo->registro['razon_social'] = 1;
+        $modelo->registro['rfc'] = 'AAA010101AAA';
+        $resultado = $modelo->alta_bd();
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(1, $resultado->registro['com_cliente_razon_social']);
+
+        errores::$error = false;
+
+    }
     public function test_com_sucursal_descripcion(): void
     {
         errores::$error = false;

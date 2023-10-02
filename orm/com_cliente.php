@@ -53,6 +53,7 @@ class com_cliente extends _modelo_parent
      * Inserta un cliente
      * @param array $keys_integra_ds  Campos para la integracion de descricpion select
      * @return array|stdClass
+     * @version 18.16.0
      */
     public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
     {
@@ -75,7 +76,7 @@ class com_cliente extends _modelo_parent
             return $this->error->error(mensaje: 'Error al inicializar foraneas', data: $this->registro);
         }
 
-        $keys = array('telefono','numero_exterior');
+        $keys = array('telefono','numero_exterior','razon_social');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $this->registro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
@@ -107,6 +108,11 @@ class com_cliente extends _modelo_parent
             return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
 
+        if(!isset($this->registro['descripcion'])){
+            $descripcion = trim($this->registro['razon_social'].' '.$this->registro['rfc']);
+            $this->registro['descripcion'] = $descripcion;
+        }
+
         $r_alta_bd = parent::alta_bd(keys_integra_ds: $keys_integra_ds);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al insertar cliente', data: $r_alta_bd);
@@ -119,6 +125,11 @@ class com_cliente extends _modelo_parent
             es_empleado: $es_empleado);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al maquetar datos de sucursal', data: $data);
+        }
+
+        $valida = (new com_sucursal(link: $this->link))->valida_base_sucursal(registro: $data);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar datos para sucursal', data: $valida);
         }
 
         $alta_sucursal = (new com_sucursal($this->link))->alta_registro(registro: $data);
