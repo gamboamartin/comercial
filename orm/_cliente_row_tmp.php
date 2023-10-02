@@ -224,10 +224,12 @@ class _cliente_row_tmp{
     }
 
     /**
-     * @param PDO $link
-     * @param array $registro
-     * @param array $row_tmp
+     * Ajusta la colonia para un temporal
+     * @param PDO $link Conexion a la base de datos
+     * @param array $registro Registro en proceso
+     * @param array $row_tmp Registro temporal
      * @return array
+     * @version 18.9.0
      */
     private function colonia_tmp(PDO $link, array $registro, array $row_tmp): array
     {

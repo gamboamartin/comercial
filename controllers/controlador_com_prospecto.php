@@ -8,6 +8,7 @@
  */
 namespace gamboamartin\comercial\controllers;
 
+use base\controller\init;
 use gamboamartin\comercial\models\com_prospecto;
 use gamboamartin\errores\errores;
 use gamboamartin\template\html;
@@ -27,6 +28,24 @@ class controlador_com_prospecto extends _base_sin_cod {
 
 
     }
+    protected function campos_view(array $inputs = array()): array
+    {
+        $keys = new stdClass();
+        $keys->inputs = array('codigo','descripcion','nombre','apellido_paterno','apellido_materno','telefono',
+            'correo','razon_social');
+        $keys->selects = array();
+
+        $init_data = array();
+        $init_data['com_tipo_prospecto'] = "gamboamartin\\comercial";
+        $init_data['com_agente'] = "gamboamartin\\comercial";
+        $campos_view = $this->campos_view_base(init_data: $init_data,keys:  $keys);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        }
+
+        return $campos_view;
+    }
+
 
 
     public function init_datatable(): stdClass
@@ -47,14 +66,45 @@ class controlador_com_prospecto extends _base_sin_cod {
 
     protected function key_selects_txt(array $keys_selects): array
     {
-        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 4,key: 'codigo',
+        $keys_selects = (new init())->key_select_txt(cols: 4,key: 'codigo',
             keys_selects:$keys_selects, place_holder: 'Cod');
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
 
-        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 8,key: 'descripcion',
+        $keys_selects = (new init())->key_select_txt(cols: 8,key: 'descripcion',
             keys_selects:$keys_selects, place_holder: 'Tipo Agente');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = (new init())->key_select_txt(cols: 6,key: 'nombre',
+            keys_selects:$keys_selects, place_holder: 'Nombre');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+        $keys_selects = (new init())->key_select_txt(cols: 6,key: 'apellido_paterno',
+            keys_selects:$keys_selects, place_holder: 'AP');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+        $keys_selects = (new init())->key_select_txt(cols: 6,key: 'apellido_materno',
+            keys_selects:$keys_selects, place_holder: 'AM');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+        $keys_selects = (new init())->key_select_txt(cols: 6,key: 'telefono',
+            keys_selects:$keys_selects, place_holder: 'Tel');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+        $keys_selects = (new init())->key_select_txt(cols: 6,key: 'correo',
+            keys_selects:$keys_selects, place_holder: 'Correo');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+        $keys_selects = (new init())->key_select_txt(cols: 6,key: 'razon_social',
+            keys_selects:$keys_selects, place_holder: 'Razon Social');
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
