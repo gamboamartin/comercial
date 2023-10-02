@@ -317,6 +317,7 @@ class _cliente_row_tmp{
 
 
     /**
+     * Integra lso elementos de un temporal de direcciones
      * @param PDO $link
      * @param array $registro
      * @param array $row_tmp
