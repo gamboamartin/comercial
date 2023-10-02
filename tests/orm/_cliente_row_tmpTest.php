@@ -318,6 +318,30 @@ class _cliente_row_tmpTest extends test {
 
     }
 
+    public function test_row_tmp(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 1;
+        $_GET['session_id'] = '1';
+        $obj = new _cliente_row_tmp();
+        //$obj = new liberator($obj);
+
+
+        $link = $this->link;
+        $registro = array();
+        $registro['dp_estado'] = 'a';
+        $resultado = $obj->row_tmp($link, $registro);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("a", $resultado->row_tmp['dp_estado']);
+
+        errores::$error = false;
+    }
+
     public function test_tmp_dom(): void
     {
         errores::$error = false;

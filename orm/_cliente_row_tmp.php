@@ -266,6 +266,7 @@ class _cliente_row_tmp{
      * @param PDO $link Conexion a la base de datos
      * @param array $registro Registro en proceso
      * @return array|stdClass
+     * @version 18.13.0
      */
     final public function row_tmp(PDO $link, array $registro): array|stdClass
     {

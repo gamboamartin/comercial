@@ -313,6 +313,7 @@ class com_sucursal extends modelo
     }
 
     /**
+     * Maqueta un registro de tipo sucursal
      * @param string $codigo
      * @param string $nombre_contacto
      * @param int $com_cliente_id
@@ -328,7 +329,8 @@ class com_sucursal extends modelo
                                  bool $es_empleado = false): array
     {
 
-        $com_tipo_sucursal= (new com_tipo_sucursal($this->link))->inserta_predeterminado(codigo: 'MAT',descripcion: 'MATRIZ');
+        $com_tipo_sucursal= (new com_tipo_sucursal($this->link))->inserta_predeterminado(codigo: 'MAT',
+            descripcion: 'MATRIZ');
         if (errores::$error) {
             return $this->error->error(mensaje: "Error al obtener el id predeterminado", data: $com_tipo_sucursal);
         }

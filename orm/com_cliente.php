@@ -105,7 +105,7 @@ class com_cliente extends _modelo_parent
             return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
 
-        $r_alta_bd = parent::alta_bd($keys_integra_ds);
+        $r_alta_bd = parent::alta_bd(keys_integra_ds: $keys_integra_ds);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al insertar cliente', data: $r_alta_bd);
         }

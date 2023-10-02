@@ -62,11 +62,12 @@ class controlador_com_agente extends _base_sin_cod {
     protected function campos_view(array $inputs = array()): array
     {
         $keys = new stdClass();
-        $keys->inputs = array('nombre','apellido_paterno','apellido_materno');
+        $keys->inputs = array('nombre','apellido_paterno','apellido_materno','user','password','email','telefono');
         $keys->selects = array();
 
         $init_data = array();
         $init_data['com_tipo_agente'] = "gamboamartin\\comercial";
+        $init_data['adm_grupo'] = "gamboamartin\\administrador";
 
         $campos_view = $this->campos_view_base(init_data: $init_data, keys: $keys);
         if (errores::$error) {
@@ -182,6 +183,30 @@ class controlador_com_agente extends _base_sin_cod {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
 
+        $keys_selects = (new init())->key_select_txt(cols: 6,key: 'user',
+            keys_selects:$keys_selects, place_holder: 'User');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = (new init())->key_select_txt(cols: 6,key: 'password',
+            keys_selects:$keys_selects, place_holder: 'Pass');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = (new init())->key_select_txt(cols: 6,key: 'email',
+            keys_selects:$keys_selects, place_holder: 'Email');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        $keys_selects = (new init())->key_select_txt(cols: 6,key: 'telefono',
+            keys_selects:$keys_selects, place_holder: 'Tel');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
         return $keys_selects;
     }
 
@@ -226,6 +251,15 @@ class controlador_com_agente extends _base_sin_cod {
             }
             $row->com_tipo_agente_id = $id_selected;
         }
+
+        if(!isset($row->adm_grupo_id)){
+            $id_selected = $modelo_preferido->id_preferido_detalle(entidad_preferida: 'adm_usuario');
+            if (errores::$error) {
+                return $this->errores->error(mensaje: 'Error al maquetar id_selected', data: $id_selected);
+            }
+            $row->adm_grupo_id = $id_selected;
+        }
+
         $disabled = false;
         if(in_array('com_tipo_agente_id',$disableds)){
             $disabled = true;
@@ -233,6 +267,12 @@ class controlador_com_agente extends _base_sin_cod {
 
         $keys_selects = $this->init_selects(key: "com_tipo_agente_id", keys_selects: array(), label: "Tipo de Agente",
             cols: 12, disabled: $disabled, id_selected: $row->com_tipo_agente_id);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+
+        $keys_selects = $this->init_selects(key: "adm_grupo_id", keys_selects: $keys_selects, label: "Grupo de Permisos",
+            cols: 12, disabled: $disabled, id_selected: $row->adm_grupo_id);
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
         }
