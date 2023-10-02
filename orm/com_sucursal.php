@@ -312,7 +312,18 @@ class com_sucursal extends modelo
 
     }
 
-    public function maqueta_data(string $codigo, string $nombre_contacto, int $com_cliente_id, string $telefono,
+    /**
+     * @param string $codigo
+     * @param string $nombre_contacto
+     * @param int $com_cliente_id
+     * @param string $telefono
+     * @param int $dp_calle_pertenece_id
+     * @param string $numero_exterior
+     * @param string $numero_interior
+     * @param bool $es_empleado
+     * @return array
+     */
+    final public function maqueta_data(string $codigo, string $nombre_contacto, int $com_cliente_id, string $telefono,
                                  int    $dp_calle_pertenece_id, string $numero_exterior, string $numero_interior,
                                  bool $es_empleado = false): array
     {

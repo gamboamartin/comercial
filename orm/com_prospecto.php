@@ -6,8 +6,9 @@ use PDO;
 class com_prospecto extends _modelo_parent{
     public function __construct(PDO $link, array $childrens = array()){
         $tabla = 'com_prospecto';
-        $columnas = array($tabla=>false);
-        $campos_obligatorios = array();
+        $columnas = array($tabla=>false,'com_tipo_prospecto'=>$tabla,'com_agente'=>$tabla,
+            'com_tipo_agente'=>'com_agente');
+        $campos_obligatorios = array('com_tipo_prospecto_id','com_agente_id');
 
         $columnas_extra = array();
 

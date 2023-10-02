@@ -20,10 +20,18 @@ class _cliente_row_tmp{
      * @param array $registro Registro en proceso
      * @param array $row_tmp Registro temporal
      * @return array
+     * @version 18.8.0
      */
     private function ajusta_colonia(PDO $link, array $registro, array $row_tmp): array
     {
+        if(!isset($registro['dp_colonia_postal_id'])){
+            $registro['dp_colonia_postal_id'] = '';
+        }
         if (trim($registro['dp_colonia_postal_id']) !== '') {
+            if($registro['dp_colonia_postal_id'] <= 0){
+                return $this->error->error(mensaje: 'Error $registro[dp_colonia_postal_id] debe ser mayor a 0',
+                    data: $registro);
+            }
             $row_tmp = $this->asigna_colonia_pred(dp_colonia_postal_id: $registro['dp_colonia_postal_id'],
                 link: $link, row_tmp: $row_tmp);
             if (errores::$error) {
@@ -110,7 +118,7 @@ class _cliente_row_tmp{
      * @return array
      * @version 18.4.0
      */
-    PUBLIC function asigna_colonia_pred(int $dp_colonia_postal_id, PDO $link, array $row_tmp): array
+    private function asigna_colonia_pred(int $dp_colonia_postal_id, PDO $link, array $row_tmp): array
     {
         if($dp_colonia_postal_id <= 0){
             return $this->error->error(mensaje: 'Error dp_colonia_postal_id es menor a 0', data: $dp_colonia_postal_id);
@@ -215,7 +223,14 @@ class _cliente_row_tmp{
         return $data;
     }
 
-    private function colonia_tmp(PDO $link, array $registro, array $row_tmp){
+    /**
+     * @param PDO $link
+     * @param array $registro
+     * @param array $row_tmp
+     * @return array
+     */
+    private function colonia_tmp(PDO $link, array $registro, array $row_tmp): array
+    {
         if (isset($registro['dp_colonia_postal_id'])) {
             $row_tmp = $this->ajusta_colonia(link: $link, registro: $registro, row_tmp: $row_tmp);
             if (errores::$error) {
@@ -244,7 +259,13 @@ class _cliente_row_tmp{
         return $row_tmp;
     }
 
-    final public function row_tmp(PDO $link, array $registro){
+    /**
+     * @param PDO $link
+     * @param array $registro
+     * @return array|stdClass
+     */
+    final public function row_tmp(PDO $link, array $registro): array|stdClass
+    {
         $data_row = $this->asigna_row_tmp(registro: $registro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al asignar row', data: $data_row);
@@ -293,7 +314,14 @@ class _cliente_row_tmp{
     }
 
 
-    private function tmp_dom(PDO $link, array $registro, array $row_tmp){
+    /**
+     * @param PDO $link
+     * @param array $registro
+     * @param array $row_tmp
+     * @return array
+     */
+    private function tmp_dom(PDO $link, array $registro, array $row_tmp): array
+    {
         $row_tmp = $this->cp_tmp(link: $link, registro: $registro, row_tmp: $row_tmp);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al asignar cp', data: $row_tmp);
