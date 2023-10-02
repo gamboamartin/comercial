@@ -262,8 +262,9 @@ class _cliente_row_tmp{
     }
 
     /**
-     * @param PDO $link
-     * @param array $registro
+     * Genera un registro temporal de domicilio
+     * @param PDO $link Conexion a la base de datos
+     * @param array $registro Registro en proceso
      * @return array|stdClass
      */
     final public function row_tmp(PDO $link, array $registro): array|stdClass
@@ -322,6 +323,7 @@ class _cliente_row_tmp{
      * @param array $registro Registro en proceso
      * @param array $row_tmp Registro temporal de direcciones
      * @return array
+     * @version 18.12.0
      */
     private function tmp_dom(PDO $link, array $registro, array $row_tmp): array
     {
