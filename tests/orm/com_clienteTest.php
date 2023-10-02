@@ -258,6 +258,48 @@ class com_clienteTest extends test {
 
     }
 
+    public function test_elimina_bd(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 2;
+        $_GET['session_id'] = '1';
+        $modelo = new com_cliente($this->link);
+        //$modelo = new liberator($modelo);
+        $del = (new base_test())->del_com_cliente($this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al del', $del);
+            print_r($error);
+            exit;
+        }
+
+        $id = 1;
+        $resultado = $modelo->elimina_bd($id);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals("Error al eliminar", $resultado['mensaje_limpio']);
+
+        errores::$error = false;
+
+        $alta = (new base_test())->alta_com_cliente($this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al alta', $alta);
+            print_r($error);
+            exit;
+        }
+        $id = 1;
+        $resultado = $modelo->elimina_bd($id);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("DELETE FROM com_cliente WHERE id = 1", $resultado->sql);
+
+
+        errores::$error = false;
+    }
+
     public function test_inicializa_foraneas(): void
     {
         errores::$error = false;
