@@ -314,15 +314,16 @@ class com_sucursal extends modelo
 
     /**
      * Maqueta un registro de tipo sucursal
-     * @param string $codigo
-     * @param string $nombre_contacto
-     * @param int $com_cliente_id
-     * @param string $telefono
-     * @param int $dp_calle_pertenece_id
-     * @param string $numero_exterior
-     * @param string $numero_interior
-     * @param bool $es_empleado
+     * @param string $codigo Codigo de cliente
+     * @param string $nombre_contacto Nombre de contacto
+     * @param int $com_cliente_id Id de cliente
+     * @param string $telefono Telefono de cliente
+     * @param int $dp_calle_pertenece_id calle
+     * @param string $numero_exterior ext
+     * @param string $numero_interior int
+     * @param bool $es_empleado si es empleado da de alta empleado
      * @return array
+     * @version 18.14.0
      */
     final public function maqueta_data(string $codigo, string $nombre_contacto, int $com_cliente_id, string $telefono,
                                  int    $dp_calle_pertenece_id, string $numero_exterior, string $numero_interior,

@@ -301,6 +301,33 @@ class com_sucursalTest extends test {
 
     }
 
+    public function test_maqueta_data(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 1;
+        $_GET['session_id'] = '1';
+        $modelo = new com_sucursal($this->link);
+        //$modelo = new liberator($modelo);
+
+        $codigo = '';
+        $nombre_contacto = '';
+        $com_cliente_id = -1;
+        $telefono = '';
+        $dp_calle_pertenece_id = -1;
+        $numero_exterior = '';
+        $numero_interior = '';
+        $resultado = $modelo->maqueta_data($codigo, $nombre_contacto, $com_cliente_id, $telefono,
+            $dp_calle_pertenece_id, $numero_exterior, $numero_interior);
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_modifica_bd(): void
     {
         errores::$error = false;
