@@ -49,9 +49,14 @@ class com_cliente extends _modelo_parent
         $this->etiqueta = 'Cliente';
     }
 
+    /**
+     * Inserta un cliente
+     * @param array $keys_integra_ds  Campos para la integracion de descricpion select
+     * @return array|stdClass
+     */
     public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
     {
-        
+
         $data_tmp =  (new _cliente_row_tmp())->row_tmp(link: $this->link,registro:  $this->registro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al asignar tmp', data: $data_tmp);
