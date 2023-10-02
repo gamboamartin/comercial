@@ -15,15 +15,17 @@ class _cliente_row_tmp{
     }
 
     /**
-     * @param PDO $link
-     * @param array $registro
-     * @param array $row_tmp
+     * Ajusta los datos de una colonia
+     * @param PDO $link Conexion a la base de datos
+     * @param array $registro Registro en proceso
+     * @param array $row_tmp Registro temporal
      * @return array
      */
     private function ajusta_colonia(PDO $link, array $registro, array $row_tmp): array
     {
         if (trim($registro['dp_colonia_postal_id']) !== '') {
-            $row_tmp = $this->asigna_colonia_pred(dp_colonia_postal_id: $registro['dp_colonia_postal_id'], link: $link, row_tmp: $row_tmp);
+            $row_tmp = $this->asigna_colonia_pred(dp_colonia_postal_id: $registro['dp_colonia_postal_id'],
+                link: $link, row_tmp: $row_tmp);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al asignar cp', data: $row_tmp);
             }
