@@ -318,9 +318,9 @@ class _cliente_row_tmp{
 
     /**
      * Integra lso elementos de un temporal de direcciones
-     * @param PDO $link
-     * @param array $registro
-     * @param array $row_tmp
+     * @param PDO $link Conexion a la base de datos
+     * @param array $registro Registro en proceso
+     * @param array $row_tmp Registro temporal de direcciones
      * @return array
      */
     private function tmp_dom(PDO $link, array $registro, array $row_tmp): array

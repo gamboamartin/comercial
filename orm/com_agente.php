@@ -8,15 +8,20 @@ use stdClass;
 class com_agente extends _modelo_parent{
     public function __construct(PDO $link, array $childrens = array()){
         $tabla = 'com_agente';
-        $columnas = array($tabla=>false,'com_tipo_agente'=>$tabla);
-        $campos_obligatorios = array();
+        $columnas = array($tabla=>false,'com_tipo_agente'=>$tabla,'adm_usuario'=>$tabla);
+        $campos_obligatorios = array('adm_usuario_id','com_tipo_agente_id');
         $childrens['com_prospecto'] ="gamboamartin\comercial\models";
 
         $columnas_extra['com_agente_n_prospectos'] =
             "(SELECT COUNT(*) FROM com_prospecto WHERE com_prospecto.com_agente_id = com_agente.id)";
 
+        $atributos_criticos[] = 'adm_usuario_id';
+        $atributos_criticos[] = 'com_tipo_agente_id';
+
+
         parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios,
-            columnas: $columnas, columnas_extra: $columnas_extra, childrens: $childrens);
+            columnas: $columnas, columnas_extra: $columnas_extra, childrens: $childrens,
+            atributos_criticos: $atributos_criticos);
 
         $this->NAMESPACE = __NAMESPACE__;
 
