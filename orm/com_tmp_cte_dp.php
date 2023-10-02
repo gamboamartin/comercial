@@ -25,10 +25,14 @@ class com_tmp_cte_dp extends _modelo_parent{
         $columnas_extra = array();
 
         $campos_view['com_cliente_id'] = array('type' => 'selects', 'model' => new com_cliente($link));
-        $campos_view['dp_pais_id'] = array('type' => 'selects', 'model' => new dp_pais($link));
-        $campos_view['dp_estado_id'] = array('type' => 'selects', 'model' => new dp_estado($link));
-        $campos_view['dp_municipio_id'] = array('type' => 'selects', 'model' => new dp_municipio($link));
-        $campos_view['dp_cp_id'] = array('type' => 'selects', 'model' => new dp_cp($link));
+
+        $campos_view = (new _campos_view_dp())->campos_view(campos_view: $campos_view,link:  $link);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al integrar campos view',data:  $campos_view);
+            print_r($error);
+            exit;
+        }
+
         $campos_view['dp_colonia_id'] = array('type' => 'selects', 'model' => new dp_colonia($link));
         $campos_view['dp_calle_id'] = array('type' => 'selects', 'model' => new dp_calle($link));
         $campos_view['dp_colonia_postal_id'] = array('type' => 'selects', 'model' => new dp_colonia_postal($link));

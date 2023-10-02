@@ -5,11 +5,6 @@ namespace gamboamartin\comercial\models;
 use base\orm\modelo;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\direccion_postal\models\dp_colonia_postal;
-use gamboamartin\direccion_postal\models\dp_pais;
-use gamboamartin\direccion_postal\models\dp_cp;
-use gamboamartin\direccion_postal\models\dp_municipio;
-use gamboamartin\direccion_postal\models\dp_estado;
-
 use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
@@ -30,10 +25,14 @@ class com_sucursal extends modelo
 
         $tipo_campos = array();
 
-        $campos_view['dp_pais_id'] = array('type' => 'selects', 'model' => new dp_pais($link));
-        $campos_view['dp_estado_id'] = array('type' => 'selects', 'model' => new dp_estado($link));
-        $campos_view['dp_municipio_id'] = array('type' => 'selects', 'model' => new dp_municipio($link));
-        $campos_view['dp_cp_id'] = array('type' => 'selects', 'model' => new dp_cp($link));
+
+        $campos_view = (new _campos_view_dp())->campos_view(campos_view: array(),link:  $link);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al integrar campos view',data:  $campos_view);
+            print_r($error);
+            exit;
+        }
+
         $campos_view['dp_colonia_postal_id'] = array('type' => 'selects', 'model' => new dp_colonia_postal($link));
         $campos_view['dp_calle_pertenece_id'] = array('type' => 'selects', 'model' => new dp_calle_pertenece($link));
         $campos_view['com_cliente_id'] = array('type' => 'selects', 'model' => new com_cliente($link));
@@ -295,22 +294,7 @@ class com_sucursal extends modelo
         return $registro;
     }
 
-    /*
-     * REVISAR
-     */
 
-    public function em_empleado_by_sucursal(int $com_sucursal_id): array
-    {
-
-        $filtro['com_sucursal.id'] = $com_sucursal_id;
-        $r_tg_em_empleado_sucursal = (new nom_rel_empleado_sucursal($this->link))->filtro_and(filtro: $filtro);
-        if (errores::$error) {
-
-            return $this->error->error(mensaje: 'Error al limpiar datos', data: $r_tg_em_empleado_sucursal);
-        }
-        return $r_tg_em_empleado_sucursal->registros;
-
-    }
 
     /**
      * Maqueta un registro de tipo sucursal
@@ -444,7 +428,13 @@ class com_sucursal extends modelo
         return $r_com_sucursal;
     }
 
-    final public function sucursales_by_tipo_cliente(int $com_tipo_cliente_id){
+    /**
+     * Obtiene las sucursales en base al tipo de cliente
+     * @param int $com_tipo_cliente_id Tipo de cliente
+     * @return array
+     */
+    final public function sucursales_by_tipo_cliente(int $com_tipo_cliente_id): array
+    {
         $filtro['com_tipo_cliente.id'] = $com_tipo_cliente_id;
         $r_com_sucursal = $this->filtro_and(filtro: $filtro);
         if(errores::$error){
