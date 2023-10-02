@@ -432,9 +432,14 @@ class com_sucursal extends modelo
      * Obtiene las sucursales en base al tipo de cliente
      * @param int $com_tipo_cliente_id Tipo de cliente
      * @return array
+     * @version 18.19.0
      */
     final public function sucursales_by_tipo_cliente(int $com_tipo_cliente_id): array
     {
+        if($com_tipo_cliente_id <= 0){
+            return $this->error->error(mensaje: 'Error com_tipo_cliente_id debe ser mayor a 0',
+                data:  $com_tipo_cliente_id);
+        }
         $filtro['com_tipo_cliente.id'] = $com_tipo_cliente_id;
         $r_com_sucursal = $this->filtro_and(filtro: $filtro);
         if(errores::$error){

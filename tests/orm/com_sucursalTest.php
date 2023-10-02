@@ -405,6 +405,25 @@ class com_sucursalTest extends test {
         errores::$error = false;
     }
 
+    public function test_sucursales_by_tipo_cliente(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 1;
+        $_GET['session_id'] = '1';
+        $modelo = new com_sucursal($this->link);
+        //$modelo = new liberator($modelo);
+
+        $com_tipo_cliente_id = 1;
+        $resultado = $modelo->sucursales_by_tipo_cliente($com_tipo_cliente_id);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_valida_base_sucursal(): void
     {
         errores::$error = false;
