@@ -18,6 +18,7 @@ use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\comercial\models\com_tipo_cambio;
 use gamboamartin\comercial\models\com_tipo_cliente;
 use gamboamartin\comercial\models\com_tipo_producto;
+use gamboamartin\comercial\models\com_tipo_prospecto;
 use gamboamartin\comercial\models\com_tipo_sucursal;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\errores\errores;
@@ -506,6 +507,23 @@ class base_test{
         return $alta;
     }
 
+    public function alta_com_tipo_prospecto(PDO $link, string $descripcion = 'TIPO 1', int $id = 1): array|\stdClass
+    {
+
+        $registro = array();
+        $registro['id'] = $id;
+       // $registro['codigo'] = 1;
+        $registro['descripcion'] = $descripcion;
+
+
+        $alta = (new com_tipo_prospecto($link))->alta_registro($registro);
+        if(errores::$error){
+            return (new errores())->error('Error al dar de alta ', $alta);
+
+        }
+        return $alta;
+    }
+
     public function alta_com_tipo_sucursal(PDO $link, int $id = 1): array|\stdClass
     {
 
@@ -739,6 +757,16 @@ class base_test{
         $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_tipo_producto');
         if(errores::$error){
             return (new errores())->error('Error al eliminar tipo producto', $del);
+        }
+        return $del;
+    }
+
+    public function del_com_tipo_prospecto(PDO $link): array
+    {
+
+        $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_tipo_prospecto');
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
         }
         return $del;
     }
