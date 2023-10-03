@@ -35,7 +35,7 @@ class controlador_com_tipo_tel extends _base_sin_cod {
         $datatables = new stdClass();
         $datatables->columns = array();
         $datatables->columns['com_tipo_tel_id']['titulo'] = 'Id';
-        $datatables->columns['com_tipo_tel_descripcion']['titulo'] = 'Tipo Agente';
+        $datatables->columns['com_tipo_tel_descripcion']['titulo'] = 'Tipo Telefono';
 
         $datatables->filtro = array();
         $datatables->filtro[] = 'com_tipo_tel.id';
