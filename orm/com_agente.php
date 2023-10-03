@@ -68,7 +68,12 @@ class com_agente extends _modelo_parent{
 
     }
 
-    final public function com_agentes_session(){
+    /**
+     * Obtiene los agentes en la session iniciada
+     * @return array
+     */
+    final public function com_agentes_session(): array
+    {
         $filtro['adm_usuario.id'] = $_SESSION['usuario_id'];
         $filtro['com_agente.status'] = 'activo';
         $r_com_agentes = $this->filtro_and(filtro: $filtro);
