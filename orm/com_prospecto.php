@@ -14,8 +14,12 @@ class com_prospecto extends _modelo_parent{
 
         $columnas_extra = array();
 
+        $atributos_criticos = array('nombre','apellido_paterno','apellido_materno','telefono','correo','razon_social',
+            'com_tipo_prospecto_id','com_agente_id');
+
         parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios,
-            columnas: $columnas, columnas_extra: $columnas_extra, childrens: $childrens);
+            columnas: $columnas, columnas_extra: $columnas_extra, childrens: $childrens,
+            atributos_criticos: $atributos_criticos);
 
         $this->NAMESPACE = __NAMESPACE__;
 
