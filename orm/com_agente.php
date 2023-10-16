@@ -33,6 +33,11 @@ class com_agente extends _modelo_parent{
 
     public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
     {
+        $keys = array('nombre','apellido_paterno','user','password','email','telefono','adm_grupo_id');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $this->registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al valida registro',data:  $valida);
+        }
         if(!isset($this->registro['descripcion'])){
             $descripcion = $this->registro['nombre'];
             $descripcion .= ' '.$this->registro['apellido_paterno'];
@@ -43,18 +48,29 @@ class com_agente extends _modelo_parent{
             $this->registro['descripcion'] = trim($descripcion);
         }
 
-        $adm_usuario_ins['user'] = $this->registro['user'];
-        $adm_usuario_ins['password'] = $this->registro['password'];
-        $adm_usuario_ins['email'] = $this->registro['email'];
-        $adm_usuario_ins['telefono'] = $this->registro['telefono'];
-        $adm_usuario_ins['adm_grupo_id'] = $this->registro['adm_grupo_id'];
-        $adm_usuario_ins['nombre'] = $this->registro['nombre'];
-        $adm_usuario_ins['ap'] = $this->registro['apellido_paterno'];
-        $adm_usuario_ins['am'] = $this->registro['apellido_materno'];
 
-        $r_adm_usuario = (new adm_usuario(link: $this->link))->alta_registro(registro: $adm_usuario_ins);
+        $filtro['adm_usuario.user'] = $this->registro['user'];
+        $r_adm_usuario_fil = (new adm_usuario(link: $this->link))->filtro_and(filtro: $filtro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al insertar usuario',data:  $r_adm_usuario);
+            return $this->error->error(mensaje: 'Error al obtener usuario',data:  $r_adm_usuario_fil);
+        }
+        if($r_adm_usuario_fil->n_registros === 0){
+            $adm_usuario_ins['user'] = $this->registro['user'];
+            $adm_usuario_ins['password'] = $this->registro['password'];
+            $adm_usuario_ins['email'] = $this->registro['email'];
+            $adm_usuario_ins['telefono'] = $this->registro['telefono'];
+            $adm_usuario_ins['adm_grupo_id'] = $this->registro['adm_grupo_id'];
+            $adm_usuario_ins['nombre'] = $this->registro['nombre'];
+            $adm_usuario_ins['ap'] = $this->registro['apellido_paterno'];
+            $adm_usuario_ins['am'] = $this->registro['apellido_materno'];
+            $r_adm_usuario = (new adm_usuario(link: $this->link))->alta_registro(registro: $adm_usuario_ins);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al insertar usuario',data:  $r_adm_usuario);
+            }
+        }
+        else{
+            $r_adm_usuario = new stdClass();
+            $r_adm_usuario->registro_id = $r_adm_usuario_fil->registros[0]['adm_usuario_id'];
         }
 
         $this->registro['adm_usuario_id'] = $r_adm_usuario->registro_id;

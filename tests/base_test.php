@@ -12,9 +12,11 @@ use gamboamartin\cat_sat\models\cat_sat_tipo_de_comprobante;
 use gamboamartin\cat_sat\models\cat_sat_tipo_persona;
 use gamboamartin\cat_sat\models\cat_sat_unidad;
 use gamboamartin\cat_sat\models\cat_sat_uso_cfdi;
+use gamboamartin\comercial\models\com_agente;
 use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\comercial\models\com_producto;
 use gamboamartin\comercial\models\com_sucursal;
+use gamboamartin\comercial\models\com_tipo_agente;
 use gamboamartin\comercial\models\com_tipo_cambio;
 use gamboamartin\comercial\models\com_tipo_cliente;
 use gamboamartin\comercial\models\com_tipo_producto;
@@ -161,6 +163,43 @@ class base_test{
             return (new errores())->error('Error al insertar', $alta);
         }
 
+        return $alta;
+    }
+
+    public function alta_com_agente(PDO $link, int $adm_grupo_id = 2, string $apellido_paterno = 'AP1',
+                                    int $com_tipo_agente_id = 1, string $email = 'a@a.com', int $id = 1,
+                                    string $nombre = 'NOMBRE 1', string $password = 'PASS1',
+                                    string $telefono = '1234567890', string $user = 'USER 1'): array|\stdClass
+    {
+
+        $existe = (new com_tipo_agente($link))->existe_by_id(registro_id: $com_tipo_agente_id);
+        if(errores::$error){
+            return (new errores())->error('Error al verificar si existe', $existe);
+        }
+
+        if(!$existe) {
+            $alta = (new base_test())->alta_com_tipo_agente($link);
+            if(errores::$error){
+                return (new errores())->error('Error al insertar', $alta);
+            }
+        }
+
+
+        $registro['id'] = $id;
+        $registro['nombre'] = $nombre;
+        $registro['apellido_paterno'] = $apellido_paterno;
+        $registro['user'] = $user;
+        $registro['password'] = $password;
+        $registro['email'] = $email;
+        $registro['telefono'] = $telefono;
+        $registro['adm_grupo_id'] = $adm_grupo_id;
+        $registro['com_tipo_agente_id'] = $com_tipo_agente_id;
+
+        $alta = (new com_agente($link))->alta_registro($registro);
+        if(errores::$error){
+            return (new errores())->error('Error al dar de alta ', $alta);
+
+        }
         return $alta;
     }
 
@@ -452,6 +491,23 @@ class base_test{
         return $alta;
     }
 
+    public function alta_com_tipo_agente(PDO $link, string $descripcion = 'TIPO AGENTE 1', int $id = 1): array|\stdClass
+    {
+
+
+
+        $registro['id'] = $id;
+        $registro['descripcion'] = $descripcion;
+
+
+        $alta = (new com_tipo_agente($link))->alta_registro($registro);
+        if(errores::$error){
+            return (new errores())->error('Error al dar de alta ', $alta);
+
+        }
+        return $alta;
+    }
+
     public function alta_com_tipo_cambio(PDO $link, int $cat_sat_moneda_id = 1, string $codigo = '1', string $fecha = '2020-01-01',
                                          int $id = 1): array|\stdClass
     {
@@ -639,6 +695,19 @@ class base_test{
         return $del;
     }
 
+    public function del_com_agente(PDO $link): array
+    {
+        $del = $this->del_com_tels_agente($link);
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
+        }
+
+        $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_agente');
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
+        }
+        return $del;
+    }
     public function del_com_cliente(PDO $link): array
     {
 
@@ -730,6 +799,16 @@ class base_test{
     {
 
         $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_sucursal');
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
+        }
+        return $del;
+    }
+
+    public function del_com_tels_agente(PDO $link): array
+    {
+
+        $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_tels_agente');
         if(errores::$error){
             return (new errores())->error('Error al eliminar', $del);
         }
