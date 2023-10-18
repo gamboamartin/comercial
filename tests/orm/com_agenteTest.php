@@ -60,6 +60,39 @@ class com_agenteTest extends test {
 
     }
 
+    public function test_com_agentes_session(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 1;
+        $_GET['session_id'] = '1';
+        $modelo = new com_agente($this->link);
+        //$modelo = new liberator($modelo);
+
+        $del = (new base_test())->del_com_agente(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje:'Error al eliminar', data: $del);
+            print_r($error);exit;
+        }
+
+
+        $alta = (new base_test())->alta_com_agente(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje:'Error al alta', data: $alta);
+            print_r($error);exit;
+        }
+
+        $resultado = $modelo->com_agentes_session();
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty( $resultado);
+
+        errores::$error = false;
+    }
+
 
 }
 

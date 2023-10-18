@@ -87,6 +87,7 @@ class com_agente extends _modelo_parent{
     /**
      * Obtiene los agentes en la session iniciada
      * @return array
+     * @version 18.30.0
      */
     final public function com_agentes_session(): array
     {
