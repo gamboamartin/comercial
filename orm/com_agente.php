@@ -52,6 +52,11 @@ class com_agente extends _modelo_parent{
         return $r_adm_usuario;
     }
 
+    /**
+     * Maqueta un array para insertar un usuario
+     * @param array $registro Registro en proceso de agente
+     * @return array
+     */
     private function adm_usuario_ins(array $registro): array
     {
         $adm_usuario_ins['user'] = $registro['user'];
