@@ -31,7 +31,13 @@ class com_agente extends _modelo_parent{
 
     }
 
-    private function adm_usuario(array $registro){
+    /**
+     * Inserta u obtiene un usuario
+     * @param array $registro Registro en proceso
+     * @return array|stdClass
+     */
+    private function adm_usuario(array $registro): array|stdClass
+    {
         $filtro['adm_usuario.user'] = $registro['user'];
         $r_adm_usuario_fil = (new adm_usuario(link: $this->link))->filtro_and(filtro: $filtro);
         if(errores::$error){
