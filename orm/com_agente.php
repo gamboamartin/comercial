@@ -131,7 +131,39 @@ class com_agente extends _modelo_parent{
         return $descripcion;
     }
 
-    private function inserta_adm_usuario(array $registro){
+    /**
+     * Insertar un usuario
+     * @param array $registro Registro en proceso
+     * @return array|stdClass
+     * @version 18.34.0
+     */
+    private function inserta_adm_usuario(array $registro): array|stdClass
+    {
+        $keys = array('user','password','email','telefono','adm_grupo_id','nombre','apellido_paterno');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al valida ',data:  $valida);
+        }
+
+        $keys = array('email');
+        $valida = $this->validacion->valida_correos(keys: $keys,registro:  $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro',data:  $valida);
+        }
+
+        $keys = array('telefono');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al valida ',data:  $valida);
+        }
+
+        $keys = array('adm_grupo_id');
+        $valida = $this->validacion->valida_ids(keys: $keys, registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al valida ',data:  $valida);
+        }
+
+
         $adm_usuario_ins = $this->adm_usuario_ins(registro: $registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al ajustar adm_usuario_ins',data:  $adm_usuario_ins);
@@ -141,7 +173,7 @@ class com_agente extends _modelo_parent{
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al insertar usuario',data:  $r_adm_usuario);
         }
-        return $adm_usuario_ins;
+        return $r_adm_usuario;
     }
 
     private function integra_descripcion(array $registro){

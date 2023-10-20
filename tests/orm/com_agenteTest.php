@@ -123,6 +123,37 @@ class com_agenteTest extends test {
         errores::$error = false;
     }
 
+    public function test_inserta_adm_usuario(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 1;
+        $_GET['session_id'] = '1';
+        $modelo = new com_agente($this->link);
+        $modelo = new liberator($modelo);
+
+
+
+        $registro = array();
+        $registro['user'] = mt_rand(1,99999999);
+        $registro['password'] = 'A';
+        $registro['email'] = 'a@test.com';
+        $registro['telefono'] = '1234567890';
+        $registro['adm_grupo_id'] = '2';
+        $registro['nombre'] = 'A';
+        $registro['apellido_paterno'] = 'A';
+        $resultado = $modelo->inserta_adm_usuario($registro);
+        //print_r($resultado);exit;
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('A', $resultado->registro['adm_usuario_password']);
+
+        errores::$error = false;
+    }
+
 
 }
 
