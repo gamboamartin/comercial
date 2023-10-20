@@ -56,17 +56,26 @@ class com_agente extends _modelo_parent{
      * Maqueta un array para insertar un usuario
      * @param array $registro Registro en proceso de agente
      * @return array
+     * @version 18.33.0
      */
     private function adm_usuario_ins(array $registro): array
     {
-        $adm_usuario_ins['user'] = $registro['user'];
-        $adm_usuario_ins['password'] = $registro['password'];
-        $adm_usuario_ins['email'] = $registro['email'];
-        $adm_usuario_ins['telefono'] = $registro['telefono'];
-        $adm_usuario_ins['adm_grupo_id'] = $registro['adm_grupo_id'];
-        $adm_usuario_ins['nombre'] = $registro['nombre'];
-        $adm_usuario_ins['ap'] = $registro['apellido_paterno'];
-        $adm_usuario_ins['am'] = $registro['apellido_materno'];
+        $keys = array('user','password','email','telefono','adm_grupo_id','nombre','apellido_paterno');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al valida ',data:  $valida);
+        }
+        if(!isset($registro['apellido_materno'])){
+            $registro['apellido_materno'] = '';
+        }
+        $adm_usuario_ins['user'] = trim($registro['user']);
+        $adm_usuario_ins['password'] = trim($registro['password']);;
+        $adm_usuario_ins['email'] = trim($registro['email']);
+        $adm_usuario_ins['telefono'] = trim($registro['telefono']);
+        $adm_usuario_ins['adm_grupo_id'] = trim($registro['adm_grupo_id']);
+        $adm_usuario_ins['nombre'] = trim($registro['nombre']);
+        $adm_usuario_ins['ap'] = trim($registro['apellido_paterno']);
+        $adm_usuario_ins['am'] = trim($registro['apellido_materno']);
 
         return $adm_usuario_ins;
     }
