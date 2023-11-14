@@ -299,4 +299,27 @@ class controlador_com_agente extends _base_sin_cod {
         return $r_modifica;
 
     }
+
+    final public function regenera_descripcion_select(bool $header, bool $ws = false){
+        $this->link->beginTransaction();
+        $com_agentes = (new com_agente(link: $this->link))->registros(return_obj: true);
+        if (errores::$error) {
+            $this->link->rollBack();
+            return $this->retorno_error(mensaje: 'Error al obtener agentes', data: $com_agentes, header: $header, ws: $ws);
+        }
+
+        foreach ($com_agentes as $com_agente){
+            $regenera = (new com_agente(link: $this->link))->regenera_descripcion_select(com_agente_id: $com_agente->com_agente_id);
+            if (errores::$error) {
+                $this->link->rollBack();
+                return $this->retorno_error(mensaje: 'Error al regenerar agentes', data: $regenera, header: $header, ws: $ws);
+            }
+            print_r($regenera);
+            echo "<br>";
+        }
+        $this->link->commit();
+        exit;
+
+
+    }
 }

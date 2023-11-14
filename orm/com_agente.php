@@ -130,17 +130,23 @@ class com_agente extends _modelo_parent{
     /**
      * Maqueta la descripcion de un agente
      * @param array $registro Registro en proceso
-     * @return string
+     * @return string|array
+     * @version 18.41.0
      */
-    private function descripcion(array $registro): string
+    private function descripcion(array $registro): string|array
     {
-        $descripcion = $registro['nombre'];
-        $descripcion .= ' '.$registro['apellido_paterno'];
+        $keys = array('nombre','apellido_paterno');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro',data:  $valida);
+        }
+        $descripcion = trim($registro['nombre']);
+        $descripcion .= ' '.trim($registro['apellido_paterno']);
         if(!isset($registro['apellido_materno'])){
             $registro['apellido_materno'] = '';
         }
-        $descripcion .= ' '.$registro['apellido_materno'];
-        return $descripcion;
+        $descripcion .= ' '.trim($registro['apellido_materno']);
+        return trim($descripcion);
     }
 
     /**

@@ -123,6 +123,30 @@ class com_agenteTest extends test {
         errores::$error = false;
     }
 
+    public function test_descripcion(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 1;
+        $_GET['session_id'] = '1';
+        $modelo = new com_agente($this->link);
+        $modelo = new liberator($modelo);
+
+        $registro = array();
+        $registro['nombre'] = 'A';
+        $registro['apellido_paterno'] = 'B';
+        $registro['apellido_materno'] = '  C  ';
+        $resultado = $modelo->descripcion($registro);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("A B C", $resultado);
+
+        errores::$error = false;
+    }
+
     public function test_inserta_adm_usuario(): void
     {
         errores::$error = false;
@@ -153,6 +177,8 @@ class com_agenteTest extends test {
 
         errores::$error = false;
     }
+
+
 
 
 }
