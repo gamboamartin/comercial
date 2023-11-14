@@ -194,7 +194,12 @@ class com_agente extends _modelo_parent{
         return $r_adm_usuario;
     }
 
-    private function integra_descripcion(array $registro){
+    /**
+     * @param array $registro
+     * @return array
+     */
+    private function integra_descripcion(array $registro): array
+    {
         if(!isset($registro['descripcion'])){
 
             $descripcion = $this->descripcion(registro: $registro);
@@ -253,7 +258,7 @@ class com_agente extends _modelo_parent{
         return $data->registros;
     }
 
-    final public function regenera_descripcion_select(int $com_agente_id): array
+    final public function regenera_descripcion_select(int $com_agente_id): array|stdClass
     {
         if($com_agente_id <= 0){
             return $this->error->error(mensaje: 'Error com_agente_id debe ser mayor a 0',data:  $com_agente_id);
