@@ -128,6 +128,7 @@ class com_agente extends _modelo_parent{
     }
 
     /**
+     * Maqueta la descripcion de un agente
      * @param array $registro
      * @return string
      */
@@ -233,4 +234,27 @@ class com_agente extends _modelo_parent{
         }
         return $data->registros;
     }
+
+    final public function regenera_descripcion_select(int $com_agente_id): array
+    {
+        if($com_agente_id <= 0){
+            return $this->error->error(mensaje: 'Error com_agente_id debe ser mayor a 0',data:  $com_agente_id);
+        }
+
+        $com_agente = $this->registro(registro_id: $com_agente_id, columnas_en_bruto: true,retorno_obj: true);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener com_agente',data:  $com_agente);
+        }
+
+        $descripcion_select = trim($com_agente->nombre.' '.$com_agente->apellido_paterno);
+        $upd['descripcion_select'] = $descripcion_select;
+
+        $result_upd = parent::modifica_bd(registro: $upd, id: $com_agente_id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al modificar com_agente',data:  $result_upd);
+        }
+
+        return $result_upd;
+    }
+
 }
