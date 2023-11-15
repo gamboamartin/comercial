@@ -441,9 +441,13 @@ class controlador_com_producto extends _base_comercial {
             return $this->retorno_error(mensaje: 'Error al actualizar',data:  $tmp_transaccion, header: $header,ws:  $ws);
         }
 
-
-        $cat_sat_producto = (new com_producto_html(html: $this->html_base))->input_text_required(cols: 6,disabled: true,
-            name: 'codigo_sat',place_holder:  'Codigo SAT',row_upd:  $this->row_upd,value_vacio: false);
+        $disabled = true;
+        if($this->row_upd->cat_sat_producto !== $this->registro['cat_sat_producto_codigo']){
+            $disabled = false;
+        }
+        $cat_sat_producto = (new com_producto_html(html: $this->html_base))->input_text_required(cols: 6,
+            disabled: $disabled, name: 'codigo_sat',place_holder:  'Codigo SAT',row_upd:  $this->row_upd,
+            value_vacio: false);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al generar input',data:  $cat_sat_producto, header: $header,ws:  $ws);
         }
