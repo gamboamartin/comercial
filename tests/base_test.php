@@ -747,6 +747,16 @@ class base_test{
         return $del;
     }
 
+    public function del_com_prospecto(PDO $link): array
+    {
+
+        $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_prospecto');
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
+        }
+        return $del;
+    }
+
     public function del_com_email_cte(PDO $link): array
     {
 
