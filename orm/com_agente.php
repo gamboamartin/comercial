@@ -35,26 +35,33 @@ class com_agente extends _modelo_parent{
      * Inserta u obtiene un usuario
      * @param array $registro Registro en proceso
      * @return array|stdClass
+     * @version 18.46.0
      */
     private function adm_usuario(array $registro): array|stdClass
     {
+
+        $keys = array('user','password','email','telefono','adm_grupo_id','nombre','apellido_paterno');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al valida ',data:  $valida);
+        }
+
         $filtro['adm_usuario.user'] = $registro['user'];
         $r_adm_usuario_fil = (new adm_usuario(link: $this->link))->filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener usuario',data:  $r_adm_usuario_fil);
         }
         if($r_adm_usuario_fil->n_registros === 0){
-
-            $r_adm_usuario = $this->inserta_adm_usuario(registro: $this->registro);
+            $r_adm_usuario = $this->inserta_adm_usuario(registro: $registro);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al ajustar adm_usuario_ins',data:  $r_adm_usuario);
             }
-
         }
         else{
             $r_adm_usuario = new stdClass();
             $r_adm_usuario->registro_id = $r_adm_usuario_fil->registros[0]['adm_usuario_id'];
         }
+
         return $r_adm_usuario;
     }
 
@@ -195,6 +202,7 @@ class com_agente extends _modelo_parent{
     }
 
     /**
+     * Integra una descripcion de usuario
      * @param array $registro
      * @return array
      */
@@ -228,6 +236,12 @@ class com_agente extends _modelo_parent{
         $registro = $this->integra_descripcion(registro: $registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar descripcion',data:  $registro);
+        }
+
+        $codigo = $registro['nombre'][0].$registro['apellido_paterno'][0].mt_rand(100,999);
+
+        if(!isset($registro['codigo']) || trim($registro['codigo']) === ''){
+            $registro['codigo'] = $codigo;
         }
 
         $r_adm_usuario = $this->adm_usuario(registro: $this->registro);

@@ -23,6 +23,47 @@ class com_agenteTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_adm_usuario(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 1;
+        $_GET['session_id'] = '1';
+        $modelo = new com_agente($this->link);
+        $modelo = new liberator($modelo);
+
+        /*
+        $del = (new base_test())->del_com_agente(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje:'Error al eliminar', data: $del);
+            print_r($error);exit;
+        }
+
+
+        $alta = (new base_test())->alta_com_agente(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje:'Error al alta', data: $alta);
+            print_r($error);exit;
+        }*/
+
+        $registro = array();
+        $registro['user'] = 'TEST';
+        $registro['password'] = 'TEST';
+        $registro['email'] = 'a@a.com';
+        $registro['telefono'] = '1234567890';
+        $registro['adm_grupo_id'] = '2';
+        $registro['nombre'] = 'TEST';
+        $registro['apellido_paterno'] = 'TEST';
+        $resultado = $modelo->adm_usuario($registro);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsNumeric( $resultado->registro_id);
+        errores::$error = false;
+    }
+
     /**
      */
     public function test_activa_bd(): void
