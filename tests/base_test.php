@@ -702,6 +702,11 @@ class base_test{
             return (new errores())->error('Error al eliminar', $del);
         }
 
+        $del = $this->del_com_rel_agente($link);
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
+        }
+
         $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_agente');
         if(errores::$error){
             return (new errores())->error('Error al eliminar', $del);
@@ -749,6 +754,10 @@ class base_test{
 
     public function del_com_prospecto(PDO $link): array
     {
+        $del = $this->del_com_rel_agente($link);
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
+        }
 
         $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_prospecto');
         if(errores::$error){
@@ -788,6 +797,16 @@ class base_test{
     {
 
         $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_conf_precio');
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
+        }
+        return $del;
+    }
+
+    public function del_com_rel_agente(PDO $link): array
+    {
+
+        $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_rel_agente');
         if(errores::$error){
             return (new errores())->error('Error al eliminar', $del);
         }
@@ -852,6 +871,11 @@ class base_test{
 
     public function del_com_tipo_prospecto(PDO $link): array
     {
+
+        $del = $this->del_com_prospecto($link);
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
+        }
 
         $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_tipo_prospecto');
         if(errores::$error){
