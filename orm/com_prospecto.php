@@ -52,11 +52,8 @@ class com_prospecto extends _modelo_parent{
             return $this->error->error(mensaje: 'Error al insertar',data:  $r_alta_bd);
         }
 
-        $com_prospecto_id = $r_alta_bd->registro_id;
-
-        $com_rel_agente_ins['com_prospecto_id'] = trim((int)$com_prospecto_id);
-        $com_rel_agente_ins['com_agente_id'] = trim((int)$r_alta_bd->registro_puro->com_agente_id);
-        $alta_com_rel_agente = (new com_rel_agente(link: $this->link))->alta_registro(registro: $com_rel_agente_ins);
+        $alta_com_rel_agente = $this->inserta_com_rel_agente(com_agente_id:$r_alta_bd->registro_puro->com_agente_id,
+            com_prospecto_id:$r_alta_bd->registro_id);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al insertar alta_com_rel_agente',data:  $alta_com_rel_agente);
         }
@@ -64,6 +61,24 @@ class com_prospecto extends _modelo_parent{
         return $r_alta_bd;
     }
 
+    private function com_rel_agente_ins(int $com_agente_id, int $com_prospecto_id): array
+    {
+        $com_rel_agente_ins['com_prospecto_id'] = $com_prospecto_id;
+        $com_rel_agente_ins['com_agente_id'] = $com_agente_id;
+        return $com_rel_agente_ins;
+    }
+
+    /**
+     * Returns a formatted description string based on the provided registration array.
+     *
+     * @param array $registro An array containing the registration information.
+     *                       The array should have the following keys: 'nombre', 'apellido_paterno', 'apellido_materno'.
+     *
+     * @return string The formatted description string consisting of the concatenation of 'nombre',
+     * 'apellido_paterno' and 'apellido_materno'.
+     *
+     *
+     */
     private function descripcion(array $registro): string
     {
         $descripcion = $registro['nombre'].' ';
@@ -86,4 +101,48 @@ class com_prospecto extends _modelo_parent{
         }
         return $r_del_bd;
     }
+
+    private function inserta_com_rel_agente(int $com_agente_id, int $com_prospecto_id)
+    {
+        $com_rel_agente_ins = $this->com_rel_agente_ins(com_agente_id: $com_agente_id,
+            com_prospecto_id:  $com_prospecto_id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al maquetar com_rel_agente',data:  $com_rel_agente_ins);
+        }
+
+        $alta_com_rel_agente = (new com_rel_agente(link: $this->link))->alta_registro(registro: $com_rel_agente_ins);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al insertar alta_com_rel_agente',data:  $alta_com_rel_agente);
+        }
+        return $alta_com_rel_agente;
+
+    }
+
+    final public function regenera_agente_inicial(int $com_prospecto_id)
+    {
+        $com_prospecto = $this->registro(registro_id: $com_prospecto_id,columnas_en_bruto: true, retorno_obj: true);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener com_prospecto',data:  $com_prospecto);
+        }
+        $com_agente_id = $com_prospecto->com_agente_id;
+
+        $filtro['com_agente.id'] = $com_agente_id;
+        $filtro['com_prospecto.id'] = $com_prospecto_id;
+        $existe = (new com_rel_agente(link: $this->link))->existe(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si existe relacion',data:  $existe);
+        }
+        $alta_com_rel_agente = false;
+        if(!$existe){
+            $alta_com_rel_agente = $this->inserta_com_rel_agente(com_agente_id: $com_agente_id,
+                com_prospecto_id:  $com_prospecto_id);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al insertar relacion',data:  $alta_com_rel_agente);
+            }
+        }
+        return $alta_com_rel_agente;
+
+    }
+
+
 }
