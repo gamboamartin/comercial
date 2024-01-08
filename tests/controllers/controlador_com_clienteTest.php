@@ -104,6 +104,7 @@ class controlador_com_clienteTest extends test {
         errores::$error = false;
 
 
+
     }
 
 

@@ -292,7 +292,6 @@ class controlador_com_cliente extends _ctl_base
     /**
      * Inicializa las configuraciones base del controler
      * @return controler
-     * @version 4.32.3
      */
     private function init_configuraciones(): controler
     {
@@ -306,7 +305,6 @@ class controlador_com_cliente extends _ctl_base
      * Inicializa los controladores a utilizar
      * @param stdClass $paths_conf Archivos de rutas de configuracion
      * @return controler
-     * @version 10.3.0
      */
     private function init_controladores(stdClass $paths_conf): controler
     {
@@ -412,9 +410,14 @@ class controlador_com_cliente extends _ctl_base
     }
 
     /**
-     * Inicializa los elementos de lista
-     * @return stdClass
-     * @version 4.28.3
+     * Este método se utiliza para inicializar un objeto de tipo stdClass que contiene las configuraciones
+     * especificas para un objeto DataTable.
+     *
+     * @return stdClass Este método retorna un objeto de tipo stdClass con las siguientes propiedades:
+     * - columns: Es un array que contiene las columnas del DataTable.
+     * - filtro: Es un array que contiene los campos que se utilizarán como filtros en el DataTable.
+     * @version 20.2.0
+     * @por_documentar_wiki
      */
     protected function init_datatable(): stdClass
     {
