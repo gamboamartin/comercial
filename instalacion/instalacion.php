@@ -1,6 +1,5 @@
 <?php
 namespace gamboamartin\comercial\instalacion;
-
 use gamboamartin\administrador\models\_instalacion;
 use gamboamartin\errores\errores;
 use PDO;
