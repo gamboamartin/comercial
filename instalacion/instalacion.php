@@ -18,6 +18,7 @@ class instalacion
         $foraneas[] = 'cat_sat_uso_cfdi_id';
         $foraneas[] = 'cat_sat_tipo_de_comprobante_id';
         $foraneas[] = 'com_tipo_cliente_id';
+        $foraneas[] = 'cat_sat_tipo_persona_id';
 
         $result = $init->foraneas(foraneas: $foraneas,table:  'com_cliente');
 
