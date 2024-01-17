@@ -3,6 +3,7 @@ namespace gamboamartin\comercial\instalacion;
 use gamboamartin\administrador\models\_instalacion;
 use gamboamartin\errores\errores;
 use PDO;
+use stdClass;
 
 class instalacion
 {
@@ -21,6 +22,17 @@ class instalacion
         $foraneas[] = 'cat_sat_tipo_persona_id';
 
         $result = $init->foraneas(foraneas: $foraneas,table:  'com_cliente');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
+        }
+
+        $campos = new stdClass();
+
+        $campos->es_automatico = new stdClass();
+        $campos->es_automatico->default = 'inactivo';
+
+        $result = $init->add_columns(campos: $campos,table:  'com_producto');
 
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
