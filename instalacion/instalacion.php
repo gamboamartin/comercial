@@ -27,10 +27,37 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
         }
 
+
+        $init = (new _instalacion(link: $link));
+        $foraneas = array();
+        $foraneas[] = 'cat_sat_producto_id';
+        $foraneas[] = 'cat_sat_unidad_id';
+        $foraneas[] = 'cat_sat_obj_imp_id';
+        $foraneas[] = 'com_tipo_producto_id';
+        $foraneas[] = 'cat_sat_conf_imps_id';
+
+        $result = $init->foraneas(foraneas: $foraneas,table:  'com_producto');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
+        }
+
+
         $campos = new stdClass();
+
+        $campos->aplica_predial = new stdClass();
+        $campos->aplica_predial->default = 'inactivo';
 
         $campos->es_automatico = new stdClass();
         $campos->es_automatico->default = 'inactivo';
+
+        $campos->precio = new stdClass();
+        $campos->precio->tipo_dato = 'double';
+        $campos->precio->default = '0';
+        $campos->precio->longitud = '100,2';
+
+        $campos->codigo_sat = new stdClass();
+        $campos->codigo_sat->default = 'POR DEFINIR';
 
         $result = $init->add_columns(campos: $campos,table:  'com_producto');
 
