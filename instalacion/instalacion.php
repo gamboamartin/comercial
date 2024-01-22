@@ -11,15 +11,15 @@ class instalacion
     {
         $init = (new _instalacion(link: $link));
         $foraneas = array();
-        $foraneas[] = 'dp_calle_pertenece_id';
-        $foraneas[] = 'cat_sat_regimen_fiscal_id';
-        $foraneas[] = 'cat_sat_moneda_id';
-        $foraneas[] = 'cat_sat_forma_pago_id';
-        $foraneas[] = 'cat_sat_metodo_pago_id';
-        $foraneas[] = 'cat_sat_uso_cfdi_id';
-        $foraneas[] = 'cat_sat_tipo_de_comprobante_id';
-        $foraneas[] = 'com_tipo_cliente_id';
-        $foraneas[] = 'cat_sat_tipo_persona_id';
+        $foraneas['dp_calle_pertenece_id'] = new stdClass();
+        $foraneas['cat_sat_regimen_fiscal_id'] = new stdClass();
+        $foraneas['cat_sat_moneda_id'] = new stdClass();
+        $foraneas['cat_sat_forma_pago_id'] = new stdClass();
+        $foraneas['cat_sat_metodo_pago_id'] = new stdClass();
+        $foraneas['cat_sat_uso_cfdi_id'] = new stdClass();
+        $foraneas['cat_sat_tipo_de_comprobante_id'] = new stdClass();
+        $foraneas['com_tipo_cliente_id'] = new stdClass();
+        $foraneas['cat_sat_tipo_persona_id'] = new stdClass();
 
         $result = $init->foraneas(foraneas: $foraneas,table:  'com_cliente');
 
@@ -30,11 +30,11 @@ class instalacion
 
         $init = (new _instalacion(link: $link));
         $foraneas = array();
-        $foraneas[] = 'cat_sat_producto_id';
-        $foraneas[] = 'cat_sat_unidad_id';
-        $foraneas[] = 'cat_sat_obj_imp_id';
-        $foraneas[] = 'com_tipo_producto_id';
-        $foraneas[] = 'cat_sat_conf_imps_id';
+        $foraneas['cat_sat_producto_id'] = new stdClass();
+        $foraneas['cat_sat_unidad_id'] = new stdClass();
+        $foraneas['cat_sat_obj_imp_id'] = new stdClass();
+        $foraneas['com_tipo_producto_id'] = new stdClass();
+        $foraneas['cat_sat_conf_imps_id'] = new stdClass();
 
         $result = $init->foraneas(foraneas: $foraneas,table:  'com_producto');
 
