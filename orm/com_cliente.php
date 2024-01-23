@@ -281,10 +281,24 @@ class com_cliente extends _modelo_parent
     }
 
     /**
-     * Inicializa los elementos base de un cliente
-     * @param array $data Datos de registro
-     * @return array
-     * @version 7.15.1
+     * POR DOCUMENTAR EN WIKI
+     * Función para inicializar las variables básicas del cliente.
+     *
+     * Esta función recibe un arreglo asociativo con la información del cliente, si dentro de este arreglo se encuentra el índice
+     * 'razon_social' y no se encuentra el índice 'descripcion', asignará el valor de 'razon_social' a 'descripcion'.
+     *
+     * @param array $data El arreglo asociativo que contiene los datos que serán inicializados.
+     * @return array El arreglo asociativo $data después de haber sido procesado por la función.
+     *
+     * @example Ejemplo de uso:
+     * <code>
+     *  $cliente = array(
+     *      'razon_social' => 'Compañía XY',
+     *  );
+     *  $cliente = init_base($cliente);
+     *  echo $cliente['descripcion']; // Imprime: Compañía XY
+     * </code>
+     * @version 22.2.0
      */
     final protected function init_base(array $data): array
     {
@@ -368,7 +382,6 @@ class com_cliente extends _modelo_parent
      * @param bool $reactiva Si reactiva no valida transacciones restrictivas
      * @param array $keys_integra_ds Datos para selects
      * @return array|stdClass
-     * @version 17.19.0
      */
     public function modifica_bd(array $registro, int $id, bool $reactiva = false,
                                 array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
@@ -454,7 +467,6 @@ class com_cliente extends _modelo_parent
      * Ajusta los elementos para una modificacion
      * @param array $registro Registro en proceso
      * @return array
-     * @version 17.11.0
      */
     private function registro_cliente_upd(array $registro): array
     {
