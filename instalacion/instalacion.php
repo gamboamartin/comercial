@@ -22,7 +22,7 @@ class instalacion
         $foraneas['cat_sat_tipo_de_comprobante_id'] = new stdClass();
         $foraneas['com_tipo_cliente_id'] = new stdClass();
         $foraneas['cat_sat_tipo_persona_id'] = new stdClass();
-        $foraneas['cat_sat_tipo_persona_id']->default = 5;
+        $foraneas['cat_sat_tipo_persona_id']->default = 6;
 
         $com_cliente_modelo = new com_cliente(link: $link);
 
