@@ -91,10 +91,6 @@ class instalacion
 
         $com_cliente_modelo = new com_cliente(link: $link);
 
-        $upds = $this->actualiza_atributos_registro(modelo: $com_cliente_modelo,foraneas:  $foraneas);
-        if (errores::$error) {
-            return (new errores())->error(mensaje: 'Error al actualizar clientes', data: $upds);
-        }
 
         $result = $init->foraneas(foraneas: $foraneas,table:  'com_cliente');
         if(errores::$error){
@@ -114,6 +110,12 @@ class instalacion
         $add_colums = $init->add_columns(campos: $columnas,table:  __FUNCTION__);
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al agregar columnas', data:  $add_colums);
+        }
+
+
+        $upds = $this->actualiza_atributos_registro(modelo: $com_cliente_modelo,foraneas:  $foraneas);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al actualizar clientes', data: $upds);
         }
 
         $com_clientes = $com_cliente_modelo->registros();
@@ -177,7 +179,6 @@ class instalacion
         return $out;
 
     }
-
     private function com_precio_cliente(PDO $link)
     {
         $init = (new _instalacion(link: $link));
@@ -209,7 +210,6 @@ class instalacion
         return $result;
 
     }
-
     private function com_producto(PDO $link): array|stdClass
     {
         $init = (new _instalacion(link: $link));
@@ -292,7 +292,6 @@ class instalacion
         return $out;
 
     }
-
     private function com_sucursal(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -390,7 +389,6 @@ class instalacion
         return $out;
 
     }
-
     private function com_tipo_producto(PDO $link): array|stdClass
     {
         $init = (new _instalacion(link: $link));
@@ -479,9 +477,6 @@ class instalacion
         return $out;
 
     }
-
-
-
     private function upd_default(string $campo_validar, stdClass $registro, modelo $modelo,
                                  string $value_default): array|stdClass
     {
@@ -493,9 +488,6 @@ class instalacion
         return $upd;
 
     }
-
-
-
     private function upd_row_default(string $campo_validar, modelo $modelo, array $registros, string $value_default): array
     {
         $upds = array();
