@@ -2,6 +2,8 @@
 namespace gamboamartin\comercial\instalacion;
 use gamboamartin\administrador\models\_instalacion;
 use gamboamartin\comercial\models\com_cliente;
+use gamboamartin\comercial\models\com_producto;
+use gamboamartin\comercial\models\com_tipo_producto;
 use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
@@ -111,9 +113,13 @@ class instalacion
 
     }
 
-    private function com_producto(PDO $link)
+    private function com_producto(PDO $link): array|stdClass
     {
         $init = (new _instalacion(link: $link));
+        $com_producto_modelo = new com_producto(link: $link);
+
+        $out = new stdClass();
+
         $foraneas = array();
         $foraneas['cat_sat_producto_id'] = new stdClass();
         $foraneas['cat_sat_unidad_id'] = new stdClass();
@@ -127,6 +133,7 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
         }
 
+        $out->foraneas = $result;
 
         $campos = new stdClass();
 
@@ -149,12 +156,90 @@ class instalacion
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
         }
-        return $result;
+        $out->campos = $result;
+
+        $com_productos_ins = array();
+        $com_producto_ins['id'] = '84111506';
+        $com_producto_ins['descripcion'] = 'Servicios de facturación';
+        $com_producto_ins['codigo'] = '84111506';
+        $com_producto_ins['cat_sat_producto_id'] = '84111506';
+        $com_producto_ins['cat_sat_unidad_id'] = '241';
+        $com_producto_ins['cat_sat_obj_imp_id'] = '1';
+        $com_producto_ins['com_tipo_producto_id'] = '99999999';
+        $com_producto_ins['aplica_predial'] = 'inactivo';
+        $com_producto_ins['cat_sat_conf_imps_id'] = '1';
+        $com_producto_ins['es_automatico'] = 'inactivo';
+        $com_producto_ins['precio'] = '0';
+        $com_producto_ins['codigo_sat'] = '84111506';
+
+        $com_productos_ins[] = $com_producto_ins;
+
+        foreach ($com_productos_ins as $com_producto_ins){
+            $alta = $com_producto_modelo->alta_registro(registro: $com_producto_ins);
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error al insertar producto', data:  $alta);
+            }
+            $out->productos[] = $result;
+
+        }
+
+        return $out;
+
+    }
+
+    private function com_tipo_producto(PDO $link): array|stdClass
+    {
+        $init = (new _instalacion(link: $link));
+        $com_tipo_producto_modelo = new com_tipo_producto(link: $link);
+
+        $out = new stdClass();
+
+        $existe_entidad = $init->existe_entidad(table: __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al verificar table', data:  $existe_entidad);
+        }
+        $out->existe_entidad = $existe_entidad;
+
+
+        if(!$existe_entidad) {
+
+            $campos = new stdClass();
+            $create_table = $init->create_table(campos: $campos, table: __FUNCTION__);
+            if (errores::$error) {
+                return (new errores())->error(mensaje: 'Error al crear table '.__FUNCTION__, data: $create_table);
+            }
+            $out->create_table = $create_table;
+        }
+
+
+        $com_tipo_productos_ins = array();
+        $com_tipo_producto_ins['id'] = '99999999';
+        $com_tipo_producto_ins['descripcion'] = 'Servicios de facturación';
+        $com_tipo_producto_ins['codigo'] = '99999999';
+
+        $com_tipo_productos_ins[] = $com_tipo_producto_ins;
+
+        foreach ($com_tipo_productos_ins as $com_tipo_producto_ins){
+            $alta = $com_tipo_producto_modelo->alta_registro(registro: $com_tipo_producto_ins);
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error al insertar com_tipo_producto_ins', data:  $alta);
+            }
+            $out->com_tipo_producto[] = $alta;
+
+        }
+
+        return $out;
 
     }
     final public function instala(PDO $link): array|stdClass
     {
         $out = new stdClass();
+
+        $com_tipo_producto = $this->com_tipo_producto(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error integrar com_tipo_producto', data:  $com_tipo_producto);
+        }
+
         $com_cliente = $this->com_cliente(link: $link);
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error integrar com_cliente', data:  $com_cliente);
