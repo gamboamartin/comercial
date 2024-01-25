@@ -422,7 +422,6 @@ class com_cliente extends _modelo_parent
      * @param array $registro Registro en proceso
      * @param array $campos_limpiar campos a quitar de registro
      * @return array
-     * @version 17.6.0
      */
     private function limpia_campos(array $registro, array $campos_limpiar): array
     {
