@@ -53,8 +53,6 @@ class instalacion
 
     }
 
-
-
     private function actualiza_registros(stdClass $atributo_validar, string $campo_validar, modelo $modelo): array
     {
         $value_default = $atributo_validar->default;
@@ -88,6 +86,8 @@ class instalacion
         $foraneas['com_tipo_cliente_id'] = new stdClass();
         $foraneas['cat_sat_tipo_persona_id'] = new stdClass();
         $foraneas['cat_sat_tipo_persona_id']->default = 6;
+        $foraneas['dp_municipio_id'] = new stdClass();
+        $foraneas['dp_municipio_id']->default = 2469;
 
         $com_cliente_modelo = new com_cliente(link: $link);
 

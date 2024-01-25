@@ -23,15 +23,13 @@ class com_cliente extends _modelo_parent
         $tabla = 'com_cliente';
 
         $columnas = array($tabla => false, 'cat_sat_moneda' => $tabla, 'cat_sat_regimen_fiscal' => $tabla,
-            'dp_calle_pertenece' => $tabla, 'dp_colonia_postal' => 'dp_calle_pertenece', 'dp_cp' => 'dp_colonia_postal',
-            'dp_municipio' => 'dp_cp', 'dp_estado' => 'dp_municipio', 'dp_pais' => 'dp_estado', 'com_tipo_cliente' => $tabla,
-            'cat_sat_uso_cfdi' => $tabla, 'cat_sat_metodo_pago' => $tabla, 'cat_sat_forma_pago' => $tabla,
-            'cat_sat_tipo_de_comprobante' => $tabla,'cat_sat_tipo_persona'=>$tabla,'dp_calle'=>'dp_calle_pertenece',
-            'dp_colonia'=>'dp_colonia_postal');
+            'dp_municipio' => $tabla, 'dp_estado' => 'dp_municipio', 'dp_pais' => 'dp_estado',
+            'com_tipo_cliente' => $tabla, 'cat_sat_uso_cfdi' => $tabla, 'cat_sat_metodo_pago' => $tabla,
+            'cat_sat_forma_pago' => $tabla, 'cat_sat_tipo_de_comprobante' => $tabla,'cat_sat_tipo_persona'=>$tabla);
 
         $campos_obligatorios = array('cat_sat_moneda_id', 'cat_sat_regimen_fiscal_id', 'cat_sat_moneda_id',
             'cat_sat_forma_pago_id', 'cat_sat_uso_cfdi_id', 'cat_sat_tipo_de_comprobante_id', 'cat_sat_metodo_pago_id',
-            'telefono','cat_sat_tipo_persona_id','pais','estado','municipio','colonia','calle','cp');
+            'telefono','cat_sat_tipo_persona_id','pais','estado','municipio','colonia','calle','cp','dp_municipio_id');
 
         $columnas_extra['com_cliente_n_sucursales'] =
             "(SELECT COUNT(*) FROM com_sucursal WHERE com_sucursal.com_cliente_id = com_cliente.id)";
@@ -129,7 +127,7 @@ class com_cliente extends _modelo_parent
 
 
         $this->registro = $this->limpia_campos(registro: $this->registro, campos_limpiar: array('dp_pais_id',
-            'dp_estado_id', 'dp_municipio_id', 'dp_cp_id', 'dp_cp_id', 'dp_colonia_postal_id', 'es_empleado'));
+            'dp_estado_id', 'dp_cp_id', 'dp_cp_id', 'dp_colonia_postal_id', 'es_empleado'));
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al limpiar campos', data: $this->registro);
         }
@@ -501,7 +499,7 @@ class com_cliente extends _modelo_parent
      * @param int $dp_calle_pertenece_id Calle a modificar
      * @param int $id Id de cliente
      * @return array|stdClass
-     * @version 17.18.0
+     * @deprecated
      */
     final public function modifica_dp_calle_pertenece(int $dp_calle_pertenece_id, int $id): array|stdClass
     {

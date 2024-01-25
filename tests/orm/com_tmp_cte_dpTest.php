@@ -44,7 +44,7 @@ class com_tmp_cte_dpTest extends test {
 
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("1", $resultado->registro_actualizado->dp_calle_pertenece_id);
+        $this->assertEquals("TLAXCALA", $resultado->registro_actualizado->com_cliente_calle);
 
         errores::$error = false;
 

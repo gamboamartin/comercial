@@ -31,6 +31,7 @@ class com_clienteTest extends test {
 
     public function test_alta_bd(): void
     {
+        unset($_SESSION['columnas']);
         $_GET['seccion'] = 'cat_sat_tipo_persona';
         $_GET['accion'] = 'lista';
         $_SESSION['grupo_id'] = 1;
@@ -488,35 +489,15 @@ class com_clienteTest extends test {
         $registro = array();
         $id = 1;
         $resultado = $modelo->modifica_bd($registro, $id);
+        //print_r($resultado);exit;
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(1,$resultado->registro_actualizado->dp_calle_pertenece_id);
+        $this->assertEquals('TLAXCALA',$resultado->registro_actualizado->com_cliente_calle);
 
         errores::$error = false;
     }
 
-    public function test_modifica_dp_calle_pertenece(): void
-    {
-        errores::$error = false;
 
-        $_GET['seccion'] = 'cat_sat_tipo_persona';
-        $_GET['accion'] = 'lista';
-        $_SESSION['grupo_id'] = 1;
-        $_SESSION['usuario_id'] = 2;
-        $_GET['session_id'] = '1';
-        $modelo = new com_cliente($this->link);
-        //$modelo = new liberator($modelo);
-
-        $id = 1;
-        $dp_calle_pertenece_id = 1;
-        $resultado = $modelo->modifica_dp_calle_pertenece($dp_calle_pertenece_id, $id);
-        $this->assertIsObject($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals(1,$resultado->registro_actualizado->dp_calle_pertenece_id);
-
-        errores::$error = false;
-
-    }
 
     public function test_registro_cliente_upd(): void
     {
