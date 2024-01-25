@@ -125,7 +125,8 @@ class controlador_com_cliente extends _ctl_base
     protected function campos_view(): array
     {
         $keys = new stdClass();
-        $keys->inputs = array('codigo', 'razon_social', 'rfc', 'telefono', 'numero_exterior', 'numero_interior');
+        $keys->inputs = array('codigo', 'razon_social', 'rfc', 'telefono', 'numero_exterior', 'numero_interior',
+            'cp','colonia','calle');
         $keys->selects = array();
 
         $init_data = array();
@@ -270,10 +271,7 @@ class controlador_com_cliente extends _ctl_base
             return $this->errores->error(mensaje: 'Error al obtener inputs', data: $inputs);
         }
 
-        $inputs = $this->inputs_dom_tmp();
-        if (errores::$error) {
-            return $this->errores->error(mensaje: 'Error al obtener inputs', data: $inputs);
-        }
+
         return $inputs;
     }
 
@@ -438,44 +436,7 @@ class controlador_com_cliente extends _ctl_base
         return $datatables;
     }
 
-    private function inputs_dom_tmp(): array|stdClass
-    {
-        $dp_estado = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_estado(cols: 4,row_upd:  $this->row_upd,value_vacio:  false);
-        if (errores::$error) {
-            return $this->errores->error(mensaje: 'Error al obtener inputs', data: $dp_estado);
-        }
 
-        $this->inputs->dp_estado = $dp_estado;
-
-        $dp_municipio = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_municipio(cols: 4,row_upd:  $this->row_upd,value_vacio:  false);
-        if (errores::$error) {
-            return $this->errores->error(mensaje: 'Error al obtener inputs', data: $dp_estado);
-        }
-
-        $this->inputs->dp_municipio = $dp_municipio;
-
-        $dp_cp = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_cp(cols: 4,row_upd:  $this->row_upd,value_vacio:  false, required: true);
-        if (errores::$error) {
-            return $this->errores->error(mensaje: 'Error al obtener inputs', data: $dp_cp);
-        }
-
-        $this->inputs->dp_cp = $dp_cp;
-
-        $dp_colonia = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_colonia(cols: 6,row_upd:  $this->row_upd,value_vacio:  false);
-        if (errores::$error) {
-            return $this->errores->error(mensaje: 'Error al obtener inputs', data: $dp_colonia);
-        }
-
-        $this->inputs->dp_colonia = $dp_colonia;
-
-        $dp_calle = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_calle(cols: 6,row_upd:  $this->row_upd,value_vacio:  false);
-        if (errores::$error) {
-            return $this->errores->error(mensaje: 'Error al obtener inputs', data: $dp_calle);
-        }
-
-        $this->inputs->dp_calle = $dp_calle;
-        return $this->inputs;
-    }
 
     protected function key_selects_txt(array $keys_selects): array
     {
@@ -499,6 +460,22 @@ class controlador_com_cliente extends _ctl_base
 
         $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6, key: 'telefono',
             keys_selects: $keys_selects, place_holder: 'Teléfono');
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6, key: 'cp',
+            keys_selects: $keys_selects, place_holder: 'CP');
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6, key: 'colonia',
+            keys_selects: $keys_selects, place_holder: 'Colonia');
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6, key: 'calle',
+            keys_selects: $keys_selects, place_holder: 'Calle');
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
         }

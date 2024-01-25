@@ -20,7 +20,7 @@ class _cliente_row_tmp{
      * @param array $registro Registro en proceso
      * @param array $row_tmp Registro temporal
      * @return array
-     * @version 18.8.0
+     * @deprecated
      */
     private function ajusta_colonia(PDO $link, array $registro, array $row_tmp): array
     {
@@ -47,7 +47,7 @@ class _cliente_row_tmp{
      * @param array $registro Registro en proceso
      * @param array $row_tmp Registro temporal
      * @return array
-     * @version 17.7.0
+     * @deprecated
      */
     private function ajusta_cp(PDO $link, array $registro, array $row_tmp): array
     {
@@ -70,7 +70,7 @@ class _cliente_row_tmp{
      * @param PDO $link Conexion a la base de datos
      * @param array $row_tmp Registro temporal de asignacion
      * @return array
-     * @version 17.5.0
+     * @deprecated
      */
     private function asigna_cp_pred(int $dp_cp_id, PDO $link, array $row_tmp): array
     {
@@ -92,7 +92,7 @@ class _cliente_row_tmp{
      * @param PDO $link Conexion a la base de datos
      * @param array $row_tmp Registro temporal de insersion
      * @return array
-     * @version 17.20.0
+     * @deprecated
      */
     private function asigna_dp_colonia(int $dp_colonia_postal_id, PDO $link, array $row_tmp): array
     {
@@ -116,7 +116,7 @@ class _cliente_row_tmp{
      * @param PDO $link Conexion a la base de datos
      * @param array $row_tmp Registro temporal de insersion
      * @return array
-     * @version 18.4.0
+     * @deprecated
      */
     private function asigna_colonia_pred(int $dp_colonia_postal_id, PDO $link, array $row_tmp): array
     {
@@ -139,7 +139,7 @@ class _cliente_row_tmp{
      * @param PDO $link Conexion a la base de datos
      * @param array $row_tmp Registro temporal de asignacion
      * @return array
-     * @version 17.9.0
+     * @deprecated
      */
     private function asigna_dp_colonia_tmp(int $dp_colonia_postal_id, PDO $link, array $row_tmp): array
     {
@@ -160,7 +160,7 @@ class _cliente_row_tmp{
      * @param PDO $link Conexion a la base de datos
      * @param array $row_tmp Registro temporal de domicilios
      * @return array
-     * @version 17.4.0
+     * @deprecated
      */
     private function asigna_dp_cp(int $dp_cp_id, PDO $link, array $row_tmp): array
     {
@@ -183,7 +183,7 @@ class _cliente_row_tmp{
      * @param PDO $link Conexion a la base de datos
      * @param array $row_tmp Registro tmp
      * @return array
-     * @version 17.3.0
+     * @deprecated
      */
     private function asigna_dp_cp_tmp(int $dp_cp_id, PDO $link, array $row_tmp): array
     {
@@ -202,6 +202,7 @@ class _cliente_row_tmp{
      * Limpia campos de un registro temporal
      * @param array $registro Registro en proceso
      * @return stdClass
+     * @deprecated
      */
     private function asigna_row_tmp(array $registro): stdClass
     {
@@ -228,7 +229,7 @@ class _cliente_row_tmp{
      * @param array $registro Registro en proceso
      * @param array $row_tmp Registro temporal
      * @return array
-     * @version 18.9.0
+     * @deprecated
      */
     private function colonia_tmp(PDO $link, array $registro, array $row_tmp): array
     {
@@ -247,7 +248,7 @@ class _cliente_row_tmp{
      * @param array $registro Registro en proceso
      * @param array $row_tmp Registro temporal
      * @return array
-     * @version 17.8.0
+     * @deprecated
      */
     private function cp_tmp(PDO $link, array $registro, array $row_tmp): array
     {
@@ -265,6 +266,7 @@ class _cliente_row_tmp{
      * @param PDO $link Conexion a la base de datos
      * @param array $registro Registro en proceso
      * @return array|stdClass
+     * @deprecated
      */
     final public function row_tmp(PDO $link, array $registro): array|stdClass
     {
@@ -293,6 +295,7 @@ class _cliente_row_tmp{
      * @param array $registro registro en proceso
      * @param array $row_tmp registro temporal
      * @return array
+     * @deprecated
      */
     private function integra_row_upd(string $key, array $registro, array $row_tmp): array
     {
@@ -321,7 +324,7 @@ class _cliente_row_tmp{
      * @param array $registro Registro en proceso
      * @param array $row_tmp Registro temporal de direcciones
      * @return array
-     * @version 18.12.0
+     * @deprecated
      */
     private function tmp_dom(PDO $link, array $registro, array $row_tmp): array
     {

@@ -76,6 +76,8 @@ class com_cliente extends _modelo_parent
                 return $this->error->error(mensaje: 'Error al integrar key_dom', data: $registro);
             }
         }
+
+
         return $registro;
 
     }
@@ -362,7 +364,6 @@ class com_cliente extends _modelo_parent
      * @param array $data Registro
      * @param string $funcion_llamada Funcion base de llamada alta_bd o modifica_bd
      * @return array
-     * @version 17.1.0
      */
     private function inicializa_foraneas(array $data, string $funcion_llamada): array
     {
