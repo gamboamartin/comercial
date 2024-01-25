@@ -11,6 +11,63 @@ use stdClass;
 class instalacion
 {
 
+    private function actualiza_atributos_cliente(com_cliente $com_cliente_modelo, array $foraneas): array
+    {
+        $atributos = $com_cliente_modelo->atributos;
+
+        $upds = array();
+        foreach ($atributos as $campo_name=>$atributo){
+            $upds = $this->actualiza_foraneas_cliente(campo_name: $campo_name,com_cliente_modelo:  $com_cliente_modelo,foraneas:  $foraneas);
+            if (errores::$error) {
+                return (new errores())->error(mensaje: 'Error al actualizar clientes', data: $upds);
+            }
+        }
+
+        return $upds;
+
+    }
+
+    private function actualiza_clientes(stdClass $atributo_validar, string $campo_validar, com_cliente $com_cliente_modelo): array
+    {
+        $value_default = $atributo_validar->default;
+
+        $com_clientes = $com_cliente_modelo->registros(columnas_en_bruto: true,return_obj: true);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener clientes', data:  $com_clientes);
+        }
+
+        $upds = $this->upd_cliente_default(campo_validar: $campo_validar,
+            com_cliente_modelo:  $com_cliente_modelo,com_clientes:  $com_clientes,
+            value_default:  $value_default);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al actualizar clientes', data:  $upds);
+        }
+        return $upds;
+
+    }
+
+    private function actualiza_foraneas_cliente(string $campo_name, com_cliente $com_cliente_modelo, array $foraneas): array
+    {
+        $upds = array();
+        foreach ($foraneas as $campo_validar=>$atributo_validar){
+
+            if($campo_validar === $campo_name){
+
+                if(isset($atributo_validar->default)) {
+
+                    $upds = $this->actualiza_clientes(atributo_validar: $atributo_validar,
+                        campo_validar: $campo_validar, com_cliente_modelo: $com_cliente_modelo);
+                    if (errores::$error) {
+                        return (new errores())->error(mensaje: 'Error al actualizar clientes', data: $upds);
+                    }
+                }
+
+            }
+
+        }
+        return $upds;
+
+    }
     private function com_cliente(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -29,53 +86,88 @@ class instalacion
 
         $com_cliente_modelo = new com_cliente(link: $link);
 
-        $atributos = $com_cliente_modelo->atributos;
-
-
-        foreach ($atributos as $campo_name=>$atributo){
-            foreach ($foraneas as $campo_validar=>$atributo_validar){
-
-                if($campo_validar === $campo_name){
-
-                    if(isset($atributo_validar->default)){
-                        $value_default = $atributo_validar->default;
-
-                        $com_clientes = $com_cliente_modelo->registros(columnas_en_bruto: true,return_obj: true);
-                        if(errores::$error){
-                            return (new errores())->error(mensaje: 'Error al obtener clientes', data:  $com_clientes);
-                        }
-                        foreach ($com_clientes as $com_cliente){
-
-                            if(isset($com_cliente->$campo_validar)){
-                                $identificador_validar = (int)trim($com_cliente->$campo_validar);
-                                if($identificador_validar === 0){
-
-                                    $com_cliente_upd[$campo_validar] = $value_default;
-                                    $upd = $com_cliente_modelo->modifica_bd(registro: $com_cliente_upd,id:  $com_cliente->id);
-                                    if(errores::$error){
-                                        return (new errores())->error(mensaje: 'Error al actualizar cliente', data:  $upd);
-                                    }
-                                    $out->upds[] = $upd;
-                                }
-
-                            }
-
-                        }
-
-                    }
-
-                }
-
-            }
-
+        $upds = $this->actualiza_atributos_cliente(com_cliente_modelo: $com_cliente_modelo,foraneas:  $foraneas);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al actualizar clientes', data: $upds);
         }
 
         $result = $init->foraneas(foraneas: $foraneas,table:  'com_cliente');
-
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
         }
         $out->foraneas = $result;
+
+        $columnas = new stdClass();
+        $columnas->pais = new stdClass();
+
+        $columnas->estado = new stdClass();
+        $columnas->municipio = new stdClass();
+        $columnas->colonia = new stdClass();
+        $columnas->calle = new stdClass();
+        $columnas->cp = new stdClass();
+
+        $add_colums = $init->add_columns(campos: $columnas,table:  __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar columnas', data:  $add_colums);
+        }
+
+        $com_clientes = $com_cliente_modelo->registros();
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener clientes', data:  $com_clientes);
+        }
+
+        $upds_dom = array();
+        foreach ($com_clientes as $com_cliente){
+            if(trim($com_cliente['com_cliente_pais']) === ''){
+                $r_upd = $com_cliente_modelo->modifica_bd(registro: ['pais' => $com_cliente['dp_pais_descripcion']], id: $com_cliente['com_cliente_id']);
+                if(errores::$error){
+                    return (new errores())->error(mensaje: 'Error al modificar cliente', data:  $r_upd);
+                }
+            }
+            $upds_dom[] = $upds_dom;
+
+            if(trim($com_cliente['com_cliente_estado']) === ''){
+                $r_upd = $com_cliente_modelo->modifica_bd(registro: ['estado' => $com_cliente['dp_estado_descripcion']], id: $com_cliente['com_cliente_id']);
+                if(errores::$error){
+                    return (new errores())->error(mensaje: 'Error al modificar cliente', data:  $r_upd);
+                }
+            }
+            $upds_dom[] = $upds_dom;
+
+            if(trim($com_cliente['com_cliente_municipio']) === ''){
+                $r_upd = $com_cliente_modelo->modifica_bd(registro: ['municipio' => $com_cliente['dp_municipio_descripcion']], id: $com_cliente['com_cliente_id']);
+                if(errores::$error){
+                    return (new errores())->error(mensaje: 'Error al modificar cliente', data:  $r_upd);
+                }
+            }
+            $upds_dom[] = $upds_dom;
+
+            if(trim($com_cliente['com_cliente_colonia']) === ''){
+                $r_upd = $com_cliente_modelo->modifica_bd(registro: ['colonia' => $com_cliente['dp_colonia_descripcion']], id: $com_cliente['com_cliente_id']);
+                if(errores::$error){
+                    return (new errores())->error(mensaje: 'Error al modificar cliente', data:  $r_upd);
+                }
+            }
+            $upds_dom[] = $upds_dom;
+
+            if(trim($com_cliente['com_cliente_calle']) === ''){
+                $r_upd = $com_cliente_modelo->modifica_bd(registro: ['calle' => $com_cliente['dp_calle_descripcion']], id: $com_cliente['com_cliente_id']);
+                if(errores::$error){
+                    return (new errores())->error(mensaje: 'Error al modificar cliente', data:  $r_upd);
+                }
+            }
+            $upds_dom[] = $upds_dom;
+
+            if(trim($com_cliente['com_cliente_cp']) === ''){
+                $r_upd = $com_cliente_modelo->modifica_bd(registro: ['cp' => $com_cliente['dp_cp_codigo']], id: $com_cliente['com_cliente_id']);
+                if(errores::$error){
+                    return (new errores())->error(mensaje: 'Error al modificar cliente', data:  $r_upd);
+                }
+            }
+            $upds_dom[] = $upds_dom;
+
+        }
+
 
         return $out;
 
@@ -276,6 +368,42 @@ class instalacion
         $out->com_precio_cliente = $com_precio_cliente;
 
         return $out;
+
+    }
+
+    private function upd_cliente_default(string $campo_validar, com_cliente $com_cliente_modelo, array $com_clientes, string $value_default): array
+    {
+        $upds = array();
+        foreach ($com_clientes as $com_cliente){
+
+            if(isset($com_cliente->$campo_validar)){
+                $identificador_validar = (int)trim($com_cliente->$campo_validar);
+
+                if($identificador_validar === 0){
+
+                    $upd = $this->upd_default(campo_validar: $campo_validar,com_cliente:  $com_cliente,
+                        com_cliente_modelo:  $com_cliente_modelo,value_default:  $value_default);
+                    if(errores::$error){
+                        return (new errores())->error(mensaje: 'Error al actualizar cliente', data:  $upd);
+                    }
+                    $upds[] = $upd;
+                }
+
+            }
+        }
+        return $upds;
+
+    }
+
+    private function upd_default(string $campo_validar, stdClass $com_cliente, com_cliente $com_cliente_modelo,
+                                 string $value_default): array|stdClass
+    {
+        $com_cliente_upd[$campo_validar] = $value_default;
+        $upd = $com_cliente_modelo->modifica_bd(registro: $com_cliente_upd,id:  $com_cliente->id);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al actualizar cliente', data:  $upd);
+        }
+        return $upd;
 
     }
 
