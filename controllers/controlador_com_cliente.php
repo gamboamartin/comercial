@@ -23,6 +23,7 @@ use gamboamartin\comercial\models\com_email_cte;
 use gamboamartin\comercial\models\com_tipo_cliente;
 use gamboamartin\comercial\models\com_tmp_cte_dp;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
+use gamboamartin\direccion_postal\models\dp_municipio;
 use gamboamartin\errores\errores;
 use gamboamartin\system\_ctl_base;
 use gamboamartin\system\links_menu;
@@ -503,9 +504,9 @@ class controlador_com_cliente extends _ctl_base
                 mensaje: 'Error al generar salida de template', data: $r_modifica, header: $header, ws: $ws);
         }
 
-        $calle = (new dp_calle_pertenece($this->link))->get_calle_pertenece($this->registro['dp_calle_pertenece_id']);
+        $dp_municipio = (new dp_municipio($this->link))->get_municipio($this->registro['dp_municipio_id']);
         if (errores::$error) {
-            return $this->errores->error(mensaje: 'Error al obtener calle', data: $calle);
+            return $this->errores->error(mensaje: 'Error al obtener dp_municipio', data: $dp_municipio);
         }
 
         $keys_selects = $this->init_selects(keys_selects: array(), key: "com_tipo_cliente_id", label: "Tipo de Cliente",
@@ -530,32 +531,15 @@ class controlador_com_cliente extends _ctl_base
         $keys_selects['dp_pais_id']->key_descripcion_select = 'dp_pais_descripcion';
 
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_estado_id", label: "Estado",
-            id_selected: $this->registro['dp_estado_id'], filtro: array('dp_pais.id' => $calle['dp_pais_id']));
+            id_selected: $this->registro['dp_estado_id'], filtro: array('dp_pais.id' => $dp_municipio['dp_pais_id']));
 
         $keys_selects['dp_estado_id']->key_descripcion_select = 'dp_estado_descripcion';
 
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_municipio_id", label: "Municipio",
-            id_selected: $this->registro['dp_municipio_id'], filtro: array('dp_estado.id' => $calle['dp_estado_id']));
+            id_selected: $this->registro['dp_municipio_id'], filtro: array('dp_estado.id' => $dp_municipio['dp_estado_id']));
 
         $keys_selects['dp_municipio_id']->key_descripcion_select = 'dp_municipio_descripcion';
 
-        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_cp_id", label: "Código Postal",
-            id_selected: $this->registro['dp_cp_id'], filtro: array('dp_municipio.id' => $calle['dp_municipio_id']));
-
-        $keys_selects['dp_cp_id']->key_descripcion_select = 'dp_cp_descripcion';
-
-        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_colonia_postal_id",
-            label: "Colonia Postal", id_selected: $this->registro['dp_colonia_postal_id'],
-            filtro: array('dp_cp.id' => $calle['dp_cp_id']));
-
-        $keys_selects['dp_colonia_postal_id']->key_descripcion_select = 'dp_colonia_descripcion';
-
-
-        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_calle_pertenece_id", label: "Calle",
-            id_selected: $this->registro['dp_calle_pertenece_id'],
-            filtro: array('dp_colonia_postal.id' => $calle['dp_colonia_postal_id']));
-
-        $keys_selects['dp_calle_pertenece_id']->key_descripcion_select = 'dp_calle_descripcion';
 
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_uso_cfdi_id", label: "Uso CFDI",
             id_selected: $this->registro['cat_sat_uso_cfdi_id'], cols: 12);
