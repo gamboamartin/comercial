@@ -30,7 +30,7 @@ class com_cliente extends _modelo_parent
 
         $campos_obligatorios = array('cat_sat_moneda_id', 'cat_sat_regimen_fiscal_id', 'cat_sat_moneda_id',
             'cat_sat_forma_pago_id', 'cat_sat_uso_cfdi_id', 'cat_sat_tipo_de_comprobante_id', 'cat_sat_metodo_pago_id',
-            'telefono','cat_sat_tipo_persona_id');
+            'telefono','cat_sat_tipo_persona_id','pais','estado','municipio','colonia','calle','cp');
 
         $columnas_extra['com_cliente_n_sucursales'] =
             "(SELECT COUNT(*) FROM com_sucursal WHERE com_sucursal.com_cliente_id = com_cliente.id)";
@@ -49,11 +49,41 @@ class com_cliente extends _modelo_parent
         $this->etiqueta = 'Cliente';
     }
 
+    private function ajusta_key_dom(string $key_dom, array $registro)
+    {
+        $dp_calle_pertenece = (new dp_calle_pertenece(link: $this->link))->registro(
+            registro_id: $registro['dp_calle_pertenece_id']);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener calle', data: $dp_calle_pertenece);
+        }
+
+        $registro = $this->integra_key_dom_faltante(dp_calle_pertenece: $dp_calle_pertenece,key_dom:  $key_dom,registro:  $registro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al integrar key_dom', data: $registro);
+        }
+        return $registro;
+
+    }
+
+    private function ajusta_keys_dom(array $registro)
+    {
+        $keys_dom = array('pais','estado','municipio','colonia','calle','cp');
+
+        foreach ($keys_dom as $key_dom){
+
+            $registro = $this->ajusta_key_dom(key_dom: $key_dom,registro:  $registro);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al integrar key_dom', data: $registro);
+            }
+        }
+        return $registro;
+
+    }
+
     /**
      * Inserta un cliente
      * @param array $keys_integra_ds  Campos para la integracion de descricpion select
      * @return array|stdClass
-     * @version 18.16.0
      */
     public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
     {
@@ -108,10 +138,19 @@ class com_cliente extends _modelo_parent
             return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
 
-        if(!isset($this->registro['descripcion'])){
-            $descripcion = trim($this->registro['razon_social'].' '.$this->registro['rfc']);
-            $this->registro['descripcion'] = $descripcion;
+
+        $registro = $this->descripcion(registro: $this->registro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al integrar descripcion', data: $registro);
         }
+        $this->registro = $registro;
+
+        $registro = $this->ajusta_keys_dom(registro: $this->registro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al integrar key_dom', data: $registro);
+        }
+        $this->registro = $registro;
+
 
         $r_alta_bd = parent::alta_bd(keys_integra_ds: $keys_integra_ds);
         if (errores::$error) {
@@ -252,6 +291,15 @@ class com_cliente extends _modelo_parent
         return $com_sucursal_upd;
     }
 
+    private function descripcion(array $registro): array
+    {
+        if(!isset($registro['descripcion'])){
+            $descripcion = trim($registro['razon_social'].' '.$registro['rfc']);
+            $registro['descripcion'] = $descripcion;
+        }
+        return $registro;
+
+    }
 
 
     /**
@@ -352,6 +400,25 @@ class com_cliente extends _modelo_parent
         }
 
         return $data;
+    }
+
+    private function integra_key_dom(array $dp_calle_pertenece, string $key_dom, array $registro): array
+    {
+        $registro[$key_dom] = $dp_calle_pertenece['dp_'.$key_dom.'_descripcion'];
+        return $registro;
+
+    }
+
+    private function integra_key_dom_faltante(array $dp_calle_pertenece, string $key_dom, array $registro)
+    {
+        if(!isset($registro[$key_dom])){
+            $registro = $this->integra_key_dom(dp_calle_pertenece: $dp_calle_pertenece,key_dom:  $key_dom,registro:  $registro);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al integrar key_dom', data: $registro);
+            }
+        }
+        return $registro;
+
     }
 
     /**

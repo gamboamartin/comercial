@@ -202,7 +202,6 @@ class _cliente_row_tmp{
      * Limpia campos de un registro temporal
      * @param array $registro Registro en proceso
      * @return stdClass
-     * @version 17.2.0
      */
     private function asigna_row_tmp(array $registro): stdClass
     {
@@ -266,7 +265,6 @@ class _cliente_row_tmp{
      * @param PDO $link Conexion a la base de datos
      * @param array $registro Registro en proceso
      * @return array|stdClass
-     * @version 18.13.0
      */
     final public function row_tmp(PDO $link, array $registro): array|stdClass
     {
@@ -295,7 +293,6 @@ class _cliente_row_tmp{
      * @param array $registro registro en proceso
      * @param array $row_tmp registro temporal
      * @return array
-     * @version 10.9.1
      */
     private function integra_row_upd(string $key, array $registro, array $row_tmp): array
     {
