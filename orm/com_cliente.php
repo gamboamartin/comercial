@@ -11,6 +11,7 @@ use gamboamartin\cat_sat\models\cat_sat_regimen_fiscal;
 use gamboamartin\cat_sat\models\cat_sat_tipo_de_comprobante;
 use gamboamartin\cat_sat\models\cat_sat_uso_cfdi;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
+use gamboamartin\direccion_postal\models\dp_municipio;
 use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
@@ -90,25 +91,17 @@ class com_cliente extends _modelo_parent
     public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
     {
 
-        $data_tmp =  (new _cliente_row_tmp())->row_tmp(link: $this->link,registro:  $this->registro);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al asignar tmp', data: $data_tmp);
-        }
-        $this->registro = $data_tmp->registro;
-        $row_tmp = $data_tmp->row_tmp;
 
         $this->registro = $this->init_base(data: $this->registro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al inicializar campo base', data: $this->registro);
         }
-
-
         $this->registro = $this->inicializa_foraneas(data: $this->registro, funcion_llamada: __FUNCTION__);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al inicializar foraneas', data: $this->registro);
         }
 
-        $keys = array('telefono','numero_exterior','razon_social');
+        $keys = array('telefono','numero_exterior','razon_social','dp_municipio_id');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $this->registro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
@@ -123,6 +116,17 @@ class com_cliente extends _modelo_parent
         if(isset($this->registro["es_empleado"])){
             $es_empleado = $this->registro["es_empleado"];
         }
+
+        $dp_municipio_modelo = new dp_municipio(link: $this->link);
+        $dp_municipio = $dp_municipio_modelo->registro(registro_id: $this->registro['dp_municipio_id']);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener dp_municipio', data: $dp_municipio);
+        }
+
+        $this->registro['pais'] = $dp_municipio['dp_pais_descripcion'];
+        $this->registro['estado'] = $dp_municipio['dp_estado_descripcion'];
+        $this->registro['municipio'] = $dp_municipio['dp_municipio_descripcion'];
+
 
         $this->registro = $this->limpia_campos(registro: $this->registro, campos_limpiar: array('dp_pais_id',
             'dp_estado_id', 'dp_municipio_id', 'dp_cp_id', 'dp_cp_id', 'dp_colonia_postal_id', 'es_empleado'));
@@ -140,12 +144,12 @@ class com_cliente extends _modelo_parent
             return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
 
-
         $registro = $this->descripcion(registro: $this->registro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al integrar descripcion', data: $registro);
         }
         $this->registro = $registro;
+
 
         $registro = $this->ajusta_keys_dom(registro: $this->registro);
         if (errores::$error) {
@@ -178,14 +182,6 @@ class com_cliente extends _modelo_parent
             return $this->error->error(mensaje: 'Error al insertar sucursal', data: $alta_sucursal);
         }
 
-        if(count($row_tmp)>0){
-            $row_tmp['com_cliente_id'] = $r_alta_bd->registro_id;
-            $alta_tmp_dom = (new com_tmp_cte_dp(link: $this->link))->alta_registro(registro: $row_tmp);
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al insertar tmp dom', data: $alta_tmp_dom);
-            }
-
-        }
 
         return $r_alta_bd;
     }

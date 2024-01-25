@@ -1,6 +1,7 @@
 <?php
 namespace gamboamartin\comercial\test\orm;
 
+use gamboamartin\cat_sat\instalacion\instalacion;
 use gamboamartin\cat_sat\tests\base;
 use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\comercial\test\base_test;
@@ -30,13 +31,31 @@ class com_clienteTest extends test {
 
     public function test_alta_bd(): void
     {
-        errores::$error = false;
-
         $_GET['seccion'] = 'cat_sat_tipo_persona';
         $_GET['accion'] = 'lista';
         $_SESSION['grupo_id'] = 1;
         $_SESSION['usuario_id'] = 2;
         $_GET['session_id'] = '1';
+
+        $del = (new base_test())->del_cat_sat_conf_reg_tp($this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $init_cat_sat = (new instalacion())->instala(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al del', $init_cat_sat);
+            print_r($error);
+            exit;
+        }
+
+
+
+        errores::$error = false;
+
+
 
         $alta = (new base_test())->del_com_cliente($this->link);
         if(errores::$error){
@@ -53,14 +72,47 @@ class com_clienteTest extends test {
         $modelo->registro['cat_sat_forma_pago_id'] = 1;
         $modelo->registro['telefono'] = 1;
         $modelo->registro['numero_exterior'] = 1;
-        $modelo->registro['cat_sat_regimen_fiscal_id'] = 1;
-        $modelo->registro['cat_sat_tipo_persona_id'] = 1;
+        $modelo->registro['cat_sat_regimen_fiscal_id'] = 601;
+        $modelo->registro['cat_sat_tipo_persona_id'] = 4;
         $modelo->registro['razon_social'] = 1;
         $modelo->registro['rfc'] = 'AAA010101AAA';
+        $modelo->registro['dp_municipio_id'] = '230';
         $resultado = $modelo->alta_bd();
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals(1, $resultado->registro['com_cliente_razon_social']);
+
+        errores::$error = false;
+
+        $alta = (new base_test())->del_com_cliente($this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+        $modelo = new com_cliente($this->link);
+        //$modelo = new liberator($modelo);
+
+        $modelo->registro['cat_sat_moneda_id'] = 1;
+        $modelo->registro['cat_sat_metodo_pago_id'] = 2;
+        $modelo->registro['cat_sat_forma_pago_id'] = 1;
+        $modelo->registro['telefono'] = 1;
+        $modelo->registro['numero_exterior'] = 1;
+        $modelo->registro['cat_sat_regimen_fiscal_id'] = 601;
+        $modelo->registro['cat_sat_tipo_persona_id'] = 4;
+        $modelo->registro['razon_social'] = 1;
+        $modelo->registro['rfc'] = 'AAA010101AAB';
+        $modelo->registro['dp_pais_id'] = '151';
+        $modelo->registro['dp_estado_id'] = '14';
+        $modelo->registro['dp_municipio_id'] = '230';
+        $modelo->registro['colonia'] = 'A';
+        $modelo->registro['calle'] = 'A';
+        $modelo->registro['cp'] = 'A';
+        $resultado = $modelo->alta_bd();
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('A', $resultado->registro['com_cliente_cp']);
 
         errores::$error = false;
 

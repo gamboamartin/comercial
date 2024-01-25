@@ -209,7 +209,8 @@ class base_test{
                                      int $cat_sat_tipo_de_comprobante_id = 1, int $cat_sat_tipo_persona_id = 1,
                                      int $cat_sat_uso_cfdi_id = 1, string $codigo = '1', int $com_tipo_cliente_id = 1,
                                      string $descripcion = 'YADIRA MAGALY MONTAÑEZ FELIX',
-                                     int $dp_calle_pertenece_id = 1, int $id = 1): array|\stdClass
+                                     int $dp_calle_pertenece_id = 1, int $dp_municipio_id = 230,
+                                     int $id = 1): array|\stdClass
     {
 
         $existe = (new cat_sat_moneda($link))->existe_by_id(registro_id: $cat_sat_moneda_id);
@@ -338,6 +339,7 @@ class base_test{
         $registro['rfc'] = 'MOFY900516NL1';
         $registro['telefono'] = '3333333333';
         $registro['numero_exterior'] = '3333333333';
+        $registro['dp_municipio_id'] = $dp_municipio_id;
 
         $alta = (new com_cliente($link))->alta_registro($registro);
         if(errores::$error){
