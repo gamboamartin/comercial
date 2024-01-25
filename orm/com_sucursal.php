@@ -18,7 +18,8 @@ class com_sucursal extends modelo
         $columnas = array($tabla => false, 'com_cliente' => $tabla, 'dp_calle_pertenece' => $tabla,
             'dp_colonia_postal' => 'dp_calle_pertenece', 'dp_cp' => 'dp_colonia_postal',
             'cat_sat_regimen_fiscal' => 'com_cliente', 'dp_municipio' => 'dp_cp', 'dp_estado' => 'dp_municipio',
-            'com_tipo_sucursal' => $tabla, 'com_tipo_cliente'=>'com_cliente');
+            'com_tipo_sucursal' => $tabla, 'com_tipo_cliente'=>'com_cliente','dp_pais'=>'dp_estado',
+            'dp_colonia'=>'dp_colonia_postal','dp_calle'=>'dp_calle_pertenece');
 
         $campos_obligatorios = array('descripcion', 'codigo', 'descripcion_select', 'alias', 'codigo_bis',
             'numero_exterior', 'com_cliente_id', 'dp_calle_pertenece_id','com_tipo_sucursal_id');
