@@ -154,8 +154,9 @@ class instalacion
         $result = $init->add_columns(campos: $campos,table:  'com_producto');
 
         if(errores::$error){
-            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
+            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
         }
+
         $out->campos = $result;
 
         $com_productos_ins = array();
@@ -175,13 +176,21 @@ class instalacion
         $com_productos_ins[] = $com_producto_ins;
 
         foreach ($com_productos_ins as $com_producto_ins){
-            $alta = $com_producto_modelo->alta_registro(registro: $com_producto_ins);
+            $existe = $com_producto_modelo->existe_by_id($com_producto_ins['id']);
             if(errores::$error){
-                return (new errores())->error(mensaje: 'Error al insertar producto', data:  $alta);
+                return (new errores())->error(mensaje: 'Error al validar si existe com_tipo_producto', data:  $existe);
             }
-            $out->productos[] = $result;
+            if(!$existe) {
+                $alta = $com_producto_modelo->alta_registro(registro: $com_producto_ins);
+                if (errores::$error) {
+                    return (new errores())->error(mensaje: 'Error al insertar producto', data: $alta);
+                }
+                $out->productos[] = $alta;
+            }
+
 
         }
+
 
         return $out;
 
@@ -220,11 +229,18 @@ class instalacion
         $com_tipo_productos_ins[] = $com_tipo_producto_ins;
 
         foreach ($com_tipo_productos_ins as $com_tipo_producto_ins){
-            $alta = $com_tipo_producto_modelo->alta_registro(registro: $com_tipo_producto_ins);
+
+            $existe = $com_tipo_producto_modelo->existe_by_id($com_tipo_producto_ins['id']);
             if(errores::$error){
-                return (new errores())->error(mensaje: 'Error al insertar com_tipo_producto_ins', data:  $alta);
+                return (new errores())->error(mensaje: 'Error al validar si existe com_tipo_producto', data:  $existe);
             }
-            $out->com_tipo_producto[] = $alta;
+            if(!$existe) {
+                $alta = $com_tipo_producto_modelo->alta_registro(registro: $com_tipo_producto_ins);
+                if (errores::$error) {
+                    return (new errores())->error(mensaje: 'Error al insertar com_tipo_producto_ins', data: $alta);
+                }
+                $out->com_tipo_producto[] = $alta;
+            }
 
         }
 
@@ -240,6 +256,7 @@ class instalacion
             return (new errores())->error(mensaje: 'Error integrar com_tipo_producto', data:  $com_tipo_producto);
         }
 
+
         $com_cliente = $this->com_cliente(link: $link);
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error integrar com_cliente', data:  $com_cliente);
@@ -248,7 +265,7 @@ class instalacion
 
         $com_producto = $this->com_producto(link: $link);
         if(errores::$error){
-            return (new errores())->error(mensaje: 'Error integrar com_cliente', data:  $com_cliente);
+            return (new errores())->error(mensaje: 'Error integrar com_producto', data:  $com_producto);
         }
         $out->com_producto = $com_producto;
 
@@ -257,7 +274,6 @@ class instalacion
             return (new errores())->error(mensaje: 'Error integrar com_precio_cliente', data:  $com_precio_cliente);
         }
         $out->com_precio_cliente = $com_precio_cliente;
-
 
         return $out;
 
