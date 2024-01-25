@@ -77,6 +77,7 @@ class com_clienteTest extends test {
         $modelo->registro['razon_social'] = 1;
         $modelo->registro['rfc'] = 'AAA010101AAA';
         $modelo->registro['dp_municipio_id'] = '230';
+        $modelo->registro['cp'] = '230';
         $resultado = $modelo->alta_bd();
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
@@ -108,11 +109,11 @@ class com_clienteTest extends test {
         $modelo->registro['dp_municipio_id'] = '230';
         $modelo->registro['colonia'] = 'A';
         $modelo->registro['calle'] = 'A';
-        $modelo->registro['cp'] = 'A';
+        $modelo->registro['cp'] = '1';
         $resultado = $modelo->alta_bd();
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('A', $resultado->registro['com_cliente_cp']);
+        $this->assertEquals('1', $resultado->registro['com_cliente_cp']);
 
         errores::$error = false;
 

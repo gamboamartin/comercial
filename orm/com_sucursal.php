@@ -5,6 +5,7 @@ namespace gamboamartin\comercial\models;
 use base\orm\modelo;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\direccion_postal\models\dp_colonia_postal;
+use gamboamartin\direccion_postal\models\dp_municipio;
 use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
@@ -22,7 +23,8 @@ class com_sucursal extends modelo
             'dp_colonia'=>'dp_colonia_postal','dp_calle'=>'dp_calle_pertenece');
 
         $campos_obligatorios = array('descripcion', 'codigo', 'descripcion_select', 'alias', 'codigo_bis',
-            'numero_exterior', 'com_cliente_id', 'dp_calle_pertenece_id','com_tipo_sucursal_id');
+            'numero_exterior', 'com_cliente_id', 'dp_calle_pertenece_id','com_tipo_sucursal_id',
+            'pais','estado','municipio','cp');
 
         $tipo_campos = array();
 
@@ -82,7 +84,7 @@ class com_sucursal extends modelo
      */
     public function alta_bd(): array|stdClass
     {
-        $keys = array('com_cliente_id', 'dp_calle_pertenece_id');
+        $keys = array('com_cliente_id', 'dp_calle_pertenece_id','dp_municipio_id');
         $valida = $this->validacion->valida_ids(keys: $keys, registro: $this->registro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
@@ -97,6 +99,16 @@ class com_sucursal extends modelo
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al inicializar campo base', data: $this->registro);
         }
+
+        $dp_municipio_modelo = new dp_municipio(link: $this->link);
+        $dp_municipio = $dp_municipio_modelo->registro(registro_id: $this->registro['dp_municipio_id']);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener dp_municipio', data: $dp_municipio);
+        }
+
+        $this->registro['pais'] = $dp_municipio['dp_pais_descripcion'];
+        $this->registro['estado'] = $dp_municipio['dp_estado_descripcion'];
+        $this->registro['municipio'] = $dp_municipio['dp_municipio_descripcion'];
 
         $this->registro = $this->limpia_campos(registro: $this->registro, campos_limpiar: array('dp_pais_id',
             'dp_estado_id', 'dp_municipio_id', 'dp_cp_id', 'dp_cp_id', 'dp_colonia_postal_id'));
@@ -296,23 +308,23 @@ class com_sucursal extends modelo
     }
 
 
-
     /**
      * Maqueta un registro de tipo sucursal
      * @param string $codigo Codigo de cliente
+     * @param int $cp
      * @param string $nombre_contacto Nombre de contacto
      * @param int $com_cliente_id Id de cliente
      * @param string $telefono Telefono de cliente
      * @param int $dp_calle_pertenece_id calle
+     * @param int $dp_municipio_id
      * @param string $numero_exterior ext
      * @param string $numero_interior int
      * @param bool $es_empleado si es empleado da de alta empleado
      * @return array
-     * @version 18.14.0
      */
-    final public function maqueta_data(string $codigo, string $nombre_contacto, int $com_cliente_id, string $telefono,
-                                 int    $dp_calle_pertenece_id, string $numero_exterior, string $numero_interior,
-                                 bool $es_empleado = false): array
+    final public function maqueta_data(string $codigo, int $cp, string $nombre_contacto, int $com_cliente_id, string $telefono,
+                                       int $dp_calle_pertenece_id, int $dp_municipio_id, string $numero_exterior,
+                                       string $numero_interior, bool $es_empleado = false): array
     {
 
         $com_tipo_sucursal= (new com_tipo_sucursal($this->link))->inserta_predeterminado(codigo: 'MAT',
@@ -345,6 +357,8 @@ class com_sucursal extends modelo
         $data['telefono_1'] = $telefono;
         $data['telefono_2'] = $telefono;
         $data['telefono_3'] = $telefono;
+        $data['dp_municipio_id'] = $dp_municipio_id;
+        $data['cp'] = $cp;
 
         return $data;
     }

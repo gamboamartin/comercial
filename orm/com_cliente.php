@@ -164,10 +164,10 @@ class com_cliente extends _modelo_parent
         }
 
         $data = (new com_sucursal($this->link))->maqueta_data(codigo: $this->registro["codigo"],
-            nombre_contacto: $this->registro["razon_social"], com_cliente_id: $r_alta_bd->registro_id,
-            telefono: $this->registro["telefono"], dp_calle_pertenece_id: $this->registro["dp_calle_pertenece_id"],
-            numero_exterior: $this->registro["numero_exterior"], numero_interior: $this->registro["numero_interior"],
-            es_empleado: $es_empleado);
+            cp: $this->registro['cp'], nombre_contacto: $this->registro["razon_social"],
+            com_cliente_id: $r_alta_bd->registro_id, telefono: $this->registro["telefono"],
+            dp_calle_pertenece_id: $this->registro["dp_calle_pertenece_id"], dp_municipio_id: $dp_municipio['dp_municipio_id'],
+            numero_exterior: $this->registro["numero_exterior"], numero_interior: $this->registro["numero_interior"], es_empleado: $es_empleado);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al maquetar datos de sucursal', data: $data);
         }

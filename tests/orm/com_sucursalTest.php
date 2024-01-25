@@ -144,6 +144,8 @@ class com_sucursalTest extends test {
         $modelo->registro['codigo'] = 1;
         $modelo->registro['numero_exterior'] = 1;
         $modelo->registro['com_tipo_sucursal_id'] = 1;
+        $modelo->registro['dp_municipio_id'] = 230;
+        $modelo->registro['cp'] = 230;
 
         $resultado = $modelo->alta_bd();
         $this->assertIsObject($resultado);
@@ -320,8 +322,9 @@ class com_sucursalTest extends test {
         $dp_calle_pertenece_id = -1;
         $numero_exterior = '';
         $numero_interior = '';
-        $resultado = $modelo->maqueta_data($codigo, $nombre_contacto, $com_cliente_id, $telefono,
-            $dp_calle_pertenece_id, $numero_exterior, $numero_interior);
+        $resultado = $modelo->maqueta_data(codigo: $codigo, cp: 1, nombre_contacto: $nombre_contacto,
+            com_cliente_id: $com_cliente_id, telefono: $telefono, dp_calle_pertenece_id: $dp_calle_pertenece_id,
+            dp_municipio_id: 230, numero_exterior: $numero_exterior, numero_interior: $numero_interior);
 
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
