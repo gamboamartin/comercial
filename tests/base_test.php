@@ -436,11 +436,12 @@ class base_test{
     }
 
 
-    public function alta_com_sucursal(PDO $link, int $cat_sat_forma_pago_id = 1,
+    public function alta_com_sucursal(PDO $link, string $calle = 'CALLE', int $cat_sat_forma_pago_id = 1,
                                       string $cat_sat_metodo_pago_codigo = 'PUE', int $cat_sat_metodo_pago_id = 2,
-                                      int $com_cliente_id = 1, int $cat_sat_regimen_fiscal_id = 1,
-                                      int $cat_sat_tipo_persona_id = 1, int $com_tipo_sucursal_id = 1, string $cp = '1',
-                                      int $dp_municipio_id = 230, int $id = 1): array|\stdClass
+                                      string $colonia = 'COLONIA', int $com_cliente_id = 1,
+                                      int $cat_sat_regimen_fiscal_id = 1, int $cat_sat_tipo_persona_id = 1,
+                                      int $com_tipo_sucursal_id = 1, string $cp = '1', int $dp_municipio_id = 230,
+                                      int $id = 1): array|\stdClass
     {
 
         $existe = (new com_cliente($link))->existe_by_id(registro_id: $com_cliente_id);
@@ -486,6 +487,8 @@ class base_test{
         $registro['numero_exterior'] = 1;
         $registro['dp_municipio_id'] = $dp_municipio_id;
         $registro['cp'] = $cp;
+        $registro['colonia'] = $colonia;
+        $registro['calle'] = $calle;
 
         $alta = (new com_sucursal($link))->alta_registro($registro);
         if(errores::$error){

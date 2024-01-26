@@ -79,6 +79,7 @@ class com_clienteTest extends test {
         $modelo->registro['rfc'] = 'AAA010101AAA';
         $modelo->registro['dp_municipio_id'] = '230';
         $modelo->registro['cp'] = '230';
+
         $resultado = $modelo->alta_bd();
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);

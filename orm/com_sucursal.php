@@ -24,7 +24,7 @@ class com_sucursal extends modelo
 
         $campos_obligatorios = array('descripcion', 'codigo', 'descripcion_select', 'alias', 'codigo_bis',
             'numero_exterior', 'com_cliente_id', 'dp_calle_pertenece_id','com_tipo_sucursal_id',
-            'pais','estado','municipio','cp');
+            'pais','estado','municipio','cp','colonia','calle');
 
         $tipo_campos = array();
 
@@ -47,6 +47,9 @@ class com_sucursal extends modelo
         $campos_view['telefono_1'] = array('type' => 'inputs');
         $campos_view['telefono_2'] = array('type' => 'inputs');
         $campos_view['telefono_3'] = array('type' => 'inputs');
+        $campos_view['cp'] = array('type' => 'inputs');
+        $campos_view['colonia'] = array('type' => 'inputs');
+        $campos_view['calle'] = array('type' => 'inputs');
 
         parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios,
             columnas: $columnas, campos_view: $campos_view, tipo_campos: $tipo_campos);
@@ -310,7 +313,9 @@ class com_sucursal extends modelo
 
     /**
      * Maqueta un registro de tipo sucursal
+     * @param string $calle
      * @param string $codigo Codigo de cliente
+     * @param string $colonia
      * @param int $cp
      * @param string $nombre_contacto Nombre de contacto
      * @param int $com_cliente_id Id de cliente
@@ -322,7 +327,8 @@ class com_sucursal extends modelo
      * @param bool $es_empleado si es empleado da de alta empleado
      * @return array
      */
-    final public function maqueta_data(string $codigo, int $cp, string $nombre_contacto, int $com_cliente_id, string $telefono,
+    final public function maqueta_data(string $calle, string $codigo, string $colonia, int $cp,
+                                       string $nombre_contacto, int $com_cliente_id, string $telefono,
                                        int $dp_calle_pertenece_id, int $dp_municipio_id, string $numero_exterior,
                                        string $numero_interior, bool $es_empleado = false): array
     {
@@ -359,6 +365,8 @@ class com_sucursal extends modelo
         $data['telefono_3'] = $telefono;
         $data['dp_municipio_id'] = $dp_municipio_id;
         $data['cp'] = $cp;
+        $data['colonia'] = $colonia;
+        $data['calle'] = $calle;
 
         return $data;
     }
