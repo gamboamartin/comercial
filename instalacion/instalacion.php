@@ -123,57 +123,30 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al obtener clientes', data:  $com_clientes);
         }
 
+        $keys_dom = array('pais','estado','municipio','colonia', 'calle','cp');
+
         $upds_dom = array();
         foreach ($com_clientes as $com_cliente){
-            if(trim($com_cliente['com_cliente_pais']) === ''){
-                $r_upd = $com_cliente_modelo->modifica_bd(registro: ['pais' => $com_cliente['dp_pais_descripcion']], id: $com_cliente['com_cliente_id']);
-                if(errores::$error){
-                    return (new errores())->error(mensaje: 'Error al modificar cliente', data:  $r_upd);
-                }
-            }
-            $upds_dom[] = $upds_dom;
 
-            if(trim($com_cliente['com_cliente_estado']) === ''){
-                $r_upd = $com_cliente_modelo->modifica_bd(registro: ['estado' => $com_cliente['dp_estado_descripcion']], id: $com_cliente['com_cliente_id']);
-                if(errores::$error){
-                    return (new errores())->error(mensaje: 'Error al modificar cliente', data:  $r_upd);
-                }
-            }
-            $upds_dom[] = $upds_dom;
+            foreach ($keys_dom AS $key_dom){
+                $key_entidad = __FUNCTION__."_$key_dom";
+                $key_integra = 'dp_'.$key_dom.'_descripcion';
 
-            if(trim($com_cliente['com_cliente_municipio']) === ''){
-                $r_upd = $com_cliente_modelo->modifica_bd(registro: ['municipio' => $com_cliente['dp_municipio_descripcion']], id: $com_cliente['com_cliente_id']);
-                if(errores::$error){
-                    return (new errores())->error(mensaje: 'Error al modificar cliente', data:  $r_upd);
+                if(!isset($com_cliente[$key_entidad])){
+                    return (new errores())->error(mensaje: 'Error no existe key '.$key_entidad,data:  $com_cliente);
                 }
-            }
-            $upds_dom[] = $upds_dom;
 
-            if(trim($com_cliente['com_cliente_colonia']) === ''){
-                $r_upd = $com_cliente_modelo->modifica_bd(registro: ['colonia' => $com_cliente['dp_colonia_descripcion']], id: $com_cliente['com_cliente_id']);
-                if(errores::$error){
-                    return (new errores())->error(mensaje: 'Error al modificar cliente', data:  $r_upd);
+                if(trim($com_cliente[$key_entidad]) === ''){
+                    $r_upd = $com_cliente_modelo->modifica_bd(registro: [$key_dom => $com_cliente[$key_integra]], id: $com_cliente['com_cliente_id']);
+                    if(errores::$error){
+                        return (new errores())->error(mensaje: 'Error al modificar cliente', data:  $r_upd);
+                    }
+                    $upds_dom[] = $r_upd;
                 }
-            }
-            $upds_dom[] = $upds_dom;
 
-            if(trim($com_cliente['com_cliente_calle']) === ''){
-                $r_upd = $com_cliente_modelo->modifica_bd(registro: ['calle' => $com_cliente['dp_calle_descripcion']], id: $com_cliente['com_cliente_id']);
-                if(errores::$error){
-                    return (new errores())->error(mensaje: 'Error al modificar cliente', data:  $r_upd);
-                }
             }
-            $upds_dom[] = $upds_dom;
-
-            if(trim($com_cliente['com_cliente_cp']) === ''){
-                $r_upd = $com_cliente_modelo->modifica_bd(registro: ['cp' => $com_cliente['dp_cp_codigo']], id: $com_cliente['com_cliente_id']);
-                if(errores::$error){
-                    return (new errores())->error(mensaje: 'Error al modificar cliente', data:  $r_upd);
-                }
-            }
-            $upds_dom[] = $upds_dom;
-
         }
+        $out->upds_dom = $upds_dom;
 
 
         return $out;
