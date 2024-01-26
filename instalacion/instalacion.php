@@ -259,7 +259,8 @@ class instalacion
         $com_productos_ins = array();
         $com_producto_ins['id'] = '84111506';
         $com_producto_ins['descripcion'] = 'Servicios de facturación';
-        $com_producto_ins['codigo'] = '84111506';
+        $com_producto_ins['codigo'] = '84111506D';
+        $com_producto_ins['codigo_bis'] = '84111506D';
         $com_producto_ins['cat_sat_producto_id'] = '84111506';
         $com_producto_ins['cat_sat_unidad_id'] = '241';
         $com_producto_ins['cat_sat_obj_imp_id'] = '1';
