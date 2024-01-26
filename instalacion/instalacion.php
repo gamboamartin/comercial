@@ -6,6 +6,7 @@ use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\comercial\models\com_producto;
 use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\comercial\models\com_tipo_producto;
+use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
@@ -132,12 +133,24 @@ class instalacion
                 $key_entidad = __FUNCTION__."_$key_dom";
                 $key_integra = 'dp_'.$key_dom.'_descripcion';
 
+                $com_cliente_bruto = $com_cliente_modelo->registro(registro_id: $com_cliente['com_cliente_id'],columnas_en_bruto: true);
+                if(errores::$error){
+                    return (new errores())->error(mensaje: 'Error al obtener el cliente',data:  $com_cliente_bruto);
+                }
+                $dp_calle_pertenece = (new dp_calle_pertenece(link: $link))->registro(registro_id: $com_cliente_bruto['dp_calle_pertenece_id']);
+                if(errores::$error){
+                    return (new errores())->error(mensaje: 'Error al obtener dp_calle_pertenece',data:  $dp_calle_pertenece);
+                }
                 if(!isset($com_cliente[$key_entidad])){
                     return (new errores())->error(mensaje: 'Error no existe key '.$key_entidad,data:  $com_cliente);
                 }
+                if(!isset($dp_calle_pertenece[$key_integra])){
+                    return (new errores())->error(mensaje: 'Error no existe key '.$key_integra,data:  $dp_calle_pertenece);
+                }
 
                 if(trim($com_cliente[$key_entidad]) === ''){
-                    $r_upd = $com_cliente_modelo->modifica_bd(registro: [$key_dom => $com_cliente[$key_integra]], id: $com_cliente['com_cliente_id']);
+                    $r_upd = $com_cliente_modelo->modifica_bd(registro: [$key_dom => $dp_calle_pertenece[$key_integra]],
+                        id: $com_cliente['com_cliente_id']);
                     if(errores::$error){
                         return (new errores())->error(mensaje: 'Error al modificar cliente', data:  $r_upd);
                     }
