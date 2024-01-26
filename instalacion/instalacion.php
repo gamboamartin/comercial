@@ -305,6 +305,7 @@ class instalacion
         $foraneas['dp_municipio_id']->default = 2469;
 
         $com_sucursal_modelo = new com_sucursal(link: $link);
+        $com_sucursal_modelo->transaccion_desde_cliente = true;
 
         $upds = $this->actualiza_atributos_registro(modelo: $com_sucursal_modelo,foraneas:  $foraneas);
         if (errores::$error) {
