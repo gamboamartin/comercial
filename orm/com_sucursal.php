@@ -63,7 +63,6 @@ class com_sucursal extends modelo
      * Asigna alias a data para update y alta
      * @param array $data Registro en proceso
      * @return array
-     * @version 17.5.0
      *
      */
     private function alias(array $data): array
