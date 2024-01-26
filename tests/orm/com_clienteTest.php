@@ -194,10 +194,28 @@ class com_clienteTest extends test {
         $com_cliente->dp_calle_pertenece_id = 1;
         $com_cliente->numero_exterior = 1;
         $com_cliente->telefono = 1;
+        $com_cliente->pais = 1;
+        $com_cliente->estado = 1;
+        $com_cliente->municipio = 1;
+        $com_cliente->colonia = 1;
+        $com_cliente->calle = 1;
+        $com_cliente->dp_municipio_id = 1;
         $resultado = $modelo->com_sucursal_upd_dom($com_cliente, $com_sucursal_upd);
+        //print_r($resultado);exit;
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("1", $resultado['dp_calle_pertenece_id']);
+        $this->assertEquals("1", $resultado['numero_exterior']);
+        $this->assertEquals("", $resultado['numero_interior']);
+        $this->assertEquals("1", $resultado['telefono_1']);
+        $this->assertEquals("1", $resultado['telefono_2']);
+        $this->assertEquals("1", $resultado['telefono_3']);
+        $this->assertEquals("1", $resultado['pais']);
+        $this->assertEquals("1", $resultado['estado']);
+        $this->assertEquals("1", $resultado['municipio']);
+        $this->assertEquals("1", $resultado['colonia']);
+        $this->assertEquals("1", $resultado['calle']);
+        $this->assertEquals("1", $resultado['dp_municipio_id']);
 
         errores::$error = false;
 

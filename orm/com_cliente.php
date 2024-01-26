@@ -219,7 +219,6 @@ class com_cliente extends _modelo_parent
      * @param string $com_sucursal_descripcion Descripcion de la sucursal
      * @param array $sucursal Registro de sucursal previo
      * @return array
-     * @version 17.16.0
      */
     private function com_sucursal_upd(stdClass $com_cliente, int $com_cliente_id, string $com_sucursal_descripcion,
                                       array $sucursal): array
@@ -267,11 +266,11 @@ class com_cliente extends _modelo_parent
      * @param stdClass $com_cliente Registro de tipo cliente
      * @param array $com_sucursal_upd registro a actualizar de sucursal
      * @return array
-     * @version 17.15.0
      */
     private function com_sucursal_upd_dom(stdClass $com_cliente, array $com_sucursal_upd): array
     {
-        $keys = array('dp_calle_pertenece_id','numero_exterior','telefono');
+        $keys = array('dp_calle_pertenece_id','numero_exterior','telefono','pais','estado','municipio','colonia',
+            'calle','dp_municipio_id');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $com_cliente);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar cliente', data: $valida);
@@ -286,6 +285,12 @@ class com_cliente extends _modelo_parent
         $com_sucursal_upd['telefono_1'] = trim($com_cliente->telefono);
         $com_sucursal_upd['telefono_2'] = trim($com_cliente->telefono);
         $com_sucursal_upd['telefono_3'] = trim($com_cliente->telefono);
+        $com_sucursal_upd['pais'] = trim($com_cliente->pais);
+        $com_sucursal_upd['estado'] = trim($com_cliente->estado);
+        $com_sucursal_upd['municipio'] = trim($com_cliente->municipio);
+        $com_sucursal_upd['colonia'] = trim($com_cliente->colonia);
+        $com_sucursal_upd['calle'] = trim($com_cliente->calle);
+        $com_sucursal_upd['dp_municipio_id'] = trim($com_cliente->dp_municipio_id);
         return $com_sucursal_upd;
     }
 
@@ -557,7 +562,6 @@ class com_cliente extends _modelo_parent
      * @param int $com_cliente_id Identificador de cliente
      * @param array $sucursal Sucursal a actualizar
      * @return array
-     * @version 17.16.0
      */
     private function row_com_sucursal_upd(stdClass $com_cliente, int $com_cliente_id, array $sucursal): array
     {
@@ -598,7 +602,6 @@ class com_cliente extends _modelo_parent
      * @param int $com_cliente_id Identificador de cliente
      * @param array $sucursal Sucursal a modificar
      * @return array|stdClass
-     * @version 17.18.0
      */
     private function upd_sucursal(stdClass $com_cliente, int $com_cliente_id, array $sucursal): array|stdClass
     {
@@ -640,7 +643,6 @@ class com_cliente extends _modelo_parent
      * @param stdClass $com_cliente Registro de cliente
      * @param int $com_cliente_id Identificador de cliente
      * @return array
-     * @version 17.18.0
      */
     private function upd_sucursales(stdClass $com_cliente, int $com_cliente_id): array
     {
