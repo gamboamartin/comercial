@@ -24,7 +24,7 @@ class com_sucursal extends modelo
 
         $campos_obligatorios = array('descripcion', 'codigo', 'descripcion_select', 'alias', 'codigo_bis',
             'numero_exterior', 'com_cliente_id', 'dp_calle_pertenece_id','com_tipo_sucursal_id',
-            'pais','estado','municipio','cp','colonia','calle');
+            'pais','estado','municipio','cp','colonia','calle','dp_municipio_id');
 
         $tipo_campos = array();
 
@@ -114,7 +114,7 @@ class com_sucursal extends modelo
         $this->registro['municipio'] = $dp_municipio['dp_municipio_descripcion'];
 
         $this->registro = $this->limpia_campos(registro: $this->registro, campos_limpiar: array('dp_pais_id',
-            'dp_estado_id', 'dp_municipio_id', 'dp_cp_id', 'dp_cp_id', 'dp_colonia_postal_id'));
+            'dp_estado_id', 'dp_cp_id', 'dp_cp_id', 'dp_colonia_postal_id'));
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al limpiar campos', data: $this->registro);
         }
@@ -377,7 +377,6 @@ class com_sucursal extends modelo
      * @param int $id Identificador de sucursal
      * @param bool $reactiva Si reactiva no valida transacciones de etapa
      * @return array|stdClass
-     * @version 17.18.0
      */
     public function modifica_bd(array $registro, int $id, bool $reactiva = false): array|stdClass
     {
@@ -409,7 +408,7 @@ class com_sucursal extends modelo
         }
 
         $registro = $this->limpia_campos(registro: $registro, campos_limpiar: array('dp_pais_id', 'dp_estado_id',
-            'dp_municipio_id', 'dp_cp_id', 'dp_colonia_postal_id'));
+            'dp_cp_id', 'dp_colonia_postal_id'));
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al limpiar campos', data: $registro);
         }

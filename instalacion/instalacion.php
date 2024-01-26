@@ -288,11 +288,21 @@ class instalacion
     {
         $out = new stdClass();
         $init = (new _instalacion(link: $link));
+
+        $columnas = new stdClass();
+        $columnas->dp_municipio_id = new stdClass();
+
+        $add_colums = $init->add_columns(campos: $columnas,table:  __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar columnas', data:  $add_colums);
+        }
+
         $foraneas = array();
         $foraneas['dp_calle_pertenece_id'] = new stdClass();
         $foraneas['com_tipo_sucursal_id'] = new stdClass();
         $foraneas['com_cliente_id'] = new stdClass();
-
+        $foraneas['dp_municipio_id'] = new stdClass();
+        $foraneas['dp_municipio_id']->default = 2469;
 
         $com_sucursal_modelo = new com_sucursal(link: $link);
 
@@ -300,6 +310,7 @@ class instalacion
         if (errores::$error) {
             return (new errores())->error(mensaje: 'Error al actualizar sucursales', data: $upds);
         }
+
 
         $result = $init->foraneas(foraneas: $foraneas,table:  __FUNCTION__);
         if(errores::$error){
@@ -324,58 +335,42 @@ class instalacion
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al obtener com_sucursales', data:  $com_sucursales);
         }
-
+        $keys_dom = array('pais','estado','municipio','colonia', 'calle','cp');
         $upds_dom = array();
         foreach ($com_sucursales as $com_sucursal){
-            if(trim($com_sucursal['com_sucursal_pais']) === ''){
-                $r_upd = $com_sucursal_modelo->modifica_bd(registro: ['pais' => $com_sucursal['dp_pais_descripcion']], id: $com_sucursal['com_sucursal_id']);
-                if(errores::$error){
-                    return (new errores())->error(mensaje: 'Error al modificar cliente', data:  $r_upd);
-                }
-            }
-            $upds_dom[] = $upds_dom;
 
-            if(trim($com_sucursal['com_sucursal_estado']) === ''){
-                $r_upd = $com_sucursal_modelo->modifica_bd(registro: ['estado' => $com_sucursal['dp_estado_descripcion']], id: $com_sucursal['com_sucursal_id']);
-                if(errores::$error){
-                    return (new errores())->error(mensaje: 'Error al modificar cliente', data:  $r_upd);
-                }
-            }
-            $upds_dom[] = $upds_dom;
+            foreach ($keys_dom AS $key_dom) {
+                $key_entidad = __FUNCTION__ . "_$key_dom";
+                $key_integra = 'dp_' . $key_dom . '_descripcion';
 
-            if(trim($com_sucursal['com_sucursal_municipio']) === ''){
-                $r_upd = $com_sucursal_modelo->modifica_bd(registro: ['municipio' => $com_sucursal['dp_municipio_descripcion']], id: $com_sucursal['com_sucursal_id']);
-                if(errores::$error){
-                    return (new errores())->error(mensaje: 'Error al modificar cliente', data:  $r_upd);
+                $com_sucursal_bruto = $com_sucursal_modelo->registro(registro_id: $com_sucursal['com_sucursal_id'], columnas_en_bruto: true);
+                if (errores::$error) {
+                    return (new errores())->error(mensaje: 'Error al obtener el com_sucursal', data: $com_sucursal_bruto);
                 }
-            }
-            $upds_dom[] = $upds_dom;
+                $dp_calle_pertenece = (new dp_calle_pertenece(link: $link))->registro(registro_id: $com_sucursal_bruto['dp_calle_pertenece_id']);
+                if (errores::$error) {
+                    return (new errores())->error(mensaje: 'Error al obtener dp_calle_pertenece', data: $dp_calle_pertenece);
+                }
+                if (!isset($com_sucursal[$key_entidad])) {
+                    return (new errores())->error(mensaje: 'Error no existe key ' . $key_entidad, data: $com_sucursal);
+                }
+                if (!isset($dp_calle_pertenece[$key_integra])) {
+                    return (new errores())->error(mensaje: 'Error no existe key ' . $key_integra, data: $dp_calle_pertenece);
+                }
 
-            if(trim($com_sucursal['com_sucursal_colonia']) === ''){
-                $r_upd = $com_sucursal_modelo->modifica_bd(registro: ['colonia' => $com_sucursal['dp_colonia_descripcion']], id: $com_sucursal['com_sucursal_id']);
-                if(errores::$error){
-                    return (new errores())->error(mensaje: 'Error al modificar cliente', data:  $r_upd);
+                if (trim($com_sucursal[$key_entidad]) === '') {
+                    $r_upd = $com_sucursal_modelo->modifica_bd(registro: [$key_dom => $dp_calle_pertenece[$key_integra]],
+                        id: $com_sucursal['com_sucursal_id']);
+                    if (errores::$error) {
+                        return (new errores())->error(mensaje: 'Error al modificar com_sucursal', data: $r_upd);
+                    }
+                    $upds_dom[] = $r_upd;
                 }
             }
-            $upds_dom[] = $upds_dom;
-
-            if(trim($com_sucursal['com_sucursal_calle']) === ''){
-                $r_upd = $com_sucursal_modelo->modifica_bd(registro: ['calle' => $com_sucursal['dp_calle_descripcion']], id: $com_sucursal['com_sucursal_id']);
-                if(errores::$error){
-                    return (new errores())->error(mensaje: 'Error al modificar cliente', data:  $r_upd);
-                }
-            }
-            $upds_dom[] = $upds_dom;
-
-            if(trim($com_sucursal['com_sucursal_cp']) === ''){
-                $r_upd = $com_sucursal_modelo->modifica_bd(registro: ['cp' => $com_sucursal['dp_cp_codigo']], id: $com_sucursal['com_sucursal_id']);
-                if(errores::$error){
-                    return (new errores())->error(mensaje: 'Error al modificar cliente', data:  $r_upd);
-                }
-            }
-            $upds_dom[] = $upds_dom;
 
         }
+
+        $out->upds_dom = $upds_dom;
 
         $adm_menu_descripcion = 'Clientes';
         $adm_menu_modelo = new adm_menu(link: $link);
@@ -392,7 +387,6 @@ class instalacion
         }
 
         $out->adm_menu_id = $adm_menu_id;
-
 
 
         $adm_namespace_descripcion = 'gamboa.martin/comercial';
@@ -552,11 +546,13 @@ class instalacion
     private function upd_default(string $campo_validar, stdClass $registro, modelo $modelo,
                                  string $value_default): array|stdClass
     {
-        $com_cliente_upd[$campo_validar] = $value_default;
-        $upd = $modelo->modifica_bd(registro: $com_cliente_upd,id:  $registro->id);
+        $row_upd[$campo_validar] = $value_default;
+
+        $upd = $modelo->modifica_bd(registro: $row_upd,id:  $registro->id);
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al actualizar cliente', data:  $upd);
         }
+
         return $upd;
 
     }
@@ -573,7 +569,7 @@ class instalacion
                     $upd = $this->upd_default(campo_validar: $campo_validar,registro:  $registro,
                         modelo:  $modelo,value_default:  $value_default);
                     if(errores::$error){
-                        return (new errores())->error(mensaje: 'Error al actualizar cliente', data:  $upd);
+                        return (new errores())->error(mensaje: 'Error al actualizar registro', data:  $upd);
                     }
                     $upds[] = $upd;
                 }
