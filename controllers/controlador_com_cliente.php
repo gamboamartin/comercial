@@ -121,8 +121,6 @@ class controlador_com_cliente extends _ctl_base
 
         return $r_alta;
     }
-
-
     protected function campos_view(): array
     {
         $keys = new stdClass();
@@ -154,7 +152,8 @@ class controlador_com_cliente extends _ctl_base
     }
 
 
-    public function correo(bool $header, bool $ws = false){
+    public function correo(bool $header, bool $ws = false): array|stdClass
+    {
 
         $row_upd = $this->modelo->registro(registro_id: $this->registro_id, columnas_en_bruto: true, retorno_obj: true);
         if (errores::$error) {
@@ -339,61 +338,83 @@ class controlador_com_cliente extends _ctl_base
         $keys_selects = $this->init_selects(keys_selects: array(), key: "com_tipo_cliente_id", label: "Tipo de Cliente",
             cols: 12);
 
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al integrar selector',data:  $keys_selects);
+        }
+
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_regimen_fiscal_id",
             label: "Régimen Fiscal", cols: 12);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al integrar selector',data:  $keys_selects);
+        }
 
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_tipo_persona_id",
             label: "Tipo Persona", cols: 12);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al integrar selector',data:  $keys_selects);
+        }
 
         $keys_selects['cat_sat_regimen_fiscal_id']->columns_descripcion_select = array(
             'cat_sat_regimen_fiscal_codigo','cat_sat_regimen_fiscal_descripcion');
 
 
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_pais_id", label: "País");
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al integrar selector',data:  $keys_selects);
+        }
+
         $keys_selects['dp_pais_id']->key_descripcion_select = 'dp_pais_descripcion';
+
 
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_estado_id", label: "Estado",
             con_registros: false);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al integrar selector',data:  $keys_selects);
+        }
+
         $keys_selects['dp_estado_id']->key_descripcion_select = 'dp_estado_descripcion';
+
 
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_municipio_id", label: "Municipio",
             con_registros: false);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al integrar selector',data:  $keys_selects);
+        }
 
         $keys_selects['dp_municipio_id']->key_descripcion_select = 'dp_municipio_descripcion';
 
-        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_cp_id", label: "Código Postal",
-            con_registros: false);
-        $keys_selects['dp_cp_id']->key_descripcion_select = 'dp_cp_descripcion';
-
-        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_colonia_postal_id",
-            label: "Colonia Postal", con_registros: false);
-
-        $keys_selects['dp_colonia_postal_id']->key_descripcion_select = 'dp_colonia_descripcion';
-
-        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_calle_pertenece_id", label: "Calle",
-            con_registros: false);
-        $keys_selects['dp_calle_pertenece_id']->key_descripcion_select = 'dp_calle_descripcion';
-
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_uso_cfdi_id", label: "Uso CFDI",
             cols: 12);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al integrar selector',data:  $keys_selects);
+        }
 
         $keys_selects['cat_sat_uso_cfdi_id']->columns_ds = array(
             'cat_sat_uso_cfdi_codigo','cat_sat_uso_cfdi_descripcion');
 
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_metodo_pago_id",
             label: "Método de Pago");
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al integrar selector',data:  $keys_selects);
+        }
 
         $keys_selects['cat_sat_metodo_pago_id']->columns_ds = array(
             'cat_sat_metodo_pago_codigo','cat_sat_metodo_pago_descripcion');
 
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_forma_pago_id",
             label: "Forma Pago");
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al integrar selector',data:  $keys_selects);
+        }
 
         $keys_selects['cat_sat_forma_pago_id']->columns_ds = array(
             'cat_sat_forma_pago_codigo','cat_sat_forma_pago_descripcion');
 
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_tipo_de_comprobante_id",
             label: "Tipo de Comprobante");
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al integrar selector',data:  $keys_selects);
+        }
 
         $keys_selects['cat_sat_tipo_de_comprobante_id']->columns_ds = array(
             'cat_sat_tipo_de_comprobante_codigo','cat_sat_tipo_de_comprobante_descripcion');
@@ -401,6 +422,9 @@ class controlador_com_cliente extends _ctl_base
 
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_moneda_id",
             label: "Moneda");
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al integrar selector',data:  $keys_selects);
+        }
 
         $keys_selects['cat_sat_moneda_id']->columns_ds = array(
             'cat_sat_moneda_codigo','cat_sat_moneda_descripcion');
