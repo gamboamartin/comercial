@@ -16,11 +16,9 @@ class com_sucursal extends modelo
     public function __construct(PDO $link)
     {
         $tabla = 'com_sucursal';
-        $columnas = array($tabla => false, 'com_cliente' => $tabla, 'dp_calle_pertenece' => $tabla,
-            'dp_colonia_postal' => 'dp_calle_pertenece', 'dp_cp' => 'dp_colonia_postal',
-            'cat_sat_regimen_fiscal' => 'com_cliente', 'dp_municipio' => 'dp_cp', 'dp_estado' => 'dp_municipio',
-            'com_tipo_sucursal' => $tabla, 'com_tipo_cliente'=>'com_cliente','dp_pais'=>'dp_estado',
-            'dp_colonia'=>'dp_colonia_postal','dp_calle'=>'dp_calle_pertenece');
+        $columnas = array($tabla => false, 'com_cliente' => $tabla, 'cat_sat_regimen_fiscal' => 'com_cliente',
+            'dp_municipio' => $tabla, 'dp_estado' => 'dp_municipio', 'com_tipo_sucursal' => $tabla,
+            'com_tipo_cliente'=>'com_cliente','dp_pais'=>'dp_estado');
 
         $campos_obligatorios = array('descripcion', 'codigo', 'descripcion_select', 'alias', 'codigo_bis',
             'numero_exterior', 'com_cliente_id', 'dp_calle_pertenece_id','com_tipo_sucursal_id',
@@ -381,6 +379,7 @@ class com_sucursal extends modelo
     public function modifica_bd(array $registro, int $id, bool $reactiva = false): array|stdClass
     {
 
+
         if($id<=0){
             return $this->error->error(mensaje: 'Error id debe ser mayor a 0', data: $id);
         }
@@ -418,15 +417,7 @@ class com_sucursal extends modelo
             return $this->error->error(mensaje: 'Error al modificar producto', data: $r_modifica_bd);
         }
 
-        if($r_modifica_bd->registro_actualizado->com_tipo_sucursal_descripcion === 'MATRIZ'){
-            $modifica_cliente = (new com_cliente(link: $this->link))->modifica_dp_calle_pertenece(
-                dp_calle_pertenece_id: $r_modifica_bd->registro_actualizado->dp_calle_pertenece_id,
-                id: $r_modifica_bd->registro_actualizado->com_cliente_id);
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al modificar cliente ', data: $modifica_cliente);
-            }
-        }
-
+        //print_r($r_modifica_bd);exit;
 
         return $r_modifica_bd;
     }

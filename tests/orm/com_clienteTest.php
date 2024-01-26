@@ -200,6 +200,7 @@ class com_clienteTest extends test {
         $com_cliente->colonia = 1;
         $com_cliente->calle = 1;
         $com_cliente->dp_municipio_id = 1;
+        $com_cliente->cp = 1;
         $resultado = $modelo->com_sucursal_upd_dom($com_cliente, $com_sucursal_upd);
         //print_r($resultado);exit;
         $this->assertIsArray($resultado);
@@ -216,6 +217,7 @@ class com_clienteTest extends test {
         $this->assertEquals("1", $resultado['colonia']);
         $this->assertEquals("1", $resultado['calle']);
         $this->assertEquals("1", $resultado['dp_municipio_id']);
+        $this->assertEquals("1", $resultado['cp']);
 
         errores::$error = false;
 

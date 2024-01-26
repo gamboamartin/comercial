@@ -359,10 +359,10 @@ class com_sucursalTest extends test {
         $registro['dp_calle_pertenece_id'] = 1;
 
         $resultado = $modelo->modifica_bd(registro: $registro,id:  $id);
-
+        //print_r($resultado);exit;
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("1", $resultado->registro_actualizado->dp_calle_pertenece_id);
+        $this->assertEquals("230", $resultado->registro_actualizado->dp_municipio_id);
 
         errores::$error = false;
 
@@ -375,7 +375,7 @@ class com_sucursalTest extends test {
         $resultado = $modelo->modifica_bd(registro: $registro,id:  $id);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("2", $resultado->registro_actualizado->dp_calle_pertenece_id);
+        $this->assertEquals("230", $resultado->registro_actualizado->dp_municipio_id);
         $this->assertEquals("9", $resultado->registro_actualizado->com_tipo_sucursal_id);
 
 

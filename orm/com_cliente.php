@@ -258,6 +258,7 @@ class com_cliente extends _modelo_parent
                 return $this->error->error(mensaje: 'Error al maquetar sucursal', data: $com_sucursal_upd);
             }
         }
+
         return $com_sucursal_upd;
     }
 
@@ -270,7 +271,7 @@ class com_cliente extends _modelo_parent
     private function com_sucursal_upd_dom(stdClass $com_cliente, array $com_sucursal_upd): array
     {
         $keys = array('dp_calle_pertenece_id','numero_exterior','telefono','pais','estado','municipio','colonia',
-            'calle','dp_municipio_id');
+            'calle','dp_municipio_id','cp');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $com_cliente);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar cliente', data: $valida);
@@ -291,6 +292,9 @@ class com_cliente extends _modelo_parent
         $com_sucursal_upd['colonia'] = trim($com_cliente->colonia);
         $com_sucursal_upd['calle'] = trim($com_cliente->calle);
         $com_sucursal_upd['dp_municipio_id'] = trim($com_cliente->dp_municipio_id);
+        $com_sucursal_upd['cp'] = trim($com_cliente->cp);
+
+
         return $com_sucursal_upd;
     }
 
@@ -500,36 +504,6 @@ class com_cliente extends _modelo_parent
         return $r_modifica_bd;
     }
 
-    /**
-     * Modifica los datos de domicilio de un cliente
-     * @param int $dp_calle_pertenece_id Calle a modificar
-     * @param int $id Id de cliente
-     * @return array|stdClass
-     * @deprecated
-     */
-    final public function modifica_dp_calle_pertenece(int $dp_calle_pertenece_id, int $id): array|stdClass
-    {
-        if($id <=0){
-            return $this->error->error(mensaje: 'Error id debe ser mayor a 0', data: $id);
-        }
-        if($dp_calle_pertenece_id <=0){
-            return $this->error->error(mensaje: 'Error dp_calle_pertenece_id debe ser mayor a 0',
-                data: $dp_calle_pertenece_id);
-        }
-
-        $registro_original = $this->registro(registro_id: $id, columnas_en_bruto: true, retorno_obj: true);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al obtener cliente', data: $registro_original);
-        }
-
-        $registro['dp_calle_pertenece_id'] = $dp_calle_pertenece_id;
-        $registro['descripcion'] = $registro_original->descripcion;
-        $r_upd = parent::modifica_bd(registro: $registro,id:  $id);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al modificar domicilio', data: $r_upd);
-        }
-        return $r_upd;
-    }
 
     /**
      * Ajusta los elementos para una modificacion
@@ -592,6 +566,7 @@ class com_cliente extends _modelo_parent
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al maquetar row', data: $com_sucursal_upd);
         }
+
         return $com_sucursal_upd;
     }
 
@@ -629,6 +604,7 @@ class com_cliente extends _modelo_parent
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al maquetar row', data: $com_sucursal_upd);
         }
+
 
         $r_com_sucursal = (new com_sucursal(link: $this->link))->modifica_bd(registro: $com_sucursal_upd,
             id:  $sucursal['com_sucursal_id']);

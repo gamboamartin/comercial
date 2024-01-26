@@ -14,6 +14,7 @@ use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\comercial\models\com_tipo_sucursal;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
+use gamboamartin\direccion_postal\models\dp_municipio;
 use gamboamartin\errores\errores;
 use gamboamartin\system\links_menu;
 use gamboamartin\template\html;
@@ -329,23 +330,23 @@ class controlador_com_sucursal extends _base_comercial {
             return $this->retorno_error(mensaje: 'Error al generar template',data:  $r_modifica, header: $header,ws:$ws);
         }
 
-        $calle = (new dp_calle_pertenece($this->link))->get_calle_pertenece($this->row_upd->dp_calle_pertenece_id);
+        $municipio = (new dp_municipio($this->link))->registro($this->row_upd->dp_municipio_id);
         if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al obtener calle',data:  $calle);
+            return $this->errores->error(mensaje: 'Error al obtener municipio',data:  $municipio);
         }
 
         $identificador = "dp_pais_id";
-        $propiedades = array("id_selected" => $calle['dp_pais_id']);
+        $propiedades = array("id_selected" => $municipio['dp_pais_id']);
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "dp_estado_id";
-        $propiedades = array("id_selected" => $calle['dp_estado_id'], "con_registros" => true,
-            "filtro" => array('dp_pais.id' => $calle['dp_pais_id']));
+        $propiedades = array("id_selected" => $municipio['dp_estado_id'], "con_registros" => true,
+            "filtro" => array('dp_pais.id' => $municipio['dp_pais_id']));
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "dp_municipio_id";
-        $propiedades = array("id_selected" => $calle['dp_municipio_id'], "con_registros" => true,
-            "filtro" => array('dp_estado.id' => $calle['dp_estado_id']));
+        $propiedades = array("id_selected" => $municipio['dp_municipio_id'], "con_registros" => true,
+            "filtro" => array('dp_estado.id' => $municipio['dp_estado_id']));
         $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
 
