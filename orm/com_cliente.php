@@ -605,8 +605,9 @@ class com_cliente extends _modelo_parent
             return $this->error->error(mensaje: 'Error al maquetar row', data: $com_sucursal_upd);
         }
 
-
-        $r_com_sucursal = (new com_sucursal(link: $this->link))->modifica_bd(registro: $com_sucursal_upd,
+        $com_sucursal_modelo = new com_sucursal(link: $this->link);
+        $com_sucursal_modelo->transaccion_desde_cliente = true;
+        $r_com_sucursal = $com_sucursal_modelo->modifica_bd(registro: $com_sucursal_upd,
             id:  $sucursal['com_sucursal_id']);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al modificar sucursales', data: $r_com_sucursal);

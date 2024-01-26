@@ -510,7 +510,7 @@ class com_clienteTest extends test {
         $registro = array();
         $id = 1;
         $resultado = $modelo->modifica_bd($registro, $id);
-        //print_r($resultado);exit;
+
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('TLAXCALA',$resultado->registro_actualizado->com_cliente_calle);

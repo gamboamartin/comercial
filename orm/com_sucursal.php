@@ -13,6 +13,7 @@ use stdClass;
 class com_sucursal extends modelo
 {
 
+    public bool $transaccion_desde_cliente = false;
     public function __construct(PDO $link)
     {
         $tabla = 'com_sucursal';
@@ -378,8 +379,6 @@ class com_sucursal extends modelo
      */
     public function modifica_bd(array $registro, int $id, bool $reactiva = false): array|stdClass
     {
-
-
         if($id<=0){
             return $this->error->error(mensaje: 'Error id debe ser mayor a 0', data: $id);
         }
@@ -387,6 +386,12 @@ class com_sucursal extends modelo
         $registro_previo = $this->registro(registro_id: $id);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registro previo', data: $registro_previo);
+        }
+
+        if($registro_previo['com_tipo_sucursal_descripcion'] === 'MATRIZ' && !$this->transaccion_desde_cliente){
+            return $this->error->error(
+                mensaje: 'Error el registro solo puede ser modificado desde cliente por que es MATRIZ',
+                data: $registro_previo);
         }
 
         if(!isset($registro['com_cliente_id'])){
@@ -416,8 +421,6 @@ class com_sucursal extends modelo
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al modificar producto', data: $r_modifica_bd);
         }
-
-        //print_r($r_modifica_bd);exit;
 
         return $r_modifica_bd;
     }
