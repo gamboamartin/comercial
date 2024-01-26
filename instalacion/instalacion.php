@@ -2,6 +2,11 @@
 namespace gamboamartin\comercial\instalacion;
 use base\orm\modelo;
 use gamboamartin\administrador\models\_instalacion;
+use gamboamartin\administrador\models\adm_menu;
+use gamboamartin\administrador\models\adm_namespace;
+use gamboamartin\administrador\models\adm_seccion;
+use gamboamartin\administrador\models\adm_seccion_pertenece;
+use gamboamartin\administrador\models\adm_sistema;
 use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\comercial\models\com_producto;
 use gamboamartin\comercial\models\com_sucursal;
@@ -371,6 +376,86 @@ class instalacion
             $upds_dom[] = $upds_dom;
 
         }
+
+        $adm_menu_descripcion = 'Clientes';
+        $adm_menu_modelo = new adm_menu(link: $link);
+
+        $row_ins = array();
+        $row_ins['descripcion'] = $adm_menu_descripcion;
+        $row_ins['etiqueta_label'] = 'Clientes';
+        $row_ins['icono'] = 'SI';
+        $row_ins['titulo'] = 'Clientes';
+
+        $adm_menu_id = $init->data_adm(descripcion: $adm_menu_descripcion,modelo:  $adm_menu_modelo, row_ins: $row_ins);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener adm_menu_id', data:  $adm_menu_id);
+        }
+
+        $out->adm_menu_id = $adm_menu_id;
+
+
+
+        $adm_namespace_descripcion = 'gamboa.martin/comercial';
+        $adm_namespace_modelo = new adm_namespace(link: $link);
+
+        $row_ins = array();
+        $row_ins['descripcion'] = $adm_namespace_descripcion;
+        $row_ins['name'] = 'gamboamartin/comercial';
+
+
+        $adm_namespace_id = $init->data_adm(descripcion: $adm_namespace_descripcion,modelo:  $adm_namespace_modelo, row_ins: $row_ins);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener adm_namespace_id', data:  $adm_namespace_id);
+        }
+        $out->adm_namespace_id = $adm_namespace_id;
+
+        $adm_seccion_descripcion = __FUNCTION__;
+        $adm_seccion_modelo = new adm_seccion(link: $link);
+
+        $row_ins = array();
+        $row_ins['descripcion'] = $adm_seccion_descripcion;
+        $row_ins['etiqueta_label'] = 'Sucursal de Cliente';
+        $row_ins['adm_menu_id'] = $adm_menu_id;
+        $row_ins['adm_namespace_id'] = $adm_namespace_id;
+
+
+        $adm_seccion_id = $init->data_adm(descripcion: $adm_seccion_descripcion,modelo:  $adm_seccion_modelo, row_ins: $row_ins);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener adm_seccion_id', data:  $adm_seccion_id);
+        }
+
+        $out->adm_seccion_id = $adm_seccion_id;
+
+        $adm_sistema_descripcion = 'comercial';
+        $adm_sistema_modelo = new adm_sistema(link: $link);
+
+        $row_ins = array();
+        $row_ins['descripcion'] = $adm_sistema_descripcion;
+
+        $adm_sistema_id = $init->data_adm(descripcion: $adm_sistema_descripcion,modelo:  $adm_sistema_modelo, row_ins: $row_ins);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener adm_sistema_id', data:  $adm_sistema_id);
+        }
+
+        $out->adm_sistema_id = $adm_sistema_id;
+
+        $adm_seccion_pertenece_descripcion = 'comercial';
+        $adm_seccion_pertenece_modelo = new adm_seccion_pertenece(link: $link);
+
+        $row_ins = array();
+        $row_ins['adm_sistema_id'] = $adm_sistema_id;
+        $row_ins['adm_seccion_id'] = $adm_seccion_id;
+
+        $filtro['adm_seccion.id'] = $adm_seccion_id;
+        $filtro['adm_sistema.id'] = $adm_sistema_id;
+
+        $adm_seccion_pertenece_id = $init->data_adm(descripcion: $adm_seccion_pertenece_descripcion,
+            modelo:  $adm_seccion_pertenece_modelo, row_ins: $row_ins, filtro: $filtro);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener adm_seccion_pertenece_id', data:  $adm_seccion_pertenece_id);
+        }
+
+        $out->adm_seccion_pertenece_id = $adm_seccion_pertenece_id;
 
 
         return $out;
