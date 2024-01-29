@@ -641,6 +641,12 @@ class base_test{
     public function del_cat_sat_metodo_pago(PDO $link): array
     {
 
+        $del = (new base_test())->del_com_cliente($link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
 
         $del =(new \gamboamartin\cat_sat\tests\base_test())->del_cat_sat_metodo_pago($link);
         if(errores::$error){

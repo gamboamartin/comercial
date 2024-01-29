@@ -44,14 +44,19 @@ class com_clienteTest extends test {
             print_r($error);
             exit;
         }
-
-        $init_cat_sat = (new instalacion())->instala(link: $this->link);
+        $del = (new base_test())->del_cat_sat_metodo_pago($this->link);
         if(errores::$error){
-            $error = (new errores())->error('Error al del', $init_cat_sat);
+            $error = (new errores())->error('Error al del', $del);
             print_r($error);
             exit;
         }
 
+        $init_cat_sat = (new instalacion())->instala(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al init_cat_sat', $init_cat_sat);
+            print_r($error);
+            exit;
+        }
 
 
         errores::$error = false;
@@ -69,7 +74,7 @@ class com_clienteTest extends test {
         //$modelo = new liberator($modelo);
 
         $modelo->registro['cat_sat_moneda_id'] = 1;
-        $modelo->registro['cat_sat_metodo_pago_id'] = 2;
+        $modelo->registro['cat_sat_metodo_pago_id'] = 1;
         $modelo->registro['cat_sat_forma_pago_id'] = 1;
         $modelo->registro['telefono'] = 1;
         $modelo->registro['numero_exterior'] = 1;
@@ -98,7 +103,7 @@ class com_clienteTest extends test {
         //$modelo = new liberator($modelo);
 
         $modelo->registro['cat_sat_moneda_id'] = 1;
-        $modelo->registro['cat_sat_metodo_pago_id'] = 2;
+        $modelo->registro['cat_sat_metodo_pago_id'] = 1;
         $modelo->registro['cat_sat_forma_pago_id'] = 1;
         $modelo->registro['telefono'] = 1;
         $modelo->registro['numero_exterior'] = 1;

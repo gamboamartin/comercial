@@ -34,8 +34,6 @@ class instalacion
         return $upds;
 
     }
-
-
     private function actualiza_foraneas_registro(string $campo_name, modelo $modelo, array $foraneas): array
     {
         $upds = array();
@@ -58,7 +56,6 @@ class instalacion
         return $upds;
 
     }
-
     private function actualiza_registros(stdClass $atributo_validar, string $campo_validar, modelo $modelo): array
     {
         $value_default = $atributo_validar->default;
@@ -77,6 +74,59 @@ class instalacion
 
     }
 
+    private function com_agente(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $init = (new _instalacion(link: $link));
+
+        $create = $init->create_table_new(table: __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create = $create;
+
+        $columnas = new stdClass();
+        $add_colums = $init->add_columns(campos: $columnas,table:  __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar columnas', data:  $add_colums);
+        }
+        $out->add_colums_base = $add_colums;
+
+        $columnas = new stdClass();
+        $columnas->com_tipo_agente_id = new stdClass();
+        $columnas->com_tipo_agente_id->tipo_dato = 'BIGINT';
+        $columnas->com_tipo_agente_id->longitud = 100;
+
+        $columnas->adm_usuario_id = new stdClass();
+        $columnas->adm_usuario_id->tipo_dato = 'BIGINT';
+        $columnas->adm_usuario_id->longitud = 100;
+
+        $columnas->nombre = new stdClass();
+        $columnas->apellido_paterno = new stdClass();
+
+        $columnas->apellido_materno = new stdClass();
+        $columnas->apellido_materno->not_null = false;
+
+        $add_colums = $init->add_columns(campos: $columnas,table:  __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar columnas', data:  $add_colums);
+        }
+        $out->add_colums_entidad = $add_colums;
+
+        $foraneas = array();
+        $foraneas['com_tipo_agente_id'] = new stdClass();
+        $foraneas['adm_usuario_id'] = new stdClass();
+
+        $result = $init->foraneas(foraneas: $foraneas,table:  __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
+        }
+        $out->foraneas = $result;
+
+
+        return $out;
+
+    }
     private function com_cliente(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -138,11 +188,13 @@ class instalacion
                 $key_entidad = __FUNCTION__."_$key_dom";
                 $key_integra = 'dp_'.$key_dom.'_descripcion';
 
-                $com_cliente_bruto = $com_cliente_modelo->registro(registro_id: $com_cliente['com_cliente_id'],columnas_en_bruto: true);
+                $com_cliente_bruto = $com_cliente_modelo->registro(registro_id: $com_cliente['com_cliente_id'],
+                    columnas_en_bruto: true);
                 if(errores::$error){
                     return (new errores())->error(mensaje: 'Error al obtener el cliente',data:  $com_cliente_bruto);
                 }
-                $dp_calle_pertenece = (new dp_calle_pertenece(link: $link))->registro(registro_id: $com_cliente_bruto['dp_calle_pertenece_id']);
+                $dp_calle_pertenece = (new dp_calle_pertenece(link: $link))->registro(
+                    registro_id: $com_cliente_bruto['dp_calle_pertenece_id']);
                 if(errores::$error){
                     return (new errores())->error(mensaje: 'Error al obtener dp_calle_pertenece',data:  $dp_calle_pertenece);
                 }
@@ -284,6 +336,108 @@ class instalacion
         return $out;
 
     }
+    private function com_prospecto(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $init = (new _instalacion(link: $link));
+
+        $create = $init->create_table_new(table: __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create = $create;
+
+        $columnas = new stdClass();
+        $add_colums = $init->add_columns(campos: $columnas,table:  __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar columnas', data:  $add_colums);
+        }
+        $out->add_colums_base = $add_colums;
+
+
+        $columnas = new stdClass();
+        $columnas->com_agente_id = new stdClass();
+        $columnas->com_agente_id->tipo_dato = 'BIGINT';
+        $columnas->com_agente_id->longitud = 100;
+
+        $columnas->com_tipo_prospecto_id = new stdClass();
+        $columnas->com_tipo_prospecto_id->tipo_dato = 'BIGINT';
+        $columnas->com_tipo_prospecto_id->longitud = 100;
+
+        $columnas->nombre = new stdClass();
+        $columnas->apellido_paterno = new stdClass();
+
+        $columnas->apellido_materno = new stdClass();
+        $columnas->apellido_materno->not_null = false;
+
+        $columnas->telefono = new stdClass();
+        $columnas->correo = new stdClass();
+        $columnas->razon_social = new stdClass();
+        $columnas->rfc = new stdClass();
+
+        $add_colums = $init->add_columns(campos: $columnas,table:  __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar columnas', data:  $add_colums);
+        }
+        $out->add_colums_entidad = $add_colums;
+
+
+        $foraneas = array();
+        $foraneas['com_agente_id'] = new stdClass();
+        $foraneas['com_tipo_prospecto_id'] = new stdClass();
+
+        $result = $init->foraneas(foraneas: $foraneas,table:  __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
+        }
+        $out->foraneas = $result;
+
+
+        return $out;
+
+    }
+    private function com_rel_agente(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $init = (new _instalacion(link: $link));
+
+        $create = $init->create_table_new(table: __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create = $create;
+
+        $columnas = new stdClass();
+        $add_colums = $init->add_columns(campos: $columnas,table:  __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar columnas', data:  $add_colums);
+        }
+        $out->add_colums_base = $add_colums;
+
+        $columnas = new stdClass();
+        $columnas->com_agente_id = new stdClass();
+        $columnas->com_agente_id->tipo_dato = 'BIGINT';
+        $columnas->com_agente_id->longitud = 100;
+
+        $columnas->com_prospecto_id = new stdClass();
+        $columnas->com_prospecto_id->tipo_dato = 'BIGINT';
+        $columnas->com_prospecto_id->longitud = 100;
+
+
+        $foraneas = array();
+        $foraneas['com_agente_id'] = new stdClass();
+        $foraneas['com_prospecto_id'] = new stdClass();
+
+        $result = $init->foraneas(foraneas: $foraneas,table:  __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
+        }
+        $out->foraneas = $result;
+
+
+        return $out;
+
+    }
     private function com_sucursal(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -297,6 +451,7 @@ class instalacion
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al agregar columnas', data:  $add_colums);
         }
+        //exit;
 
         $foraneas = array();
         $foraneas['dp_calle_pertenece_id'] = new stdClass();
@@ -457,6 +612,67 @@ class instalacion
         return $out;
 
     }
+    private function com_tels_agente(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $init = (new _instalacion(link: $link));
+
+        $create = $init->create_table_new(table: __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create = $create;
+
+        $columnas = new stdClass();
+        $add_colums = $init->add_columns(campos: $columnas,table:  __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar columnas', data:  $add_colums);
+        }
+        $out->add_colums_base = $add_colums;
+
+        $columnas = new stdClass();
+        $columnas->com_agente_id = new stdClass();
+        $columnas->com_agente_id->tipo_dato = 'BIGINT';
+        $columnas->com_agente_id->longitud = 100;
+
+        $columnas->com_tipo_tel_id = new stdClass();
+        $columnas->com_tipo_tel_id->tipo_dato = 'BIGINT';
+        $columnas->com_tipo_tel_id->longitud = 100;
+
+
+        $foraneas = array();
+        $foraneas['com_agente_id'] = new stdClass();
+        $foraneas['com_tipo_tel_id'] = new stdClass();
+
+        $result = $init->foraneas(foraneas: $foraneas,table:  __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
+        }
+        $out->foraneas = $result;
+
+
+        return $out;
+
+    }
+    private function com_tipo_agente(PDO $link): array|stdClass
+    {
+        $init = (new _instalacion(link: $link));
+        $com_tipo_producto_modelo = new com_tipo_producto(link: $link);
+
+        $out = new stdClass();
+
+
+        $campos = new stdClass();
+        $create_table = $init->create_table_new(table: __FUNCTION__);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al crear table '.__FUNCTION__, data: $create_table);
+        }
+        $out->create_table = $create_table;
+
+
+        return $out;
+
+    }
     private function com_tipo_producto(PDO $link): array|stdClass
     {
         $init = (new _instalacion(link: $link));
@@ -508,6 +724,45 @@ class instalacion
         return $out;
 
     }
+
+    private function com_tipo_prospecto(PDO $link): array|stdClass
+    {
+        $init = (new _instalacion(link: $link));
+        $com_tipo_producto_modelo = new com_tipo_producto(link: $link);
+
+        $out = new stdClass();
+
+
+        $campos = new stdClass();
+        $create_table = $init->create_table_new(table: __FUNCTION__);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al crear table '.__FUNCTION__, data: $create_table);
+        }
+        $out->create_table = $create_table;
+
+
+        return $out;
+
+    }
+    private function com_tipo_tel(PDO $link): array|stdClass
+    {
+        $init = (new _instalacion(link: $link));
+        $com_tipo_producto_modelo = new com_tipo_producto(link: $link);
+
+        $out = new stdClass();
+
+
+        $campos = new stdClass();
+        $create_table = $init->create_table_new(table: __FUNCTION__);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al crear table '.__FUNCTION__, data: $create_table);
+        }
+        $out->create_table = $create_table;
+
+
+        return $out;
+
+    }
     final public function instala(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -516,7 +771,19 @@ class instalacion
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error integrar com_tipo_producto', data:  $com_tipo_producto);
         }
-
+        $com_tipo_agente = $this->com_tipo_agente(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error integrar com_tipo_agente', data:  $com_tipo_agente);
+        }
+        $com_tipo_tel = $this->com_tipo_tel(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error integrar com_tipo_tel', data:  $com_tipo_tel);
+        }
+        $com_tipo_prospecto = $this->com_tipo_prospecto(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error integrar com_tipo_prospecto', data:  $com_tipo_prospecto);
+        }
+        $out->com_tipo_prospecto = $com_tipo_prospecto;
 
         $com_cliente = $this->com_cliente(link: $link);
         if(errores::$error){
@@ -541,6 +808,29 @@ class instalacion
             return (new errores())->error(mensaje: 'Error integrar com_precio_cliente', data:  $com_precio_cliente);
         }
         $out->com_precio_cliente = $com_precio_cliente;
+
+        $com_agente = $this->com_agente(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error integrar com_agente', data:  $com_agente);
+        }
+        $out->com_agente = $com_agente;
+
+        $com_prospecto = $this->com_prospecto(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error integrar com_prospecto', data:  $com_prospecto);
+        }
+        $out->com_prospecto = $com_prospecto;
+
+        $com_tels_agente = $this->com_tels_agente(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error integrar com_tels_agente', data:  $com_tels_agente);
+        }
+
+        $com_rel_agente = $this->com_rel_agente(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error integrar com_rel_agente', data:  $com_rel_agente);
+        }
+        $out->com_agente = $com_agente;
 
         return $out;
 
