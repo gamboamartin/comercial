@@ -313,7 +313,6 @@ class com_cliente extends _modelo_parent
      * Elimina un cliente mas las sucursales dentro del cliente
      * @param int $id Identificador del cliente
      * @return array|stdClass
-     * @version 18.17.0
      */
     final public function elimina_bd(int $id): array|stdClass
     {
@@ -324,6 +323,11 @@ class com_cliente extends _modelo_parent
 
         $filtro['com_cliente.id'] = $id;
         $r_com_sucursal = (new com_sucursal(link: $this->link))->elimina_con_filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al eliminar sucursales', data: $r_com_sucursal);
+        }
+
+        $r_com_sucursal = (new com_email_cte(link: $this->link))->elimina_con_filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al eliminar sucursales', data: $r_com_sucursal);
         }
