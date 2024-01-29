@@ -504,6 +504,16 @@ class com_cliente extends _modelo_parent
         return $r_modifica_bd;
     }
 
+    final public function modifica_en_bruto(array $registro, int $id)
+    {
+        $upd = parent::modifica_bd(registro: $registro,id:  $id);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al modificar registro', data: $upd);
+        }
+        return $upd;
+
+    }
+
 
     /**
      * Ajusta los elementos para una modificacion
