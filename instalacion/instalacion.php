@@ -291,6 +291,7 @@ class instalacion
 
         $columnas = new stdClass();
         $columnas->dp_municipio_id = new stdClass();
+        $columnas->dp_municipio_id->tipo_dato = 'BIGINT';
 
         $add_colums = $init->add_columns(campos: $columnas,table:  __FUNCTION__);
         if(errores::$error){
