@@ -314,7 +314,8 @@ class com_cliente extends _modelo_parent
      * @param int $id Identificador del cliente
      * @return array|stdClass
      */
-    final public function elimina_bd(int $id): array|stdClass
+
+    public function elimina_bd(int $id): array|stdClass
     {
 
         if($id <= 0){
