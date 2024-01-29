@@ -131,6 +131,25 @@ class instalacion
     {
         $out = new stdClass();
         $init = (new _instalacion(link: $link));
+
+        $foraneas = array();
+        $foraneas['dp_municipio_id'] = new stdClass();
+        $foraneas['dp_municipio_id']->default = 2469;
+        $result = $init->foraneas(foraneas: $foraneas,table:  'com_sucursal');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
+        }
+        $out->foraneas_suc = $result;
+
+        //$com_cliente_modelo = new com_cliente(link: $link);
+
+
+        $result = $init->foraneas(foraneas: $foraneas,table:  __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
+        }
+        $out->foraneas = $result;
+
         $foraneas = array();
         $foraneas['dp_calle_pertenece_id'] = new stdClass();
         $foraneas['cat_sat_regimen_fiscal_id'] = new stdClass();
