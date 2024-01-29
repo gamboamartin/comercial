@@ -467,7 +467,6 @@ class com_sucursal extends modelo
      * Valida los elementos base para actualizar inicializa una sucursal
      * @param array $registro Registro en proceso
      * @return array|true
-     * @version 17.17.0
      */
     final public function valida_base_sucursal(array $registro): bool|array
     {
