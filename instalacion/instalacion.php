@@ -11,6 +11,7 @@ use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\comercial\models\com_producto;
 use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\comercial\models\com_tipo_producto;
+use gamboamartin\comercial\models\com_tmp_prod_cs;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\errores\errores;
 use PDO;
@@ -411,6 +412,20 @@ class instalacion
                 }
                 $upds[] = $upd;
             }
+        }
+
+        $com_tmp_prod_css = (new com_tmp_prod_cs(link: $link))->registros();
+        foreach ($com_tmp_prod_css as $com_tmp_prod_cs){
+            $com_producto_id = $com_tmp_prod_cs['com_producto_id'];
+            $cat_sat_producto = $com_tmp_prod_cs['com_tmp_prod_cs_cat_sat_producto'];
+
+            $com_producto_upd['cat_sat_cve_prod_id'] = $cat_sat_producto;
+            $upd = $com_producto_modelo->modifica_bd(registro: $com_producto_upd,id:  $com_producto_id);
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error al actualizar producto', data: $upd);
+            }
+            $upds[] = $upd;
+
         }
 
         $out->upds = $upds;
