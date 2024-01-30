@@ -28,21 +28,8 @@
             </div>
             <div class="col-lg-12"">
                 <div class="widget  widget-box box-container">
-                    <label>Tipo de Producto SAT: </label>
-                    <?php echo $controlador->registro['cat_sat_tipo_producto_codigo']; ?>
-                    <?php echo $controlador->registro['cat_sat_tipo_producto_descripcion']; ?>
-                    <label>Division SAT: </label>
-                    <?php echo $controlador->registro['cat_sat_division_producto_codigo']; ?>
-                    <?php echo $controlador->registro['cat_sat_division_producto_descripcion']; ?>
-                    <label>Grupo SAT: </label>
-                    <?php echo $controlador->registro['cat_sat_grupo_producto_codigo']; ?>
-                    <?php echo $controlador->registro['cat_sat_grupo_producto_descripcion']; ?>
-                    <label>Clase SAT: </label>
-                    <?php echo $controlador->registro['cat_sat_clase_producto_codigo']; ?>
-                    <?php echo $controlador->registro['cat_sat_clase_producto_descripcion']; ?>
                     <label>Producto SAT: </label>
-                    <?php echo $controlador->registro['cat_sat_producto_codigo']; ?>
-                    <?php echo $controlador->registro['cat_sat_producto_descripcion']; ?>
+                    <?php echo $controlador->registro['cat_sat_cve_prod_descripcion_select']; ?>
                 </div>
 
             </div>

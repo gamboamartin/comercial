@@ -24,7 +24,7 @@ class com_productoTest extends test {
         $this->errores = new errores();
     }
 
-    public function test_existe_cat_sat_producto(): void
+    public function test_existe_cat_sat_cve_prod(): void
     {
         errores::$error = false;
 
@@ -45,7 +45,7 @@ class com_productoTest extends test {
         }
 
         $cat_sat_producto_codigo = '12345678';
-        $resultado = $modelo->existe_cat_sat_producto($cat_sat_producto_codigo);
+        $resultado = $modelo->existe_cat_sat_cve_prod($cat_sat_producto_codigo);
         $this->assertIsBool($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertNotTrue($resultado);
@@ -57,8 +57,9 @@ class com_productoTest extends test {
             exit;
         }
 
-        $cat_sat_producto_codigo = '12345678';
-        $resultado = $modelo->existe_cat_sat_producto($cat_sat_producto_codigo);
+        $cat_sat_producto_codigo = '81112221';
+        $resultado = $modelo->existe_cat_sat_cve_prod($cat_sat_producto_codigo);
+       // print_r($resultado);exit;
         $this->assertIsBool($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertTrue($resultado);

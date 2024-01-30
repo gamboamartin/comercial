@@ -442,8 +442,12 @@ class instalacion
         }
         foreach ($com_productos as $com_producto){
             if($com_producto['com_producto_codigo_sat'] === 'SIN ASIGNAR'){
+
+                $com_producto_upd = array();
                 $com_producto_upd['cat_sat_cve_prod_id'] = $com_producto['cat_sat_cve_prod_id'];
-                $upd = $com_producto_modelo->modifica_bd(registro: $com_producto_upd,id:  $com_producto['com_producto_id']);
+                $com_producto_upd['codigo_sat'] = $com_producto['cat_sat_cve_prod_id'];
+                $upd = $com_producto_modelo->modifica_bd(registro: $com_producto_upd,
+                    id:  $com_producto['com_producto_id']);
                 if(errores::$error){
                     return (new errores())->error(mensaje: 'Error al actualizar producto', data: $upd);
                 }

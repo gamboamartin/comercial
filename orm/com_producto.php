@@ -3,6 +3,7 @@ namespace gamboamartin\comercial\models;
 use base\orm\_modelo_parent;
 use gamboamartin\cat_sat\models\cat_sat_clase_producto;
 use gamboamartin\cat_sat\models\cat_sat_conf_imps;
+use gamboamartin\cat_sat\models\cat_sat_cve_prod;
 use gamboamartin\cat_sat\models\cat_sat_division_producto;
 use gamboamartin\cat_sat\models\cat_sat_grupo_producto;
 use gamboamartin\cat_sat\models\cat_sat_obj_imp;
@@ -100,35 +101,33 @@ class com_producto extends _modelo_parent {
     public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
     {
 
-        $integra_tmp = false;
-        $cat_sat_producto_data = '';
+
         if(isset($this->registro['cat_sat_producto'])){
             if(trim($this->registro['cat_sat_producto'] !=='')){
 
-                $existe = $this->existe_cat_sat_producto(cat_sat_producto_codigo: $this->registro['cat_sat_producto']);
+                $existe = $this->existe_cat_sat_cve_prod(cat_sat_cve_prod_codigo: $this->registro['cat_sat_producto']);
                 if(errores::$error){
                     return $this->error->error(mensaje: 'Error al validar si existe producto',data: $existe);
                 }
                 if($existe){
-                    $filtro['cat_sat_producto.codigo'] = $this->registro['cat_sat_producto'];
+                    $filtro['cat_sat_cve_prod.codigo'] = $this->registro['cat_sat_producto'];
                     $cat_sat_producto = $this->cat_sat_producto(filtro: $filtro);
                     if(errores::$error){
                         return $this->error->error(mensaje: 'Error al obtener cat_sat_producto',data: $cat_sat_producto);
                     }
 
-                    $this->registro['cat_sat_producto_id'] = $cat_sat_producto['cat_sat_producto_id'];
-                    $this->registro['codigo_sat'] = $cat_sat_producto['cat_sat_producto_codigo'];
+                    $this->registro['cat_sat_producto_id'] = '97999999';
+                    $this->registro['codigo_sat'] = $this->registro['cat_sat_producto'];
+                    $this->registro['cat_sat_cve_prod_id'] = $cat_sat_producto['cat_sat_cve_prod_id'];
 
                 }
                 else{
-                    $cat_sat_producto_data = $this->registro['cat_sat_producto'];
-                    $integra_tmp = true;
-                    $this->registro['codigo_sat'] = $this->registro['cat_sat_producto'];
+                    return $this->error->error(mensaje: 'Error el producto no existe',data: $this->registro);
                 }
+
                 unset($this->registro['cat_sat_producto']);
             }
-        }
-        if(!isset($this->registro['cat_sat_producto_id']) || trim($this->registro['cat_sat_producto_id']) === ''){
+
             $this->registro['cat_sat_producto_id'] = '97999999';
 
             $filtro = array();
@@ -152,10 +151,10 @@ class com_producto extends _modelo_parent {
 
         }
 
+
         if(!isset($this->registro['cat_sat_conf_imps_id'])){
             $this->registro['cat_sat_conf_imps_id'] = 1;
         }
-
 
         $this->registro = $this->campos_base(data:$this->registro, modelo: $this);
         if(errores::$error){
@@ -181,13 +180,6 @@ class com_producto extends _modelo_parent {
             return $this->error->error(mensaje: 'Error al insertar producto', data: $r_alta_bd);
         }
 
-        if($integra_tmp){
-            $r_alta_com_tmp = $this->inserta_producto_tmp(cat_sat_producto_data: $cat_sat_producto_data,
-                com_producto_id: $r_alta_bd->registro_id);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al insertar producto temporal', data: $r_alta_com_tmp);
-            }
-        }
 
         return $r_alta_bd;
     }
@@ -199,7 +191,7 @@ class com_producto extends _modelo_parent {
      */
     private function cat_sat_producto(array $filtro): array
     {
-        $r_cat_sat_producto = (new cat_sat_producto(link: $this->link))->filtro_and(filtro: $filtro);
+        $r_cat_sat_producto = (new cat_sat_cve_prod(link: $this->link))->filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al al obtener producto',data: $r_cat_sat_producto);
         }
@@ -310,21 +302,20 @@ class com_producto extends _modelo_parent {
 
     /**
      * Verifica si existe un producto por el codigo
-     * @param string $cat_sat_producto_codigo Codigo del sat
+     * @param string $cat_sat_cve_prod_codigo
      * @return array|bool
-     * @version 12.4.0
      */
-    private function existe_cat_sat_producto(string $cat_sat_producto_codigo): bool|array
+    private function existe_cat_sat_cve_prod(string $cat_sat_cve_prod_codigo): bool|array
     {
-        $cat_sat_producto_codigo = trim($cat_sat_producto_codigo);
-        if($cat_sat_producto_codigo === ''){
-            return $this->error->error(mensaje: 'Error cat_sat_producto_codigo esta vacio',
-                data: $cat_sat_producto_codigo);
+        $cat_sat_cve_prod_codigo = trim($cat_sat_cve_prod_codigo);
+        if($cat_sat_cve_prod_codigo === ''){
+            return $this->error->error(mensaje: 'Error cat_sat_cve_prod_codigo esta vacio',
+                data: $cat_sat_cve_prod_codigo);
         }
 
 
-        $filtro['cat_sat_producto.codigo'] = $cat_sat_producto_codigo;
-        $existe = (new cat_sat_producto(link: $this->link))->existe(filtro: $filtro);
+        $filtro['cat_sat_cve_prod.codigo'] = $cat_sat_cve_prod_codigo;
+        $existe = (new cat_sat_cve_prod(link: $this->link))->existe(filtro: $filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar si existe producto',data: $existe);
         }
@@ -380,7 +371,7 @@ class com_producto extends _modelo_parent {
             return $this->error->error(mensaje: 'Error al obtener producto',data:  $producto_ejecutado);
         }
 
-        $existe = $this->existe_cat_sat_producto(cat_sat_producto_codigo: $producto_ejecutado->codigo_sat);
+        $existe = $this->existe_cat_sat_cve_prod(cat_sat_cve_prod_codigo: $producto_ejecutado->codigo_sat);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar si existe producto',data:  $existe);
         }
