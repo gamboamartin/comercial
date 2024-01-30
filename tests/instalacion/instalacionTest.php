@@ -1,6 +1,7 @@
 <?php
 namespace gamboamartin\comercial\test\instalacion;
 
+use config\generales;
 use gamboamartin\comercial\instalacion\instalacion;
 use gamboamartin\comercial\models\com_agente;
 use gamboamartin\comercial\models\com_sucursal;
