@@ -82,6 +82,7 @@ class com_producto extends _modelo_parent {
         return $upd;
     }
 
+
     private function ajusta_temporal(string $codigo_sat, int $com_producto_id){
         $upd = $this->modifica_cat_sat_producto(codigo_sat: $codigo_sat);
         if(errores::$error){

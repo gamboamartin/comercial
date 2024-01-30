@@ -7,6 +7,7 @@ use gamboamartin\administrador\models\adm_namespace;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\models\adm_seccion_pertenece;
 use gamboamartin\administrador\models\adm_sistema;
+use gamboamartin\cat_sat\models\cat_sat_cve_prod;
 use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\comercial\models\com_producto;
 use gamboamartin\comercial\models\com_sucursal;
@@ -397,14 +398,28 @@ class instalacion
         $upds = array();
         foreach ($com_productos as $com_producto){
             if($com_producto['com_producto_codigo_sat'] !== 'SIN ASIGNAR'){
+                $com_producto_upd = array();
                 $com_producto_upd['cat_sat_cve_prod_id'] = $com_producto['com_producto_codigo_sat'];
-                $upd = $com_producto_modelo->modifica_bd(registro: $com_producto_upd,id:  $com_producto['com_producto_id']);
+
+                $existe_prod = (new cat_sat_cve_prod(link: $link))->existe_by_id(registro_id: $com_producto['com_producto_codigo_sat']);
                 if(errores::$error){
+                    return (new errores())->error(mensaje: 'Error al verificar si existe', data: $existe_prod);
+                }
+                if(!$existe_prod){
+                    $com_producto_upd['cat_sat_cve_prod_id'] = '1010101';
+                    $com_producto_upd['codigo_sat'] = '1010101';
+                }
+
+                $upd = $com_producto_modelo->modifica_bd(registro: $com_producto_upd, id: $com_producto['com_producto_id']);
+                if (errores::$error) {
                     return (new errores())->error(mensaje: 'Error al actualizar producto', data: $upd);
                 }
                 $upds[] = $upd;
+
+
             }
             if((int)$com_producto['cat_sat_producto_id'] !== 97999999 && (int)$com_producto['cat_sat_producto_id'] !== 1){
+                $com_producto_upd = array();
                 $com_producto_upd['cat_sat_cve_prod_id'] = $com_producto['cat_sat_producto_id'];
                 $upd = $com_producto_modelo->modifica_bd(registro: $com_producto_upd,id:  $com_producto['com_producto_id']);
                 if(errores::$error){
@@ -416,6 +431,7 @@ class instalacion
 
         $com_tmp_prod_css = (new com_tmp_prod_cs(link: $link))->registros();
         foreach ($com_tmp_prod_css as $com_tmp_prod_cs){
+            $com_producto_upd = array();
             $com_producto_id = $com_tmp_prod_cs['com_producto_id'];
             $cat_sat_producto = $com_tmp_prod_cs['com_tmp_prod_cs_cat_sat_producto'];
 

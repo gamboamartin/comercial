@@ -2,6 +2,7 @@
 namespace gamboamartin\comercial\test\orm;
 
 use gamboamartin\cat_sat\instalacion\instalacion;
+use gamboamartin\cat_sat\models\cat_sat_moneda;
 use gamboamartin\cat_sat\tests\base;
 use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\comercial\test\base_test;
@@ -70,10 +71,17 @@ class com_clienteTest extends test {
             exit;
         }
 
+        $cat_sat_moneda_id = (new cat_sat_moneda(link: $this->link))->primer_id();
+        if(errores::$error){
+            $error = (new errores())->error('Error al obtener primer id', $cat_sat_moneda_id);
+            print_r($error);
+            exit;
+        }
+
         $modelo = new com_cliente($this->link);
         //$modelo = new liberator($modelo);
 
-        $modelo->registro['cat_sat_moneda_id'] = 1;
+        $modelo->registro['cat_sat_moneda_id'] = $cat_sat_moneda_id;
         $modelo->registro['cat_sat_metodo_pago_id'] = 1;
         $modelo->registro['cat_sat_forma_pago_id'] = 1;
         $modelo->registro['telefono'] = 1;
