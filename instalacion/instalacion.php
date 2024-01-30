@@ -403,6 +403,14 @@ class instalacion
                 }
                 $upds[] = $upd;
             }
+            if((int)$com_producto['cat_sat_producto_id'] !== 97999999 && (int)$com_producto['cat_sat_producto_id'] !== 1){
+                $com_producto_upd['cat_sat_cve_prod_id'] = $com_producto['cat_sat_producto_id'];
+                $upd = $com_producto_modelo->modifica_bd(registro: $com_producto_upd,id:  $com_producto['com_producto_id']);
+                if(errores::$error){
+                    return (new errores())->error(mensaje: 'Error al actualizar producto', data: $upd);
+                }
+                $upds[] = $upd;
+            }
         }
 
         $out->upds = $upds;
