@@ -425,10 +425,19 @@ class instalacion
                 return (new errores())->error(mensaje: 'Error al actualizar producto', data: $upd);
             }
             $upds[] = $upd;
+        }
 
+        $dels = array();
+        foreach ($com_tmp_prod_css as $com_tmp_prod_cs){
+            $del = (new com_tmp_prod_cs(link: $link))->elimina_bd(id: $com_tmp_prod_cs['com_tmp_prod_cs_id']);
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error al del com_tmp_prod_cs', data: $del);
+            }
+            $dels[] = $del;
         }
 
         $out->upds = $upds;
+        $out->dels = $dels;
         return $out;
 
     }
