@@ -21,7 +21,8 @@ class com_producto extends _modelo_parent {
         $columnas = array($tabla=>false,'cat_sat_obj_imp'=>$tabla,'cat_sat_producto'=>$tabla, 'cat_sat_unidad'=>$tabla,
             'com_tipo_producto'=>$tabla, 'cat_sat_clase_producto' => 'cat_sat_producto',
             'cat_sat_grupo_producto' => 'cat_sat_clase_producto', 'cat_sat_division_producto' => 'cat_sat_grupo_producto',
-            'cat_sat_tipo_producto' => 'cat_sat_division_producto','cat_sat_conf_imps'=>$tabla);
+            'cat_sat_tipo_producto' => 'cat_sat_division_producto','cat_sat_conf_imps'=>$tabla,
+            'cat_sat_cve_prod'=>$tabla);
         $campos_obligatorios = array('cat_sat_producto_id','cat_sat_unidad_id','cat_sat_obj_imp_id',
             'com_tipo_producto_id','cat_sat_conf_imps_id');
 
