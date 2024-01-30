@@ -423,16 +423,20 @@ class com_producto extends _modelo_parent {
             return $this->error->error(mensaje: 'Error al inicializar campo base',data: $registro);
         }
 
-        $registro = $this->limpia_campos(registro: $registro, campos_limpiar: array('cat_sat_tipo_producto_id',
-            'cat_sat_division_producto_id','cat_sat_grupo_producto_id','cat_sat_clase_producto_id'));
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al limpiar campos', data: $registro);
+
+        if(isset($registro['codigo_sat'])){
+            $registro['cat_sat_cve_prod_id'] = $registro['codigo_sat'];
         }
 
-        $r_modifica_bd = parent::modifica_bd($registro, $id, $reactiva);
+        //var_dump($registro);
+
+        $r_modifica_bd = parent::modifica_bd(registro: $registro,id:  $id, reactiva: $reactiva);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al modificar producto',data:  $r_modifica_bd);
         }
+
+        //print_r($r_modifica_bd);exit;
+
 
         return $r_modifica_bd;
     }
