@@ -351,8 +351,9 @@ class base_test{
 
     public function alta_com_producto(PDO $link, string $aplica_cuenta_predial = 'inactivo',
                                       int $cat_sat_conf_imps_id = 1, int $cat_sat_obj_imp_id = 1,
-                                      int $cat_sat_producto_id = 1, int $cat_sat_unidad_id = 1, int $codigo = 1,
-                                      int $com_tipo_producto_id = 1, int $id = 1): array|\stdClass
+                                      int $cat_sat_cve_prod_id = 1010101, int $cat_sat_producto_id = 1,
+                                      int $cat_sat_unidad_id = 1, int $codigo = 1, int $com_tipo_producto_id = 1,
+                                      int $id = 1): array|\stdClass
     {
 
         $existe = (new com_tipo_producto($link))->existe_by_id(registro_id: $com_tipo_producto_id);
@@ -425,6 +426,7 @@ class base_test{
         $registro['com_tipo_producto_id'] = $com_tipo_producto_id;
         $registro['aplica_cuenta_predial'] = $aplica_cuenta_predial;
         $registro['cat_sat_conf_imps_id'] = $cat_sat_conf_imps_id;
+        $registro['cat_sat_cve_prod_id'] = $cat_sat_cve_prod_id;
 
 
         $alta = (new com_producto($link))->alta_registro($registro);

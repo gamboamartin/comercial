@@ -370,6 +370,7 @@ class instalacion
         $com_producto_ins['es_automatico'] = 'inactivo';
         $com_producto_ins['precio'] = '0';
         $com_producto_ins['codigo_sat'] = '84111506';
+        $com_producto_ins['cat_sat_cve_prod_id'] = '84111506';
 
         $com_productos_ins[] = $com_producto_ins;
 
