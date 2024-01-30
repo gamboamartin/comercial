@@ -321,6 +321,8 @@ class instalacion
         $foraneas['cat_sat_obj_imp_id'] = new stdClass();
         $foraneas['com_tipo_producto_id'] = new stdClass();
         $foraneas['cat_sat_conf_imps_id'] = new stdClass();
+        $foraneas['cat_sat_cve_prod_id'] = new stdClass();
+        $foraneas['cat_sat_cve_prod_id']->default = '1010101';
 
         $result = $init->foraneas(foraneas: $foraneas,table:  'com_producto');
 
@@ -712,12 +714,12 @@ class instalacion
     private function com_tipo_agente(PDO $link): array|stdClass
     {
         $init = (new _instalacion(link: $link));
-        $com_tipo_producto_modelo = new com_tipo_producto(link: $link);
+        //$com_tipo_producto_modelo = new com_tipo_producto(link: $link);
 
         $out = new stdClass();
 
 
-        $campos = new stdClass();
+        //$campos = new stdClass();
         $create_table = $init->create_table_new(table: __FUNCTION__);
         if (errores::$error) {
             return (new errores())->error(mensaje: 'Error al crear table '.__FUNCTION__, data: $create_table);
