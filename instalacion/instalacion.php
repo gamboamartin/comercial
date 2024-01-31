@@ -764,22 +764,13 @@ class instalacion
 
         $out = new stdClass();
 
-        $existe_entidad = $init->existe_entidad(table: __FUNCTION__);
-        if(errores::$error){
-            return (new errores())->error(mensaje: 'Error al verificar table', data:  $existe_entidad);
+
+        $create_table = $init->create_table_new(table: __FUNCTION__);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al crear table '.__FUNCTION__, data: $create_table);
         }
-        $out->existe_entidad = $existe_entidad;
+        $out->create_table = $create_table;
 
-
-        if(!$existe_entidad) {
-
-            $campos = new stdClass();
-            $create_table = $init->create_table(campos: $campos, table: __FUNCTION__);
-            if (errores::$error) {
-                return (new errores())->error(mensaje: 'Error al crear table '.__FUNCTION__, data: $create_table);
-            }
-            $out->create_table = $create_table;
-        }
 
 
         $com_tipo_productos_ins = array();
