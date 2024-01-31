@@ -760,10 +760,8 @@ class instalacion
     private function com_tipo_producto(PDO $link): array|stdClass
     {
         $init = (new _instalacion(link: $link));
-        $com_tipo_producto_modelo = new com_tipo_producto(link: $link);
 
         $out = new stdClass();
-
 
         $create_table = $init->create_table_new(table: __FUNCTION__);
         if (errores::$error) {
@@ -771,7 +769,7 @@ class instalacion
         }
         $out->create_table = $create_table;
 
-
+        $com_tipo_producto_modelo = new com_tipo_producto(link: $link);
 
         $com_tipo_productos_ins = array();
         $com_tipo_producto_ins['id'] = '99999999';
