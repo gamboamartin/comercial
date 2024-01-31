@@ -13,7 +13,6 @@ use gamboamartin\cat_sat\models\cat_sat_producto;
 use gamboamartin\cat_sat\models\cat_sat_unidad;
 use gamboamartin\comercial\models\com_producto;
 use gamboamartin\comercial\models\com_tipo_producto;
-use gamboamartin\comercial\models\com_tmp_prod_cs;
 use gamboamartin\errores\errores;
 use gamboamartin\system\links_menu;
 use gamboamartin\template\html;
@@ -21,7 +20,6 @@ use html\com_producto_html;
 use html\com_tmp_prod_cs_html;
 use PDO;
 use stdClass;
-use Throwable;
 
 class controlador_com_producto extends _base_comercial {
 
@@ -133,11 +131,7 @@ class controlador_com_producto extends _base_comercial {
         $keys->selects = array();
 
         $init_data = array();
-        $init_data['cat_sat_tipo_producto'] = "gamboamartin\\cat_sat";
-        $init_data['cat_sat_division_producto'] = "gamboamartin\\cat_sat";
-        $init_data['cat_sat_grupo_producto'] = "gamboamartin\\cat_sat";
-        $init_data['cat_sat_clase_producto'] = "gamboamartin\\cat_sat";
-        $init_data['cat_sat_producto'] = "gamboamartin\\cat_sat";
+        $init_data['cat_sat_cve_prod'] = "gamboamartin\\cat_sat";
         $init_data['com_tipo_producto'] = "gamboamartin\\comercial";
         $init_data['cat_sat_unidad'] = "gamboamartin\\cat_sat";
         $init_data['cat_sat_obj_imp'] = "gamboamartin\\cat_sat";
@@ -183,35 +177,6 @@ class controlador_com_producto extends _base_comercial {
             return $this->errores->error(mensaje: 'Error al inicializar alta',data:  $r_alta);
         }
 
-        $keys_selects = $this->key_select(cols:6, con_registros: true,filtro:  array(), key: 'cat_sat_tipo_producto_id',
-            keys_selects: $keys_selects, id_selected: -1, label: 'SAT - Tipo');
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
-        }
-
-        $keys_selects = $this->key_select(cols:6, con_registros: false,filtro:  array(), key: 'cat_sat_division_producto_id',
-            keys_selects: $keys_selects, id_selected: -1, label: 'SAT - División');
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
-        }
-
-        $keys_selects = $this->key_select(cols:6, con_registros: false,filtro:  array(), key: 'cat_sat_grupo_producto_id',
-            keys_selects: $keys_selects, id_selected: -1, label: 'SAT - Grupo');
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
-        }
-
-        $keys_selects = $this->key_select(cols:6, con_registros: false,filtro:  array(), key: 'cat_sat_clase_producto_id',
-            keys_selects: $keys_selects, id_selected: -1, label: 'SAT - Clase');
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
-        }
-
-        $keys_selects = $this->key_select(cols:12, con_registros: false,filtro:  array(), key: 'cat_sat_producto_id',
-            keys_selects: $keys_selects, id_selected: -1, label: 'SAT - Producto');
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
-        }
 
         $keys_selects = $this->key_select(cols:6, con_registros: true,filtro:  array(), key: 'com_tipo_producto_id',
             keys_selects: $keys_selects, id_selected: -1, label: 'Tipo Producto');
@@ -266,13 +231,13 @@ class controlador_com_producto extends _base_comercial {
     {
         $columns["com_producto_id"]["titulo"] = "Id";
         $columns["com_producto_codigo"]["titulo"] = "Código";
-        $columns["cat_sat_producto_codigo"]["titulo"] = "Código SAT";
-        $columns["cat_sat_producto_descripcion"]["titulo"] = "SAT Producto";
+        $columns["cat_sat_cve_prod_codigo"]["titulo"] = "Código SAT";
+        $columns["cat_sat_cve_prod_descripcion"]["titulo"] = "SAT Producto";
         $columns["cat_sat_unidad_descripcion"]["titulo"] = "SAT Unidad";
         $columns["cat_sat_obj_imp_descripcion"]["titulo"] = "SAT ObjetoImp";
         $columns["com_producto_descripcion"]["titulo"] = "Producto";
 
-        $filtro = array("com_producto.id","com_producto.codigo", "com_producto.descripcion",'cat_sat_producto.codigo');
+        $filtro = array("com_producto.id","com_producto.codigo", "com_producto.descripcion",'cat_sat_cve_prod.codigo');
 
         $datatables = new stdClass();
         $datatables->columns = $columns;
@@ -288,41 +253,7 @@ class controlador_com_producto extends _base_comercial {
      */
     private function inicializa_propiedades(): array
     {
-        $identificador = "cat_sat_tipo_producto_id";
-        $propiedades = array("label" => "SAT - Tipo");
-        $pr = $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al inicializa',data:  $pr);
-        }
 
-        $identificador = "cat_sat_division_producto_id";
-        $propiedades = array("label" => "SAT - División", "con_registros" => false);
-        $pr =$this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al inicializa',data:  $pr);
-        }
-
-
-        $identificador = "cat_sat_grupo_producto_id";
-        $propiedades = array("label" => "SAT - Grupo", "con_registros" => false);
-        $pr =$this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al inicializa',data:  $pr);
-        }
-
-        $identificador = "cat_sat_clase_producto_id";
-        $propiedades = array("label" => "SAT - Clase", "con_registros" => false);
-        $pr =$this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al inicializa',data:  $pr);
-        }
-
-        $identificador = "cat_sat_producto_id";
-        $propiedades = array("label" => "SAT - Producto", "con_registros" => false, "cols" => 12);
-        $pr =$this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al inicializa',data:  $pr);
-        }
 
         $identificador = "cat_sat_unidad_id";
         $propiedades = array("label" => "SAT - Unidad",  "cols" => 6);
@@ -388,29 +319,6 @@ class controlador_com_producto extends _base_comercial {
             return $this->errores->error(mensaje: 'Error al obtener $producto',data:  $producto);
         }
 
-        $identificador = "cat_sat_tipo_producto_id";
-        $propiedades = array("id_selected" => $producto['cat_sat_tipo_producto_id']);
-        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
-
-        $identificador = "cat_sat_division_producto_id";
-        $propiedades = array("id_selected" => $producto['cat_sat_division_producto_id'], "con_registros" => true,
-            "filtro" => array('cat_sat_tipo_producto.id' => $producto['cat_sat_tipo_producto_id']));
-        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
-
-        $identificador = "cat_sat_grupo_producto_id";
-        $propiedades = array("id_selected" => $producto['cat_sat_grupo_producto_id'], "con_registros" => true,
-            "filtro" => array('cat_sat_division_producto.id' => $producto['cat_sat_division_producto_id']));
-        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
-
-        $identificador = "cat_sat_clase_producto_id";
-        $propiedades = array("id_selected" => $producto['cat_sat_clase_producto_id'], "con_registros" => true,
-            "filtro" => array('cat_sat_grupo_producto.id' => $producto['cat_sat_grupo_producto_id']));
-        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
-
-        $identificador = "cat_sat_producto_id";
-        $propiedades = array("id_selected" => $this->row_upd->cat_sat_producto_id, "con_registros" => true,
-            "filtro" => array('cat_sat_clase_producto.id' => $producto['cat_sat_clase_producto_id']), 'cols'=>6);
-        $this->asignar_propiedad(identificador:$identificador, propiedades: $propiedades);
 
         $identificador = "cat_sat_unidad_id";
         $propiedades = array("id_selected" => $this->row_upd->cat_sat_unidad_id);

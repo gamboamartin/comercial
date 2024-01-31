@@ -45,9 +45,12 @@ class controlador_com_productoTest extends test {
 
 
         $resultado = $ctl->inicializa_propiedades();
+
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("SAT - Tipo", $resultado['cat_sat_tipo_producto_id']->label);
+        $this->assertEquals("SAT - Unidad", $resultado['cat_sat_unidad_id']->label);
+        $this->assertEquals("Conf Impuestos", $resultado['cat_sat_conf_imps_id']->label);
+
         errores::$error = false;
     }
 
@@ -68,12 +71,12 @@ class controlador_com_productoTest extends test {
 
 
         $resultado = $ctl->init_datatable();
-
+        //print_r($resultado);exit;
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("Id", $resultado->columns['com_producto_id']['titulo']);
         $this->assertEquals("Código", $resultado->columns['com_producto_codigo']['titulo']);
-        $this->assertEquals("SAT Producto", $resultado->columns['cat_sat_producto_descripcion']['titulo']);
+        $this->assertEquals("Código SAT", $resultado->columns['cat_sat_cve_prod_codigo']['titulo']);
         $this->assertEquals("SAT Unidad", $resultado->columns['cat_sat_unidad_descripcion']['titulo']);
         $this->assertEquals("SAT ObjetoImp", $resultado->columns['cat_sat_obj_imp_descripcion']['titulo']);
         $this->assertEquals("Producto", $resultado->columns['com_producto_descripcion']['titulo']);

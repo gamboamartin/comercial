@@ -1,14 +1,10 @@
 <?php
 namespace gamboamartin\comercial\models;
 use base\orm\_modelo_parent;
-use gamboamartin\cat_sat\models\cat_sat_clase_producto;
 use gamboamartin\cat_sat\models\cat_sat_conf_imps;
 use gamboamartin\cat_sat\models\cat_sat_cve_prod;
-use gamboamartin\cat_sat\models\cat_sat_division_producto;
-use gamboamartin\cat_sat\models\cat_sat_grupo_producto;
 use gamboamartin\cat_sat\models\cat_sat_obj_imp;
 use gamboamartin\cat_sat\models\cat_sat_producto;
-use gamboamartin\cat_sat\models\cat_sat_tipo_producto;
 use gamboamartin\cat_sat\models\cat_sat_unidad;
 use gamboamartin\errores\errores;
 use PDO;
@@ -19,19 +15,13 @@ class com_producto extends _modelo_parent {
 
     public function __construct(PDO $link){
         $tabla = 'com_producto';
-        $columnas = array($tabla=>false,'cat_sat_obj_imp'=>$tabla,'cat_sat_producto'=>$tabla, 'cat_sat_unidad'=>$tabla,
-            'com_tipo_producto'=>$tabla, 'cat_sat_clase_producto' => 'cat_sat_producto',
-            'cat_sat_grupo_producto' => 'cat_sat_clase_producto', 'cat_sat_division_producto' => 'cat_sat_grupo_producto',
-            'cat_sat_tipo_producto' => 'cat_sat_division_producto','cat_sat_conf_imps'=>$tabla,
-            'cat_sat_cve_prod'=>$tabla);
-        $campos_obligatorios = array('cat_sat_producto_id','cat_sat_unidad_id','cat_sat_obj_imp_id',
-            'com_tipo_producto_id','cat_sat_conf_imps_id','cat_sat_cve_prod_id');
+        $columnas = array($tabla=>false,'cat_sat_obj_imp'=>$tabla, 'cat_sat_unidad'=>$tabla,
+            'com_tipo_producto'=>$tabla,'cat_sat_conf_imps'=>$tabla, 'cat_sat_cve_prod'=>$tabla);
 
-        $campos_view['cat_sat_tipo_producto_id'] = array('type' => 'selects', 'model' => new cat_sat_tipo_producto($link));
-        $campos_view['cat_sat_division_producto_id'] = array('type' => 'selects', 'model' => new cat_sat_division_producto($link));
-        $campos_view['cat_sat_grupo_producto_id'] = array('type' => 'selects', 'model' => new cat_sat_grupo_producto($link));
-        $campos_view['cat_sat_clase_producto_id'] = array('type' => 'selects', 'model' => new cat_sat_clase_producto($link));
-        $campos_view['cat_sat_producto_id'] = array('type' => 'selects', 'model' => new cat_sat_producto($link));
+        $campos_obligatorios = array('cat_sat_unidad_id','cat_sat_obj_imp_id', 'com_tipo_producto_id',
+            'cat_sat_conf_imps_id','cat_sat_cve_prod_id');
+
+
         $campos_view['cat_sat_unidad_id'] = array('type' => 'selects', 'model' => new cat_sat_unidad($link));
         $campos_view['cat_sat_obj_imp_id'] = array('type' => 'selects', 'model' => new cat_sat_obj_imp($link));
         $campos_view['cat_sat_conf_imps_id'] = array('type' => 'selects', 'model' => new cat_sat_conf_imps($link));
@@ -43,7 +33,6 @@ class com_producto extends _modelo_parent {
 
         $atributos_criticos[] = 'es_automatico';
         $atributos_criticos[] = 'cat_sat_obj_imp_id';
-        $atributos_criticos[] = 'cat_sat_producto_id';
         $atributos_criticos[] = 'cat_sat_unidad_id';
         $atributos_criticos[] = 'com_tipo_producto_id';
         $atributos_criticos[] = 'cat_sat_conf_imps_id';
@@ -107,8 +96,6 @@ class com_producto extends _modelo_parent {
             unset($this->registro['cat_sat_producto_radio']);
             $this->registro['cat_sat_cve_prod_id'] = $this->registro['cat_sat_producto'];
         }
-
-
 
 
         if(isset($this->registro['cat_sat_producto'])){

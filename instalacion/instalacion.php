@@ -398,6 +398,12 @@ class instalacion
 
         $upds = array();
         foreach ($com_productos as $com_producto){
+
+            $com_producto_bruto = $com_producto_modelo->registro(registro_id: $com_producto['com_producto_id'],columnas_en_bruto: true);
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error al verificar com_producto_bruto', data: $com_producto_bruto);
+            }
+
             if($com_producto['com_producto_codigo_sat'] !== 'SIN ASIGNAR'){
                 $com_producto_upd = array();
                 $com_producto_upd['cat_sat_cve_prod_id'] = $com_producto['com_producto_codigo_sat'];
@@ -417,11 +423,11 @@ class instalacion
                 }
                 $upds[] = $upd;
 
-
             }
-            if((int)$com_producto['cat_sat_producto_id'] !== 97999999 && (int)$com_producto['cat_sat_producto_id'] !== 1){
+
+            if((int)$com_producto_bruto['cat_sat_producto_id'] !== 97999999 && (int)$com_producto_bruto['cat_sat_producto_id'] !== 1){
                 $com_producto_upd = array();
-                $com_producto_upd['cat_sat_cve_prod_id'] = $com_producto['cat_sat_producto_id'];
+                $com_producto_upd['cat_sat_cve_prod_id'] = $com_producto_bruto['cat_sat_producto_id'];
                 $upd = $com_producto_modelo->modifica_bd(registro: $com_producto_upd,id:  $com_producto['com_producto_id']);
                 if(errores::$error){
                     return (new errores())->error(mensaje: 'Error al actualizar producto', data: $upd);
