@@ -1,6 +1,7 @@
 <?php
 namespace gamboamartin\comercial\instalacion;
 use base\orm\modelo;
+use gamboamartin\administrador\instalacion\_adm;
 use gamboamartin\administrador\models\_instalacion;
 use gamboamartin\administrador\models\adm_menu;
 use gamboamartin\administrador\models\adm_namespace;
@@ -476,8 +477,11 @@ class instalacion
         $adm_sistema_descripcion = 'comercial';
         $etiqueta_label = 'Productos';
         $adm_seccion_pertenece_descripcion = 'comercial';
+        $adm_namespace_descripcion = 'gamboa.martin/comercial';
+        $adm_namespace_name = 'gamboamartin/comercial';
 
         $acl = (new _adm())->integra_acl(adm_menu_descripcion: $adm_menu_descripcion,
+            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion,
             adm_seccion_descripcion: __FUNCTION__, adm_seccion_pertenece_descripcion: $adm_seccion_pertenece_descripcion,
             adm_sistema_descripcion: $adm_sistema_descripcion, etiqueta_label: $etiqueta_label, link: $link);
         if(errores::$error){
@@ -568,14 +572,6 @@ class instalacion
         }
         $out->add_colums_base = $add_colums;
 
-        $columnas = new stdClass();
-        $columnas->com_agente_id = new stdClass();
-        $columnas->com_agente_id->tipo_dato = 'BIGINT';
-        $columnas->com_agente_id->longitud = 100;
-
-        $columnas->com_prospecto_id = new stdClass();
-        $columnas->com_prospecto_id->tipo_dato = 'BIGINT';
-        $columnas->com_prospecto_id->longitud = 100;
 
 
         $foraneas = array();
@@ -687,8 +683,11 @@ class instalacion
         $adm_sistema_descripcion = 'comercial';
         $etiqueta_label = 'Sucursales';
         $adm_seccion_pertenece_descripcion = 'comercial';
+        $adm_namespace_descripcion = 'gamboa.martin/comercial';
+        $adm_namespace_name = 'gamboamartin/comercial';
 
         $acl = (new _adm())->integra_acl(adm_menu_descripcion: $adm_menu_descripcion,
+            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion,
             adm_seccion_descripcion: __FUNCTION__, adm_seccion_pertenece_descripcion: $adm_seccion_pertenece_descripcion,
             adm_sistema_descripcion: $adm_sistema_descripcion, etiqueta_label: $etiqueta_label, link: $link);
         if(errores::$error){

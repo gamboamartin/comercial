@@ -14,6 +14,17 @@
 
                         <?php echo $controlador->inputs->com_tipo_producto_id; ?>
                         <?php echo $controlador->inputs->cat_sat_producto; ?>
+                        <div class="col-md-12 table table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <th>Producto</th>
+                                    <th>Selecciona</th>
+                                </thead>
+                                <tbody id="datos_producto">
+
+                                </tbody>
+                            </table>
+                        </div>
                         <?php echo $controlador->inputs->cat_sat_unidad_id; ?>
                         <?php echo $controlador->inputs->cat_sat_obj_imp_id; ?>
                         <?php echo $controlador->inputs->codigo; ?>
