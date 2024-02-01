@@ -314,7 +314,7 @@ class instalacion
     private function com_producto(PDO $link): array|stdClass
     {
         $init = (new _instalacion(link: $link));
-        $com_producto_modelo = new com_producto(link: $link);
+
 
         $out = new stdClass();
 
@@ -358,6 +358,9 @@ class instalacion
         }
 
         $out->campos = $result;
+
+
+        $com_producto_modelo = new com_producto(link: $link);
 
         $com_productos_ins = array();
         $com_producto_ins['id'] = '84111506';
