@@ -21,6 +21,68 @@ use stdClass;
 
 class instalacion
 {
+    private function _add_com_producto(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $init = (new _instalacion(link: $link));
+
+        $create = $init->create_table_new(table: 'com_producto');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create = $create;
+
+        $columnas = new stdClass();
+        $add_colums = $init->add_columns(campos: $columnas,table:  'com_producto');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar columnas', data:  $add_colums);
+        }
+        $out->add_colums_base = $add_colums;
+
+
+        $foraneas = array();
+        $foraneas['cat_sat_producto_id'] = new stdClass();
+        $foraneas['cat_sat_unidad_id'] = new stdClass();
+        $foraneas['cat_sat_obj_imp_id'] = new stdClass();
+        $foraneas['com_tipo_producto_id'] = new stdClass();
+        $foraneas['cat_sat_conf_imps_id'] = new stdClass();
+        $foraneas['cat_sat_cve_prod_id'] = new stdClass();
+        $foraneas['cat_sat_cve_prod_id']->default = '1010101';
+
+        $result = $init->foraneas(foraneas: $foraneas,table:  'com_producto');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
+        }
+
+        $out->foraneas = $result;
+
+        $campos = new stdClass();
+
+        $campos->aplica_predial = new stdClass();
+        $campos->aplica_predial->default = 'inactivo';
+
+        $campos->es_automatico = new stdClass();
+        $campos->es_automatico->default = 'inactivo';
+
+        $campos->precio = new stdClass();
+        $campos->precio->tipo_dato = 'double';
+        $campos->precio->default = '0';
+        $campos->precio->longitud = '100,2';
+
+        $campos->codigo_sat = new stdClass();
+        $campos->codigo_sat->default = 'POR DEFINIR';
+
+        $result = $init->add_columns(campos: $campos,table:  'com_producto');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
+        }
+
+        $out->campos = $result;
+
+        return $out;
+    }
 
     private function actualiza_atributos_registro(modelo $modelo, array $foraneas): array
     {
@@ -76,7 +138,6 @@ class instalacion
         return $upds;
 
     }
-
     private function com_agente(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -314,63 +375,13 @@ class instalacion
     private function com_producto(PDO $link): array|stdClass
     {
         $out = new stdClass();
-        $init = (new _instalacion(link: $link));
 
-
-        $create = $init->create_table_new(table: __FUNCTION__);
+        $create = $this->_add_com_producto(link: $link);
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
         }
-        $out->create = $create;
 
-        $columnas = new stdClass();
-        $add_colums = $init->add_columns(campos: $columnas,table:  __FUNCTION__);
-        if(errores::$error){
-            return (new errores())->error(mensaje: 'Error al agregar columnas', data:  $add_colums);
-        }
-        $out->add_colums_base = $add_colums;
-
-
-        $foraneas = array();
-        $foraneas['cat_sat_producto_id'] = new stdClass();
-        $foraneas['cat_sat_unidad_id'] = new stdClass();
-        $foraneas['cat_sat_obj_imp_id'] = new stdClass();
-        $foraneas['com_tipo_producto_id'] = new stdClass();
-        $foraneas['cat_sat_conf_imps_id'] = new stdClass();
-        $foraneas['cat_sat_cve_prod_id'] = new stdClass();
-        $foraneas['cat_sat_cve_prod_id']->default = '1010101';
-
-        $result = $init->foraneas(foraneas: $foraneas,table:  'com_producto');
-
-        if(errores::$error){
-            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
-        }
-
-        $out->foraneas = $result;
-
-        $campos = new stdClass();
-
-        $campos->aplica_predial = new stdClass();
-        $campos->aplica_predial->default = 'inactivo';
-
-        $campos->es_automatico = new stdClass();
-        $campos->es_automatico->default = 'inactivo';
-
-        $campos->precio = new stdClass();
-        $campos->precio->tipo_dato = 'double';
-        $campos->precio->default = '0';
-        $campos->precio->longitud = '100,2';
-
-        $campos->codigo_sat = new stdClass();
-        $campos->codigo_sat->default = 'POR DEFINIR';
-
-        $result = $init->add_columns(campos: $campos,table:  'com_producto');
-
-        if(errores::$error){
-            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
-        }
-
-        $out->campos = $result;
+        $out->campos = $create;
 
 
         $com_producto_modelo = new com_producto(link: $link);
@@ -784,6 +795,14 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al crear table '.__FUNCTION__, data: $create_table);
         }
         $out->create_table = $create_table;
+
+
+        $create = $this->_add_com_producto(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+
+        $out->_add_com_producto = $create;
 
         $com_tipo_producto_modelo = new com_tipo_producto(link: $link);
 
