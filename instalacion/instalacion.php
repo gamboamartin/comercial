@@ -84,6 +84,55 @@ class instalacion
         return $out;
     }
 
+    private function _add_com_tipo_cambio(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $init = (new _instalacion(link: $link));
+
+        $create = $init->create_table_new(table: 'com_tipo_cambio');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create = $create;
+
+        $columnas = new stdClass();
+        $add_colums = $init->add_columns(campos: $columnas,table:  'com_tipo_cambio');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar columnas', data:  $add_colums);
+        }
+        $out->add_colums_base = $add_colums;
+
+
+        $foraneas = array();
+        $foraneas['cat_sat_moneda_id'] = new stdClass();
+
+        $result = $init->foraneas(foraneas: $foraneas,table:  'com_tipo_cambio');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
+        }
+
+        $out->foraneas = $result;
+
+        $campos = new stdClass();
+
+        $campos->monto = new stdClass();
+        $campos->monto->default = '1';
+        $campos->monto->tipo_dato = 'double';
+        $campos->monto->longitud = '100,4';
+
+
+        $result = $init->add_columns(campos: $campos,table:  'com_tipo_cambio');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
+        }
+
+        $out->campos = $result;
+
+        return $out;
+    }
+
     private function _add_com_tmp_prod_cs(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -834,6 +883,22 @@ class instalacion
         $out->create_table = $create_table;
 
 
+
+        return $out;
+
+    }
+
+    private function com_tipo_cambio(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+
+        $create = $this->_add_com_tipo_cambio(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+
+        $out->campos = $create;
+
         return $out;
 
     }
@@ -923,7 +988,6 @@ class instalacion
         return $out;
 
     }
-
     private function com_tmp_prod_cs(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -1011,6 +1075,13 @@ class instalacion
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error integrar com_tmp_prod_cs', data:  $com_tmp_prod_cs);
         }
+        $out->com_tmp_prod_cs = $com_tmp_prod_cs;
+
+        $com_tipo_cambio = $this->com_tipo_cambio(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error integrar com_tipo_cambio', data:  $com_tipo_cambio);
+        }
+        $out->com_tipo_cambio = $com_tipo_cambio;
 
         return $out;
 
