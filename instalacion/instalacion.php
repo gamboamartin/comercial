@@ -428,7 +428,13 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
         }
 
-        $out->campos = $create;
+        $out->create = $create;
+
+        $create = $this->_add_com_tmp_prod_cs(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create_com_tmp_prod_cs = $create;
 
 
         $com_producto_modelo = new com_producto(link: $link);
