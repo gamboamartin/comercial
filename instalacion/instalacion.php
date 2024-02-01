@@ -313,10 +313,23 @@ class instalacion
     }
     private function com_producto(PDO $link): array|stdClass
     {
+        $out = new stdClass();
         $init = (new _instalacion(link: $link));
 
 
-        $out = new stdClass();
+        $create = $init->create_table_new(table: __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create = $create;
+
+        $columnas = new stdClass();
+        $add_colums = $init->add_columns(campos: $columnas,table:  __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar columnas', data:  $add_colums);
+        }
+        $out->add_colums_base = $add_colums;
+
 
         $foraneas = array();
         $foraneas['cat_sat_producto_id'] = new stdClass();
