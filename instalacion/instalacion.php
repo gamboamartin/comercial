@@ -83,7 +83,6 @@ class instalacion
 
         return $out;
     }
-
     private function _add_com_tipo_cambio(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -121,6 +120,11 @@ class instalacion
         $campos->monto->tipo_dato = 'double';
         $campos->monto->longitud = '100,4';
 
+        $campos->fecha = new stdClass();
+        $campos->fecha->default = '1900-01-01';
+        $campos->fecha->tipo_dato = 'DATE';
+        $campos->fecha->longitud = '';
+
 
         $result = $init->add_columns(campos: $campos,table:  'com_tipo_cambio');
 
@@ -132,7 +136,6 @@ class instalacion
 
         return $out;
     }
-
     private function _add_com_tmp_prod_cs(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -887,7 +890,6 @@ class instalacion
         return $out;
 
     }
-
     private function com_tipo_cambio(PDO $link): array|stdClass
     {
         $out = new stdClass();
