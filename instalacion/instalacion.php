@@ -84,6 +84,53 @@ class instalacion
         return $out;
     }
 
+    private function _add_com_tmp_prod_cs(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $init = (new _instalacion(link: $link));
+
+        $create = $init->create_table_new(table: 'com_tmp_prod_cs');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create = $create;
+
+        $columnas = new stdClass();
+        $add_colums = $init->add_columns(campos: $columnas,table:  'com_tmp_prod_cs');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar columnas', data:  $add_colums);
+        }
+        $out->add_colums_base = $add_colums;
+
+
+        $foraneas = array();
+        $foraneas['com_producto_id'] = new stdClass();
+        $foraneas['cat_sat_producto_id'] = new stdClass();
+
+        $result = $init->foraneas(foraneas: $foraneas,table:  'com_tmp_prod_cs');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
+        }
+
+        $out->foraneas = $result;
+
+        $campos = new stdClass();
+
+        $campos->cat_sat_producto = new stdClass();
+        $campos->cat_sat_producto->default = '01010101';
+
+
+        $result = $init->add_columns(campos: $campos,table:  'com_tmp_prod_cs');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
+        }
+
+        $out->campos = $result;
+
+        return $out;
+    }
     private function actualiza_atributos_registro(modelo $modelo, array $foraneas): array
     {
         $atributos = $modelo->atributos;
@@ -870,6 +917,21 @@ class instalacion
         return $out;
 
     }
+
+    private function com_tmp_prod_cs(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+
+        $create = $this->_add_com_tmp_prod_cs(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+
+        $out->campos = $create;
+
+        return $out;
+
+    }
     final public function instala(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -938,6 +1000,11 @@ class instalacion
             return (new errores())->error(mensaje: 'Error integrar com_rel_agente', data:  $com_rel_agente);
         }
         $out->com_agente = $com_agente;
+
+        $com_tmp_prod_cs = $this->com_tmp_prod_cs(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error integrar com_tmp_prod_cs', data:  $com_tmp_prod_cs);
+        }
 
         return $out;
 
