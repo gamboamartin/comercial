@@ -461,17 +461,6 @@ class base_test{
             }
         }
 
-        $existe = (new com_tipo_sucursal($link))->existe_by_id(registro_id: $com_tipo_sucursal_id);
-        if(errores::$error){
-            return (new errores())->error('Error al verificar si existe', $existe);
-        }
-
-        if(!$existe) {
-            $alta = (new base_test())->alta_com_tipo_sucursal(link: $link, id: $com_tipo_sucursal_id);
-            if(errores::$error){
-                return (new errores())->error('Error al insertar', $alta);
-            }
-        }
 
         $del = $this->del_com_sucursal($link);
         if(errores::$error){

@@ -650,7 +650,6 @@ class com_cliente extends _modelo_parent
             $com_cliente->numero_interior = '';
         }
 
-
         $r_com_sucursales = array();
         $r_sucursales = (new com_sucursal(link: $this->link))->sucursales(com_cliente_id: $com_cliente_id);
         if (errores::$error) {

@@ -8,6 +8,7 @@ use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\comercial\models\com_producto;
 use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\comercial\models\com_tipo_producto;
+use gamboamartin\comercial\models\com_tipo_sucursal;
 use gamboamartin\comercial\models\com_tmp_prod_cs;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\errores\errores;
@@ -69,6 +70,48 @@ class instalacion
         $campos->codigo_sat->default = 'POR DEFINIR';
 
         $result = $init->add_columns(campos: $campos,table:  'com_producto');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
+        }
+
+        $out->campos = $result;
+
+        return $out;
+    }
+
+    private function _add_com_conf_precio(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $init = (new _instalacion(link: $link));
+
+        $create = $init->create_table_new(table: 'com_conf_precio');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create = $create;
+
+        $foraneas = array();
+        $foraneas['com_producto_id'] = new stdClass();
+        $foraneas['com_tipo_cliente_id'] = new stdClass();
+
+        $result = $init->foraneas(foraneas: $foraneas,table:  'com_conf_precio');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
+        }
+
+        $out->foraneas = $result;
+
+        $campos = new stdClass();
+
+
+        $campos->precio = new stdClass();
+        $campos->precio->tipo_dato = 'double';
+        $campos->precio->default = '0';
+        $campos->precio->longitud = '100,2';
+
+        $result = $init->add_columns(campos: $campos,table:  'com_conf_precio');
 
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
@@ -175,6 +218,21 @@ class instalacion
         }
 
         $out->campos = $result;
+
+        return $out;
+    }
+
+    private function _add_com_tipo_sucursal(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $init = (new _instalacion(link: $link));
+
+        $create = $init->create_table_new(table: 'com_tipo_sucursal');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create = $create;
+
 
         return $out;
     }
@@ -902,6 +960,21 @@ class instalacion
         return $out;
 
     }
+
+    private function com_conf_precio(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+
+        $create = $this->_add_com_conf_precio(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+
+        $out->campos = $create;
+
+        return $out;
+
+    }
     private function com_tipo_producto(PDO $link): array|stdClass
     {
         $init = (new _instalacion(link: $link));
@@ -1002,6 +1075,54 @@ class instalacion
         return $out;
 
     }
+
+    private function com_tipo_sucursal(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+
+        $create = $this->_add_com_tipo_sucursal(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+
+        $modelo = new com_tipo_sucursal(link: $link);
+
+        $rows = array();
+        $ins['id'] = '1';
+        $ins['descripcion'] = 'MATRIZ';
+        $ins['codigo'] = 'MAT';
+        $ins['predeterminado'] = 'activo';
+
+        $rows[] = $ins;
+
+        $ins['id'] = '2';
+        $ins['descripcion'] = 'SUCURSAL';
+        $ins['codigo'] = 'SUC';
+        $ins['predeterminado'] = 'inactivo';
+
+        $rows[] = $ins;
+
+        foreach ($rows as $ins){
+
+            $existe = $modelo->existe_by_id($ins['id']);
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error al validar si existe row', data:  $existe);
+            }
+            if(!$existe) {
+                $alta = $modelo->alta_registro(registro: $ins);
+                if (errores::$error) {
+                    return (new errores())->error(mensaje: 'Error al insertar registro', data: $alta);
+                }
+                $out->com_tipo_producto[] = $alta;
+            }
+
+        }
+
+        $out->campos = $create;
+
+        return $out;
+
+    }
     final public function instala(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -1009,6 +1130,10 @@ class instalacion
         $com_tipo_producto = $this->com_tipo_producto(link: $link);
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error integrar com_tipo_producto', data:  $com_tipo_producto);
+        }
+        $com_tipo_sucursal = $this->com_tipo_sucursal(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error integrar com_tipo_sucursal', data:  $com_tipo_sucursal);
         }
         $com_tipo_agente = $this->com_tipo_agente(link: $link);
         if(errores::$error){
@@ -1082,6 +1207,12 @@ class instalacion
             return (new errores())->error(mensaje: 'Error integrar com_tipo_cambio', data:  $com_tipo_cambio);
         }
         $out->com_tipo_cambio = $com_tipo_cambio;
+
+        $com_conf_precio = $this->com_conf_precio(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error integrar com_conf_precio', data:  $com_conf_precio);
+        }
+        $out->com_conf_precio = $com_conf_precio;
 
         return $out;
 

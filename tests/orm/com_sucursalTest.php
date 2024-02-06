@@ -346,7 +346,7 @@ class com_sucursalTest extends test {
         $modelo = new com_sucursal($this->link);
         //$modelo = new liberator($modelo);
 
-        $alta = (new base_test())->alta_com_sucursal(link: $this->link);
+        $alta = (new base_test())->alta_com_sucursal(link: $this->link,com_tipo_sucursal_id: 2);
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);
             print_r($error);
@@ -370,13 +370,13 @@ class com_sucursalTest extends test {
         $id = 1;
 
         $registro['dp_calle_pertenece_id'] = 2;
-        $registro['com_tipo_sucursal_id'] = 9;
+        $registro['com_tipo_sucursal_id'] = 1;
 
         $resultado = $modelo->modifica_bd(registro: $registro,id:  $id);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("230", $resultado->registro_actualizado->dp_municipio_id);
-        $this->assertEquals("9", $resultado->registro_actualizado->com_tipo_sucursal_id);
+        $this->assertEquals("1", $resultado->registro_actualizado->com_tipo_sucursal_id);
 
 
         errores::$error = false;

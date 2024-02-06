@@ -24,6 +24,19 @@ if(errores::$error){
     exit;
 }
 
+$direccion_postal = new gamboamartin\direccion_postal\instalacion\instalacion();
+
+$instala = $direccion_postal->instala(link: $link);
+
+if(errores::$error){
+    $link->rollBack();
+    $error = (new errores())->error(mensaje: 'Error al instalar direccion_postal', data: $instala);
+    print_r($error);
+    exit;
+}
+
+print_r($instala);
+
 $cat_sat = new gamboamartin\cat_sat\instalacion\instalacion();
 
 $instala = $cat_sat->instala(link: $link);
