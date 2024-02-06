@@ -3,11 +3,6 @@ namespace gamboamartin\comercial\instalacion;
 use base\orm\modelo;
 use gamboamartin\administrador\instalacion\_adm;
 use gamboamartin\administrador\models\_instalacion;
-use gamboamartin\administrador\models\adm_menu;
-use gamboamartin\administrador\models\adm_namespace;
-use gamboamartin\administrador\models\adm_seccion;
-use gamboamartin\administrador\models\adm_seccion_pertenece;
-use gamboamartin\administrador\models\adm_sistema;
 use gamboamartin\cat_sat\models\cat_sat_cve_prod;
 use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\comercial\models\com_producto;
@@ -538,6 +533,9 @@ class instalacion
 
             if($com_producto['com_producto_codigo_sat'] !== 'SIN ASIGNAR'){
                 $com_producto_upd = array();
+                if(!is_numeric($com_producto['com_producto_codigo_sat'])){
+                    continue;
+                }
                 $com_producto_upd['cat_sat_cve_prod_id'] = $com_producto['com_producto_codigo_sat'];
 
                 $existe_prod = (new cat_sat_cve_prod(link: $link))->existe_by_id(registro_id: $com_producto['com_producto_codigo_sat']);
