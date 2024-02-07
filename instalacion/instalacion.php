@@ -861,6 +861,7 @@ class instalacion
 
 
         $com_sucursal_modelo = new com_sucursal(link: $link);
+        $com_sucursal_modelo->transaccion_desde_cliente = true;
         $com_sucursales = $com_sucursal_modelo->registros();
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al obtener com_sucursales', data:  $com_sucursales);
