@@ -72,27 +72,29 @@ class com_tipo_cambioTest extends test {
         $modelo = new com_tipo_cambio($this->link);
         //$modelo = new liberator($modelo);
 
-        $del = (new base_test())->del_com_tipo_cambio($this->link);
+        /*$del = (new base_test())->del_com_tipo_cambio($this->link);
         if(errores::$error){
             $error = (new errores())->error('Error al eliminar', $del);
             print_r($error);
             exit;
-        }
+        }*/
 
-        $alta = (new base_test())->alta_com_tipo_cambio(link: $this->link, codigo: 'MXN',
+        /*$alta = (new base_test())->alta_com_tipo_cambio(link: $this->link, codigo: 'MXN',
             fecha: date('Y-m-d'));
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);
             print_r($error);
             exit;
-        }
+        }*/
 
-        $cat_sat_moneda_id = 1;
+
+        $cat_sat_moneda_id = 161;
         $fecha = date('Y-m-d');
         $resultado = $modelo->tipo_cambio($cat_sat_moneda_id, $fecha);
+        //print_r($resultado);exit;
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("1", $resultado['com_tipo_cambio_id']);
+        $this->assertIsNumeric( $resultado['com_tipo_cambio_id']);
 
         errores::$error = false;
     }

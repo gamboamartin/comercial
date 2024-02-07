@@ -80,6 +80,50 @@ class instalacion
         return $out;
     }
 
+    private function _add_com_sucursal(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $init = (new _instalacion(link: $link));
+
+        $create = $init->create_table_new(table: 'com_sucursal');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create = $create;
+
+        $foraneas = array();
+        $foraneas['dp_calle_pertenece_id'] = new stdClass();
+        $foraneas['com_tipo_sucursal_id'] = new stdClass();
+        $foraneas['com_cliente_id'] = new stdClass();
+        $foraneas['dp_municipio_id'] = new stdClass();
+        $foraneas['dp_municipio_id']->default = 2469;
+
+        $foraneas = $init->foraneas(foraneas: $foraneas, table: 'com_sucursal');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar foraneas', data:  $foraneas);
+        }
+        $out->foraneas = $foraneas;
+
+        unset($_SESSION['entidades_bd']);
+
+        $com_sucursal_modelo = new com_sucursal(link: $link);
+        $com_sucursal_modelo->transaccion_desde_cliente = true;
+
+        $upds = $this->actualiza_atributos_registro(modelo: $com_sucursal_modelo,foraneas:  $foraneas);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al actualizar sucursales', data: $upds);
+        }
+
+
+        /*$result = $init->foraneas(foraneas: $foraneas,table:  'com_sucursal');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
+        }
+        $out->foraneas = $result;*/
+
+
+        return $out;
+    }
     private function _add_com_conf_precio(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -222,7 +266,7 @@ class instalacion
         return $out;
     }
 
-    private function _add_com_tipo_sucursal(PDO $link): array|stdClass
+    PUBLIC function _add_com_tipo_sucursal(PDO $link): array|stdClass
     {
         $out = new stdClass();
         $init = (new _instalacion(link: $link));
@@ -343,6 +387,8 @@ class instalacion
         return $out;
 
     }
+
+
     private function com_cliente(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -787,37 +833,12 @@ class instalacion
         $out = new stdClass();
         $init = (new _instalacion(link: $link));
 
-        $columnas = new stdClass();
-        $columnas->dp_municipio_id = new stdClass();
-        $columnas->dp_municipio_id->tipo_dato = 'BIGINT';
-
-        $add_colums = $init->add_columns(campos: $columnas,table:  __FUNCTION__);
+        $add = $this->_add_com_sucursal(link: $link);
         if(errores::$error){
-            return (new errores())->error(mensaje: 'Error al agregar columnas', data:  $add_colums);
-        }
-        //exit;
-
-        $foraneas = array();
-        $foraneas['dp_calle_pertenece_id'] = new stdClass();
-        $foraneas['com_tipo_sucursal_id'] = new stdClass();
-        $foraneas['com_cliente_id'] = new stdClass();
-        $foraneas['dp_municipio_id'] = new stdClass();
-        $foraneas['dp_municipio_id']->default = 2469;
-
-        $com_sucursal_modelo = new com_sucursal(link: $link);
-        $com_sucursal_modelo->transaccion_desde_cliente = true;
-
-        $upds = $this->actualiza_atributos_registro(modelo: $com_sucursal_modelo,foraneas:  $foraneas);
-        if (errores::$error) {
-            return (new errores())->error(mensaje: 'Error al actualizar sucursales', data: $upds);
+            return (new errores())->error(mensaje: 'Error al agregar columnas', data:  $add);
         }
 
 
-        $result = $init->foraneas(foraneas: $foraneas,table:  __FUNCTION__);
-        if(errores::$error){
-            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
-        }
-        $out->foraneas = $result;
 
         $columnas = new stdClass();
         $columnas->pais = new stdClass();
@@ -826,12 +847,20 @@ class instalacion
         $columnas->colonia = new stdClass();
         $columnas->calle = new stdClass();
         $columnas->cp = new stdClass();
+        $columnas->nombre_contacto = new stdClass();
+        $columnas->numero_exterior = new stdClass();
+        $columnas->numero_interior = new stdClass();
+        $columnas->telefono_1 = new stdClass();
+        $columnas->telefono_2 = new stdClass();
+        $columnas->telefono_3 = new stdClass();
 
         $add_colums = $init->add_columns(campos: $columnas,table:  __FUNCTION__);
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al agregar columnas', data:  $add_colums);
         }
 
+
+        $com_sucursal_modelo = new com_sucursal(link: $link);
         $com_sucursales = $com_sucursal_modelo->registros();
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al obtener com_sucursales', data:  $com_sucursales);
@@ -1085,7 +1114,33 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
         }
 
+        $create = $this->_add_com_sucursal(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+
         $modelo = new com_tipo_sucursal(link: $link);
+
+
+        $existe = $modelo->existe_by_codigo(codigo: 'MAT');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error validar si existe', data:  $existe);
+        }
+        if($existe){
+            $com_tipo_sucursal_id = $modelo->get_id_by_codigo(codigo: 'MAT');
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error al obtener id', data:  $com_tipo_sucursal_id);
+            }
+
+            if($com_tipo_sucursal_id !== 1) {
+                $udp_data['codigo'] = 'MATANT';
+                $upd = $modelo->modifica_bd(registro: $udp_data, id: $com_tipo_sucursal_id);
+                if (errores::$error) {
+                    return (new errores())->error(mensaje: 'Error al actualizar', data: $upd);
+                }
+            }
+        }
+
 
         $rows = array();
         $ins['id'] = '1';
@@ -1131,6 +1186,7 @@ class instalacion
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error integrar com_tipo_producto', data:  $com_tipo_producto);
         }
+
         $com_tipo_sucursal = $this->com_tipo_sucursal(link: $link);
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error integrar com_tipo_sucursal', data:  $com_tipo_sucursal);

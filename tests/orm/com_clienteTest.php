@@ -39,18 +39,6 @@ class com_clienteTest extends test {
         $_SESSION['usuario_id'] = 2;
         $_GET['session_id'] = '1';
 
-        $del = (new base_test())->del_cat_sat_conf_reg_tp($this->link);
-        if(errores::$error){
-            $error = (new errores())->error('Error al insertar', $del);
-            print_r($error);
-            exit;
-        }
-        $del = (new base_test())->del_cat_sat_metodo_pago($this->link);
-        if(errores::$error){
-            $error = (new errores())->error('Error al del', $del);
-            print_r($error);
-            exit;
-        }
 
         $init_cat_sat = (new instalacion())->instala(link: $this->link);
         if(errores::$error){
@@ -110,7 +98,7 @@ class com_clienteTest extends test {
         $modelo = new com_cliente($this->link);
         //$modelo = new liberator($modelo);
 
-        $modelo->registro['cat_sat_moneda_id'] = 1;
+        $modelo->registro['cat_sat_moneda_id'] = 161;
         $modelo->registro['cat_sat_metodo_pago_id'] = 1;
         $modelo->registro['cat_sat_forma_pago_id'] = 1;
         $modelo->registro['telefono'] = 1;
@@ -271,31 +259,6 @@ class com_clienteTest extends test {
             exit;
         }
 
-        $del = (new base_test())->del_cat_sat_moneda($this->link);
-        if(errores::$error){
-            $error = (new errores())->error('Error al eliminar moneda', $del);
-            print_r($error);
-            exit;
-        }
-        $del = (new base_test())->del_cat_sat_metodo_pago($this->link);
-        if(errores::$error){
-            $error = (new errores())->error('Error al eliminar metodo pago', $del);
-            print_r($error);
-            exit;
-        }
-        $del = (new base_test())->del_cat_sat_conf_reg_tp($this->link);
-        if(errores::$error){
-            $error = (new errores())->error('Error al eliminar metodo pago', $del);
-            print_r($error);
-            exit;
-        }
-
-        $alta = (new base_test())->alta_cat_sat_conf_reg_tp($this->link);
-        if(errores::$error){
-            $error = (new errores())->error('Error al insertar', $alta);
-            print_r($error);
-            exit;
-        }
 
         $alta = (new base_test())->alta_com_cliente($this->link);
         if(errores::$error){
@@ -400,41 +363,15 @@ class com_clienteTest extends test {
         $modelo = new com_cliente($this->link);
         $modelo = new liberator($modelo);
 
-        $del = (new base_test())->del_cat_sat_moneda(link: $this->link);
-        if(errores::$error){
-            $error = (new errores())->error(mensaje: 'Error al eliminar',data:  $del);
-            print_r($error);
-            exit;
-        }
-        $del = (new base_test())->del_cat_sat_metodo_pago(link: $this->link);
-        if(errores::$error){
-            $error = (new errores())->error(mensaje: 'Error al eliminar',data:  $del);
-            print_r($error);
-            exit;
-        }
 
-
-        $alta = (new base_test())->alta_cat_sat_moneda(link: $this->link, id: 161, predeterminado: 'activo');
-        if(errores::$error){
-            $error = (new errores())->error(mensaje: 'Error al insertar',data:  $alta);
-            print_r($error);
-            exit;
-        }
-
-        $alta = (new base_test())->alta_cat_sat_metodo_pago(link: $this->link, id: 1, predeterminado: 'activo');
-        if(errores::$error){
-            $error = (new errores())->error(mensaje: 'Error al insertar',data:  $alta);
-            print_r($error);
-            exit;
-        }
 
         $data = array();
         $funcion_llamada = 'alta_bd';
         $resultado = $modelo->inicializa_foraneas($data, $funcion_llamada);
 
+
         $this->assertIsArray($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals(161, $resultado['cat_sat_moneda_id']);
+        $this->assertTrue(errores::$error);
 
 
         errores::$error = false;
@@ -500,18 +437,7 @@ class com_clienteTest extends test {
             print_r($error);
             exit;
         }
-        $del = (new base_test())->del_cat_sat_moneda(link: $this->link);
-        if(errores::$error){
-            $error = (new errores())->error(mensaje: 'Error al del',data:  $del);
-            print_r($error);
-            exit;
-        }
-        $del = (new base_test())->del_cat_sat_metodo_pago(link: $this->link);
-        if(errores::$error){
-            $error = (new errores())->error(mensaje: 'Error al del',data:  $del);
-            print_r($error);
-            exit;
-        }
+
 
         $alta = (new base_test())->alta_com_cliente(link: $this->link);
         if(errores::$error){

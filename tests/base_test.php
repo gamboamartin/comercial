@@ -203,27 +203,16 @@ class base_test{
         return $alta;
     }
 
-    public function alta_com_cliente(PDO $link, int $cat_sat_forma_pago_id = 1,
-                                     string $cat_sat_metodo_pago_codigo = 'PUE', int $cat_sat_metodo_pago_id = 2,
-                                     int $cat_sat_moneda_id = 1, int $cat_sat_regimen_fiscal_id = 1,
-                                     int $cat_sat_tipo_de_comprobante_id = 1, int $cat_sat_tipo_persona_id = 1,
+    public function alta_com_cliente(PDO $link, int $cat_sat_forma_pago_id = 3,
+                                     string $cat_sat_metodo_pago_codigo = 'PUE', int $cat_sat_metodo_pago_id = 1,
+                                     int $cat_sat_moneda_id = 161, int $cat_sat_regimen_fiscal_id = 601,
+                                     int $cat_sat_tipo_de_comprobante_id = 1, int $cat_sat_tipo_persona_id = 4,
                                      int $cat_sat_uso_cfdi_id = 1, string $codigo = '1', int $com_tipo_cliente_id = 1,
                                      string $descripcion = 'YADIRA MAGALY MONTAÑEZ FELIX',
                                      int $dp_calle_pertenece_id = 1, int $dp_municipio_id = 230,
                                      int $id = 1): array|\stdClass
     {
 
-        $existe = (new cat_sat_moneda($link))->existe_by_id(registro_id: $cat_sat_moneda_id);
-        if(errores::$error){
-            return (new errores())->error('Error al verificar si existe', $existe);
-        }
-
-        if(!$existe) {
-            $alta = (new base_test())->alta_cat_sat_moneda($link);
-            if(errores::$error){
-                return (new errores())->error('Error al insertar', $alta);
-            }
-        }
 
         $existe = (new cat_sat_tipo_de_comprobante($link))->existe_by_id(registro_id: $cat_sat_tipo_de_comprobante_id);
         if(errores::$error){
@@ -438,10 +427,10 @@ class base_test{
     }
 
 
-    public function alta_com_sucursal(PDO $link, string $calle = 'CALLE', int $cat_sat_forma_pago_id = 1,
-                                      string $cat_sat_metodo_pago_codigo = 'PUE', int $cat_sat_metodo_pago_id = 2,
+    public function alta_com_sucursal(PDO $link, string $calle = 'CALLE', int $cat_sat_forma_pago_id = 3,
+                                      string $cat_sat_metodo_pago_codigo = 'PUE', int $cat_sat_metodo_pago_id = 1,
                                       string $colonia = 'COLONIA', int $com_cliente_id = 1,
-                                      int $cat_sat_regimen_fiscal_id = 1, int $cat_sat_tipo_persona_id = 1,
+                                      int $cat_sat_regimen_fiscal_id = 601, int $cat_sat_tipo_persona_id = 4,
                                       int $com_tipo_sucursal_id = 1, string $cp = '1', int $dp_municipio_id = 230,
                                       int $id = 1): array|\stdClass
     {
@@ -506,7 +495,7 @@ class base_test{
         return $alta;
     }
 
-    public function alta_com_tipo_cambio(PDO $link, int $cat_sat_moneda_id = 1, string $codigo = '1', string $fecha = '2020-01-01',
+    public function alta_com_tipo_cambio(PDO $link, int $cat_sat_moneda_id = 161, string $codigo = '1', string $fecha = '2020-01-01',
                                          int $id = 1): array|\stdClass
     {
 
@@ -687,17 +676,7 @@ class base_test{
         return $del;
     }
 
-    public function del_cat_sat_conf_reg_tp(PDO $link): array
-    {
 
-
-
-        $del =(new \gamboamartin\cat_sat\tests\base_test())->del_cat_sat_conf_reg_tp($link);
-        if(errores::$error){
-            return (new errores())->error('Error al eliminar', $del);
-        }
-        return $del;
-    }
 
     public function del_com_agente(PDO $link): array
     {
