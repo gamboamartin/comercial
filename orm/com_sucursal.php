@@ -331,7 +331,7 @@ class com_sucursal extends modelo
                                        string $numero_interior, bool $es_empleado = false): array
     {
 
-        $com_tipo_sucursal= (new com_tipo_sucursal($this->link))->inserta_predeterminado(codigo: 'MAT',
+        /*$com_tipo_sucursal= (new com_tipo_sucursal($this->link))->inserta_predeterminado(codigo: 'MAT',
             descripcion: 'MATRIZ');
         if (errores::$error) {
             return $this->error->error(mensaje: "Error al obtener el id predeterminado", data: $com_tipo_sucursal);
@@ -340,13 +340,15 @@ class com_sucursal extends modelo
         $com_tipo_sucursal_id = (new com_tipo_sucursal(link: $this->link))->id_predeterminado();
         if (errores::$error) {
             return $this->error->error(mensaje: "Error al obtener el id predeterminado", data: $com_tipo_sucursal);
-        }
+        }*/
+
+        $com_tipo_sucursal_id = 1;
 
         if ($es_empleado){
             (new com_tipo_sucursal(link: $this->link))->modifica_bd(registro: array("es_empleado" => "activo"),
                 id: $com_tipo_sucursal_id);
             if (errores::$error) {
-                return $this->error->error(mensaje: "Error asignar es_empleado a tipo sucursal", data: $com_tipo_sucursal);
+                return $this->error->error(mensaje: "Error asignar es_empleado a tipo sucursal", data: $com_tipo_sucursal_id);
             }
         }
 
