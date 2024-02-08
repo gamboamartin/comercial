@@ -225,19 +225,7 @@ class base_test{
                 return (new errores())->error('Error al insertar', $alta);
             }
         }
-
-        $existe = (new cat_sat_metodo_pago($link))->existe_by_id(registro_id: $cat_sat_metodo_pago_id);
-        if(errores::$error){
-            return (new errores())->error('Error al verificar si existe', $existe);
-        }
-
-        if(!$existe) {
-            $alta = (new base_test())->alta_cat_sat_metodo_pago(link: $link, codigo: $cat_sat_metodo_pago_codigo,
-                id: $cat_sat_metodo_pago_id);
-            if (errores::$error) {
-                return (new errores())->error('Error al insertar', $alta);
-            }
-        }
+        
 
         $existe = (new com_tipo_cliente($link))->existe_by_id(registro_id: $com_tipo_cliente_id);
         if(errores::$error){
