@@ -620,6 +620,22 @@ class instalacion
                 }
                 $out->productos[] = $alta;
             }
+            else{
+
+                if((int)$com_producto_ins['id'] === 84111506){
+                    $com_producto_r = $com_producto_modelo->registro(registro_id: $com_producto_ins['id']);
+                    if (errores::$error) {
+                        return (new errores())->error(mensaje: 'Error al obtener producto', data: $com_producto_r);
+                    }
+                    if((int)$com_producto_r['com_producto_codigo'] !== 84111506){
+                        $upd_p['codigo'] = 84111506;
+                        $com_producto_upd = $com_producto_modelo->modifica_bd(registro: $upd_p,id: 84111506);
+                        if (errores::$error) {
+                            return (new errores())->error(mensaje: 'Error al modificar producto', data: $com_producto_upd);
+                        }
+                    }
+                }
+            }
         }
 
         $com_productos = $com_producto_modelo->registros();
