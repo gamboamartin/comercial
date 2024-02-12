@@ -53,5 +53,5 @@ class _base_sin_cod extends _ctl_parent_sin_codigo{
     public function init_datatable(): stdClass
     {
         return new stdClass();
-    } 
+    }
 }
