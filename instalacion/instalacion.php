@@ -691,6 +691,9 @@ class instalacion
             $com_producto_upd = array();
             $com_producto_id = $com_tmp_prod_cs['com_producto_id'];
             $cat_sat_producto = $com_tmp_prod_cs['com_tmp_prod_cs_cat_sat_producto'];
+            if(is_null($com_producto_id)){
+                continue;
+            }
 
             $com_producto_upd['cat_sat_cve_prod_id'] = $cat_sat_producto;
             $upd = $com_producto_modelo->modifica_bd(registro: $com_producto_upd,id:  $com_producto_id);

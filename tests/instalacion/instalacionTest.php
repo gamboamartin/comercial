@@ -35,6 +35,12 @@ class instalacionTest extends test {
         $_GET['session_id'] = '1';
 
 
+        $drop = (new _instalacion(link: $this->link))->drop_table_segura(table: 'com_num_reg_fiscal');
+        if(errores::$error){
+            $error = (new errores())->error('Error al drop', $drop);
+            print_r($error);
+            exit;
+        }
 
 
         $drop = (new _instalacion(link: $this->link))->drop_table_segura(table: 'com_sucursal');
