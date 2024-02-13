@@ -867,8 +867,11 @@ class instalacion
         $columnas->numero_exterior = new stdClass();
         $columnas->numero_interior = new stdClass();
         $columnas->telefono_1 = new stdClass();
+        $columnas->telefono_1->valida_pep_8 = false;
         $columnas->telefono_2 = new stdClass();
+        $columnas->telefono_2->valida_pep_8 = false;
         $columnas->telefono_3 = new stdClass();
+        $columnas->telefono_3->valida_pep_8 = false;
 
         $add_colums = $init->add_columns(campos: $columnas,table:  __FUNCTION__);
         if(errores::$error){
