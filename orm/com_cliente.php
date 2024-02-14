@@ -456,14 +456,16 @@ class com_cliente extends _modelo_parent
 
     /**
      * Modifica un registro de cliente
-     * @param array $registro  Datos a actualizar
+     * @param array $registro Datos a actualizar
      * @param int $id Identificador
      * @param bool $reactiva Si reactiva no valida transacciones restrictivas
      * @param array $keys_integra_ds Datos para selects
+     * @param bool $valida_conf_tipo_persona
      * @return array|stdClass
      */
     public function modifica_bd(array $registro, int $id, bool $reactiva = false,
-                                array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
+                                array $keys_integra_ds = array('codigo', 'descripcion'),
+                                bool $valida_conf_tipo_persona = true): array|stdClass
     {
         if($id<=0){
             return $this->error->error(mensaje: 'Error id debe ser mayor a 0', data: $id);
@@ -488,10 +490,12 @@ class com_cliente extends _modelo_parent
             return $this->error->error(mensaje: 'Error al modificar cliente', data: $r_modifica_bd);
         }
 
-        $valida = (NEW _validacion())->valida_conf_tipo_persona(link: $this->link,
-            registro:  (array)$r_modifica_bd->registro_actualizado);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
+        if($valida_conf_tipo_persona) {
+            $valida = (new _validacion())->valida_conf_tipo_persona(link: $this->link,
+                registro: (array)$r_modifica_bd->registro_actualizado);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
+            }
         }
 
         $com_cliente = $this->registro(registro_id: $id, columnas_en_bruto: true, retorno_obj: true);
