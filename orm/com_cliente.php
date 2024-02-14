@@ -461,11 +461,13 @@ class com_cliente extends _modelo_parent
      * @param bool $reactiva Si reactiva no valida transacciones restrictivas
      * @param array $keys_integra_ds Datos para selects
      * @param bool $valida_conf_tipo_persona
+     * @param bool $valida_metodo_pago
      * @return array|stdClass
      */
     public function modifica_bd(array $registro, int $id, bool $reactiva = false,
                                 array $keys_integra_ds = array('codigo', 'descripcion'),
-                                bool $valida_conf_tipo_persona = true): array|stdClass
+                                bool $valida_conf_tipo_persona = true,
+                                bool $valida_metodo_pago = true): array|stdClass
     {
         if($id<=0){
             return $this->error->error(mensaje: 'Error id debe ser mayor a 0', data: $id);
@@ -503,9 +505,11 @@ class com_cliente extends _modelo_parent
             return $this->error->error(mensaje: 'Error al obtener cliente', data: $com_cliente);
         }
 
-        $valida = (new _validacion())->valida_metodo_pago(link: $this->link, registro: (array)$com_cliente);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
+        if($valida_metodo_pago) {
+            $valida = (new _validacion())->valida_metodo_pago(link: $this->link, registro: (array)$com_cliente);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
+            }
         }
         $r_com_sucursal = $this->upd_sucursales(com_cliente:$com_cliente,com_cliente_id:  $id);
         if (errores::$error) {
