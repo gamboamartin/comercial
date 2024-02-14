@@ -54,6 +54,7 @@ class com_tmp_cte_dp_html extends html_controler {
             return $this->error->error(mensaje: 'Error al integrar div', data: $div);
         }
 
+
         return $div;
     }
     public function input_dp_cp(int $cols, stdClass $row_upd, bool $value_vacio, bool $disabled = false,

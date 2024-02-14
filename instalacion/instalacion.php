@@ -524,7 +524,7 @@ class instalacion
 
 
                     $r_upd = $com_cliente_modelo->modifica_bd(registro: [$key_dom => $dp_calle_pertenece[$key_integra]],
-                        id: $com_cliente['com_cliente_id']);
+                        id: $com_cliente['com_cliente_id'],valida_conf_tipo_persona: false);
                     if(errores::$error){
                         return (new errores())->error(mensaje: 'Error al modificar cliente', data:  $r_upd);
                     }
