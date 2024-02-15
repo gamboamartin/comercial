@@ -58,7 +58,7 @@ class instalacionTest extends test {
         }
 
         $ins = new instalacion($this->link);
-        //$modelo = new liberator($modelo);
+        $ins = new liberator($ins);
 
 
         $resultado = $ins->_add_com_tipo_sucursal(link: $this->link);

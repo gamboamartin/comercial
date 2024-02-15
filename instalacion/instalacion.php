@@ -80,6 +80,31 @@ class instalacion
         return $out;
     }
 
+    private function _add_com_rel_prospecto_cte(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $init = (new _instalacion(link: $link));
+
+        $create = $init->create_table_new(table: 'com_rel_prospecto_cte');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create = $create;
+
+        $foraneas = array();
+        $foraneas['com_cliente_id'] = new stdClass();
+        $foraneas['com_prospecto_id'] = new stdClass();
+
+        $foraneas = $init->foraneas(foraneas: $foraneas, table: 'com_rel_prospecto_cte');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar foraneas', data:  $foraneas);
+        }
+        $out->foraneas = $foraneas;
+
+
+
+        return $out;
+    }
     private function _add_com_sucursal(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -265,8 +290,7 @@ class instalacion
 
         return $out;
     }
-
-    PUBLIC function _add_com_tipo_sucursal(PDO $link): array|stdClass
+    private function _add_com_tipo_sucursal(PDO $link): array|stdClass
     {
         $out = new stdClass();
         $init = (new _instalacion(link: $link));
@@ -387,8 +411,6 @@ class instalacion
         return $out;
 
     }
-
-
     private function com_cliente(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -847,6 +869,35 @@ class instalacion
         return $out;
 
     }
+
+    private function com_rel_prospecto_cte(PDO $link): array|stdClass
+    {
+
+        $out = new stdClass();
+
+        $add = $this->_add_com_rel_prospecto_cte(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar columnas', data:  $add);
+        }
+
+        $adm_menu_descripcion = 'Relaciones';
+        $adm_sistema_descripcion = 'comercial';
+        $etiqueta_label = 'Relacion Cte Prospecto';
+        $adm_seccion_pertenece_descripcion = 'com_rel_prospecto_cte';
+        $adm_namespace_descripcion = 'gamboa.martin/comercial';
+        $adm_namespace_name = 'gamboamartin/comercial';
+
+        $acl = (new _adm())->integra_acl(adm_menu_descripcion: $adm_menu_descripcion,
+            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion,
+            adm_seccion_descripcion: __FUNCTION__, adm_seccion_pertenece_descripcion: $adm_seccion_pertenece_descripcion,
+            adm_sistema_descripcion: $adm_sistema_descripcion, etiqueta_label: $etiqueta_label, link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
+        }
+
+        return $out;
+
+    }
     private function com_sucursal(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -1012,7 +1063,6 @@ class instalacion
         return $out;
 
     }
-
     private function com_conf_precio(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -1127,7 +1177,6 @@ class instalacion
         return $out;
 
     }
-
     private function com_tipo_sucursal(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -1292,6 +1341,12 @@ class instalacion
             return (new errores())->error(mensaje: 'Error integrar com_conf_precio', data:  $com_conf_precio);
         }
         $out->com_conf_precio = $com_conf_precio;
+
+        $com_rel_prospecto_cte = $this->com_rel_prospecto_cte(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error integrar com_rel_prospecto_cte', data:  $com_rel_prospecto_cte);
+        }
+        $out->com_rel_prospecto_cte = $com_rel_prospecto_cte;
 
         return $out;
 
