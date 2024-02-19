@@ -197,8 +197,6 @@ class com_prospecto extends _modelo_parent{
         return $r_del_bd;
     }
 
-
-
     private function inserta_com_rel_agente(int $com_agente_id, int $com_prospecto_id)
     {
         $com_rel_agente_ins = $this->com_rel_agente_ins(com_agente_id: $com_agente_id,
