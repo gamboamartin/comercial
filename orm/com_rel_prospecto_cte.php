@@ -3,6 +3,7 @@ namespace gamboamartin\comercial\models;
 use base\orm\_modelo_parent;
 use gamboamartin\errores\errores;
 use PDO;
+use stdClass;
 
 class com_rel_prospecto_cte extends _modelo_parent{
     public function __construct(PDO $link, array $childrens = array()){
@@ -19,6 +20,28 @@ class com_rel_prospecto_cte extends _modelo_parent{
 
         $this->etiqueta = 'Relacion Cliente Prospecto';
 
+
+    }
+
+    public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
+    {
+
+        $tiene_prospecto = (new com_cliente(link: $this->link))->tiene_prospecto(
+            com_cliente_id: $this->registro['com_prospecto_id']);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si existe cliente',data:  $tiene_prospecto);
+        }
+        $tiene_cliente = (new com_prospecto(link: $this->link))->tiene_cliente(
+            com_prospecto_id: $this->registro['com_prospecto_id']);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si existe cliente',data:  $tiene_cliente);
+        }
+
+        $r_alta_bd = parent::alta_bd();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al dar de alta relacion',data:  $r_alta_bd);
+        }
+        return $r_alta_bd;
 
     }
 

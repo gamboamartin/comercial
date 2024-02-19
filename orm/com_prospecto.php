@@ -97,7 +97,7 @@ class com_prospecto extends _modelo_parent{
 
     final public function convierte_en_cliente(int $com_prospecto_id)
     {
-        //$tiene_clie
+        $tiene_cliente = $this->tiene_cliente(com_prospecto_id: $com_prospecto_id);
 
     }
 
