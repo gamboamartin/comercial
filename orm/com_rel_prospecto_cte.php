@@ -47,7 +47,7 @@ class com_rel_prospecto_cte extends _modelo_parent{
 
     }
 
-    private function tiene_relacion(array $registro)
+    final public function tiene_relacion(array $registro)
     {
         $tiene_prospecto = (new com_cliente(link: $this->link))->tiene_prospecto(
             com_cliente_id: $registro['com_prospecto_id']);

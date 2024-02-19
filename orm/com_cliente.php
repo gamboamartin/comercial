@@ -188,6 +188,30 @@ class com_cliente extends _modelo_parent
         return $r_alta_bd;
     }
 
+    final public function asigna_prospecto(int $com_cliente_id, int $com_prospecto_id)
+    {
+        $registro['com_cliente_id'] = $com_cliente_id;
+        $registro['com_prospecto_id'] = $com_prospecto_id;
+        $tiene_relacion = (new com_rel_prospecto_cte(link: $this->link))->tiene_relacion(registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error a verificar si tiene relacion',data:  $tiene_relacion);
+        }
+
+        if($tiene_relacion){
+            return $this->error->error(mensaje: 'Error el cliente ya esta relacionado',data:  $tiene_relacion);
+        }
+
+        $com_rel_prospecto_cte_ins['com_cliente_id'] = $com_cliente_id;
+        $com_rel_prospecto_cte_ins['com_prospecto_id'] = $com_prospecto_id;
+
+        $inserta = (new com_rel_prospecto_cte(link: $this->link))->alta_registro(registro: $com_rel_prospecto_cte_ins);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al insertar relacion',data:  $inserta);
+        }
+        return $inserta;
+
+    }
+
     final public function com_prospecto(int $com_cliente_id)
     {
         $existe = $this->tiene_prospecto(com_cliente_id: $com_cliente_id);
