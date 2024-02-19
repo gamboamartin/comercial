@@ -461,8 +461,6 @@ class controlador_com_cliente extends _ctl_base
         return $datatables;
     }
 
-
-
     protected function key_selects_txt(array $keys_selects): array
     {
         $keys_selects = (new \base\controller\init())->key_select_txt(cols: 4, key: 'codigo',

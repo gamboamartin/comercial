@@ -15,6 +15,7 @@ use gamboamartin\template\html;
 use html\com_prospecto_html;
 use PDO;
 use stdClass;
+use Throwable;
 
 class controlador_com_prospecto extends _base_sin_cod {
 
@@ -47,6 +48,32 @@ class controlador_com_prospecto extends _base_sin_cod {
     }
 
 
+    public function convierte_en_cliente(bool $header, bool $ws = false): array|stdClass
+    {
+
+        $convierte_en_cliente = (new com_prospecto(link: $this->link))->convierte_en_cliente(com_prospecto_id: $this->registro_id);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al convertir en cliente',data:$convierte_en_cliente,header:  $header,ws:  $ws);
+        }
+        if($header){
+
+            $this->retorno_base(registro_id: -1, result: $convierte_en_cliente, siguiente_view: 'lista',
+                ws:  $ws,seccion_retorno: $this->seccion, valida_permiso: true);
+        }
+        if($ws){
+            header('Content-Type: application/json');
+            try {
+                echo json_encode($convierte_en_cliente, JSON_THROW_ON_ERROR);
+            }
+            catch (Throwable $e){
+                $error = (new errores())->error(mensaje: 'Error al maquetar JSON' , data: $e);
+                print_r($error);
+            }
+            exit;
+        }
+
+        return $convierte_en_cliente;
+    }
 
     public function init_datatable(): stdClass
     {
