@@ -61,11 +61,44 @@ class com_prospecto extends _modelo_parent{
         return $r_alta_bd;
     }
 
+    final public function com_cliente(int $com_prospecto_id)
+    {
+        $existe = $this->tiene_cliente(com_prospecto_id: $com_prospecto_id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al verificar si existe cliente',data: $existe);
+        }
+        $filtro['com_prospecto.id'] = $com_prospecto_id;
+        $r_com_rel_prospecto_cte = (new com_rel_prospecto_cte(link: $this->link))->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener relaciones',data: $r_com_rel_prospecto_cte);
+        }
+        if($r_com_rel_prospecto_cte->n_registros > 1){
+            return $this->error->error(mensaje: 'Error hay un error de integridad',data: $r_com_rel_prospecto_cte);
+        }
+        return (object)$r_com_rel_prospecto_cte->rgeistros[0];
+
+    }
+
+    final public function com_cliente_id(int $com_prospecto_id)
+    {
+        $com_prospecto = $this->com_cliente(com_prospecto_id: $com_prospecto_id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener com_prospecto',data: $com_prospecto_id);
+        }
+        return (int)$com_prospecto->com_cliente_id;
+    }
+
     private function com_rel_agente_ins(int $com_agente_id, int $com_prospecto_id): array
     {
         $com_rel_agente_ins['com_prospecto_id'] = $com_prospecto_id;
         $com_rel_agente_ins['com_agente_id'] = $com_agente_id;
         return $com_rel_agente_ins;
+    }
+
+    final public function convierte_en_cliente(int $com_prospecto_id)
+    {
+        //$tiene_clie
+
     }
 
     /**
@@ -101,6 +134,8 @@ class com_prospecto extends _modelo_parent{
         }
         return $r_del_bd;
     }
+
+
 
     private function inserta_com_rel_agente(int $com_agente_id, int $com_prospecto_id)
     {
@@ -142,6 +177,16 @@ class com_prospecto extends _modelo_parent{
         }
         return $alta_com_rel_agente;
 
+    }
+
+    final public function tiene_cliente(int $com_prospecto_id)
+    {
+        $filtro['com_prospecto.id'] = $com_prospecto_id;
+        $existe = (new com_rel_prospecto_cte(link: $this->link))->existe(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error validar si existe cliente', data: $existe);
+        }
+        return $existe;
     }
 
 

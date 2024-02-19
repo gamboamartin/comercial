@@ -188,6 +188,33 @@ class com_cliente extends _modelo_parent
         return $r_alta_bd;
     }
 
+    final public function com_prospecto(int $com_cliente_id)
+    {
+        $existe = $this->tiene_prospecto(com_cliente_id: $com_cliente_id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al verificar si existe prospecto',data: $existe);
+        }
+        $filtro['com_cliente.id'] = $com_cliente_id;
+        $r_com_rel_prospecto_cte = (new com_rel_prospecto_cte(link: $this->link))->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener relaciones',data: $r_com_rel_prospecto_cte);
+        }
+        if($r_com_rel_prospecto_cte->n_registros > 1){
+            return $this->error->error(mensaje: 'Error hay un error de integridad',data: $r_com_rel_prospecto_cte);
+        }
+        return (object)$r_com_rel_prospecto_cte->rgeistros[0];
+
+    }
+
+    final public function com_prospecto_id(int $com_cliente_id)
+    {
+        $com_prospecto = $this->com_prospecto(com_cliente_id: $com_cliente_id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener com_prospecto',data: $com_prospecto);
+        }
+        return (int)$com_prospecto->com_prospecto_id;
+    }
+
     /**
      * Obtiene la descripcion de una sucursal
      * @param stdClass $com_cliente Registro de tipo cliente
@@ -593,6 +620,17 @@ class com_cliente extends _modelo_parent
         }
 
         return $com_sucursal_upd;
+    }
+
+    final public function tiene_prospecto(int $com_cliente_id)
+    {
+        $filtro['com_cliente.id'] = $com_cliente_id;
+        $existe = (new com_rel_prospecto_cte(link: $this->link))->existe(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error validar si existe prospecto', data: $existe);
+        }
+        return $existe;
+
     }
 
 

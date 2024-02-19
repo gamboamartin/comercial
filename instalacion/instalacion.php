@@ -3,6 +3,8 @@ namespace gamboamartin\comercial\instalacion;
 use base\orm\modelo;
 use gamboamartin\administrador\instalacion\_adm;
 use gamboamartin\administrador\models\_instalacion;
+use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\cat_sat\models\cat_sat_cve_prod;
 use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\comercial\models\com_producto;
@@ -14,6 +16,7 @@ use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
+use function GuzzleHttp\describe_type;
 
 class instalacion
 {
@@ -140,11 +143,6 @@ class instalacion
         }
 
 
-        /*$result = $init->foraneas(foraneas: $foraneas,table:  'com_sucursal');
-        if(errores::$error){
-            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
-        }
-        $out->foraneas = $result;*/
 
 
         return $out;
@@ -831,6 +829,58 @@ class instalacion
         }
         $out->foraneas = $result;
 
+        $adm_menu_descripcion = 'Clientes';
+        $adm_sistema_descripcion = 'comercial';
+        $etiqueta_label = 'Prospecto';
+        $adm_seccion_pertenece_descripcion = 'com_prospecto';
+        $adm_namespace_descripcion = 'gamboa.martin/comercial';
+        $adm_namespace_name = 'gamboamartin/comercial';
+
+        $acl = (new _adm())->integra_acl(adm_menu_descripcion: $adm_menu_descripcion,
+            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion,
+            adm_seccion_descripcion: __FUNCTION__, adm_seccion_pertenece_descripcion: $adm_seccion_pertenece_descripcion,
+            adm_sistema_descripcion: $adm_sistema_descripcion, etiqueta_label: $etiqueta_label, link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
+        }
+
+        $adm_seccion_id = (new adm_seccion(link: $link))->adm_seccion_id(descripcion: __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener seccion_id', data:  $adm_seccion_id);
+        }
+
+        //$acciones = array();
+        $accion['descripcion'] = 'convierte_en_cliente';
+        $accion['etiqueta_label'] = 'Convierte en Cliente';
+        $accion['adm_seccion_id'] = $adm_seccion_id;
+        $accion['icono'] = 'bi bi-file-earmark-plus-fill';
+        $accion['visible'] = 'inactivo';
+        $accion['inicio'] = 'inactivo';
+        $accion['lista'] = 'activo';
+        $accion['seguridad'] = 'activo';
+        $accion['es_modal'] = 'inactivo';
+        $accion['es_view'] = 'inactivo';
+        $accion['titulo'] = 'Convierte en Cliente';
+        $accion['css'] = 'warning';
+        $accion['es_status'] = 'inactivo';
+        $accion['es_lista'] = 'activo';
+        $accion['muestra_icono_btn'] = 'activo';
+        $accion['muestra_titulo_btn'] = 'inactivo';
+        $filtro = array();
+        $filtro['adm_accion.descripcion'] = 'convierte_en_cliente';
+        $filtro['adm_seccion.descripcion'] = __FUNCTION__;
+
+        $existe = (new adm_accion(link: $link))->existe(filtro: $filtro);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al validar si existe accion', data:  $existe);
+        }
+
+        if(!$existe){
+            $alta_accion = (new adm_accion(link: $link))->alta_registro(registro: $accion);
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error al insertar accion', data:  $alta_accion);
+            }
+        }
 
         return $out;
 
