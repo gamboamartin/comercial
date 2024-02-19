@@ -78,6 +78,12 @@ class com_agenteTest extends test {
         $modelo = new com_agente($this->link);
         //$modelo = new liberator($modelo);
 
+        $del = (new base_test())->del_com_prospecto(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje:'Error al eliminar', data: $del);
+            print_r($error);exit;
+        }
+
         $del = (new base_test())->del_com_agente(link: $this->link);
         if(errores::$error){
             $error = (new errores())->error(mensaje:'Error al eliminar', data: $del);

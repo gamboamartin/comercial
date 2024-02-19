@@ -15,6 +15,7 @@ use gamboamartin\cat_sat\models\cat_sat_uso_cfdi;
 use gamboamartin\comercial\models\com_agente;
 use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\comercial\models\com_producto;
+use gamboamartin\comercial\models\com_prospecto;
 use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\comercial\models\com_tipo_agente;
 use gamboamartin\comercial\models\com_tipo_cambio;
@@ -404,6 +405,29 @@ class base_test{
         return $alta;
     }
 
+    public function alta_com_prospecto(PDO $link, int $com_agente_id = 1, int $com_tipo_prospecto_id = 1,
+                                       string $apellido_paterno = 'AP1', int $id = 1, string $nombre = 'NOMBRE 1',
+                                       string $razon_social = 'RAZON SOCIAL',
+                                       string $telefono = '1234567890'): array|\stdClass
+    {
+
+
+        $registro['id'] = $id;
+        $registro['nombre'] = $nombre;
+        $registro['apellido_paterno'] = $apellido_paterno;
+        $registro['com_tipo_prospecto_id'] = $com_tipo_prospecto_id;
+        $registro['com_agente_id'] = $com_agente_id;
+        $registro['telefono'] = $telefono;
+        $registro['razon_social'] = $razon_social;
+
+        $alta = (new com_prospecto($link))->alta_registro($registro);
+        if(errores::$error){
+            return (new errores())->error('Error al dar de alta ', $alta);
+
+        }
+        return $alta;
+    }
+
 
     public function alta_com_sucursal(PDO $link, string $calle = 'CALLE', int $cat_sat_forma_pago_id = 3,
                                       string $cat_sat_metodo_pago_codigo = 'PUE', int $cat_sat_metodo_pago_id = 1,
@@ -694,6 +718,10 @@ class base_test{
         if(errores::$error){
             return (new errores())->error('Error al eliminar', $del);
         }
+        $del = $this->del_com_rel_prospecto_cte($link);
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
+        }
 
         $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_cliente');
         if(errores::$error){
@@ -716,6 +744,10 @@ class base_test{
     public function del_com_prospecto(PDO $link): array
     {
         $del = $this->del_com_rel_agente($link);
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
+        }
+        $del = $this->del_com_rel_prospecto_cte($link);
         if(errores::$error){
             return (new errores())->error('Error al eliminar', $del);
         }
@@ -778,6 +810,16 @@ class base_test{
     {
 
         $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_tmp_cte_dp');
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
+        }
+        return $del;
+    }
+
+    public function del_com_rel_prospecto_cte(PDO $link): array
+    {
+
+        $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_rel_prospecto_cte');
         if(errores::$error){
             return (new errores())->error('Error al eliminar', $del);
         }

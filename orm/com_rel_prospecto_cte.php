@@ -26,17 +26,18 @@ class com_rel_prospecto_cte extends _modelo_parent{
     public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
     {
 
-        $tiene_prospecto = (new com_cliente(link: $this->link))->tiene_prospecto(
-            com_cliente_id: $this->registro['com_prospecto_id']);
+        $tiene_relacion =$this->tiene_relacion(registro: $this->registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar si existe cliente',data:  $tiene_prospecto);
+            return $this->error->error(mensaje: 'Error al validar si existe relacion',data:  $tiene_relacion);
         }
-        $tiene_cliente = (new com_prospecto(link: $this->link))->tiene_cliente(
-            com_prospecto_id: $this->registro['com_prospecto_id']);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar si existe cliente',data:  $tiene_cliente);
+        if($tiene_relacion){
+            return $this->error->error(mensaje: 'Error este registro ya tiene relacion',data:  $tiene_relacion);
         }
 
+        if(!isset($this->registro['descripcion'])){
+            $descripcion = 'Cliente '.$this->registro['com_cliente_id'].' Prospecto '.$this->registro['com_prospecto_id'];
+            $this->registro['descripcion'] = $descripcion;
+        }
 
         $r_alta_bd = parent::alta_bd();
         if(errores::$error){
@@ -68,7 +69,12 @@ class com_rel_prospecto_cte extends _modelo_parent{
             return $this->error->error(mensaje: 'Error de integridad en relacion',data:  $data);
         }
 
-        return true;
+        $tiene_relacion = false;
+        if($tiene_cliente || $tiene_prospecto){
+            $tiene_relacion = true;
+        }
+
+        return $tiene_relacion;
 
     }
 

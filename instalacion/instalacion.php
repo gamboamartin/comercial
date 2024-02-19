@@ -82,7 +82,6 @@ class instalacion
 
         return $out;
     }
-
     private function _add_com_rel_prospecto_cte(PDO $link): array|stdClass
     {
         $out = new stdClass();

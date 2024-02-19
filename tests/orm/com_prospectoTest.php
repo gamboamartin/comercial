@@ -68,6 +68,65 @@ class com_prospectoTest extends test {
         errores::$error = false;
     }
 
+    public function test_convierte_en_cliente(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 1;
+        $_GET['session_id'] = '1';
+        $_GET['registro_id'] = '1';
+
+        $modelo = new com_prospecto($this->link);
+        //$modelo = new liberator($modelo);
+
+        $del = (new base_test())->del_com_prospecto(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al del',data:  $del);
+            print_r($error);
+            exit;
+        }
+        $del = (new base_test())->del_com_cliente(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al del',data:  $del);
+            print_r($error);
+            exit;
+        }
+        $del = (new base_test())->del_com_rel_prospecto_cte(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al del',data:  $del);
+            print_r($error);
+            exit;
+        }
+
+        $com_prospecto_id = 1;
+        $resultado = $modelo->convierte_en_cliente(com_prospecto_id: $com_prospecto_id);
+
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error al obtener prospecto',$resultado['mensaje_limpio']);
+
+        errores::$error = false;
+
+        $alta = (new base_test())->alta_com_prospecto(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al alta',data:  $alta);
+            print_r($error);
+            exit;
+        }
+
+        $resultado = $modelo->convierte_en_cliente(com_prospecto_id: $com_prospecto_id);
+
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('1',$resultado->com_rel_prospecto_cte->registro['com_prospecto_id']);
+
+        errores::$error = false;
+    }
+
 
 }
 
