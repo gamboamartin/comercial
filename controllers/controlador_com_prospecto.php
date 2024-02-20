@@ -14,7 +14,6 @@ use gamboamartin\errores\errores;
 use gamboamartin\template\html;
 use html\com_agente_html;
 use html\com_prospecto_html;
-use html\com_tipo_agente_html;
 use html\com_tipo_prospecto_html;
 use PDO;
 use stdClass;
@@ -93,10 +92,6 @@ class controlador_com_prospecto extends _base_sin_cod {
 
         return $datatables;
     }
-
-
-
-
 
 
     protected function key_selects_txt(array $keys_selects): array
