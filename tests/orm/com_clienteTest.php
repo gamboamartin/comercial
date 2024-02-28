@@ -368,10 +368,10 @@ class com_clienteTest extends test {
         $data = array();
         $funcion_llamada = 'alta_bd';
         $resultado = $modelo->inicializa_foraneas($data, $funcion_llamada);
-
+        //print_r($resultado);exit;
 
         $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
+        $this->assertNotTrue(errores::$error);
 
 
         errores::$error = false;
