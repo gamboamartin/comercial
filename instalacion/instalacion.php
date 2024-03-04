@@ -767,7 +767,7 @@ class instalacion
         }
 
         $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'es_automatico',
-            adm_seccion_descripcion:  __FUNCTION__, es_view: 'inactivo', icono: 'bi bi-arrows-expand-vertical',
+            adm_seccion_descripcion:  __FUNCTION__, es_view: 'inactivo', icono: 'bi bi-arrow-up-short',
             link:  $link, lista:  'activo',titulo:  'Es Automatico', es_status: 'activo');
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
