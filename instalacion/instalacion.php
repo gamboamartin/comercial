@@ -1171,6 +1171,32 @@ class instalacion
 
         }
 
+        $adm_menu_descripcion = 'Productos';
+        $adm_sistema_descripcion = 'comercial';
+        $etiqueta_label = 'Productos';
+        $adm_seccion_pertenece_descripcion = 'comercial';
+        $adm_namespace_name = 'gamboamartin/comercial';
+        $adm_namespace_descripcion = 'gamboa.martin/comercial';
+
+        $acl = (new _adm())->integra_acl(adm_menu_descripcion: $adm_menu_descripcion,
+            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion,
+            adm_seccion_descripcion: __FUNCTION__,
+            adm_seccion_pertenece_descripcion: $adm_seccion_pertenece_descripcion,
+            adm_sistema_descripcion: $adm_sistema_descripcion,
+            etiqueta_label: $etiqueta_label, link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
+        }
+
+
+        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'es_automatico',
+            adm_seccion_descripcion:  __FUNCTION__, es_view: 'inactivo', icono: 'bi bi-file-earmark-medical',
+            link:  $link, lista:  'activo',titulo:  'Es Automatico',es_status: 'activo');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
+        }
+        $out->adjunta = $alta_accion;
+
         return $out;
 
     }
