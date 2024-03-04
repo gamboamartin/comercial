@@ -772,7 +772,23 @@ class instalacion
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
         }
-        $out->adjunta = $alta_accion;
+        $out->es_automatico = $alta_accion;
+
+        $filtro['adm_accion.descripcion'] = 'nueva_conf_traslado';
+        $filtro['adm_seccion.descripcion'] = __FUNCTION__;
+
+        $del = (new adm_accion(link: $link))->elimina_con_filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al eliminar', data:  $del);
+        }
+
+        $filtro['adm_accion.descripcion'] = 'nueva_conf_retenido';
+        $filtro['adm_seccion.descripcion'] = __FUNCTION__;
+
+        $del = (new adm_accion(link: $link))->elimina_con_filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al eliminar', data:  $del);
+        }
 
         $out->upds = $upds;
         $out->dels = $dels;
