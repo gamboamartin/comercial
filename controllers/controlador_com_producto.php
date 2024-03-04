@@ -350,9 +350,9 @@ class controlador_com_producto extends _base_comercial {
         }
 
         $disabled = true;
-        if($this->row_upd->cat_sat_producto !== $this->registro['cat_sat_producto_codigo']){
-            $disabled = false;
-        }
+        //if($this->row_upd->cat_sat_producto !== $this->registro['cat_sat_producto_codigo']){
+        //    $disabled = false;
+        //}
         $cat_sat_producto = (new com_producto_html(html: $this->html_base))->input_text_required(cols: 6,
             disabled: $disabled, name: 'codigo_sat',place_holder:  'Codigo SAT',row_upd:  $this->row_upd,
             value_vacio: false);
