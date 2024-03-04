@@ -1,7 +1,7 @@
 $('#cat_sat_producto').keyup(function () {
     let dato_env = $(this).val();
     //alert(dato_env);
-    let url = get_url("cat_sat_cve_prod","get_data_descripcion", {data: dato_env, limit: 5});
+    let url = get_url("cat_sat_cve_prod","get_data_descripcion", {data: dato_env, limit: 20});
     //alert(url);
     $.ajax({
         url: url,
