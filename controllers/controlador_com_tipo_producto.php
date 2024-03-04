@@ -11,9 +11,6 @@ namespace gamboamartin\comercial\controllers;
 use base\controller\controler;
 use gamboamartin\comercial\models\com_tipo_producto;
 use gamboamartin\errores\errores;
-use gamboamartin\system\_ctl_parent_sin_codigo;
-use gamboamartin\system\html_controler;
-use gamboamartin\system\links_menu;
 
 use gamboamartin\template\html;
 

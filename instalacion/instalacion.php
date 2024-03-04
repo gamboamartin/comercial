@@ -1178,9 +1178,9 @@ class instalacion
 
         }
 
-        $adm_menu_descripcion = 'Productos';
+        $adm_menu_descripcion = 'Tipos de Productos';
         $adm_sistema_descripcion = 'comercial';
-        $etiqueta_label = 'Productos';
+        $etiqueta_label = 'Tipo de Productos';
         $adm_seccion_pertenece_descripcion = 'comercial';
         $adm_namespace_name = 'gamboamartin/comercial';
         $adm_namespace_descripcion = 'gamboa.martin/comercial';
@@ -1195,14 +1195,15 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
         }
 
+        $filtro['adm_accion.descripcion'] = 'es_automatico';
+        $filtro['adm_seccion.descripcion'] = __FUNCTION__;
 
-        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'es_automatico',
-            adm_seccion_descripcion:  __FUNCTION__, es_view: 'inactivo', icono: 'bi bi-file-earmark-medical',
-            link:  $link, lista:  'activo',titulo:  'Es Automatico',es_status: 'activo');
+        $del = (new adm_accion(link: $link))->elimina_con_filtro_and(filtro: $filtro);
         if(errores::$error){
-            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
+            return (new errores())->error(mensaje: 'Error al eliminar', data:  $del);
         }
-        $out->adjunta = $alta_accion;
+
+
 
         return $out;
 

@@ -1,6 +1,5 @@
 <?php
 namespace gamboamartin\comercial\models;
-use base\orm\_defaults;
 use base\orm\_modelo_parent;
 use gamboamartin\errores\errores;
 use PDO;
