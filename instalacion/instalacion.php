@@ -766,6 +766,13 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
         }
 
+        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'es_automatico',
+            adm_seccion_descripcion:  __FUNCTION__, es_view: 'inactivo', icono: 'bi bi-arrows-expand-vertical',
+            link:  $link, lista:  'activo',titulo:  'Es Automatico', es_status: 'activo');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
+        }
+        $out->adjunta = $alta_accion;
 
         $out->upds = $upds;
         $out->dels = $dels;
