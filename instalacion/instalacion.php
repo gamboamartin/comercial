@@ -627,6 +627,25 @@ class instalacion
 
         $com_productos_ins[] = $com_producto_ins;
 
+
+        $com_producto_ins['id'] = '99999999';
+        $com_producto_ins['descripcion'] = 'Pago';
+        $com_producto_ins['codigo'] = '99999999';
+        $com_producto_ins['codigo_bis'] = '99999999';
+        $com_producto_ins['cat_sat_producto_id'] = '84111506';
+        $com_producto_ins['cat_sat_unidad_id'] = '241';
+        $com_producto_ins['cat_sat_obj_imp_id'] = '1';
+        $com_producto_ins['com_tipo_producto_id'] = '99999999';
+        $com_producto_ins['aplica_predial'] = 'inactivo';
+        $com_producto_ins['cat_sat_conf_imps_id'] = '1';
+        $com_producto_ins['es_automatico'] = 'inactivo';
+        $com_producto_ins['precio'] = '0';
+        $com_producto_ins['codigo_sat'] = '84111506';
+        $com_producto_ins['cat_sat_cve_prod_id'] = '84111506';
+
+        $com_productos_ins[] = $com_producto_ins;
+
+
         foreach ($com_productos_ins as $com_producto_ins){
             $existe = $com_producto_modelo->existe_by_id($com_producto_ins['id']);
             if(errores::$error){
