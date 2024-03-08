@@ -127,6 +127,33 @@ class com_prospectoTest extends test {
         errores::$error = false;
     }
 
+    public function test_descripcion(): void
+    {
+        errores::$error = false;
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 1;
+        $_GET['session_id'] = '1';
+        $_GET['registro_id'] = '1';
+
+
+        $modelo = new com_prospecto($this->link);
+        $modelo = new liberator($modelo);
+
+        $registro = array();
+        $registro['nombre'] = 'A';
+        $registro['apellido_paterno'] = 'B';
+        $resultado = $modelo->descripcion($registro);
+        //print_r($resultado);exit;
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('A B',$resultado);
+
+        errores::$error = false;
+    }
+
 
 }
 

@@ -165,16 +165,24 @@ class com_prospecto extends _modelo_parent{
      * @param array $registro An array containing the registration information.
      *                       The array should have the following keys: 'nombre', 'apellido_paterno', 'apellido_materno'.
      *
-     * @return string The formatted description string consisting of the concatenation of 'nombre',
+     * @return string|array The formatted description string consisting of the concatenation of 'nombre',
      * 'apellido_paterno' and 'apellido_materno'.
      *
-     *
      */
-    private function descripcion(array $registro): string
+    private function descripcion(array $registro): string|array
     {
-        $descripcion = $registro['nombre'].' ';
-        $descripcion .= $registro['apellido_paterno'].' ';
-        $descripcion .= $registro['apellido_materno'];
+        $keys = array('nombre','apellido_paterno');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar com_prospecto',data:  $valida);
+        }
+        if(!isset($registro['apellido_materno'])){
+            $registro['apellido_materno'] = '';
+        }
+
+        $descripcion = trim($registro['nombre']).' ';
+        $descripcion .= trim($registro['apellido_paterno']).' ';
+        $descripcion .= trim($registro['apellido_materno']);
         return trim($descripcion);
     }
 
