@@ -160,6 +160,7 @@ class com_prospecto extends _modelo_parent{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Returns a formatted description string based on the provided registration array.
      *
      * @param array $registro An array containing the registration information.
@@ -167,7 +168,7 @@ class com_prospecto extends _modelo_parent{
      *
      * @return string|array The formatted description string consisting of the concatenation of 'nombre',
      * 'apellido_paterno' and 'apellido_materno'.
-     *
+     * @version 28.2.0
      */
     private function descripcion(array $registro): string|array
     {
