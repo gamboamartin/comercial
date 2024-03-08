@@ -82,6 +82,41 @@ class instalacion
 
         return $out;
     }
+
+    private function _add_com_prospecto_etapa(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $init = (new _instalacion(link: $link));
+
+        $create = $init->create_table_new(table: 'com_prospecto_etapa');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create = $create;
+
+        $foraneas = array();
+        $foraneas['com_prospecto_id'] = new stdClass();
+        $foraneas['pr_etapa_proceso_id'] = new stdClass();
+
+        $foraneas = $init->foraneas(foraneas: $foraneas, table: 'com_prospecto_etapa');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar foraneas', data:  $foraneas);
+        }
+        $out->foraneas = $foraneas;
+
+        $campos = new stdClass();
+        $campos->fecha = new stdClass();
+        $campos->fecha->tipo_dato = 'datetime';
+        $campos->fecha->default = '1900-01-01';
+
+        $result = $init->add_columns(campos: $campos,table:  'com_prospecto_etapa');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
+        }
+
+        return $out;
+    }
     private function _add_com_rel_prospecto_cte(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -926,6 +961,35 @@ class instalacion
         return $out;
 
     }
+
+    private function com_prospecto_etapa(PDO $link): array|stdClass
+    {
+
+        $out = new stdClass();
+
+        $add = $this->_add_com_prospecto_etapa(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar columnas', data:  $add);
+        }
+
+        $adm_menu_descripcion = 'Etapas';
+        $adm_sistema_descripcion = 'comercial';
+        $etiqueta_label = 'Etapas de prospecto';
+        $adm_seccion_pertenece_descripcion = 'com_prospecto_etapa';
+        $adm_namespace_descripcion = 'gamboa.martin/comercial';
+        $adm_namespace_name = 'gamboamartin/comercial';
+
+        $acl = (new _adm())->integra_acl(adm_menu_descripcion: $adm_menu_descripcion,
+            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion,
+            adm_seccion_descripcion: __FUNCTION__, adm_seccion_pertenece_descripcion: $adm_seccion_pertenece_descripcion,
+            adm_sistema_descripcion: $adm_sistema_descripcion, etiqueta_label: $etiqueta_label, link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
+        }
+
+        return $out;
+
+    }
     private function com_rel_agente(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -1465,6 +1529,12 @@ class instalacion
             return (new errores())->error(mensaje: 'Error integrar com_rel_prospecto_cte', data:  $com_rel_prospecto_cte);
         }
         $out->com_rel_prospecto_cte = $com_rel_prospecto_cte;
+
+        $com_prospecto_etapa = $this->com_prospecto_etapa(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error integrar com_prospecto_etapa', data:  $com_prospecto_etapa);
+        }
+        $out->com_prospecto_etapa = $com_prospecto_etapa;
 
         return $out;
 
