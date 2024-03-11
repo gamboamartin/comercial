@@ -13,6 +13,7 @@
                         <?php include (new views())->ruta_templates."head/subtitulo.php"; ?>
 
                         <?php echo $controlador->inputs->pr_etapa_id; ?>
+                        <?php echo $controlador->inputs->fecha; ?>
 
 
                         <?php echo $controlador->inputs->hidden_row_id; ?>

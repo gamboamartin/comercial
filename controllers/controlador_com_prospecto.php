@@ -99,6 +99,13 @@ class controlador_com_prospecto extends _base_sin_cod {
         }
 
         $this->inputs->pr_etapa_id = $pr_etapa_id;
+        $hoy = date('Y-m-d');
+        $fecha = $this->html->input_fecha(cols: 12,row_upd:  new stdClass(),value_vacio:  false,value: $hoy);
+        if(errores::$error){
+            $this->retorno_error(mensaje: 'Error al generar input fecha',data:  $fecha, header: $header,ws:  $ws);
+        }
+
+        $this->inputs->fecha = $fecha;
 
         $com_agente_id = (new com_agente_html(html: $this->html_base))->select_com_agente_id(
             cols: 12,con_registros: true,id_selected: $this->registro['com_agente_id'],link: $this->link);
@@ -113,6 +120,9 @@ class controlador_com_prospecto extends _base_sin_cod {
             $this->retorno_error(mensaje: 'Error al generar com_tipo_prospecto_id',data:  $com_agente_id, header: $header,ws:  $ws);
         }
         $this->inputs->com_tipo_prospecto_id = $com_tipo_prospecto_id;
+
+
+
         return $template;
     }
 
