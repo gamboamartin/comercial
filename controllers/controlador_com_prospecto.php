@@ -10,8 +10,10 @@ namespace gamboamartin\comercial\controllers;
 
 use base\controller\init;
 use gamboamartin\comercial\models\com_prospecto;
+use gamboamartin\comercial\models\com_prospecto_etapa;
 use gamboamartin\errores\errores;
 use gamboamartin\proceso\html\pr_etapa_html;
+use gamboamartin\proceso\html\pr_etapa_proceso_html;
 use gamboamartin\proceso\html\pr_proceso_html;
 use gamboamartin\proceso\models\pr_proceso;
 use gamboamartin\template\html;
@@ -88,18 +90,18 @@ class controlador_com_prospecto extends _base_sin_cod {
             $this->retorno_error(mensaje: 'Error al generar template',data:  $template, header: $header,ws:  $ws);
         }
 
-        $etapas = (new pr_proceso(link: $this->link))->etapas(pr_proceso_descripcion: 'PROSPECCION');
+
+        $filtro = array();
+        $filtro['pr_proceso.descripcion'] = 'PROSPECCION';
+        $columns_ds[] = 'pr_etapa_descripcion';
+
+        $pr_etapa_proceso_id = (new pr_etapa_proceso_html(html: $this->html_base))->select_pr_etapa_proceso_id(
+            cols: 12, con_registros: true, id_selected: -1, link: $this->link, columns_ds: $columns_ds, filtro: $filtro, label: 'Etapa');
         if(errores::$error){
-            $this->retorno_error(mensaje: 'Error al obtener etapas',data:  $etapas, header: $header,ws:  $ws);
+            $this->retorno_error(mensaje: 'Error al obtener selector de etapa',data:  $pr_etapa_proceso_id, header: $header,ws:  $ws);
         }
 
-        $pr_etapa_id = (new pr_etapa_html(html: $this->html_base))->select_pr_etapa_id(
-            cols: 12,con_registros: true,id_selected:  -1,link: $this->link, registros: $etapas);
-        if(errores::$error){
-            $this->retorno_error(mensaje: 'Error al obtener selector de etapa',data:  $pr_etapa_id, header: $header,ws:  $ws);
-        }
-
-        $this->inputs->pr_etapa_id = $pr_etapa_id;
+        $this->inputs->pr_etapa_proceso_id = $pr_etapa_proceso_id;
         $hoy = date('Y-m-d');
         $fecha = $this->html->input_fecha(cols: 12,row_upd:  new stdClass(),value_vacio:  false,value: $hoy);
         if(errores::$error){
@@ -124,10 +126,17 @@ class controlador_com_prospecto extends _base_sin_cod {
 
     public function etapa_bd(bool $header, bool $ws = false): array|stdClass
     {
-        print_r($_POST);EXIT;
+        $com_prospecto_etapa_ins['com_prospecto_id'] = $this->registro_id;
+        $com_prospecto_etapa_ins['pr_etapa_proceso_id'] = $_POST['pr_etapa_proceso_id'];
+        $com_prospecto_etapa_ins['fecha'] = $_POST['fecha'];
+
+        $r_alta_com_prospecto_etapa = (new com_prospecto_etapa(link: $this->link))->alta_registro(registro: $com_prospecto_etapa_ins);
+        if(errores::$error){
+            $this->retorno_error(mensaje: 'Error al insertar com_prospecto_etapa',data:  $r_alta_com_prospecto_etapa, header: $header,ws:  $ws);
+        }
 
 
-        return $template;
+        return $r_alta_com_prospecto_etapa;
     }
 
     public function init_datatable(): stdClass

@@ -12,7 +12,7 @@
                     <form method="post" action="<?php echo $controlador->link_alta_etapa; ?>" class="form-additional">
                         <?php include (new views())->ruta_templates."head/subtitulo.php"; ?>
 
-                        <?php echo $controlador->inputs->pr_etapa_id; ?>
+                        <?php echo $controlador->inputs->pr_etapa_proceso_id; ?>
                         <?php echo $controlador->inputs->fecha; ?>
 
                         <div class="controls">
