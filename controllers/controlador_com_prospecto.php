@@ -114,6 +114,8 @@ class controlador_com_prospecto extends _base_sin_cod {
             $this->retorno_error(mensaje: 'Error al generar link',data:  $link_alta_etapa, header: $header,ws:  $ws);
         }
 
+        //print_r($link_alta_etapa);exit;
+
         $this->link_alta_etapa = $link_alta_etapa;
 
 
