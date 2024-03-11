@@ -8,7 +8,8 @@ use PDO;
 class com_prospecto_etapa extends _modelo_parent{
     public function __construct(PDO $link){
         $tabla = 'com_prospecto_etapa';
-        $columnas = array($tabla=>false);
+        $columnas = array($tabla=>false,'com_prospecto'=>$tabla,'pr_etapa_proceso'=>$tabla,
+            'pr_etapa'=>'pr_etapa_proceso');
         $campos_obligatorios = array();
         $childrens =array();
 

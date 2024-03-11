@@ -116,9 +116,14 @@ class controlador_com_prospecto extends _base_sin_cod {
             $this->retorno_error(mensaje: 'Error al generar link',data:  $link_alta_etapa, header: $header,ws:  $ws);
         }
 
-        //print_r($link_alta_etapa);exit;
 
         $this->link_alta_etapa = $link_alta_etapa;
+
+        $etapas = (new com_prospecto(link: $this->link))->etapas(com_prospecto_id: $this->registro_id);
+        if(errores::$error){
+            $this->retorno_error(mensaje: 'Error al obtener etapas',data:  $etapas, header: $header,ws:  $ws);
+        }
+
 
 
         return $template;
