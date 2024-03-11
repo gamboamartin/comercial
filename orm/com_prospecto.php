@@ -235,10 +235,10 @@ class com_prospecto extends _modelo_parent{
         return $r_del_bd;
     }
 
-    final public function etapas(int $com_prospecto_id)
+    final public function etapas(int $com_prospecto_id, array $order = array('com_prospecto_etapa.id'=>'DESC'))
     {
         $filtro['com_prospecto.id'] = $com_prospecto_id;
-        $r_com_prospecto_etapa = (new com_prospecto_etapa(link: $this->link))->filtro_and(filtro: $filtro);
+        $r_com_prospecto_etapa = (new com_prospecto_etapa(link: $this->link))->filtro_and(filtro: $filtro,order: $order);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener etapas', data: $r_com_prospecto_etapa);
         }
