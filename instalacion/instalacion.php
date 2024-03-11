@@ -993,6 +993,15 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
         }
 
+
+        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'etapa_bd',
+            adm_seccion_descripcion: __FUNCTION__, es_view: 'inactivo', icono: 'bi bi-file-earmark-plus-fill',
+            link: $link, lista: 'inactivo', titulo: 'Alta Etapa bd');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
+        }
+        $out->alta_accion = $alta_accion;
+
         return $out;
 
     }
