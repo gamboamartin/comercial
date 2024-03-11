@@ -107,19 +107,7 @@ class controlador_com_prospecto extends _base_sin_cod {
 
         $this->inputs->fecha = $fecha;
 
-        $com_agente_id = (new com_agente_html(html: $this->html_base))->select_com_agente_id(
-            cols: 12,con_registros: true,id_selected: $this->registro['com_agente_id'],link: $this->link);
-        if(errores::$error){
-            $this->retorno_error(mensaje: 'Error al generar com_tipo_agente_id',data:  $com_agente_id, header: $header,ws:  $ws);
-        }
-        $this->inputs->com_agente_id = $com_agente_id;
 
-        $com_tipo_prospecto_id = (new com_tipo_prospecto_html(html: $this->html_base))->select_com_tipo_prospecto_id(
-            cols: 12,con_registros: true,id_selected: $this->registro['com_tipo_prospecto_id'],link: $this->link);
-        if(errores::$error){
-            $this->retorno_error(mensaje: 'Error al generar com_tipo_prospecto_id',data:  $com_agente_id, header: $header,ws:  $ws);
-        }
-        $this->inputs->com_tipo_prospecto_id = $com_tipo_prospecto_id;
 
 
 
