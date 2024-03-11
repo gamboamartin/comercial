@@ -887,6 +887,9 @@ class instalacion
         $columnas->correo = new stdClass();
         $columnas->razon_social = new stdClass();
         $columnas->rfc = new stdClass();
+        $columnas->etapa= new stdClass();
+        $columnas->etapa->tipo_dato= 'VARCHAR';
+        $columnas->etapa->default= 'ALTA';
 
         $add_colums = $init->add_columns(campos: $columnas,table:  __FUNCTION__);
         if(errores::$error){
