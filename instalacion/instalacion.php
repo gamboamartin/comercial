@@ -970,6 +970,30 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al insertar rows', data: $inserta);
         }
 
+        $inserta = (new _adm())->genera_pr_etapa_proceso(adm_accion_descripcion: 'alta_bd',
+            adm_seccion_descripcion: __FUNCTION__, modelo_pr_etapa: $modelo_pr_etapa, modelo_pr_etapa_proceso: $modelo_pr_etapa_proceso,
+            modelo_pr_proceso: $modelo_pr_proceso, modelo_pr_tipo_proceso: $modelo_pr_tipo_proceso,
+            pr_etapa_codigo: 'CONTACTADO', pr_proceso_codigo: 'PROSPECCION', pr_tipo_proceso_codigo: 'Control');
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al insertar rows', data: $inserta);
+        }
+
+        $inserta = (new _adm())->genera_pr_etapa_proceso(adm_accion_descripcion: 'alta_bd',
+            adm_seccion_descripcion: __FUNCTION__, modelo_pr_etapa: $modelo_pr_etapa, modelo_pr_etapa_proceso: $modelo_pr_etapa_proceso,
+            modelo_pr_proceso: $modelo_pr_proceso, modelo_pr_tipo_proceso: $modelo_pr_tipo_proceso,
+            pr_etapa_codigo: 'CLIENTE POTENCIAL', pr_proceso_codigo: 'PROSPECCION', pr_tipo_proceso_codigo: 'Control');
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al insertar rows', data: $inserta);
+        }
+
+        $inserta = (new _adm())->genera_pr_etapa_proceso(adm_accion_descripcion: 'alta_bd',
+            adm_seccion_descripcion: __FUNCTION__, modelo_pr_etapa: $modelo_pr_etapa, modelo_pr_etapa_proceso: $modelo_pr_etapa_proceso,
+            modelo_pr_proceso: $modelo_pr_proceso, modelo_pr_tipo_proceso: $modelo_pr_tipo_proceso,
+            pr_etapa_codigo: 'EN NEGOCIACION', pr_proceso_codigo: 'PROSPECCION', pr_tipo_proceso_codigo: 'Control');
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al insertar rows', data: $inserta);
+        }
+
 
 
         return $out;
