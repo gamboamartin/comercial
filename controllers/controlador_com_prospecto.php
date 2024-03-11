@@ -126,7 +126,10 @@ class controlador_com_prospecto extends _base_sin_cod {
 
     public function etapa_bd(bool $header, bool $ws = false): array|stdClass
     {
+
         $this->link->beginTransaction();
+
+
         $com_prospecto_etapa_ins['com_prospecto_id'] = $this->registro_id;
         $com_prospecto_etapa_ins['pr_etapa_proceso_id'] = $_POST['pr_etapa_proceso_id'];
         $com_prospecto_etapa_ins['fecha'] = $_POST['fecha'];
@@ -137,6 +140,24 @@ class controlador_com_prospecto extends _base_sin_cod {
             $this->retorno_error(mensaje: 'Error al insertar com_prospecto_etapa',data:  $r_alta_com_prospecto_etapa, header: $header,ws:  $ws);
         }
         $this->link->commit();
+
+        if($header){
+
+            $this->retorno_base(registro_id: $this->registro_id, result: $r_alta_com_prospecto_etapa, siguiente_view: 'etapa',
+                ws:  $ws,seccion_retorno: $this->seccion, valida_permiso: true);
+        }
+        if($ws){
+            header('Content-Type: application/json');
+            try {
+                echo json_encode($r_alta_com_prospecto_etapa, JSON_THROW_ON_ERROR);
+            }
+            catch (Throwable $e){
+                $error = (new errores())->error(mensaje: 'Error al maquetar JSON' , data: $e);
+                print_r($error);
+            }
+            exit;
+        }
+
 
 
         return $r_alta_com_prospecto_etapa;
