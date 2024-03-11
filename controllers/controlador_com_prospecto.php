@@ -95,7 +95,8 @@ class controlador_com_prospecto extends _base_sin_cod {
         $columns_ds[] = 'pr_etapa_descripcion';
 
         $pr_etapa_proceso_id = (new pr_etapa_proceso_html(html: $this->html_base))->select_pr_etapa_proceso_id(
-            cols: 12, con_registros: true, id_selected: -1, link: $this->link, columns_ds: $columns_ds, filtro: $filtro, label: 'Etapa');
+            cols: 12, con_registros: true, id_selected: -1, link: $this->link, columns_ds: $columns_ds,
+            filtro: $filtro, label: 'Etapa');
         if(errores::$error){
             $this->retorno_error(mensaje: 'Error al obtener selector de etapa',data:  $pr_etapa_proceso_id, header: $header,ws:  $ws);
         }
