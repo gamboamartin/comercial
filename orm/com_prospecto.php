@@ -58,6 +58,10 @@ class com_prospecto extends _modelo_parent{
             return $this->error->error(mensaje: 'Error al insertar alta_com_rel_agente',data:  $alta_com_rel_agente);
         }
 
+        /*$com_prospecto_etapa_ins['com_prospecto_id'] = $r_alta_bd->registro_id;
+        $com_prospecto_etapa_ins['fecha'] = date('Y-m-d');
+        $com_prospecto_etapa_ins['pr_etapa_proceso_id'] = date('Y-m-d');*/
+
         return $r_alta_bd;
     }
 

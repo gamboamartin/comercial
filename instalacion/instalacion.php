@@ -14,6 +14,10 @@ use gamboamartin\comercial\models\com_tipo_sucursal;
 use gamboamartin\comercial\models\com_tmp_prod_cs;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\errores\errores;
+use gamboamartin\proceso\models\pr_etapa;
+use gamboamartin\proceso\models\pr_etapa_proceso;
+use gamboamartin\proceso\models\pr_proceso;
+use gamboamartin\proceso\models\pr_tipo_proceso;
 use PDO;
 use stdClass;
 use function GuzzleHttp\describe_type;
@@ -960,6 +964,22 @@ class instalacion
                 return (new errores())->error(mensaje: 'Error al insertar accion', data:  $alta_accion);
             }
         }
+
+
+        $modelo_pr_tipo_proceso = new pr_tipo_proceso(link: $link);
+        $modelo_pr_etapa_proceso = new pr_etapa_proceso(link: $link);
+        $modelo_pr_etapa = new pr_etapa(link: $link);
+        $modelo_pr_proceso = new pr_proceso(link: $link);
+
+        $inserta = (new _adm())->genera_pr_etapa_proceso(adm_accion_descripcion: 'alta_bd',
+            adm_seccion_descripcion: __FUNCTION__, modelo_pr_etapa: $modelo_pr_etapa, modelo_pr_etapa_proceso: $modelo_pr_etapa_proceso,
+            modelo_pr_proceso: $modelo_pr_proceso, modelo_pr_tipo_proceso: $modelo_pr_tipo_proceso,
+            pr_etapa_codigo: 'ALTA', pr_proceso_codigo: 'PROSPECCION', pr_tipo_proceso_codigo: 'Control');
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al insertar rows', data: $inserta);
+        }
+
+
 
         return $out;
 
