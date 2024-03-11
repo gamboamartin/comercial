@@ -932,38 +932,21 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al obtener seccion_id', data:  $adm_seccion_id);
         }
 
-        //$acciones = array();
-        $accion['descripcion'] = 'convierte_en_cliente';
-        $accion['etiqueta_label'] = 'Convierte en Cliente';
-        $accion['adm_seccion_id'] = $adm_seccion_id;
-        $accion['icono'] = 'bi bi-file-earmark-plus-fill';
-        $accion['visible'] = 'inactivo';
-        $accion['inicio'] = 'inactivo';
-        $accion['lista'] = 'activo';
-        $accion['seguridad'] = 'activo';
-        $accion['es_modal'] = 'inactivo';
-        $accion['es_view'] = 'inactivo';
-        $accion['titulo'] = 'Convierte en Cliente';
-        $accion['css'] = 'warning';
-        $accion['es_status'] = 'inactivo';
-        $accion['es_lista'] = 'activo';
-        $accion['muestra_icono_btn'] = 'activo';
-        $accion['muestra_titulo_btn'] = 'inactivo';
-        $filtro = array();
-        $filtro['adm_accion.descripcion'] = 'convierte_en_cliente';
-        $filtro['adm_seccion.descripcion'] = __FUNCTION__;
-
-        $existe = (new adm_accion(link: $link))->existe(filtro: $filtro);
+        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'convierte_en_cliente',
+            adm_seccion_descripcion: __FUNCTION__, es_view: 'inactivo', icono: 'bi bi-file-earmark-plus-fill',
+            link: $link, lista: 'activo', titulo: 'Convierte en cliente');
         if(errores::$error){
-            return (new errores())->error(mensaje: 'Error al validar si existe accion', data:  $existe);
+            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
         }
+        $out->fc_relacion_alta_bd = $alta_accion;
 
-        if(!$existe){
-            $alta_accion = (new adm_accion(link: $link))->alta_registro(registro: $accion);
-            if(errores::$error){
-                return (new errores())->error(mensaje: 'Error al insertar accion', data:  $alta_accion);
-            }
+        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'etapa',
+            adm_seccion_descripcion: __FUNCTION__, es_view: 'activo', icono: 'bi bi-card-checklist',
+            link: $link, lista: 'activo', titulo: 'Etapas',css: 'info');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
         }
+        $out->fc_relacion_alta_bd = $alta_accion;
 
 
         $modelo_pr_tipo_proceso = new pr_tipo_proceso(link: $link);
