@@ -122,6 +122,14 @@ class controlador_com_prospecto extends _base_sin_cod {
         return $template;
     }
 
+    public function etapa_bd(bool $header, bool $ws = false): array|stdClass
+    {
+        print_r($_POST);EXIT;
+
+
+        return $template;
+    }
+
     public function init_datatable(): stdClass
     {
         $datatables = new stdClass();
