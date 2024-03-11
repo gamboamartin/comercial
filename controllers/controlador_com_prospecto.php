@@ -12,10 +12,7 @@ use base\controller\init;
 use gamboamartin\comercial\models\com_prospecto;
 use gamboamartin\comercial\models\com_prospecto_etapa;
 use gamboamartin\errores\errores;
-use gamboamartin\proceso\html\pr_etapa_html;
 use gamboamartin\proceso\html\pr_etapa_proceso_html;
-use gamboamartin\proceso\html\pr_proceso_html;
-use gamboamartin\proceso\models\pr_proceso;
 use gamboamartin\template\html;
 use html\com_agente_html;
 use html\com_prospecto_html;
@@ -28,6 +25,8 @@ class controlador_com_prospecto extends _base_sin_cod {
 
     public array|stdClass $keys_selects = array();
     public string $link_alta_etapa = '';
+
+    public array $etapas = array();
 
     public function __construct(PDO $link, html $html = new \gamboamartin\template_1\html(),
                                 stdClass $paths_conf = new stdClass()){
@@ -123,6 +122,8 @@ class controlador_com_prospecto extends _base_sin_cod {
         if(errores::$error){
             $this->retorno_error(mensaje: 'Error al obtener etapas',data:  $etapas, header: $header,ws:  $ws);
         }
+
+        $this->etapas = $etapas;
 
 
 

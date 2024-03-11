@@ -24,9 +24,7 @@
 
             </div>
         </div>
-        <div class="col-md-12 buttons-form">
-            <?php echo $controlador->button_com_cliente_correo; ?>
-        </div>
+
     </div>
 
 </main>
@@ -40,18 +38,18 @@
                         <thead>
                         <tr>
                             <th>Id</th>
-                            <th>Correo</th>
-                            <th>Acciones</th>
+                            <th>Etapa</th>
+                            <th>Fecha</th>
                         </tr>
                         </thead>
                         <tbody>
                         <?php
-                        foreach ($controlador->registros['emails_ctes'] as $com_email_cte){
+                        foreach ($controlador->etapas as $etapa){
                         ?>
                         <tr>
-                            <td><?php echo $com_email_cte['com_email_cte_id'] ?></td>
-                            <td><?php echo $com_email_cte['com_email_cte_descripcion'] ?></td>
-                            <td><?php echo $com_email_cte['elimina_bd'] ?></td>
+                            <td><?php echo $etapa['com_prospecto_etapa_id'] ?></td>
+                            <td><?php echo $etapa['pr_etapa_descripcion'] ?></td>
+                            <td><?php echo $etapa['com_prospecto_etapa_fecha'] ?></td>
                         </tr>
                         <?php } ?>
                         </tbody>
@@ -59,9 +57,7 @@
                 </div> <!-- /. widget-table-->
             </div><!-- /.center-content -->
         </div>
-        <div class="col-md-12 buttons-form">
-            <?php echo $controlador->button_com_cliente_correo; ?>
-        </div>
+
     </div>
 </main>
 
