@@ -59,6 +59,7 @@ class com_prospectoTest extends test {
         $modelo->registro['com_agente_id'] = 1;
 
         $resultado = $modelo->alta_bd();
+        //print_r($resultado);exit;
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('TIPO 1',$resultado->registro['com_tipo_prospecto_codigo']);

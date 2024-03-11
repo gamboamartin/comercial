@@ -2,6 +2,7 @@
 namespace gamboamartin\comercial\models;
 use base\orm\_modelo_parent;
 use gamboamartin\errores\errores;
+use gamboamartin\proceso\models\pr_etapa_proceso;
 use PDO;
 use stdClass;
 
@@ -58,9 +59,33 @@ class com_prospecto extends _modelo_parent{
             return $this->error->error(mensaje: 'Error al insertar alta_com_rel_agente',data:  $alta_com_rel_agente);
         }
 
-        /*$com_prospecto_etapa_ins['com_prospecto_id'] = $r_alta_bd->registro_id;
+        $filtro = array();
+        $filtro['pr_proceso.descripcion'] = 'PROSPECCION';
+        $filtro['pr_etapa.descripcion'] = 'ALTA';
+        $filtro['adm_seccion.descripcion'] = $this->tabla;
+
+        $existe = (new pr_etapa_proceso(link: $this->link))->existe(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si existe',data:  $existe);
+        }
+        if(!$existe){
+            return $this->error->error(mensaje: 'Error no existe etapa definida',data:  $filtro);
+        }
+        $r_pr_etapa_proceso = (new pr_etapa_proceso(link: $this->link))->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener etapa',data:  $r_pr_etapa_proceso);
+        }
+
+        $pr_etapa_proceso_id = $r_pr_etapa_proceso->registros[0]['pr_etapa_proceso_id'];
+
+        $com_prospecto_etapa_ins['com_prospecto_id'] = $r_alta_bd->registro_id;
         $com_prospecto_etapa_ins['fecha'] = date('Y-m-d');
-        $com_prospecto_etapa_ins['pr_etapa_proceso_id'] = date('Y-m-d');*/
+        $com_prospecto_etapa_ins['pr_etapa_proceso_id'] = $pr_etapa_proceso_id;
+
+        $r_etapa = (new com_prospecto_etapa(link: $this->link))->alta_registro(registro:$com_prospecto_etapa_ins);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al insertar etapa',data:  $r_etapa);
+        }
 
         return $r_alta_bd;
     }
