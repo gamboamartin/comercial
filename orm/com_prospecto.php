@@ -235,6 +235,17 @@ class com_prospecto extends _modelo_parent{
         return $r_del_bd;
     }
 
+    final public function etapas(int $com_prospecto_id)
+    {
+        $filtro['com_prospecto.id'] = $com_prospecto_id;
+        $r_com_prospecto_etapa = (new com_prospecto_etapa(link: $this->link))->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener etapas', data: $r_com_prospecto_etapa);
+        }
+        return $r_com_prospecto_etapa->registros;
+
+    }
+
     private function inserta_com_rel_agente(int $com_agente_id, int $com_prospecto_id)
     {
         $com_rel_agente_ins = $this->com_rel_agente_ins(com_agente_id: $com_agente_id,
