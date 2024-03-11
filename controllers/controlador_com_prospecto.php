@@ -126,14 +126,17 @@ class controlador_com_prospecto extends _base_sin_cod {
 
     public function etapa_bd(bool $header, bool $ws = false): array|stdClass
     {
+        $this->link->beginTransaction();
         $com_prospecto_etapa_ins['com_prospecto_id'] = $this->registro_id;
         $com_prospecto_etapa_ins['pr_etapa_proceso_id'] = $_POST['pr_etapa_proceso_id'];
         $com_prospecto_etapa_ins['fecha'] = $_POST['fecha'];
 
         $r_alta_com_prospecto_etapa = (new com_prospecto_etapa(link: $this->link))->alta_registro(registro: $com_prospecto_etapa_ins);
         if(errores::$error){
+            $this->link->rollBack();
             $this->retorno_error(mensaje: 'Error al insertar com_prospecto_etapa',data:  $r_alta_com_prospecto_etapa, header: $header,ws:  $ws);
         }
+        $this->link->commit();
 
 
         return $r_alta_com_prospecto_etapa;
