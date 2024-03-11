@@ -59,7 +59,8 @@
         "gamboa.martin/cat_sat": "^19.0.0",
         "gamboa.martin/js_base": "^3.0.0",
         "gamboa.martin/documento": "^19.0.0",
-        "gamboa.martin/xml_cfdi_4": "^3.0.0"
+        "gamboa.martin/xml_cfdi_4": "^3.0.0",
+        "gamboa.martin/proceso": "^19.0.0"
 
     },
     "require-dev": {
