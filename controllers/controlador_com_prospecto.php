@@ -25,6 +25,7 @@ use Throwable;
 class controlador_com_prospecto extends _base_sin_cod {
 
     public array|stdClass $keys_selects = array();
+    public string $link_alta_etapa = '';
 
     public function __construct(PDO $link, html $html = new \gamboamartin\template_1\html(),
                                 stdClass $paths_conf = new stdClass()){
@@ -107,8 +108,13 @@ class controlador_com_prospecto extends _base_sin_cod {
 
         $this->inputs->fecha = $fecha;
 
+        $link_alta_etapa = $this->obj_link->link_con_id(
+            accion: 'etapa_bd',link: $this->link,registro_id: $this->registro_id,seccion: $this->tabla);
+        if(errores::$error){
+            $this->retorno_error(mensaje: 'Error al generar link',data:  $link_alta_etapa, header: $header,ws:  $ws);
+        }
 
-
+        $this->link_alta_etapa = $link_alta_etapa;
 
 
         return $template;
