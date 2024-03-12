@@ -35,7 +35,6 @@ class com_agente extends _modelo_parent{
      * Inserta u obtiene un usuario
      * @param array $registro Registro en proceso
      * @return array|stdClass
-     * @version 18.46.0
      */
     private function adm_usuario(array $registro): array|stdClass
     {
