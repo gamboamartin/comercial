@@ -772,6 +772,16 @@ class instalacion
                 continue;
             }
 
+            $existe_cat_sat = (new cat_sat_cve_prod(link: $link))->existe_by_id(registro_id: $cat_sat_producto);
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error al obtener producto', data: $existe_cat_sat);
+            }
+
+            if(!$existe_cat_sat){
+
+                $cat_sat_producto = '1010101';
+            }
+
             $com_producto_upd['cat_sat_cve_prod_id'] = $cat_sat_producto;
             $upd = $com_producto_modelo->modifica_bd(registro: $com_producto_upd,id:  $com_producto_id);
             if(errores::$error){
@@ -799,6 +809,9 @@ class instalacion
                 $com_producto_upd = array();
                 $com_producto_upd['cat_sat_cve_prod_id'] = $com_producto['cat_sat_cve_prod_id'];
                 $com_producto_upd['codigo_sat'] = $com_producto['cat_sat_cve_prod_id'];
+
+
+
                 $upd = $com_producto_modelo->modifica_bd(registro: $com_producto_upd,
                     id:  $com_producto['com_producto_id']);
                 if(errores::$error){
