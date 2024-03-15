@@ -41,6 +41,12 @@ class com_tipo_cambioTest extends test {
             print_r($error);
             exit;
         }
+        $del = (new base_test())->del_com_tipo_cambio($this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
 
         $alta = (new base_test())->alta_com_tipo_cambio($this->link);
         if(errores::$error){
@@ -56,6 +62,13 @@ class com_tipo_cambioTest extends test {
         $this->assertEquals("1", $resultado->registro_id);
 
         errores::$error = false;
+
+        $del = (new base_test())->del_com_tipo_cambio($this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
 
 
     }
