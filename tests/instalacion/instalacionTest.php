@@ -25,6 +25,37 @@ class instalacionTest extends test {
         parent::__construct($name);
         $this->errores = new errores();
     }
+
+    public function test__add_com_tipo_cliente(): void
+    {
+
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 1;
+        $_SESSION['usuario_id'] = 2;
+        $_GET['session_id'] = '1';
+
+
+
+
+        $ins = new instalacion($this->link);
+        $ins = new liberator($ins);
+
+
+        $resultado = $ins->_add_com_tipo_cliente(link: $this->link);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+        $resultado = (new _instalacion(link: $this->link))->describe_table(table: 'com_tipo_cliente');
+        $this->assertIsObject($resultado);
+        $this->assertEquals('id',$resultado->registros[0]['Field']);
+        $this->assertEquals('descripcion',$resultado->registros[1]['Field']);
+        $this->assertEquals('predeterminado',$resultado->registros[11]['Field']);
+        errores::$error = false;
+
+
+    }
     public function test__add_com_tipo_sucursal(): void
     {
 
