@@ -185,6 +185,20 @@ class instalacion
 
         return $out;
     }
+
+    private function _add_com_tipo_cliente(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $init = (new _instalacion(link: $link));
+
+        $create = $init->create_table_new(table: 'com_tipo_cliente');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create = $create;
+
+        return $out;
+    }
     private function _add_com_conf_precio(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -1285,6 +1299,21 @@ class instalacion
         return $out;
 
     }
+
+    private function com_tipo_cliente(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+
+        $create = $this->_add_com_tipo_cliente(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+
+        $out->campos = $create;
+
+        return $out;
+
+    }
     private function com_tipo_producto(PDO $link): array|stdClass
     {
         $init = (new _instalacion(link: $link));
@@ -1488,6 +1517,12 @@ class instalacion
     final public function instala(PDO $link): array|stdClass
     {
         $out = new stdClass();
+
+        $com_tipo_cliente = $this->com_tipo_cliente(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error integrar com_tipo_cliente', data:  $com_tipo_cliente);
+        }
+        $out->com_tipo_cliente = $com_tipo_cliente;
 
         $com_tipo_producto = $this->com_tipo_producto(link: $link);
         if(errores::$error){
