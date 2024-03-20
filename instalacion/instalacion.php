@@ -1311,6 +1311,23 @@ class instalacion
 
         $out->campos = $create;
 
+        $adm_menu_descripcion = 'Clientes';
+        $adm_sistema_descripcion = 'comercial';
+        $etiqueta_label = 'Tipos de Cliente';
+        $adm_seccion_pertenece_descripcion = 'com_tipo_cliente';
+        $adm_namespace_name = 'gamboamartin/comercial';
+        $adm_namespace_descripcion = 'gamboa.martin/comercial';
+
+        $acl = (new _adm())->integra_acl(adm_menu_descripcion: $adm_menu_descripcion,
+            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion,
+            adm_seccion_descripcion: __FUNCTION__,
+            adm_seccion_pertenece_descripcion: $adm_seccion_pertenece_descripcion,
+            adm_sistema_descripcion: $adm_sistema_descripcion,
+            etiqueta_label: $etiqueta_label, link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
+        }
+
         return $out;
 
     }
