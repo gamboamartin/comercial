@@ -35,7 +35,6 @@ if(errores::$error){
     exit;
 }
 
-print_r($instala);
 
 $cat_sat = new gamboamartin\cat_sat\instalacion\instalacion();
 
@@ -48,22 +47,18 @@ if(errores::$error){
     exit;
 }
 
-print_r($instala);
-
 
 $comercial = new gamboamartin\comercial\instalacion\instalacion();
 
 $instala = $comercial->instala(link: $link);
-
 if(errores::$error){
-    $link->rollBack();
+    if($link->inTransaction()) {
+        $link->rollBack();
+    }
     $error = (new errores())->error(mensaje: 'Error al instalar comercial', data: $instala);
     print_r($error);
     exit;
 }
-
-print_r($instala);
-
 
 $link->commit();
 

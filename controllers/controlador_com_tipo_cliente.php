@@ -11,8 +11,8 @@ namespace gamboamartin\comercial\controllers;
 use base\controller\controler;
 use gamboamartin\comercial\models\com_tipo_cliente;
 use gamboamartin\errores\errores;
-use gamboamartin\system\_ctl_parent_sin_codigo;
-use gamboamartin\system\links_menu;
+use gamboamartin\plugins\files;
+use gamboamartin\plugins\Importador;
 use gamboamartin\template\html;
 use html\com_tipo_cliente_html;
 use PDO;
@@ -136,5 +136,58 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
         }
 
         return $contenido_table;
+    }
+
+    public function importa(bool $header = true, bool $ws = false): array|stdClass
+    {
+        $this->inputs = new stdClass();
+        $input_file = $this->html->input_file(cols: 12,name:  'doc_origen',row_upd:  new stdClass(),value_vacio:  false);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al generar input',data:  $input_file, header: $header,ws:  $ws);
+        }
+
+        $this->inputs->input_file = $input_file;
+
+        return $this->inputs;
+    }
+
+    public function importa_previo(bool $header = true, bool $ws = false): array|stdClass
+    {
+        $doc_origen = $_FILES['doc_origen'];
+        $name = $doc_origen['name'];
+        $extension = (new files())->extension(archivo: $name);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener extension',data:  $extension, header: $header,ws:  $ws);
+        }
+
+        $this->columnas_entidad = $this->modelo->data_columnas->columnas_parseadas;
+
+        //print_r($doc_origen);exit;
+        $ruta = $doc_origen['tmp_name'];
+        $extensiones_permitidas = array('csv','ods','xls','xlsx');
+
+
+        if(!in_array($extension, $extensiones_permitidas)){
+            return $this->retorno_error(mensaje: 'Error el documento no tiene una extension permitida',
+                data:  $extension, header: $header,ws:  $ws);
+        }
+
+        $columnas_calc = (new Importador())->primer_row(celda_inicio: 'A1',ruta_absoluta: $ruta);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener columnas_calc',data:  $columnas_calc,
+                header: $header,ws:  $ws);
+        }
+
+        $columnas_xls = array();
+        foreach ($columnas_calc as $columna){
+            $columna_xls = array();
+            //$input = $this->html->select_catalogo($cols, $con_registros, $id_selected, $modelo);
+
+           // $columna_xls[$columna] = $c
+        }
+
+        $this->columnas_calc = $columnas_calc;
+
+        return $this->inputs;
     }
 }
