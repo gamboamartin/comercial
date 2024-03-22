@@ -9,6 +9,7 @@
 namespace gamboamartin\comercial\controllers;
 
 use base\controller\controler;
+use gamboamartin\administrador\models\adm_campo;
 use gamboamartin\comercial\models\com_tipo_cliente;
 use gamboamartin\errores\errores;
 use gamboamartin\plugins\files;
@@ -162,7 +163,6 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
 
         $this->columnas_entidad = $this->modelo->data_columnas->columnas_parseadas;
 
-        //print_r($doc_origen);exit;
         $ruta = $doc_origen['tmp_name'];
         $extensiones_permitidas = array('csv','ods','xls','xlsx');
 
@@ -178,16 +178,62 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
                 header: $header,ws:  $ws);
         }
 
+        $modelo_am_campo = new adm_campo(link: $this->link);
+        $filtro['adm_seccion.descripcion'] = $this->tabla;
+        $columns_ds[] ='adm_campo_descripcion';
         $columnas_xls = array();
-        foreach ($columnas_calc as $columna){
-            $columna_xls = array();
-            //$input = $this->html->select_catalogo($cols, $con_registros, $id_selected, $modelo);
 
-           // $columna_xls[$columna] = $c
+        $adm_campos = $modelo_am_campo->campos_by_seccion(adm_seccion_descripcion: $this->tabla);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener adm_campos',data:  $adm_campos,
+                header: $header,ws:  $ws);
         }
 
-        $this->columnas_calc = $columnas_calc;
+        $columnas_calc_def = array();
+        foreach ($columnas_calc as $columna_cal){
+            $columna_cal_del = array();
+            $columna_cal_del['value'] = $columna_cal;
+            $columna_cal_del['descripcion_select'] = $columna_cal;
+            $columnas_calc_def[] = $columna_cal_del;
+        }
 
-        return $this->inputs;
+        //print_r($columnas_calc_def);exit;
+
+        foreach ($adm_campos as $adm_campo){
+
+
+            $input = $this->html->select_catalogo(cols: 12, con_registros: false, id_selected: $adm_campo['adm_campo_descripcion'],
+                modelo: $modelo_am_campo, aplica_default: false, key_descripcion_select: 'descripcion_select',
+                key_value_custom: 'value', label: $adm_campo['adm_campo_descripcion'], registros: $columnas_calc_def);
+
+            if(errores::$error){
+                return $this->retorno_error(mensaje: 'Error al generar input', data: $input, header: $header, ws: $ws,
+                    class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
+            }
+            $columnas_xls[$adm_campo['adm_campo_descripcion']] = $input;
+
+        }
+
+        /*foreach ($columnas_calc as $columna){
+            $id_selected = -1;
+            foreach ($adm_campos as $adm_campo){
+                if($adm_campo['adm_campo_descripcion'] === $columna){
+                    $id_selected = $adm_campo['adm_campo_id'];
+                    break;
+                }
+            }
+            $input = $this->html->select_catalogo(cols: 12, con_registros: true, id_selected: $id_selected,
+                modelo: $modelo_am_campo, columns_ds: $columns_ds, filtro: $filtro, label: $columna);
+
+            if(errores::$error){
+                return $this->retorno_error(mensaje: 'Error al generar input',data:  $input, header: $header,ws:  $ws);
+            }
+            $columnas_xls[$columna] = $input;
+
+        }*/
+
+        $this->columnas_calc = $columnas_xls;
+
+        return $columnas_xls;
     }
 }
