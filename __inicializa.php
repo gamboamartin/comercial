@@ -18,7 +18,9 @@ $administrador = new \gamboamartin\administrador\instalacion\instalacion();
 $instala = $administrador->instala(link: $link);
 
 if(errores::$error){
-    $link->rollBack();
+    if($link->inTransaction()) {
+        $link->rollBack();
+    }
     $error = (new errores())->error(mensaje: 'Error al instalar administrador', data: $instala);
     print_r($error);
     exit;
@@ -29,7 +31,9 @@ $direccion_postal = new gamboamartin\direccion_postal\instalacion\instalacion();
 $instala = $direccion_postal->instala(link: $link);
 
 if(errores::$error){
-    $link->rollBack();
+    if($link->inTransaction()) {
+        $link->rollBack();
+    }
     $error = (new errores())->error(mensaje: 'Error al instalar direccion_postal', data: $instala);
     print_r($error);
     exit;
@@ -41,8 +45,23 @@ $cat_sat = new gamboamartin\cat_sat\instalacion\instalacion();
 $instala = $cat_sat->instala(link: $link);
 
 if(errores::$error){
-    $link->rollBack();
+    if($link->inTransaction()) {
+        $link->rollBack();
+    }
     $error = (new errores())->error(mensaje: 'Error al instalar cat_sat', data: $instala);
+    print_r($error);
+    exit;
+}
+
+$documento = new \gamboamartin\documento\instalacion\instalacion();
+
+$instala = $documento->instala(link: $link);
+
+if(errores::$error){
+    if($link->inTransaction()) {
+        $link->rollBack();
+    }
+    $error = (new errores())->error(mensaje: 'Error al instalar documento', data: $instala);
     print_r($error);
     exit;
 }
@@ -60,6 +79,8 @@ if(errores::$error){
     exit;
 }
 
-$link->commit();
+if($link->inTransaction()) {
+    $link->commit();
+}
 
 

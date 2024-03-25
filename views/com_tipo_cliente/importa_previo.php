@@ -9,7 +9,7 @@
                 <?php include (new views())->ruta_templates."mensajes.php"; ?>
 
                 <div class="widget  widget-box box-container form-main widget-form-cart" id="form">
-                    <form method="post" action="<?php echo $controlador->link_importa_previo_bd; ?>" class="form-additional">
+                    <form method="post" action="<?php echo $controlador->link_importa_previo_muestra; ?>" class="form-additional">
                         <?php include (new views())->ruta_templates."head/subtitulo.php"; ?>
 
                         <?php
