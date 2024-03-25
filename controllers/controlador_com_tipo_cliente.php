@@ -15,6 +15,7 @@ use gamboamartin\documento\models\doc_documento;
 use gamboamartin\errores\errores;
 use gamboamartin\plugins\files;
 use gamboamartin\plugins\Importador;
+use gamboamartin\system\_importador\_campos;
 use gamboamartin\template\html;
 use gamboamartin\validacion\validacion;
 use html\com_tipo_cliente_html;
@@ -44,18 +45,9 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
         $this->childrens_data['com_cliente']['title'] = 'Clientes';
     }
 
-    private function campo_valida(array $adm_campos, string $campo_db)
-    {
-        $campo_valida = array();
-        foreach ($adm_campos as $adm_campo){
-            if($adm_campo['adm_campo_descripcion'] === $campo_db){
-                $campo_valida = $adm_campo;
-                break;
-            }
-        }
-        return $campo_valida;
 
-    }
+
+
 
     public function clientes(bool $header = true, bool $ws = false): array|string
     {
@@ -76,19 +68,7 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
         return $contenido_table;
     }
 
-    private function doc_tipos_doc(array $rows_xls): array
-    {
-        $doc_tipos_doc = array();
-        foreach ($rows_xls as $row){
-            $doc_tipo_documento = array();
-            foreach ($_POST as $campo_db=>$campo_xls) {
-                $doc_tipo_documento[$campo_db] = $row->$campo_xls;
-            }
-            $doc_tipos_doc[] = $doc_tipo_documento;
-        }
-        return $doc_tipos_doc;
 
-    }
 
     private function init_controladores(stdClass $paths_conf): controler
     {
@@ -168,21 +148,6 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
         return $keys_selects;
     }
 
-
-
-    public function importa(bool $header = true, bool $ws = false): array|stdClass
-    {
-        $this->inputs = new stdClass();
-        $input_file = $this->html->input_file(cols: 12,name:  'doc_origen',row_upd:  new stdClass(),value_vacio:  false);
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al generar input',data:  $input_file, header: $header,ws:  $ws);
-        }
-
-        $this->inputs->input_file = $input_file;
-
-        return $this->inputs;
-    }
-
     public function importa_previo(bool $header = true, bool $ws = false): array|stdClass
     {
 
@@ -217,34 +182,13 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
                 header: $header,ws:  $ws);
         }
 
-        $modelo_am_campo = new adm_campo(link: $this->link);
         $columnas_xls = array();
 
-        $adm_campos = $modelo_am_campo->campos_by_seccion(adm_seccion_descripcion: $this->tabla);
+        $adm_campos = (new _campos())->adm_campos(link: $this->link, tabla: $this->tabla);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al obtener adm_campos',data:  $adm_campos,
                 header: $header,ws:  $ws);
         }
-
-        foreach ($adm_campos as $indice=>$adm_campo){
-            if($adm_campo['adm_campo_descripcion'] === 'usuario_alta_id'){
-                unset($adm_campos[$indice]);
-            }
-            if($adm_campo['adm_campo_descripcion'] === 'usuario_update_id'){
-                unset($adm_campos[$indice]);
-            }
-            if($adm_campo['adm_campo_descripcion'] === 'fecha_alta'){
-                unset($adm_campos[$indice]);
-            }
-            if($adm_campo['adm_campo_descripcion'] === 'fecha_update'){
-                unset($adm_campos[$indice]);
-            }
-            if($adm_campo['adm_campo_descripcion'] === 'predeterminado'){
-                unset($adm_campos[$indice]);
-            }
-
-        }
-
 
         $columnas_calc_def = array();
         foreach ($columnas_calc as $columna_cal){
@@ -255,11 +199,12 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
         }
 
 
+        $modelo_adm_campo = new adm_campo(link: $this->link);
         foreach ($adm_campos as $adm_campo){
 
 
             $input = $this->html->select_catalogo(cols: 12, con_registros: false, id_selected: $adm_campo['adm_campo_descripcion'],
-                modelo: $modelo_am_campo, aplica_default: false, key_descripcion_select: 'descripcion_select',
+                modelo: $modelo_adm_campo, aplica_default: false, key_descripcion_select: 'descripcion_select',
                 key_value_custom: 'value', label: $adm_campo['adm_campo_descripcion'], name: $adm_campo['adm_campo_descripcion'], registros: $columnas_calc_def);
 
             if(errores::$error){
@@ -302,38 +247,19 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
         unset($_POST['btn_action_next']);
 
 
-        $doc_tipos_doc = $this->doc_tipos_doc(rows_xls: $rows);
+        $doc_tipos_doc = (new _campos())->rows_importa(rows_xls: $rows);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al obtener tipos de doc ',data:  $doc_tipos_doc,
                 header: $header,ws:  $ws);
         }
 
 
-        $modelo_adm_campo = new adm_campo(link: $this->link);
-
-        $adm_campos = $modelo_adm_campo->campos_by_seccion(adm_seccion_descripcion: $this->tabla);
+        $adm_campos = (new _campos())->adm_campos(link: $this->link, tabla: $this->tabla);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al obtener adm_campos',data:  $adm_campos,
                 header: $header,ws:  $ws);
         }
-        foreach ($adm_campos as $indice=>$adm_campo){
-            if($adm_campo['adm_campo_descripcion'] === 'usuario_alta_id'){
-                unset($adm_campos[$indice]);
-            }
-            if($adm_campo['adm_campo_descripcion'] === 'usuario_update_id'){
-                unset($adm_campos[$indice]);
-            }
-            if($adm_campo['adm_campo_descripcion'] === 'fecha_alta'){
-                unset($adm_campos[$indice]);
-            }
-            if($adm_campo['adm_campo_descripcion'] === 'fecha_update'){
-                unset($adm_campos[$indice]);
-            }
-            if($adm_campo['adm_campo_descripcion'] === 'predeterminado'){
-                unset($adm_campos[$indice]);
-            }
 
-        }
 
         $tipos_doc_final = array();
         foreach ($doc_tipos_doc as $key=>$doc_tipo_doc){
@@ -341,7 +267,7 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
 
             foreach ($doc_tipo_doc as $campo_db=>$value) {
                 $tipos_doc_final[$key][$campo_db]['value'] = $value;
-                $tipo_dato = $this->tipo_dato_valida(adm_campos: $adm_campos,campo_db:  $campo_db);
+                $tipo_dato = (new _campos())->tipo_dato_valida(adm_campos: $adm_campos,campo_db:  $campo_db);
                 if(errores::$error){
                     return $this->retorno_error(mensaje: 'Error al obtener tipo_dato',data:  $tipo_dato,
                         header: $header,ws:  $ws);
@@ -352,8 +278,8 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
                     $valida = (new validacion())->id(txt: $value);
                     $mensaje_error = 'Critico debe ser un entero positivo 1-999999999';
 
-                    $tipos_doc_final = $this->integra_tipo_doc_final(campo_db: $campo_db, contexto_error: 'danger', key: $key,
-                        mensaje: $mensaje_error, tipos_doc_final: $tipos_doc_final, valida: $valida);
+                    $tipos_doc_final = (new _campos())->integra_row_final(campo_db: $campo_db, contexto_error: 'danger', key: $key,
+                        mensaje: $mensaje_error, rows_finals: $tipos_doc_final, valida: $valida);
                     if(errores::$error){
                         return $this->retorno_error(mensaje: 'Error al integrar tipos_doc_final',data:  $tipos_doc_final,
                             header: $header,ws:  $ws);
@@ -363,8 +289,8 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
                 if($tipo_dato === 'INT'){
                     $valida = (new validacion())->id(txt: $value);
                     $mensaje_error = 'Critico debe ser un entero positivo 1-999999999';
-                    $tipos_doc_final = $this->integra_tipo_doc_final(campo_db: $campo_db,contexto_error: 'danger',key:  $key,mensaje:  $mensaje_error,
-                        tipos_doc_final:  $tipos_doc_final,valida:  $valida);
+                    $tipos_doc_final = (new _campos())->integra_row_final(campo_db: $campo_db,contexto_error: 'danger',key:  $key,mensaje:  $mensaje_error,
+                        rows_finals:  $tipos_doc_final,valida:  $valida);
                     if(errores::$error){
                         return $this->retorno_error(mensaje: 'Error al integrar tipos_doc_final',data:  $tipos_doc_final,
                             header: $header,ws:  $ws);
@@ -374,8 +300,8 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
                 if($tipo_dato === 'VARCHAR'){
                     $valida = $value!=='';
                     $mensaje_error = 'Posible error po campo vacio';
-                    $tipos_doc_final = $this->integra_tipo_doc_final(campo_db: $campo_db,contexto_error: 'warning',key:  $key,mensaje:  $mensaje_error,
-                        tipos_doc_final:  $tipos_doc_final,valida:  $valida);
+                    $tipos_doc_final = (new _campos())->integra_row_final(campo_db: $campo_db,contexto_error: 'warning',key:  $key,mensaje:  $mensaje_error,
+                        rows_finals:  $tipos_doc_final,valida:  $valida);
                     if(errores::$error){
                         return $this->retorno_error(mensaje: 'Error al integrar tipos_doc_final',data:  $tipos_doc_final,
                             header: $header,ws:  $ws);
@@ -385,9 +311,9 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
                 if($tipo_dato === 'TIMESTAMP'){
                     $valida = $value!=='';
                     $mensaje_error = 'Posible error po campo vacio';
-                    $tipos_doc_final = $this->integra_tipo_doc_final(campo_db: $campo_db,contexto_error: 'warning',
+                    $tipos_doc_final = (new _campos())->integra_row_final(campo_db: $campo_db,contexto_error: 'warning',
                         key:  $key,mensaje:  $mensaje_error,
-                        tipos_doc_final:  $tipos_doc_final,valida:  $valida);
+                        rows_finals:  $tipos_doc_final,valida:  $valida);
                     if(errores::$error){
                         return $this->retorno_error(mensaje: 'Error al integrar tipos_doc_final',data:  $tipos_doc_final,
                             header: $header,ws:  $ws);
@@ -397,9 +323,9 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
                     $valida = (new validacion())->valida_pattern(key: 'fecha', txt: $value);
 
                     $mensaje_error = 'Error formato fecha';
-                    $tipos_doc_final = $this->integra_tipo_doc_final(campo_db: $campo_db,contexto_error: 'danger',
+                    $tipos_doc_final = (new _campos())->integra_row_final(campo_db: $campo_db,contexto_error: 'danger',
                         key:  $key,mensaje:  $mensaje_error,
-                        tipos_doc_final:  $tipos_doc_final,valida:  $valida);
+                        rows_finals:  $tipos_doc_final,valida:  $valida);
                     if(errores::$error){
                         return $this->retorno_error(mensaje: 'Error al integrar tipos_doc_final',data:  $tipos_doc_final,
                             header: $header,ws:  $ws);
@@ -409,49 +335,52 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
             }
         }
 
+        foreach ($tipos_doc_final as $indice=>$tipo_doc){
+            $input = "<input type='checkbox' name=row[$indice]>";
+            $tipos_doc_final[$indice]['selecciona'] = $input;
+        }
+
+
         $headers = array();
         foreach ($adm_campos as $adm_campo){
             $headers[] = $adm_campo['adm_campo_descripcion'];
         }
+        $headers[] = 'Selecciona';
 
 
         $this->registros = $tipos_doc_final;
         $this->ths = $headers;
 
+
+        $this->link_importa_previo_muestra_bd.='&doc_documento_id='.$_GET['doc_documento_id'];
+
         return $this->inputs;
     }
 
-    private function init_tipo_doc_final(string $campo_db, string $key, array $tipos_doc_final, bool $valida): array
+    public function importa_previo_muestra_bd(bool $header = true, bool $ws = false): array|stdClass
     {
-        $tipos_doc_final[$key][$campo_db]['exito'] = $valida;
-        $tipos_doc_final[$key][$campo_db]['mensaje'] = 'valido';
-        $tipos_doc_final[$key][$campo_db]['contexto'] = 'success';
-        return $tipos_doc_final;
 
-    }
-
-    private function integra_tipo_doc_final(string $campo_db, string $contexto_error, string $key, string $mensaje, array $tipos_doc_final, bool $valida): array
-    {
-        $tipos_doc_final = $this->init_tipo_doc_final(campo_db: $campo_db,key:  $key,tipos_doc_final:  $tipos_doc_final,valida:  $valida);
+        $doc_documento = (new doc_documento(link: $this->link))->registro(registro_id: $_GET['doc_documento_id'],
+            columnas_en_bruto: true, retorno_obj: true);
         if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al integrar tipos_doc_final',data:  $tipos_doc_final);
+            return $this->retorno_error(mensaje: 'Error al obtener documento',data:  $doc_documento,
+                header: $header,ws:  $ws);
         }
-        if(!$valida){
-            $tipos_doc_final[$key][$campo_db]['mensaje'] = $mensaje;
-            $tipos_doc_final[$key][$campo_db]['contexto'] = $contexto_error;
-        }
-        return $tipos_doc_final;
 
+        print_r($_POST);exit;
+
+
+
+        return $doc_documento;
     }
 
-    private function tipo_dato_valida(array $adm_campos, string $campo_db): array|string
-    {
-        $campo_valida = $this->campo_valida(adm_campos: $adm_campos,campo_db:  $campo_db);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al obtener campo_valida',data:  $campo_valida);
-        }
 
-        return trim($campo_valida['adm_tipo_dato_codigo']);
 
-    }
+
+
+
+
+
+
+
 }

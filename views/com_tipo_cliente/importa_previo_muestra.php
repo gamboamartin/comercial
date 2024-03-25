@@ -9,7 +9,7 @@
                 <?php include (new views())->ruta_templates."mensajes.php"; ?>
 
                 <div class="widget  widget-box box-container form-main widget-form-cart" id="form">
-                    <form method="post" action="<?php echo $controlador->link_importa_previo_muestra; ?>" class="form-additional">
+                    <form method="post" action="<?php echo $controlador->link_importa_previo_muestra_bd; ?>" class="form-additional">
                         <?php include (new views())->ruta_templates."head/subtitulo.php"; ?>
 
                         <table class="table">
@@ -28,8 +28,16 @@
                         foreach ($controlador->registros as $registro){ ?>
                             <tr>
                             <?php foreach ($registro as $campo_data){ ?>
+                                <?php if(is_string($campo_data)){
+                                    echo "<td>$campo_data</td>";
+                                    continue;
+                                }
+                                ?>
+
                                 <td class="bg-<?php echo $campo_data['contexto']; ?>" title="<?php echo $campo_data['mensaje']; ?>">
-                                    <?php echo $campo_data['value']; ?></td>
+                                    <?php echo $campo_data['value']; ?>
+                                </td>
+
                             <?php } ?>
                             </tr>
                         <?php }
