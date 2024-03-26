@@ -44,6 +44,7 @@
                         ?>
 
                             <div class="controls">
+                                <?php echo $controlador->input_params_importa; ?>
                                 <button type="submit" class="btn btn-success" value="Importa" name="btn_action_next">Importa</button><br>
                             </div>
 

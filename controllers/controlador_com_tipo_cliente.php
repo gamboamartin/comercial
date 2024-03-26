@@ -220,6 +220,8 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
 
         $this->link_importa_previo_muestra.='&doc_documento_id='.$alta_doc->registro_id;
 
+
+
         return $columnas_xls;
     }
 
@@ -233,25 +235,28 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
                 header: $header,ws:  $ws);
         }
 
-        $columns = (new Importador())->primer_row(celda_inicio: 'A1',ruta_absoluta:  $doc_documento->ruta_absoluta);
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al obtener columns',data:  $columns, header: $header,ws:  $ws);
-        }
 
-        $rows = (new Importador())->leer_registros(ruta_absoluta:  $doc_documento->ruta_absoluta, columnas: $columns);
+        $datos_calc = (new Importador())->leer(ruta_absoluta: $doc_documento->ruta_absoluta);
         if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al obtener rows',data:  $rows, header: $header,ws:  $ws);
+            return $this->retorno_error(mensaje: 'Error al leer archivo',data:  $datos_calc, header: $header,ws:  $ws);
         }
-
 
         unset($_POST['btn_action_next']);
 
 
-        $doc_tipos_doc = (new _campos())->rows_importa(rows_xls: $rows);
+        $doc_tipos_doc = (new _campos())->rows_importa(controler: $this, rows_xls: $datos_calc->rows);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al obtener tipos de doc ',data:  $doc_tipos_doc,
                 header: $header,ws:  $ws);
         }
+
+        $input_params_importa = $this->html->hidden(name:'params_importa',value: $this->params_importa);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al generar input',data:  $input_params_importa,
+                header: $header,ws:  $ws);
+        }
+
+        $this->input_params_importa = $input_params_importa;
 
 
         $adm_campos = (new _campos())->adm_campos(link: $this->link, tabla: $this->tabla);
@@ -259,6 +264,8 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
             return $this->retorno_error(mensaje: 'Error al obtener adm_campos',data:  $adm_campos,
                 header: $header,ws:  $ws);
         }
+
+
 
 
         $tipos_doc_final = array();
