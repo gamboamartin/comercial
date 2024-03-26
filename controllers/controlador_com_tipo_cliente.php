@@ -9,13 +9,13 @@
 namespace gamboamartin\comercial\controllers;
 
 use base\controller\controler;
-use gamboamartin\administrador\models\adm_campo;
 use gamboamartin\comercial\models\com_tipo_cliente;
 use gamboamartin\documento\models\doc_documento;
 use gamboamartin\errores\errores;
-use gamboamartin\plugins\files;
 use gamboamartin\plugins\Importador;
 use gamboamartin\system\_importador\_campos;
+use gamboamartin\system\_importador\_doc;
+use gamboamartin\system\_importador\_xls;
 use gamboamartin\template\html;
 use gamboamartin\validacion\validacion;
 use html\com_tipo_cliente_html;
@@ -26,6 +26,7 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
 
     public array|stdClass $keys_selects = array();
     public controlador_com_cliente $controlador_com_cliente;
+    private doc_documento $modelo_doc_documento;
 
     public string $link_com_cliente_alta_bd = '';
 
@@ -43,6 +44,9 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
         }
 
         $this->childrens_data['com_cliente']['title'] = 'Clientes';
+
+        $this->modelo_doc_documento = new doc_documento(link: $link);
+
     }
 
 
@@ -69,6 +73,26 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
     }
 
 
+
+
+
+    private function doc_importa(): array|stdClass
+    {
+        $alta_doc = (new _doc())->genera_doc_importa(doc_tipo_documento_id:10, modelo_doc_documento: $this->modelo_doc_documento);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al insertar documento', data: $alta_doc);
+        }
+        $ruta = $alta_doc->registro_obj->doc_documento_ruta_absoluta;
+        $extension = $alta_doc->registro_obj->doc_extension_codigo;
+
+        $data = new stdClass();
+        $data->ruta = $ruta;
+        $data->extension = $extension;
+        $data->doc_documento_id = $alta_doc->registro_id;
+
+        return $data;
+
+    }
 
     private function init_controladores(stdClass $paths_conf): controler
     {
@@ -148,79 +172,32 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
         return $keys_selects;
     }
 
+
+
+
+
     public function importa_previo(bool $header = true, bool $ws = false): array|stdClass
     {
 
-        $modelo_doc_documento = (new doc_documento(link: $this->link));
-
-        $doc_documento_ins = array();
-        $doc_documento_ins['doc_tipo_documento_id'] = 10;
-        $alta_doc = $modelo_doc_documento->alta_documento(registro: $doc_documento_ins,file: $_FILES['doc_origen']);
+        $doc = $this->doc_importa();
         if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al insertar documento', data: $alta_doc, header: $header,
+            return $this->retorno_error(mensaje: 'Error al integrar documento', data: $doc, header: $header,
                 ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
         }
 
-
-
-        $this->columnas_entidad = $this->modelo->data_columnas->columnas_parseadas;
-
-        $ruta = $alta_doc->registro_obj->doc_documento_ruta_absoluta;
-        $extension = $alta_doc->registro_obj->doc_extension_codigo;
-
-        $extensiones_permitidas = array('csv','ods','xls','xlsx');
-
-
-        if(!in_array($extension, $extensiones_permitidas)){
-            return $this->retorno_error(mensaje: 'Error el documento no tiene una extension permitida',
-                data:  $extension, header: $header,ws:  $ws);
-        }
-
-        $columnas_calc = (new Importador())->primer_row(celda_inicio: 'A1',ruta_absoluta: $ruta);
+        $valida = (new _campos())->valida_doc_importa(extension: $doc->extension);
         if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al obtener columnas_calc',data:  $columnas_calc,
-                header: $header,ws:  $ws);
+            return $this->retorno_error(mensaje: 'Error al validar documento', data: $valida, header: $header,
+                ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
         }
 
-        $columnas_xls = array();
-
-        $adm_campos = (new _campos())->adm_campos(link: $this->link, tabla: $this->tabla);
+        $columnas_xls = (new _xls())->columnas_xls(ruta: $doc->ruta, html_controler: $this->html, link: $this->link, tabla: $this->tabla);
         if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al obtener adm_campos',data:  $adm_campos,
-                header: $header,ws:  $ws);
+            return $this->retorno_error(mensaje: 'Error al generar columnas_xls', data: $columnas_xls, header: $header, ws: $ws,
+                class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
         }
-
-        $columnas_calc_def = array();
-        foreach ($columnas_calc as $columna_cal){
-            $columna_cal_del = array();
-            $columna_cal_del['value'] = $columna_cal;
-            $columna_cal_del['descripcion_select'] = $columna_cal;
-            $columnas_calc_def[] = $columna_cal_del;
-        }
-
-
-        $modelo_adm_campo = new adm_campo(link: $this->link);
-        foreach ($adm_campos as $adm_campo){
-
-
-            $input = $this->html->select_catalogo(cols: 12, con_registros: false, id_selected: $adm_campo['adm_campo_descripcion'],
-                modelo: $modelo_adm_campo, aplica_default: false, key_descripcion_select: 'descripcion_select',
-                key_value_custom: 'value', label: $adm_campo['adm_campo_descripcion'], name: $adm_campo['adm_campo_descripcion'], registros: $columnas_calc_def);
-
-            if(errores::$error){
-                return $this->retorno_error(mensaje: 'Error al generar input', data: $input, header: $header, ws: $ws,
-                    class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
-            }
-            $columnas_xls[$adm_campo['adm_campo_descripcion']] = $input;
-
-        }
-
-
         $this->columnas_calc = $columnas_xls;
-
-        $this->link_importa_previo_muestra.='&doc_documento_id='.$alta_doc->registro_id;
-
-
+        $this->link_importa_previo_muestra.='&doc_documento_id='.$doc->doc_documento_id;
 
         return $columnas_xls;
     }
@@ -273,12 +250,14 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
             $tipos_doc_final[$key] = array();
 
             foreach ($doc_tipo_doc as $campo_db=>$value) {
+
                 $tipos_doc_final[$key][$campo_db]['value'] = $value;
                 $tipo_dato = (new _campos())->tipo_dato_valida(adm_campos: $adm_campos,campo_db:  $campo_db);
                 if(errores::$error){
                     return $this->retorno_error(mensaje: 'Error al obtener tipo_dato',data:  $tipo_dato,
                         header: $header,ws:  $ws);
                 }
+
 
                 if($tipo_dato === 'BIGINT'){
 
@@ -339,6 +318,65 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
                     }
                 }
 
+                if($campo_db === 'id'){
+                    $existe = (new com_tipo_cliente(link: $this->link))->existe_by_id(registro_id: $value);
+                    if(errores::$error){
+                        return $this->retorno_error(mensaje: 'Error al validar si existe elemento',data:  $existe,
+                            header: $header,ws:  $ws);
+                    }
+                    $valida = !$existe;
+
+                    $mensaje_error = 'Identificador duplicado';
+
+                    $tipos_doc_final = (new _campos())->integra_row_final(campo_db: $campo_db, contexto_error: 'danger', key: $key,
+                        mensaje: $mensaje_error, rows_finals: $tipos_doc_final, valida: $valida);
+                    if(errores::$error){
+                        return $this->retorno_error(mensaje: 'Error al integrar tipos_doc_final',data:  $tipos_doc_final,
+                            header: $header,ws:  $ws);
+                    }
+
+                }
+
+                if($campo_db === 'codigo'){
+                    $existe = (new com_tipo_cliente(link: $this->link))->existe_by_codigo(codigo: $value);
+                    if(errores::$error){
+                        return $this->retorno_error(mensaje: 'Error al validar si existe elemento',data:  $existe,
+                            header: $header,ws:  $ws);
+                    }
+                    $valida = !$existe;
+
+                    $mensaje_error = 'Codigo duplicado';
+
+                    $tipos_doc_final = (new _campos())->integra_row_final(campo_db: $campo_db, contexto_error: 'danger', key: $key,
+                        mensaje: $mensaje_error, rows_finals: $tipos_doc_final, valida: $valida);
+                    if(errores::$error){
+                        return $this->retorno_error(mensaje: 'Error al integrar tipos_doc_final',data:  $tipos_doc_final,
+                            header: $header,ws:  $ws);
+                    }
+
+                }
+
+                if($campo_db === 'codigo_bis'){
+                    $filtro = array();
+                    $filtro['com_tipo_cliente.codigo_bis'] = $value;
+                    $existe = (new com_tipo_cliente(link: $this->link))->existe(filtro: $filtro);
+                    if(errores::$error){
+                        return $this->retorno_error(mensaje: 'Error al validar si existe elemento',data:  $existe,
+                            header: $header,ws:  $ws);
+                    }
+                    $valida = !$existe;
+
+                    $mensaje_error = 'Codigo Bis Duplicado';
+
+                    $tipos_doc_final = (new _campos())->integra_row_final(campo_db: $campo_db, contexto_error: 'danger', key: $key,
+                        mensaje: $mensaje_error, rows_finals: $tipos_doc_final, valida: $valida);
+                    if(errores::$error){
+                        return $this->retorno_error(mensaje: 'Error al integrar tipos_doc_final',data:  $tipos_doc_final,
+                            header: $header,ws:  $ws);
+                    }
+
+                }
+
             }
         }
 
@@ -374,17 +412,45 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
                 header: $header,ws:  $ws);
         }
 
-        print_r($_POST);exit;
+        $datos = (new Importador())->leer(ruta_absoluta: $doc_documento->ruta_absoluta);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener datos',data:  $datos,
+                header: $header,ws:  $ws);
+        }
+        $params = $_POST['params_importa'];
+        $params = base64_decode($params);
+        $params = unserialize($params);
 
+        $indices_rows = $_POST['row'];
+        $rows_a_importar = array();
+        foreach ($indices_rows as $indice=>$status){
+            if($status === 'on'){
+                $rows_a_importar[] = $datos->rows[$indice];
+            }
+        }
 
+        $rows_a_importar_db = array();
+        foreach ($rows_a_importar as $row_xls){
+            $row_importar = array();
+            foreach ($params as $campo_bd=>$campo_xls){
+                $row_importar[$campo_bd] = $row_xls->$campo_xls;
+            }
+           $rows_a_importar_db[] = $row_importar;
+        }
 
-        return $doc_documento;
+        $altas = array();
+
+        foreach ($rows_a_importar_db as $row){
+            $r_alta = (new com_tipo_cliente(link: $this->link))->alta_registro(registro: $row);
+            if(errores::$error){
+                return $this->retorno_error(mensaje: 'Error al inserta registro', data: $r_alta, header: $header,
+                    ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
+            }
+            $altas[] = $r_alta;
+        }
+
+        return $altas;
     }
-
-
-
-
-
 
 
 
