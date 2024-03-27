@@ -14,7 +14,7 @@ use gamboamartin\documento\models\doc_documento;
 use gamboamartin\errores\errores;
 use gamboamartin\plugins\Importador;
 use gamboamartin\system\_importador\_campos;
-use gamboamartin\system\_importador\_doc;
+use gamboamartin\system\_importador\_importa;
 use gamboamartin\system\_importador\_xls;
 use gamboamartin\template\html;
 use gamboamartin\validacion\validacion;
@@ -26,8 +26,6 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
 
     public array|stdClass $keys_selects = array();
     public controlador_com_cliente $controlador_com_cliente;
-    private doc_documento $modelo_doc_documento;
-
     public string $link_com_cliente_alta_bd = '';
 
     public function __construct(PDO $link, html $html = new \gamboamartin\template_1\html(),
@@ -47,10 +45,9 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
 
         $this->modelo_doc_documento = new doc_documento(link: $link);
 
+        $this->doc_tipo_documento_id = 10;
+
     }
-
-
-
 
 
     public function clientes(bool $header = true, bool $ws = false): array|string
@@ -70,28 +67,6 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
         }
 
         return $contenido_table;
-    }
-
-
-
-
-
-    private function doc_importa(): array|stdClass
-    {
-        $alta_doc = (new _doc())->genera_doc_importa(doc_tipo_documento_id:10, modelo_doc_documento: $this->modelo_doc_documento);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al insertar documento', data: $alta_doc);
-        }
-        $ruta = $alta_doc->registro_obj->doc_documento_ruta_absoluta;
-        $extension = $alta_doc->registro_obj->doc_extension_codigo;
-
-        $data = new stdClass();
-        $data->ruta = $ruta;
-        $data->extension = $extension;
-        $data->doc_documento_id = $alta_doc->registro_id;
-
-        return $data;
-
     }
 
     private function init_controladores(stdClass $paths_conf): controler
@@ -174,34 +149,6 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
 
 
 
-
-
-    public function importa_previo(bool $header = true, bool $ws = false): array|stdClass
-    {
-
-        $doc = $this->doc_importa();
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al integrar documento', data: $doc, header: $header,
-                ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
-        }
-
-        $valida = (new _campos())->valida_doc_importa(extension: $doc->extension);
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al validar documento', data: $valida, header: $header,
-                ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
-        }
-
-        $columnas_xls = (new _xls())->columnas_xls(ruta: $doc->ruta, html_controler: $this->html, link: $this->link, tabla: $this->tabla);
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al generar columnas_xls', data: $columnas_xls, header: $header, ws: $ws,
-                class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
-        }
-        $this->columnas_calc = $columnas_xls;
-        $this->link_importa_previo_muestra.='&doc_documento_id='.$doc->doc_documento_id;
-
-        return $columnas_xls;
-    }
-
     public function importa_previo_muestra(bool $header = true, bool $ws = false): array|stdClass
     {
 
@@ -227,6 +174,7 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
                 header: $header,ws:  $ws);
         }
 
+
         $input_params_importa = $this->html->hidden(name:'params_importa',value: $this->params_importa);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al generar input',data:  $input_params_importa,
@@ -235,14 +183,17 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
 
         $this->input_params_importa = $input_params_importa;
 
+        $columnas_doc = (new Importador())->primer_row(celda_inicio: 'A1', ruta_absoluta: $doc_documento->ruta_absoluta);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener columnas_doc',data:  $columnas_doc,
+                header: $header,ws:  $ws);
+        }
 
-        $adm_campos = (new _campos())->adm_campos(link: $this->link, tabla: $this->tabla);
+        $adm_campos = (new _xls())->adm_campos_inputs(columnas_doc: $columnas_doc,link:  $this->link,tabla:  $this->tabla);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al obtener adm_campos',data:  $adm_campos,
                 header: $header,ws:  $ws);
         }
-
-
 
 
         $tipos_doc_final = array();
@@ -411,46 +362,51 @@ class controlador_com_tipo_cliente extends _base_sin_cod {
             return $this->retorno_error(mensaje: 'Error al obtener documento',data:  $doc_documento,
                 header: $header,ws:  $ws);
         }
-
-        $datos = (new Importador())->leer(ruta_absoluta: $doc_documento->ruta_absoluta);
+        $rs = (new _importa())->importa_registros_xls(modelo: $this->modelo,
+            ruta_absoluta: $doc_documento->ruta_absoluta);
         if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al obtener datos',data:  $datos,
-                header: $header,ws:  $ws);
+            return $this->retorno_error(mensaje: 'Error al inserta registro', data: $rs, header: $header,
+                ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
         }
-        $params = $_POST['params_importa'];
-        $params = base64_decode($params);
-        $params = unserialize($params);
+        $data_rs = serialize($rs);
+        $data_rs = base64_encode($data_rs);
+        $_SESSION['rs_importa'] = $data_rs;
 
-        $indices_rows = $_POST['row'];
-        $rows_a_importar = array();
-        foreach ($indices_rows as $indice=>$status){
-            if($status === 'on'){
-                $rows_a_importar[] = $datos->rows[$indice];
-            }
-        }
 
-        $rows_a_importar_db = array();
-        foreach ($rows_a_importar as $row_xls){
-            $row_importar = array();
-            foreach ($params as $campo_bd=>$campo_xls){
-                $row_importar[$campo_bd] = $row_xls->$campo_xls;
-            }
-           $rows_a_importar_db[] = $row_importar;
+        $rs->registro_id = -1;
+        $out = $this->out_alta(header: $header,id_retorno:  -1,r_alta_bd:  $rs,
+            seccion_retorno:  $this->seccion,siguiente_view:  'importa_result',ws:  $ws);
+        if(errores::$error){
+            print_r($out);
+            die('Error');
         }
 
-        $altas = array();
-
-        foreach ($rows_a_importar_db as $row){
-            $r_alta = (new com_tipo_cliente(link: $this->link))->alta_registro(registro: $row);
-            if(errores::$error){
-                return $this->retorno_error(mensaje: 'Error al inserta registro', data: $r_alta, header: $header,
-                    ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
-            }
-            $altas[] = $r_alta;
-        }
-
-        return $altas;
+        return $rs;
     }
+
+    public function importa_result(bool $header = true, bool $ws = false): array|stdClass{
+        $rs_importa = $_SESSION['rs_importa'];
+        $rs_importa = base64_decode($rs_importa);
+        $rs_importa = unserialize($rs_importa);
+
+        $datos = $rs_importa->datos;
+
+        $columnas_xls = $datos->columns;
+        $rows_xls = $datos->rows;
+
+        $this->registros['columnas_xls'] = $columnas_xls;
+        $this->registros['rows_xls'] = $rows_xls;
+        $this->registros['rows_a_importar_db'] = $rs_importa->rows_a_importar_db;
+        $this->registros['transacciones'] = $rs_importa->altas;
+
+
+        //print_r($this->registros['transacciones']);exit;
+
+        return $this->registros;
+
+    }
+
+
 
 
 
