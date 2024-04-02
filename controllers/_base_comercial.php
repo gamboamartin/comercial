@@ -1,7 +1,7 @@
 <?php
 namespace gamboamartin\comercial\controllers;
 
-use controllers\_init_dps;
+use gamboamartin\direccion_postal\controllers\_init_dps;
 use gamboamartin\errores\errores;
 use gamboamartin\system\_ctl_base;
 
