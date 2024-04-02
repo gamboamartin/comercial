@@ -1350,6 +1350,9 @@ class instalacion
             if($tipo_dato_original === 'BIGINT(20)'){
                 $tipo_dato_original = 'BIGINT';
             }
+            if($tipo_dato_original === 'INT(11)'){
+                $tipo_dato_original = 'INT';
+            }
 
             $existe_tipo_dato = (new adm_tipo_dato(link: $link))->existe_by_codigo(codigo: $tipo_dato_original);
             if(errores::$error){
