@@ -10,6 +10,7 @@ namespace gamboamartin\comercial\controllers;
 
 use base\controller\controler;
 use gamboamartin\comercial\models\com_tipo_producto;
+use gamboamartin\documento\models\doc_documento;
 use gamboamartin\errores\errores;
 
 use gamboamartin\template\html;
@@ -43,6 +44,10 @@ class controlador_com_tipo_producto extends _base_sin_cod {
         }
 
         $this->childrens_data['com_producto']['title'] = 'Productos';
+
+        $this->modelo_doc_documento = new doc_documento(link: $link);
+
+        $this->doc_tipo_documento_id = 11;
     }
 
     private function init_controladores(stdClass $paths_conf): controler
