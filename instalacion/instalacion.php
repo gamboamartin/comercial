@@ -188,7 +188,6 @@ class instalacion
 
         return $out;
     }
-
     private function _add_com_tipo_cliente(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -1029,7 +1028,6 @@ class instalacion
         return $out;
 
     }
-
     private function com_prospecto_etapa(PDO $link): array|stdClass
     {
 
@@ -1094,7 +1092,6 @@ class instalacion
         return $out;
 
     }
-
     private function com_rel_prospecto_cte(PDO $link): array|stdClass
     {
 
@@ -1302,7 +1299,6 @@ class instalacion
         return $out;
 
     }
-
     private function com_tipo_cliente(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -1331,63 +1327,10 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
         }
 
-        $adm_seccion_id = (new adm_seccion(link: $link))->adm_seccion_id(descripcion: __FUNCTION__);
+        $inserta_campos = (new _instalacion(link: $link))->inserta_adm_campos(
+            modelo_integracion: (new com_tipo_cliente(link: $link)));
         if(errores::$error){
-            return (new errores())->error(mensaje: 'Error adm_seccion_id no se pudo obtener', data:  $adm_seccion_id);
-        }
-
-        $columnas = (new com_tipo_cliente(link: $link))->data_columnas->columnas_completas;
-
-        foreach ($columnas as $columna){
-            $tipo_dato_original = strtoupper($columna['Type']);
-
-            if($tipo_dato_original === 'VARCHAR(200)'){
-                $tipo_dato_original = 'VARCHAR';
-            }
-            if($tipo_dato_original === 'VARCHAR(255)'){
-                $tipo_dato_original = 'VARCHAR';
-            }
-            if($tipo_dato_original === 'BIGINT(20)'){
-                $tipo_dato_original = 'BIGINT';
-            }
-            if($tipo_dato_original === 'INT(11)'){
-                $tipo_dato_original = 'INT';
-            }
-
-            $existe_tipo_dato = (new adm_tipo_dato(link: $link))->existe_by_codigo(codigo: $tipo_dato_original);
-            if(errores::$error){
-                return (new errores())->error(mensaje: 'Error existe_tipo_dato no se pudo obtener', data:  $existe_tipo_dato);
-            }
-            if(!$existe_tipo_dato){
-                return (new errores())->error(mensaje: 'Error no existe tipo datos no se pudo obtener', data:  $tipo_dato_original);
-            }
-            $adm_tipo_dato_id = (new adm_tipo_dato(link: $link))->get_id_by_codigo(codigo: $tipo_dato_original);
-            if(errores::$error){
-                return (new errores())->error(mensaje: 'Error adm_tipo_dato_id no se pudo obtener', data:  $adm_tipo_dato_id);
-            }
-            
-            $add_campo_ins['descripcion'] = $columna['campo'];
-            $add_campo_ins['adm_seccion_id'] = $adm_seccion_id;
-            $add_campo_ins['sub_consulta'] = '';
-            $add_campo_ins['adm_tipo_dato_id'] = $adm_tipo_dato_id;
-            $add_campo_ins['codigo'] = $adm_seccion_id.'-'.$adm_tipo_dato_id.'-'.$columna['campo'];
-
-            $filtro = array();
-            $filtro['adm_campo.descripcion'] = $add_campo_ins['descripcion'];
-            $filtro['adm_seccion.id'] = $adm_seccion_id;
-
-            $existe = (new adm_campo(link: $link))->existe(filtro: $filtro);
-            if(errores::$error){
-                return (new errores())->error(mensaje: 'Error al validar si existe adm campo', data:  $existe);
-            }
-
-            if(!$existe){
-                $inserta = (new adm_campo(link: $link))->alta_registro(registro: $add_campo_ins);
-                if(errores::$error){
-                    return (new errores())->error(mensaje: 'Error al insertar campo', data:  $inserta);
-                }
-            }
-
+            return (new errores())->error(mensaje: 'Error al insertar adm campos', data:  $inserta_campos);
         }
 
         return $out;
