@@ -4,9 +4,7 @@ use base\orm\modelo;
 use gamboamartin\administrador\instalacion\_adm;
 use gamboamartin\administrador\models\_instalacion;
 use gamboamartin\administrador\models\adm_accion;
-use gamboamartin\administrador\models\adm_campo;
 use gamboamartin\administrador\models\adm_seccion;
-use gamboamartin\administrador\models\adm_tipo_dato;
 use gamboamartin\cat_sat\models\cat_sat_cve_prod;
 use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\comercial\models\com_producto;
@@ -23,7 +21,7 @@ use gamboamartin\proceso\models\pr_proceso;
 use gamboamartin\proceso\models\pr_tipo_proceso;
 use PDO;
 use stdClass;
-use function GuzzleHttp\describe_type;
+
 
 class instalacion
 {
@@ -1404,6 +1402,13 @@ class instalacion
         $del = (new adm_accion(link: $link))->elimina_con_filtro_and(filtro: $filtro);
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al eliminar', data:  $del);
+        }
+
+
+        $inserta_campos = (new _instalacion(link: $link))->inserta_adm_campos(
+            modelo_integracion: (new com_tipo_producto(link: $link)));
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar adm campos', data:  $inserta_campos);
         }
 
 
