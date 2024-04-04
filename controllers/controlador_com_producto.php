@@ -8,11 +8,13 @@
  */
 namespace gamboamartin\comercial\controllers;
 
+use gamboamartin\administrador\models\adm_campo;
 use gamboamartin\cat_sat\models\cat_sat_obj_imp;
 use gamboamartin\cat_sat\models\cat_sat_producto;
 use gamboamartin\cat_sat\models\cat_sat_unidad;
 use gamboamartin\comercial\models\com_producto;
 use gamboamartin\comercial\models\com_tipo_producto;
+use gamboamartin\documento\models\doc_documento;
 use gamboamartin\errores\errores;
 use gamboamartin\system\links_menu;
 use gamboamartin\template\html;
@@ -58,6 +60,10 @@ class controlador_com_producto extends _base_comercial {
         $this->parents_verifica[] = (new com_tipo_producto(link: $this->link));
 
         $this->verifica_parents_alta = true;
+
+        $this->modelo_doc_documento = new doc_documento(link: $link);
+
+        $this->doc_tipo_documento_id = 12;
     }
 
 
@@ -166,6 +172,19 @@ class controlador_com_producto extends _base_comercial {
         $this->header_out(result: $upd, header: $header,ws:  $ws);
 
         return $upd;
+
+    }
+
+    public function descarga_layout(bool $header, bool $ws = true): array|stdClass
+    {
+
+        $adm_campos = (new adm_campo(link: $this->link))->campos_by_seccion(adm_seccion_descripcion: $this->tabla);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener adm_campos', data: $adm_campos, header: $header,
+                ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
+        }
+
+        print_r($adm_campos);exit;
 
     }
 
