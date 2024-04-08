@@ -8,14 +8,19 @@
  */
 namespace gamboamartin\comercial\controllers;
 
+use base\orm\modelo;
+use config\generales;
 use gamboamartin\administrador\models\adm_campo;
+use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\cat_sat\models\cat_sat_obj_imp;
 use gamboamartin\cat_sat\models\cat_sat_producto;
 use gamboamartin\cat_sat\models\cat_sat_unidad;
+use gamboamartin\comercial\models\_exporta;
 use gamboamartin\comercial\models\com_producto;
 use gamboamartin\comercial\models\com_tipo_producto;
 use gamboamartin\documento\models\doc_documento;
 use gamboamartin\errores\errores;
+use gamboamartin\plugins\exportador;
 use gamboamartin\system\links_menu;
 use gamboamartin\template\html;
 use html\com_producto_html;
@@ -184,7 +189,112 @@ class controlador_com_producto extends _base_comercial {
                 ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
         }
 
-        print_r($adm_campos);exit;
+        $foraneas = $this->modelo->get_foraneas();
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener foraneas', data: $foraneas, header: $header,
+                ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
+        }
+
+
+        $contador_hojas = 0;
+
+        $campos_hd = array();
+        $registros_plantilla = array();
+
+        $letras = $this->modelo->letras;
+
+        $data_hojas = new stdClass();
+
+        foreach ($adm_campos as $adm_campo){
+
+            $data_adm_campo = (new _exporta())->limpia_adm_campo(adm_campo: $adm_campo);
+            if(errores::$error){
+                return $this->retorno_error(mensaje: 'Error al limpiar adm_campo', data: $data, header: $header,
+                    ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
+            }
+            $adm_campo = $data_adm_campo->adm_campo;
+            if($data_adm_campo->continue){
+                continue;
+            }
+
+
+            $campos_hd[] = $adm_campo['adm_campo_descripcion'];
+
+            if($adm_campo['adm_campo_es_foranea'] === 'activo'){
+
+                $nombre_tabla_relacion = (new _exporta())->nombre_tabla_relacion(adm_campo: $adm_campo,foraneas:  $foraneas);
+                if(errores::$error){
+                    return $this->retorno_error(mensaje: 'Error al obtener nombre_tabla_relacion', data: $nombre_tabla_relacion, header: $header,
+                        ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
+                }
+
+                $campos_hd[] = $nombre_tabla_relacion.'_codigo';
+                $campos_hd[] = $nombre_tabla_relacion;
+
+                $vlookup = (new _exporta())->frm_vlookup(campos_hd: $campos_hd,letras:  $letras,nombre_tabla_relacion:  $nombre_tabla_relacion);
+                if(errores::$error){
+                    return $this->retorno_error(mensaje: 'Error al obtener vlookup', data: $vlookup, header: $header,
+                        ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
+                }
+
+                $registros_plantilla[0][$nombre_tabla_relacion] = $vlookup;
+                $registros_plantilla[0][$nombre_tabla_relacion.'_id'] = "Identificador de entidad, (entero positivo)";
+
+
+                $registros = (new _exporta())->rows_rel(link: $this->link,nombre_tabla_relacion:  $nombre_tabla_relacion);
+                if(errores::$error){
+                    return $this->retorno_error(mensaje: 'Error al obtener registros', data: $registros, header: $header,
+                        ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
+                }
+
+
+                $data_hojas = (new _exporta())->data_hojas_xls(contador_hojas: $contador_hojas, data_hojas: $data_hojas,
+                    keys: array('id','codigo','descripcion'), nombre_tabla_relacion: $nombre_tabla_relacion, registros: $registros);
+                if(errores::$error){
+                    return $this->retorno_error(mensaje: 'Error al obtener data_hojas', data: $data_hojas, header: $header,
+                        ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
+                }
+
+
+                $contador_hojas++;
+
+            }
+
+
+
+        }
+        $registros_plantilla[0]['descripcion'] = 'Descripcion de '.$this->tabla;
+        $registros_plantilla[0]['codigo'] = "Codigo de $this->tabla(Debe ser único)";
+        $registros_plantilla[0]['status'] = 'activo';
+        $registros_plantilla[0]['alias'] = '=A2';
+        $registros_plantilla[0]['descripcion_select'] = '=B2&" "&A2';
+        $registros_plantilla[0]['codigo_bis'] = '=B2';
+
+
+        $data_hojas = (new _exporta())->data_hojas_xls(contador_hojas: $contador_hojas, data_hojas: $data_hojas,
+            keys: $campos_hd, nombre_tabla_relacion: $this->tabla, registros: $registros_plantilla
+        );
+
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener data_hojas', data: $data_hojas, header: $header,
+                ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
+        }
+
+
+        $contador_hojas++;
+
+        $name = $this->tabla;
+
+        $path_base = (new generales())->path_base;
+
+        //print_r($data_hojas);exit;
+
+        $xls = (new exportador(num_hojas: $contador_hojas))->genera_xls(header: true,name:  $name,nombre_hojas:  $data_hojas->nombre_hojas,
+            keys_hojas:  $data_hojas->keys_hojas,path_base:  $path_base);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al exportar', data: $xls, header: $header,
+                ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
+        }
 
     }
 
