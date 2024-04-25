@@ -186,6 +186,19 @@ class instalacion
 
         return $out;
     }
+    private function _add_com_medio_prospeccion(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $init = (new _instalacion(link: $link));
+
+        $create = $init->create_table_new(table: 'com_medio_prospeccion');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create = $create;
+
+        return $out;
+    }
     private function _add_com_tipo_cliente(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -1304,6 +1317,48 @@ class instalacion
         return $out;
 
     }
+    private function com_medio_prospeccion(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+
+        $create = $this->_add_com_medio_prospeccion(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+
+        $out->campos = $create;
+
+        $init = new _instalacion(link: $link);
+        $columnas = new stdClass();
+        $columnas->es_red_social = new stdClass();
+        $columnas->es_red_social->tipo_dato = 'VARCHAR';
+        $columnas->es_red_social->default = 'inactivo';
+
+        $add_colums = $init->add_columns(campos: $columnas,table:  __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar columnas', data:  $add_colums);
+        }
+
+        $adm_menu_descripcion = 'Clientes';
+        $adm_sistema_descripcion = 'comercial';
+        $etiqueta_label = 'Medio Prospeccion';
+        $adm_seccion_pertenece_descripcion = 'com_medio_prospeccion';
+        $adm_namespace_name = 'gamboamartin/comercial';
+        $adm_namespace_descripcion = 'gamboa.martin/comercial';
+
+        $acl = (new _adm())->integra_acl(adm_menu_descripcion: $adm_menu_descripcion,
+            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion,
+            adm_seccion_descripcion: __FUNCTION__,
+            adm_seccion_pertenece_descripcion: $adm_seccion_pertenece_descripcion,
+            adm_sistema_descripcion: $adm_sistema_descripcion,
+            etiqueta_label: $etiqueta_label, link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
+        }
+
+        return $out;
+
+    }
     private function com_tipo_cliente(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -1551,6 +1606,12 @@ class instalacion
     final public function instala(PDO $link): array|stdClass
     {
         $out = new stdClass();
+
+        $com_medio_prospeccion = $this->com_medio_prospeccion(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error integrar com_medio_prospeccion', data:  $com_medio_prospeccion);
+        }
+        $out->com_medio_prospeccion = $com_medio_prospeccion;
 
         $com_tipo_cliente = $this->com_tipo_cliente(link: $link);
         if(errores::$error){
