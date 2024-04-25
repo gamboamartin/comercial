@@ -928,6 +928,11 @@ class instalacion
         $columnas->com_tipo_prospecto_id->tipo_dato = 'BIGINT';
         $columnas->com_tipo_prospecto_id->longitud = 100;
 
+        $columnas->com_medio_prospeccion_id = new stdClass();
+        $columnas->com_medio_prospeccion_id->tipo_dato = 'BIGINT';
+        $columnas->com_medio_prospeccion_id->longitud = 100;
+
+
         $columnas->nombre = new stdClass();
         $columnas->apellido_paterno = new stdClass();
 
@@ -952,6 +957,7 @@ class instalacion
         $foraneas = array();
         $foraneas['com_agente_id'] = new stdClass();
         $foraneas['com_tipo_prospecto_id'] = new stdClass();
+        $foraneas['com_medio_prospecion_id'] = new stdClass();
 
         $result = $init->foraneas(foraneas: $foraneas,table:  __FUNCTION__);
         if(errores::$error){
