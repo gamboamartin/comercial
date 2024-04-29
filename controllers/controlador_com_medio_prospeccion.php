@@ -90,4 +90,15 @@ class controlador_com_medio_prospeccion extends _base_comercial {
         return $keys_selects;
     }
 
+    public function get_medio_prospeccion(bool $header, bool $ws = true): array|stdClass
+    {
+        $keys['com_medio_prospeccion'] = array('id','descripcion','codigo','codigo_bis');
+
+        $salida = $this->get_out(header: $header,keys: $keys, ws: $ws);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al generar salida',data:  $salida,header: $header,ws: $ws);
+        }
+
+        return $salida;
+    }
 }
