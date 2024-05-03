@@ -8,4 +8,4 @@
  */
 namespace gamboamartin\comercial\controllers;
 
-class controlador_dp_estado extends \controllers\controlador_dp_estado {}
+class controlador_dp_estado extends \gamboamartin\direccion_postal\controllers\controlador_dp_estado {}

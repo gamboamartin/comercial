@@ -9,4 +9,4 @@
 namespace gamboamartin\comercial\controllers;
 
 
-class controlador_dp_pais extends \controllers\controlador_dp_pais {}
+class controlador_dp_pais extends \gamboamartin\direccion_postal\controllers\controlador_dp_pais {}

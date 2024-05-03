@@ -10,6 +10,7 @@ namespace gamboamartin\comercial\controllers;
 
 use base\controller\controler;
 use gamboamartin\comercial\models\com_direccion;
+use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\errores\errores;
 use gamboamartin\gastos\models\gt_solicitantes;
 use gamboamartin\system\_ctl_base;
@@ -195,6 +196,34 @@ class controlador_com_direccion extends _ctl_base {
                 ws: $ws);
         }
 
+
+        $dp_calle_pertenece = (new dp_calle_pertenece($this->link))->registro($this->row_upd->dp_calle_pertenece_id);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener direccion', data: $dp_calle_pertenece,header: $header,
+                ws: $ws);
+        }
+
+        $keys_selects['dp_pais_id']->con_registros =  true;
+        $keys_selects['dp_pais_id']->id_selected =  $dp_calle_pertenece["dp_pais_id"];
+
+        $keys_selects['dp_estado_id']->con_registros =  true;
+        $keys_selects['dp_estado_id']->filtro =  array('dp_pais.id' => $dp_calle_pertenece["dp_pais_id"]);
+        $keys_selects['dp_estado_id']->id_selected =  $dp_calle_pertenece["dp_estado_id"];
+
+        $keys_selects['dp_municipio_id']->con_registros =  true;
+        $keys_selects['dp_municipio_id']->filtro =  array('dp_estado.id' => $dp_calle_pertenece["dp_estado_id"]);
+        $keys_selects['dp_municipio_id']->id_selected =  $dp_calle_pertenece["dp_municipio_id"];
+
+        $keys_selects['dp_cp_id']->con_registros =  true;
+        $keys_selects['dp_cp_id']->filtro =  array('dp_municipio.id' => $dp_calle_pertenece["dp_municipio_id"]);
+        $keys_selects['dp_cp_id']->id_selected =  $dp_calle_pertenece["dp_cp_id"];
+
+        $keys_selects['dp_colonia_postal_id']->con_registros =  true;
+        $keys_selects['dp_colonia_postal_id']->filtro =  array('dp_cp.id' => $dp_calle_pertenece["dp_cp_id"]);
+        $keys_selects['dp_colonia_postal_id']->id_selected =  $dp_calle_pertenece["dp_colonia_postal_id"];
+
+        $keys_selects['dp_calle_pertenece_id']->con_registros =  true;
+        $keys_selects['dp_calle_pertenece_id']->filtro = array('dp_colonia_postal.id' => $dp_calle_pertenece["dp_colonia_postal_id"]);
         $keys_selects['dp_calle_pertenece_id']->id_selected = $this->registro['dp_calle_pertenece_id'];
 
         $base = $this->base_upd(keys_selects: $keys_selects, params: array(), params_ajustados: array());

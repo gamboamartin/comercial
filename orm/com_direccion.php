@@ -11,9 +11,7 @@ class com_direccion extends _modelo_parent{
         $tabla = 'com_direccion';
         $columnas = array($tabla=>false,'dp_calle_pertenece'=>$tabla);
 
-
-
-        $campos_obligatorios = array('dp_calle_pertenece');
+        $campos_obligatorios = array('dp_calle_pertenece_id');
 
         parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios,
             columnas: $columnas, childrens: $childrens);
@@ -21,6 +19,34 @@ class com_direccion extends _modelo_parent{
         $this->NAMESPACE = __NAMESPACE__;
 
         $this->etiqueta = 'Agentes';
+    }
+
+    public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
+    {
+        $this->registro = $this->inicializa_campos($this->registro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al inicializar campo base', data: $this->registro);
+        }
+
+        $r_alta_bd = parent::alta_bd($keys_integra_ds);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al insertar direccion', data: $r_alta_bd);
+        }
+        return $r_alta_bd;
+    }
+
+    protected function inicializa_campos(array $registros): array
+    {
+        if (!isset($registros['codigo'])){
+            $registros['codigo'] = $this->get_codigo_aleatorio();
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error generar codigo', data: $registros);
+            }
+        }
+
+        $registros['descripcion'] = $registros['codigo'];
+
+        return $registros;
     }
 
 }
