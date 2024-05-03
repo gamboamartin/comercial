@@ -84,8 +84,12 @@ class controlador_com_direccion extends _ctl_base {
         $keys->selects = array();
 
         $init_data = array();
+        $init_data['dp_pais'] = "gamboamartin\\direccion_postal";
+        $init_data['dp_estado'] = "gamboamartin\\direccion_postal";
+        $init_data['dp_municipio'] = "gamboamartin\\direccion_postal";
+        $init_data['dp_cp'] = "gamboamartin\\direccion_postal";
+        $init_data['dp_colonia_postal'] = "gamboamartin\\direccion_postal";
         $init_data['dp_calle_pertenece'] = "gamboamartin\\direccion_postal";
-
 
         $campos_view = $this->campos_view_base(init_data: $init_data, keys: $keys);
         if (errores::$error) {
@@ -135,7 +139,17 @@ class controlador_com_direccion extends _ctl_base {
 
     public function init_selects_inputs(): array
     {
-        return $this->init_selects(keys_selects: array(), key: "dp_calle_pertenece_id", label: "Calle", cols: 12);
+        $keys_selects = $this->init_selects(keys_selects: array(), key: "dp_pais_id", label: "País");
+        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_estado_id", label: "Estado",
+            con_registros: false);
+        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_municipio_id", label: "Municipio",
+            con_registros: false);
+        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_cp_id", label: "CP",
+            con_registros: false);
+        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_colonia_postal_id", label: "Colonia",
+            con_registros: false);
+        return  $this->init_selects(keys_selects: $keys_selects, key: "dp_calle_pertenece_id", label: "Calle",
+            con_registros: false);
     }
 
     protected function key_selects_txt(array $keys_selects): array
@@ -152,13 +166,13 @@ class controlador_com_direccion extends _ctl_base {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
         }
 
-        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 8, key: 'texto_exterior',
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6, key: 'texto_exterior',
             keys_selects: $keys_selects, place_holder: 'Exterior');
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
         }
 
-        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 8, key: 'texto_interior',
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6, key: 'texto_interior',
             keys_selects: $keys_selects, place_holder: 'Interior');
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);

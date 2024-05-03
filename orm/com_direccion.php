@@ -8,8 +8,10 @@ use stdClass;
 
 class com_direccion extends _modelo_parent{
     public function __construct(PDO $link, array $childrens = array()){
-        $tabla = 'com_direccion ';
+        $tabla = 'com_direccion';
         $columnas = array($tabla=>false,'dp_calle_pertenece'=>$tabla);
+
+
 
         $campos_obligatorios = array('dp_calle_pertenece');
 
