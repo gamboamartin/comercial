@@ -1,5 +1,6 @@
 <?php /** @var \gamboamartin\comercial\models\com_direccion $controlador  controlador en ejecucion */ ?>
 <?php use config\views; ?>
+<?php echo $controlador->inputs->com_tipo_direccion_id; ?>
 <?php echo $controlador->inputs->dp_pais_id; ?>
 <?php echo $controlador->inputs->dp_estado_id; ?>
 <?php echo $controlador->inputs->dp_municipio_id; ?>
