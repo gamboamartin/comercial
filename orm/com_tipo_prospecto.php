@@ -1,10 +1,11 @@
 <?php
 namespace gamboamartin\comercial\models;
 use base\orm\_modelo_parent;
+use base\orm\_modelo_parent_sin_codigo;
 use gamboamartin\errores\errores;
 use PDO;
 
-class com_tipo_prospecto extends _modelo_parent{
+class com_tipo_prospecto extends _modelo_parent_sin_codigo{
     public function __construct(PDO $link, array $childrens = array()){
         $tabla = 'com_tipo_prospecto';
         $columnas = array($tabla=>false);

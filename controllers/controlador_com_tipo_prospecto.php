@@ -38,8 +38,6 @@ class controlador_com_tipo_prospecto extends _base_sin_cod {
         $this->controlador_com_prospecto= new controlador_com_prospecto(link:$this->link, paths_conf: $paths_conf);
 
         $this->childrens_data['com_prospecto']['title'] = 'Prospectos';
-
-
     }
 
 
@@ -97,15 +95,18 @@ class controlador_com_tipo_prospecto extends _base_sin_cod {
             return $this->errores->error(mensaje: 'Error al obtener inputs',data:  $inputs);
         }
 
-
         $this->inputs = $inputs;
-
 
         return $this->inputs;
     }
 
     protected function key_selects_txt(array $keys_selects): array
     {
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 12, key: 'descripcion',
+            keys_selects: $keys_selects, place_holder: 'Descripción');
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
 
         return $keys_selects;
     }

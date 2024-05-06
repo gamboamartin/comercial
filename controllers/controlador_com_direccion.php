@@ -142,7 +142,7 @@ class controlador_com_direccion extends _ctl_base {
 
     public function init_selects_inputs(): array
     {
-        $keys_selects = $this->init_selects(keys_selects: array(), key: "com_tipo_direccion_id", label: "Tipo Dirección");
+        $keys_selects = $this->init_selects(keys_selects: array(), key: "com_tipo_direccion_id", label: "Tipo Dirección", cols: 12);
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_pais_id", label: "País");
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_estado_id", label: "Estado",
             con_registros: false);

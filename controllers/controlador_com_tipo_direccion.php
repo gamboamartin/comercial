@@ -3,14 +3,12 @@
 namespace gamboamartin\comercial\controllers;
 
 use base\controller\controler;
-use gamboamartin\comercial\models\base\com_tipo_direccion;
-use gamboamartin\comercial\models\com_tipo_prospecto;
+use gamboamartin\comercial\models\com_tipo_direccion;
 use gamboamartin\errores\errores;
 use gamboamartin\system\_ctl_parent_sin_codigo;
 use gamboamartin\system\links_menu;
 use gamboamartin\template\html;
 use html\com_tipo_direccion_html;
-use html\com_tipo_prospecto_html;
 use PDO;
 use stdClass;
 

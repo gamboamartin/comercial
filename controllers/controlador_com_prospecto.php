@@ -34,7 +34,28 @@ class controlador_com_prospecto extends _base_sin_cod {
         $html_ = new com_prospecto_html(html: $html);
         parent::__construct(html_: $html_,link:  $link,modelo:  $modelo, paths_conf: $paths_conf);
 
+    }
 
+    public function alta(bool $header, bool $ws = false): array|string
+    {
+        $r_alta = $this->init_alta();
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al inicializar alta', data: $r_alta, header: $header, ws: $ws);
+        }
+
+        $keys_selects = $this->init_selects_inputs();
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al inicializar selects', data: $keys_selects, header: $header,
+                ws: $ws);
+        }
+
+        $inputs = $this->inputs(keys_selects: $keys_selects);
+        if (errores::$error) {
+            return $this->retorno_error(
+                mensaje: 'Error al obtener inputs', data: $inputs, header: $header, ws: $ws);
+        }
+
+        return $r_alta;
     }
     protected function campos_view(array $inputs = array()): array
     {
@@ -185,6 +206,24 @@ class controlador_com_prospecto extends _base_sin_cod {
         return $datatables;
     }
 
+    private function init_selects(array $keys_selects, string $key, string $label, int $id_selected = -1, int $cols = 6,
+                                  bool  $con_registros = true, array $filtro = array()): array
+    {
+        $keys_selects = $this->key_select(cols: $cols, con_registros: $con_registros, filtro: $filtro, key: $key,
+            keys_selects: $keys_selects, id_selected: $id_selected, label: $label);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+
+        return $keys_selects;
+    }
+
+    public function init_selects_inputs(): array
+    {
+        $keys_selects = $this->init_selects(keys_selects: array(), key: "com_tipo_prospecto_id", label: "Tipo Propecto");
+        return   $this->init_selects(keys_selects: $keys_selects, key: "com_agente_id", label: "Agente");
+    }
+
 
     protected function key_selects_txt(array $keys_selects): array
     {
@@ -241,21 +280,20 @@ class controlador_com_prospecto extends _base_sin_cod {
             $this->retorno_error(mensaje: 'Error al generar template',data:  $template, header: $header,ws:  $ws);
         }
 
-        //print_r($this->registro);exit;
-
-        $com_agente_id = (new com_agente_html(html: $this->html_base))->select_com_agente_id(
-            cols: 12,con_registros: true,id_selected: $this->registro['com_agente_id'],link: $this->link);
-        if(errores::$error){
-            $this->retorno_error(mensaje: 'Error al generar com_tipo_agente_id',data:  $com_agente_id, header: $header,ws:  $ws);
+        $keys_selects = $this->init_selects_inputs();
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al inicializar selects', data: $keys_selects, header: $header,
+                ws: $ws);
         }
-        $this->inputs->com_agente_id = $com_agente_id;
 
-        $com_tipo_prospecto_id = (new com_tipo_prospecto_html(html: $this->html_base))->select_com_tipo_prospecto_id(
-            cols: 12,con_registros: true,id_selected: $this->registro['com_tipo_prospecto_id'],link: $this->link);
-        if(errores::$error){
-            $this->retorno_error(mensaje: 'Error al generar com_tipo_prospecto_id',data:  $com_agente_id, header: $header,ws:  $ws);
+        $keys_selects['com_tipo_prospecto_id']->id_selected =  $this->row_upd->com_tipo_prospecto_id;
+        $keys_selects['com_agente_id']->id_selected =  $this->row_upd->com_agente_id;
+
+        $base = $this->base_upd(keys_selects: $keys_selects, params: array(), params_ajustados: array());
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al integrar base', data: $base, header: $header, ws: $ws);
         }
-        $this->inputs->com_tipo_prospecto_id = $com_tipo_prospecto_id;
+
         return $template;
     }
 

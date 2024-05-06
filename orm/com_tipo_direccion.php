@@ -1,11 +1,8 @@
 <?php
 
-namespace gamboamartin\comercial\models\base;
+namespace gamboamartin\comercial\models;
 
-use base\orm\_modelo_parent;
 use base\orm\_modelo_parent_sin_codigo;
-use gamboamartin\comercial\models\com_prospecto;
-use gamboamartin\errores\errores;
 use PDO;
 
 class com_tipo_direccion extends _modelo_parent_sin_codigo {
