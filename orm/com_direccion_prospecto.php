@@ -13,7 +13,7 @@ class com_direccion_prospecto extends _modelo_parent
 {
     public function __construct(PDO $link)
     {
-        $tabla = 'gt_cotizadores';
+        $tabla = 'com_direccion_prospecto';
         $columnas = array($tabla => false, 'com_direccion' => $tabla, 'com_prospecto' => $tabla);
         $campos_obligatorios = array();
 
@@ -52,7 +52,7 @@ class com_direccion_prospecto extends _modelo_parent
             return $this->error->error(mensaje: 'Error generar codigo', data: $registros);
         }
 
-        $registros['codigo'] .= $registros['gt_cotizador_id'];
+        $registros['codigo'] .= $registros['com_direccion_id'] . $registros['com_prospecto_id'];
         $registros['descripcion'] = $registros['codigo'];
 
         return $registros;
