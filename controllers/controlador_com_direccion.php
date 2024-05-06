@@ -91,6 +91,7 @@ class controlador_com_direccion extends _ctl_base {
         $init_data['dp_cp'] = "gamboamartin\\direccion_postal";
         $init_data['dp_colonia_postal'] = "gamboamartin\\direccion_postal";
         $init_data['dp_calle_pertenece'] = "gamboamartin\\direccion_postal";
+        $init_data['com_tipo_direccion'] = "gamboamartin\\comercial";
 
         $campos_view = $this->campos_view_base(init_data: $init_data, keys: $keys);
         if (errores::$error) {
@@ -113,6 +114,7 @@ class controlador_com_direccion extends _ctl_base {
     protected function init_datatable(): stdClass
     {
         $columns["com_direccion_id"]["titulo"] = "Id";
+        $columns["com_tipo_direccion_descripcion"]["titulo"] = "Tipo";
         $columns["dp_calle_pertenece_descripcion"]["titulo"] = "Calle";
         $columns["com_direccion_texto_exterior"]["titulo"] = "Exterior";
         $columns["com_direccion_texto_interior"]["titulo"] = "Interior";
@@ -140,7 +142,8 @@ class controlador_com_direccion extends _ctl_base {
 
     public function init_selects_inputs(): array
     {
-        $keys_selects = $this->init_selects(keys_selects: array(), key: "dp_pais_id", label: "País");
+        $keys_selects = $this->init_selects(keys_selects: array(), key: "com_tipo_direccion_id", label: "Tipo Dirección");
+        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_pais_id", label: "País");
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_estado_id", label: "Estado",
             con_registros: false);
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_municipio_id", label: "Municipio",
@@ -202,6 +205,8 @@ class controlador_com_direccion extends _ctl_base {
             return $this->retorno_error(mensaje: 'Error al obtener direccion', data: $dp_calle_pertenece,header: $header,
                 ws: $ws);
         }
+
+        $keys_selects['com_tipo_direccion_id']->id_selected =  $this->row_upd->com_tipo_direccion_id;
 
         $keys_selects['dp_pais_id']->con_registros =  true;
         $keys_selects['dp_pais_id']->id_selected =  $dp_calle_pertenece["dp_pais_id"];
