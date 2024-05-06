@@ -66,6 +66,19 @@ if(errores::$error){
     exit;
 }
 
+$proceso = new \gamboamartin\proceso\instalacion\instalacion();
+
+$instala = $proceso->instala(link: $link);
+
+if(errores::$error){
+    if($link->inTransaction()) {
+        $link->rollBack();
+    }
+    $error = (new errores())->error(mensaje: 'Error al instalar proceso', data: $instala);
+    print_r($error);
+    exit;
+}
+
 
 $comercial = new gamboamartin\comercial\instalacion\instalacion();
 
