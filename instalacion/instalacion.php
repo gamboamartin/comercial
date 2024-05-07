@@ -1052,6 +1052,96 @@ class instalacion
         return $out;
 
     }
+    private function com_direccion_cliente(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $init = (new _instalacion(link: $link));
+
+        $create = $init->create_table_new(table: __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create = $create;
+
+        $columnas = new stdClass();
+        $add_colums = $init->add_columns(campos: $columnas,table:  __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar columnas', data:  $add_colums);
+        }
+        $out->add_colums_base = $add_colums;
+
+
+        $columnas = new stdClass();
+        $columnas->com_direccion_id = new stdClass();
+        $columnas->com_direccion_id->tipo_dato = 'BIGINT';
+        $columnas->com_direccion_id->longitud = 100;
+
+        $columnas->com_cliente_id = new stdClass();
+        $columnas->com_cliente_id->tipo_dato = 'BIGINT';
+        $columnas->com_cliente_id->longitud = 100;
+
+        $add_colums = $init->add_columns(campos: $columnas,table:  __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar columnas', data:  $add_colums);
+        }
+        $out->add_colums_entidad = $add_colums;
+
+        $foraneas = array();
+        $foraneas['com_direccion_id'] = new stdClass();
+        $foraneas['com_cliente_id'] = new stdClass();
+
+        $result = $init->foraneas(foraneas: $foraneas,table:  __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
+        }
+        $out->foraneas = $result;
+
+        $adm_menu_descripcion = 'Clientes';
+        $adm_sistema_descripcion = 'comercial';
+        $etiqueta_label = 'Direccion Cliente';
+        $adm_seccion_pertenece_descripcion = 'com_direccion_cliente';
+        $adm_namespace_descripcion = 'gamboa.martin/comercial';
+        $adm_namespace_name = 'gamboamartin/comercial';
+
+        $acl = (new _adm())->integra_acl(adm_menu_descripcion: $adm_menu_descripcion,
+            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion,
+            adm_seccion_descripcion: __FUNCTION__, adm_seccion_pertenece_descripcion: $adm_seccion_pertenece_descripcion,
+            adm_sistema_descripcion: $adm_sistema_descripcion, etiqueta_label: $etiqueta_label, link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
+        }
+
+        $adm_seccion_id = (new adm_seccion(link: $link))->adm_seccion_id(descripcion: __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener seccion_id', data:  $adm_seccion_id);
+        }
+
+        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'convierte_en_cliente',
+            adm_seccion_descripcion: __FUNCTION__, es_view: 'inactivo', icono: 'bi bi-file-earmark-plus-fill',
+            link: $link, lista: 'activo', titulo: 'Convierte en cliente');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
+        }
+        $out->fc_relacion_alta_bd = $alta_accion;
+
+        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'etapa',
+            adm_seccion_descripcion: __FUNCTION__, es_view: 'activo', icono: 'bi bi-card-checklist',
+            link: $link, lista: 'activo', titulo: 'Etapas',css: 'info');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
+        }
+        $out->fc_relacion_alta_bd = $alta_accion;
+
+        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'etapa_bd',
+            adm_seccion_descripcion: __FUNCTION__, es_view: 'inactivo', icono: 'bi bi-card-checklist',
+            link: $link, lista: 'inactivo', titulo: 'Etapas',css: 'info');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
+        }
+        $out->fc_relacion_alta_bd = $alta_accion;
+
+        return $out;
+    }
     private function com_prospecto_etapa(PDO $link): array|stdClass
     {
 
