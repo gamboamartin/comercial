@@ -40,7 +40,7 @@
                 <div class="widget widget-box box-container widget-mylistings">
                     <ivi-tab-group>
                         <ivi-tab label="Direcciones" active>
-                            <form method="post" action="<?php echo $controlador->link_alta_etapa; ?>" class="form-additional">
+                            <form method="post" action="<?php echo $controlador->link_alta_direccion; ?>" class="form-additional">
                                 <?php echo $controlador->inputs->com_tipo_direccion_id; ?>
                                 <?php echo $controlador->inputs->dp_pais_id; ?>
                                 <?php echo $controlador->inputs->dp_estado_id; ?>
@@ -58,7 +58,7 @@
                             </form>
                         </ivi-tab>
                         <ivi-tab label="Direcciones Prospecto">
-                            <form method="post" action="<?php echo $controlador->link_alta_etapa; ?>" class="form-additional">
+                            <form method="post" action="<?php echo $controlador->link_alta_relacion; ?>" class="form-additional">
                                 <?php echo $controlador->inputs->com_direccion_id; ?>
 
                                 <div class="control-group col-sm-12" style="display: flex; flex-direction: row-reverse;">

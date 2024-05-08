@@ -27,7 +27,8 @@ class controlador_com_prospecto extends _base_sin_cod
 
     public array|stdClass $keys_selects = array();
     public string $link_alta_etapa = '';
-
+    public string $link_alta_direccion = '';
+    public string $link_alta_relacion = '';
     public array $etapas = array();
 
     public function __construct(PDO      $link, html $html = new \gamboamartin\template_1\html(),
@@ -36,6 +37,13 @@ class controlador_com_prospecto extends _base_sin_cod
         $modelo = new com_prospecto(link: $link);
         $html_ = new com_prospecto_html(html: $html);
         parent::__construct(html_: $html_, link: $link, modelo: $modelo, paths_conf: $paths_conf);
+
+        $init_links = $this->init_links();
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al inicializar links', data: $init_links);
+            print_r($error);
+            die('Error');
+        }
 
     }
 
@@ -245,6 +253,34 @@ class controlador_com_prospecto extends _base_sin_cod
             con_registros: false);
         return $this->init_selects(keys_selects: $keys_selects, key: "com_direccion_id", label: "Dirección", cols: 12);
 
+    }
+
+    protected function init_links(): array|string
+    {
+        $links = $this->obj_link->genera_links(controler: $this);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al generar links', data: $links);
+            print_r($error);
+            exit;
+        }
+
+        $link = $this->obj_link->get_link(seccion: "com_prospecto", accion: "alta_direccion");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al recuperar link alta_direccion', data: $link);
+            print_r($error);
+            exit;
+        }
+        $this->link_alta_direccion = $link;
+
+        $link = $this->obj_link->get_link(seccion: "com_prospecto", accion: "alta_relacion");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al recuperar link alta_direccion', data: $link);
+            print_r($error);
+            exit;
+        }
+        $this->link_alta_relacion = $link;
+
+        return $link;
     }
 
 
