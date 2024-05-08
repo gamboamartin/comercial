@@ -41,11 +41,20 @@
                     <ivi-tab-group>
                         <ivi-tab label="Direcciones" active>
                             <form method="post" action="<?php echo $controlador->link_alta_etapa; ?>" class="form-additional">
-                                <?php echo $controlador->inputs->com_tipo_prospecto_id; ?>
-                                <?php echo $controlador->inputs->com_agente_id; ?>
-                                <?php echo $controlador->inputs->nombre; ?>
-                                <?php echo $controlador->inputs->apellido_paterno; ?>
-                                <?php echo $controlador->inputs->apellido_materno; ?>
+                                <?php echo $controlador->inputs->com_tipo_direccion_id; ?>
+                                <?php echo $controlador->inputs->dp_pais_id; ?>
+                                <?php echo $controlador->inputs->dp_estado_id; ?>
+                                <?php echo $controlador->inputs->dp_municipio_id; ?>
+                                <?php echo $controlador->inputs->dp_cp_id; ?>
+                                <?php echo $controlador->inputs->dp_colonia_postal_id; ?>
+                                <?php echo $controlador->inputs->dp_calle_pertenece_id; ?>
+
+                                <?php echo $controlador->inputs->texto_exterior; ?>
+                                <?php echo $controlador->inputs->texto_interior; ?>
+
+                                <div class="control-group col-sm-12" style="display: flex; flex-direction: row-reverse;">
+                                    <button type="submit" class="btn btn-success" value="correo" name="btn_action_next">Alta</button><br>
+                                </div>
                             </form>
                         </ivi-tab>
                         <ivi-tab label="Direcciones Prospecto"> contenido 2 </ivi-tab>
