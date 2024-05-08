@@ -39,7 +39,15 @@
             <div class="col-md-12">
                 <div class="widget widget-box box-container widget-mylistings">
                     <ivi-tab-group>
-                        <ivi-tab label="Direcciones" active> contenido 1 </ivi-tab>
+                        <ivi-tab label="Direcciones" active>
+                            <form method="post" action="<?php echo $controlador->link_alta_etapa; ?>" class="form-additional">
+                                <?php echo $controlador->inputs->com_tipo_prospecto_id; ?>
+                                <?php echo $controlador->inputs->com_agente_id; ?>
+                                <?php echo $controlador->inputs->nombre; ?>
+                                <?php echo $controlador->inputs->apellido_paterno; ?>
+                                <?php echo $controlador->inputs->apellido_materno; ?>
+                            </form>
+                        </ivi-tab>
                         <ivi-tab label="Direcciones Prospecto"> contenido 2 </ivi-tab>
                     </ivi-tab-group>
                 </div>

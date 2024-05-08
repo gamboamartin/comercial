@@ -20,7 +20,7 @@ class IVITabGroup extends HTMLElement {
             tabHeaders.appendChild(tabHeader);
 
             const tabContent = document.createElement('div');
-            tabContent.textContent = tab.textContent;
+            tabContent.innerHTML = tab.innerHTML;
             tabContent.classList.add('tab-content');
             tabContents.appendChild(tabContent);
 
