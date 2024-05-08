@@ -78,6 +78,7 @@ class controlador_com_prospecto extends _base_sin_cod
         $init_data['dp_colonia_postal'] = "gamboamartin\\direccion_postal";
         $init_data['dp_calle_pertenece'] = "gamboamartin\\direccion_postal";
         $init_data['com_tipo_direccion'] = "gamboamartin\\comercial";
+        $init_data['com_direccion'] = "gamboamartin\\comercial";
 
         $campos_view = $this->campos_view_base(init_data: $init_data, keys: $keys);
         if (errores::$error) {
@@ -240,8 +241,9 @@ class controlador_com_prospecto extends _base_sin_cod
             con_registros: false);
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_colonia_postal_id", label: "Colonia",
             con_registros: false);
-        return $this->init_selects(keys_selects: $keys_selects, key: "dp_calle_pertenece_id", label: "Calle",
+        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_calle_pertenece_id", label: "Calle",
             con_registros: false);
+        return $this->init_selects(keys_selects: $keys_selects, key: "com_direccion_id", label: "Dirección", cols: 12);
 
     }
 

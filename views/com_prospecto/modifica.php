@@ -57,7 +57,15 @@
                                 </div>
                             </form>
                         </ivi-tab>
-                        <ivi-tab label="Direcciones Prospecto"> contenido 2 </ivi-tab>
+                        <ivi-tab label="Direcciones Prospecto">
+                            <form method="post" action="<?php echo $controlador->link_alta_etapa; ?>" class="form-additional">
+                                <?php echo $controlador->inputs->com_direccion_id; ?>
+
+                                <div class="control-group col-sm-12" style="display: flex; flex-direction: row-reverse;">
+                                    <button type="submit" class="btn btn-success" value="correo" name="btn_action_next">Alta</button><br>
+                                </div>
+                            </form>
+                        </ivi-tab>
                     </ivi-tab-group>
                 </div>
             </div>
