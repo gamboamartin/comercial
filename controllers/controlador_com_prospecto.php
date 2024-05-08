@@ -10,10 +10,13 @@
 namespace gamboamartin\comercial\controllers;
 
 use base\controller\init;
+use gamboamartin\comercial\models\com_direccion;
+use gamboamartin\comercial\models\com_direccion_prospecto;
 use gamboamartin\comercial\models\com_prospecto;
 use gamboamartin\comercial\models\com_prospecto_etapa;
 use gamboamartin\errores\errores;
 use gamboamartin\proceso\html\pr_etapa_proceso_html;
+use gamboamartin\system\actions;
 use gamboamartin\template\html;
 use html\com_agente_html;
 use html\com_prospecto_html;
@@ -368,5 +371,84 @@ class controlador_com_prospecto extends _base_sin_cod
         return $template;
     }
 
+    public function alta_direccion(bool $header, bool $ws = false): array|stdClass
+    {
+        $this->link->beginTransaction();
 
+        $siguiente_view = (new actions())->init_alta_bd();
+        if (errores::$error) {
+            $this->link->rollBack();
+            return $this->retorno_error(mensaje: 'Error al obtener siguiente view', data: $siguiente_view,
+                header: $header, ws: $ws);
+        }
+
+        if (isset($_POST['btn_action_next'])) {
+            unset($_POST['btn_action_next']);
+        }
+
+        $alta = (new com_direccion($this->link))->alta_registro(registro: $_POST);
+        if (errores::$error) {
+            $this->link->rollBack();
+            return $this->retorno_error(mensaje: 'Error al dar de alta direccion', data: $alta,
+                header: $header, ws: $ws);
+        }
+
+        $this->link->commit();
+
+        if ($header) {
+            $this->retorno_base(registro_id: $this->registro_id, result: $alta,
+                siguiente_view: "modifica", ws: $ws);
+        }
+        if ($ws) {
+            header('Content-Type: application/json');
+            echo json_encode($alta, JSON_THROW_ON_ERROR);
+            exit;
+        }
+        $alta->siguiente_view = "modifica";
+        $alta->registro_id = $this->registro_id;
+
+        return $alta;
+    }
+
+    public function alta_relacion(bool $header, bool $ws = false): array|stdClass
+    {
+        $this->link->beginTransaction();
+
+        $siguiente_view = (new actions())->init_alta_bd();
+        if (errores::$error) {
+            $this->link->rollBack();
+            return $this->retorno_error(mensaje: 'Error al obtener siguiente view', data: $siguiente_view,
+                header: $header, ws: $ws);
+        }
+
+        if (isset($_POST['btn_action_next'])) {
+            unset($_POST['btn_action_next']);
+        }
+
+        $registros = array();
+        $registros['com_prospecto_id'] = $this->registro_id;
+        $registros['com_direccion_id'] = $_POST['com_direccion_id'];
+        $alta = (new com_direccion_prospecto($this->link))->alta_registro(registro: $registros);
+        if (errores::$error) {
+            $this->link->rollBack();
+            return $this->retorno_error(mensaje: 'Error al dar de alta direccion prospecto', data: $alta,
+                header: $header, ws: $ws);
+        }
+
+        $this->link->commit();
+
+        if ($header) {
+            $this->retorno_base(registro_id: $this->registro_id, result: $alta,
+                siguiente_view: "modifica", ws: $ws);
+        }
+        if ($ws) {
+            header('Content-Type: application/json');
+            echo json_encode($alta, JSON_THROW_ON_ERROR);
+            exit;
+        }
+        $alta->siguiente_view = "modifica";
+        $alta->registro_id = $this->registro_id;
+
+        return $alta;
+    }
 }
