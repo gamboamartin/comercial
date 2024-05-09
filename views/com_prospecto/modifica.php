@@ -70,14 +70,13 @@
                                         </div>
 
                                         <div class="table-responsive">
-                                            <table id="com_direccion"
-                                                   class="datatables table mb-0 table-striped table-sm "></table>
+                                            <table id="table-com_direccion" class="table mb-0 table-striped table-sm "></table>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </ivi-tab>
-                        <ivi-tab label="Direcciones Prospecto">
+                        <ivi-tab label="Direcciones Prospecto" >
                             <form method="post" action="<?php echo $controlador->link_alta_relacion; ?>"
                                   class="form-additional">
                                 <?php echo $controlador->inputs->com_direccion_id; ?>
@@ -99,8 +98,7 @@
                                         </div>
 
                                         <div class="table-responsive">
-                                            <table id="com_direccion_prospecto"
-                                                   class="datatables table mb-0 table-striped table-sm "></table>
+                                            <table id="table-com_direccion_prospecto" class="table mb-0 table-striped table-sm "></table>
                                         </div>
                                     </div>
                                 </div>
