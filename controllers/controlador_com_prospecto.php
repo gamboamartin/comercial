@@ -368,6 +368,39 @@ class controlador_com_prospecto extends _base_sin_cod
             return $this->retorno_error(mensaje: 'Error al integrar base', data: $base, header: $header, ws: $ws);
         }
 
+        $columns["com_direccion_id"]["titulo"] = "Id";
+        $columns["com_tipo_direccion_descripcion"]["titulo"] = "Tipo";
+        $columns["dp_calle_pertenece_descripcion"]["titulo"] = "Calle";
+        $columns["com_direccion_texto_exterior"]["titulo"] = "Exterior";
+        $columns["com_direccion_texto_interior"]["titulo"] = "Interior";
+
+        $filtro = array("com_direccion.id","com_tipo_direccion.descripcion", "com_direccion.texto_exterior", "com_direccion.texto_interior");
+
+        $datatables = $this->datatable_init(columns: $columns, filtro: $filtro, identificador: "#com_direccion",
+            data: array(), in: array());
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al inicializar datatable', data: $datatables,
+                header: $header, ws: $ws);
+        }
+
+        $columns = array();
+        $columns["com_direccion_prospecto_id"]["titulo"] = "Id";
+        $columns["com_direccion_descripcion"]["titulo"] = "Dirección";
+        $columns["com_prospecto_descripcion"]["titulo"] = "Prospecto";
+
+        $filtro = array("com_direccion.id","com_direccion.descripcion","com_prospecto.descripcion");
+
+        $data = array();
+        $data["com_prospecto.id"] = $this->registro_id;
+
+        $datatables = $this->datatable_init(columns: $columns, filtro: $filtro, identificador: "#com_direccion_prospecto",
+            data: array(), in: array());
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al inicializar datatable', data: $datatables,
+                header: $header, ws: $ws);
+        }
+
+
         return $template;
     }
 
