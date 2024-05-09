@@ -310,3 +310,6 @@ const filtro_com_direccion_prospecto = [
 const table_com_direccion = table('com_direccion', columns_com_direccion, []);
 const table_com_direccion_prospecto = table('com_direccion_prospecto', columns_com_direccion_prospecto, filtro_com_direccion_prospecto);
 
+$('#table-com_direccion_prospecto').css({"width":"100%"});
+
+
