@@ -9,7 +9,9 @@ use stdClass;
 class com_direccion extends _modelo_parent{
     public function __construct(PDO $link, array $childrens = array()){
         $tabla = 'com_direccion';
-        $columnas = array($tabla=>false, 'com_tipo_direccion'=>$tabla, 'dp_calle_pertenece'=>$tabla);
+        $columnas = array($tabla=>false, 'com_tipo_direccion'=>$tabla, 'dp_calle_pertenece'=>$tabla,
+            'dp_colonia_postal' =>'dp_calle_pertenece', 'dp_cp' =>'dp_colonia_postal', 'dp_municipio' =>'dp_cp',
+            'dp_estado' =>'dp_municipio', 'dp_pais' =>'dp_estado');
 
         $campos_obligatorios = array('dp_calle_pertenece_id');
 
