@@ -14,7 +14,10 @@ class com_direccion_prospecto extends _modelo_parent
     public function __construct(PDO $link)
     {
         $tabla = 'com_direccion_prospecto';
-        $columnas = array($tabla => false, 'com_direccion' => $tabla, 'com_prospecto' => $tabla);
+        $columnas = array($tabla => false, 'com_direccion' => $tabla, 'com_prospecto' => $tabla, 'com_tipo_direccion' => 'com_direccion',
+            'dp_calle_pertenece' => 'com_direccion', 'dp_colonia_postal' => 'dp_calle_pertenece',
+            'dp_cp' => 'dp_colonia_postal', 'dp_municipio' => 'dp_cp', 'dp_estado' => 'dp_municipio',
+            'dp_pais' => 'dp_estado');
         $campos_obligatorios = array();
 
         $no_duplicados = array();
