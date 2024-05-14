@@ -406,8 +406,8 @@ class base_test{
     }
 
     public function alta_com_prospecto(PDO $link, int $com_agente_id = 1, int $com_tipo_prospecto_id = 1,
-                                       string $apellido_paterno = 'AP1', int $id = 1, string $nombre = 'NOMBRE 1',
-                                       string $razon_social = 'RAZON SOCIAL',
+                                       int $com_medio_prospeccion_id = 100, string $apellido_paterno = 'AP1',
+                                       int $id = 1, string $nombre = 'NOMBRE 1', string $razon_social = 'RAZON SOCIAL',
                                        string $telefono = '1234567890'): array|\stdClass
     {
 
@@ -419,6 +419,7 @@ class base_test{
         $registro['com_agente_id'] = $com_agente_id;
         $registro['telefono'] = $telefono;
         $registro['razon_social'] = $razon_social;
+        $registro['com_medio_prospeccion_id'] = $com_medio_prospeccion_id;
 
         $alta = (new com_prospecto($link))->alta_registro($registro);
         if(errores::$error){

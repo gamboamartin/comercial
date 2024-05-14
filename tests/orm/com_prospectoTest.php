@@ -57,6 +57,7 @@ class com_prospectoTest extends test {
         $modelo->registro['apellido_paterno'] = 'A';
         $modelo->registro['com_tipo_prospecto_id'] = 1;
         $modelo->registro['com_agente_id'] = 1;
+        $modelo->registro['com_medio_prospeccion_id'] = 100;
 
         $resultado = $modelo->alta_bd();
         //print_r($resultado);exit;
