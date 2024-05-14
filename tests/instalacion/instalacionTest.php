@@ -65,6 +65,13 @@ class instalacionTest extends test {
         $_SESSION['usuario_id'] = 2;
         $_GET['session_id'] = '1';
 
+        $instala = (new instalacion())->instala(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al instala', $instala);
+            print_r($error);
+            exit;
+        }
+
 
         $drop = (new _instalacion(link: $this->link))->drop_table_segura(table: 'com_num_reg_fiscal');
         if(errores::$error){
