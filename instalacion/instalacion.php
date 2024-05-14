@@ -232,6 +232,45 @@ class instalacion
 
         return $out;
     }
+
+    private function _add_com_direccion(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $init = (new _instalacion(link: $link));
+
+        $create = $init->create_table_new(table: 'com_direccion');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create = $create;
+
+        $foraneas = array();
+        $foraneas['com_tipo_direccion_id'] = new stdClass();
+        $foraneas['dp_calle_pertenece_id'] = new stdClass();
+
+
+        $result = $init->foraneas(foraneas: $foraneas,table:  'com_direccion');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
+        }
+
+        $campos = new stdClass();
+
+        $campos->texto_interior = new stdClass();
+        $campos->texto_exterior = new stdClass();
+
+
+        $result = $init->add_columns(campos: $campos,table:  'com_direccion');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
+        }
+
+
+
+        return $out;
+    }
     private function _add_com_conf_precio(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -1131,35 +1170,6 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
         }
 
-        $adm_seccion_id = (new adm_seccion(link: $link))->adm_seccion_id(descripcion: __FUNCTION__);
-        if(errores::$error){
-            return (new errores())->error(mensaje: 'Error al obtener seccion_id', data:  $adm_seccion_id);
-        }
-
-        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'convierte_en_cliente',
-            adm_seccion_descripcion: __FUNCTION__, es_view: 'inactivo', icono: 'bi bi-file-earmark-plus-fill',
-            link: $link, lista: 'activo', titulo: 'Convierte en cliente');
-        if(errores::$error){
-            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
-        }
-        $out->fc_relacion_alta_bd = $alta_accion;
-
-        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'etapa',
-            adm_seccion_descripcion: __FUNCTION__, es_view: 'activo', icono: 'bi bi-card-checklist',
-            link: $link, lista: 'activo', titulo: 'Etapas',css: 'info');
-        if(errores::$error){
-            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
-        }
-        $out->fc_relacion_alta_bd = $alta_accion;
-
-        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'etapa_bd',
-            adm_seccion_descripcion: __FUNCTION__, es_view: 'inactivo', icono: 'bi bi-card-checklist',
-            link: $link, lista: 'inactivo', titulo: 'Etapas',css: 'info');
-        if(errores::$error){
-            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
-        }
-        $out->fc_relacion_alta_bd = $alta_accion;
-
         return $out;
     }
     private function com_direccion_cliente(PDO $link): array|stdClass
@@ -1651,6 +1661,41 @@ class instalacion
         return $out;
 
     }
+
+    private function com_direccion(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+
+        $create = $this->_add_com_direccion(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+
+        $out->campos = $create;
+
+        $adm_menu_descripcion = 'Clientes';
+        $adm_sistema_descripcion = 'comercial';
+        $etiqueta_label = 'Direcciones';
+        $adm_seccion_pertenece_descripcion = 'com_direccion';
+        $adm_namespace_name = 'gamboamartin/comercial';
+        $adm_namespace_descripcion = 'gamboa.martin/comercial';
+
+        $acl = (new _adm())->integra_acl(adm_menu_descripcion: $adm_menu_descripcion,
+            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion,
+            adm_seccion_descripcion: __FUNCTION__,
+            adm_seccion_pertenece_descripcion: $adm_seccion_pertenece_descripcion,
+            adm_sistema_descripcion: $adm_sistema_descripcion,
+            etiqueta_label: $etiqueta_label, link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
+        }
+
+
+
+
+        return $out;
+
+    }
     private function com_tipo_producto(PDO $link): array|stdClass
     {
         $init = (new _instalacion(link: $link));
@@ -1868,6 +1913,14 @@ class instalacion
         }
         $out->com_tipo_direccion = $com_tipo_direccion;
 
+        $com_direccion = $this->com_direccion(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error integrar com_direccion', data:  $com_direccion);
+        }
+        $out->com_direccion = $com_direccion;
+
+
+
         $com_medio_prospeccion = $this->com_medio_prospeccion(link: $link);
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error integrar com_medio_prospeccion', data:  $com_medio_prospeccion);
@@ -1938,6 +1991,13 @@ class instalacion
             return (new errores())->error(mensaje: 'Error integrar com_prospecto', data:  $com_prospecto);
         }
         $out->com_prospecto = $com_prospecto;
+
+
+        $com_direccion_prospecto = $this->com_direccion_prospecto(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error integrar com_direccion_prospecto', data:  $com_direccion_prospecto);
+        }
+        $out->com_direccion_prospecto = $com_direccion_prospecto;
 
         $com_tels_agente = $this->com_tels_agente(link: $link);
         if(errores::$error){
