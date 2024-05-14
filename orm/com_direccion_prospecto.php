@@ -61,4 +61,24 @@ class com_direccion_prospecto extends _modelo_parent
         return $registros;
     }
 
+    public function elimina_bd(int $id): array|stdClass
+    {
+        $registro = $this->registro(registro_id: $id);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error obtener registro', data: $registro);
+        }
+
+        $elimina = parent::elimina_bd($id);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error eliminar relación', data: $elimina);
+        }
+
+        $elimina_direccion = (new com_direccion($this->link))->elimina_bd(id: $registro['com_direccion_id']);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error eliminar direccion', data: $elimina_direccion);
+        }
+
+        return $elimina;
+    }
+
 }
