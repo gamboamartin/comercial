@@ -7,6 +7,7 @@ use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\cat_sat\models\cat_sat_cve_prod;
 use gamboamartin\comercial\models\com_cliente;
+use gamboamartin\comercial\models\com_medio_prospeccion;
 use gamboamartin\comercial\models\com_producto;
 use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\comercial\models\com_tipo_cliente;
@@ -1540,6 +1541,20 @@ class instalacion
             etiqueta_label: $etiqueta_label, link: $link);
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
+        }
+
+
+
+        $com_medio_prospeccion_ins['id'] = 100;
+        $com_medio_prospeccion_ins['descripcion'] = 'PREDETERMINADO';
+        $com_medio_prospeccion_ins['status'] = 'activo';
+        $com_medio_prospeccion_ins['es_red_social'] = 'inactivo';
+        $com_medio_prospeccion_ins['predeterminado'] = 'activo';
+
+        $r_com_medio_prospeccion = (new com_medio_prospeccion(link: $link))->inserta_registro_si_no_existe(
+            registro: $com_medio_prospeccion_ins);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar medio_prospeccion', data:  $r_com_medio_prospeccion);
         }
 
         return $out;
