@@ -52,6 +52,8 @@ class controlador_com_direccion extends _ctl_base {
         }
 
         $this->lista_get_data = true;
+        $this->path_vendor_views = 'gamboa.martin/comercial';
+
     }
 
     public function alta(bool $header, bool $ws = false): array|string
