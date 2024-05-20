@@ -43,9 +43,7 @@ class controlador_com_productoTest extends test {
         $ctl = new controlador_com_producto(link: $this->link, paths_conf: $this->paths_conf);
         $ctl = new liberator($ctl);
 
-
         $resultado = $ctl->inicializa_propiedades();
-
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("SAT - Unidad", $resultado['cat_sat_unidad_id']->label);

@@ -683,23 +683,29 @@ class instalacion
         return $out;
 
     }
-    private function com_precio_cliente(PDO $link): object|array
+    private function com_precio_cliente(PDO $link): stdClass|array
     {
+        $out = new stdClass();
+
         $init = (new _instalacion(link: $link));
+
+        $create = $init->create_table_new(table: __FUNCTION__);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create = $create;
+
         $foraneas = array();
         $foraneas['com_producto_id'] = new stdClass();
         $foraneas['com_cliente_id'] = new stdClass();
         $foraneas['cat_sat_conf_imps_id'] = new stdClass();
 
         $result = $init->foraneas(foraneas: $foraneas,table:  __FUNCTION__);
-
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
         }
 
-
         $campos = new stdClass();
-
 
         $campos->precio = new stdClass();
         $campos->precio->tipo_dato = 'double';
@@ -1918,8 +1924,6 @@ class instalacion
             return (new errores())->error(mensaje: 'Error integrar com_direccion', data:  $com_direccion);
         }
         $out->com_direccion = $com_direccion;
-
-
 
         $com_medio_prospeccion = $this->com_medio_prospeccion(link: $link);
         if(errores::$error){
