@@ -1078,6 +1078,15 @@ class instalacion
         $out->fc_relacion_alta_bd = $alta_accion;
 
 
+        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'alta_direccion',
+            adm_seccion_descripcion: __FUNCTION__, es_view: 'inactivo', icono: 'bi bi-card-checklist',
+            link: $link, lista: 'inactivo', titulo: 'Direcciones',css: 'info');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
+        }
+        $out->alta_direccion = $alta_accion;
+
+
         $modelo_pr_tipo_proceso = new pr_tipo_proceso(link: $link);
         $modelo_pr_etapa_proceso = new pr_etapa_proceso(link: $link);
         $modelo_pr_etapa = new pr_etapa(link: $link);
@@ -1665,8 +1674,6 @@ class instalacion
         }
 
 
-
-
         return $out;
 
     }
@@ -1698,8 +1705,6 @@ class instalacion
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
         }
-
-
 
 
         return $out;

@@ -18,9 +18,7 @@ use gamboamartin\errores\errores;
 use gamboamartin\proceso\html\pr_etapa_proceso_html;
 use gamboamartin\system\actions;
 use gamboamartin\template\html;
-use html\com_agente_html;
 use html\com_prospecto_html;
-use html\com_tipo_prospecto_html;
 use PDO;
 use stdClass;
 use Throwable;
@@ -85,9 +83,6 @@ class controlador_com_prospecto extends _base_sin_cod
         $init_data['dp_pais'] = "gamboamartin\\direccion_postal";
         $init_data['dp_estado'] = "gamboamartin\\direccion_postal";
         $init_data['dp_municipio'] = "gamboamartin\\direccion_postal";
-        $init_data['dp_cp'] = "gamboamartin\\direccion_postal";
-        $init_data['dp_colonia_postal'] = "gamboamartin\\direccion_postal";
-        $init_data['dp_calle_pertenece'] = "gamboamartin\\direccion_postal";
         $init_data['com_tipo_direccion'] = "gamboamartin\\comercial";
         $init_data['com_direccion'] = "gamboamartin\\comercial";
 
@@ -248,12 +243,7 @@ class controlador_com_prospecto extends _base_sin_cod
             con_registros: false);
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_municipio_id", label: "Municipio",
             con_registros: false);
-        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_cp_id", label: "CP",
-            con_registros: false);
-        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_colonia_postal_id", label: "Colonia",
-            con_registros: false);
-        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "dp_calle_pertenece_id", label: "Calle",
-            con_registros: false);
+
         return $this->init_selects(keys_selects: $keys_selects, key: "com_direccion_id", label: "Dirección", cols: 12);
 
     }
@@ -367,6 +357,30 @@ class controlador_com_prospecto extends _base_sin_cod
         if (errores::$error) {
             return $this->retorno_error(mensaje: 'Error al integrar base', data: $base, header: $header, ws: $ws);
         }
+
+
+        $cp = $this->html->input_text_required(cols: 6,disabled: false,name: 'cp',place_holder: 'CP',row_upd: $this->row_upd,value_vacio: false);
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al integrar cp', data: $cp, header: $header, ws: $ws);
+        }
+
+        $this->inputs->cp = $cp;
+
+        $colonia = $this->html->input_text_required(cols: 12,disabled: false,name: 'colonia',place_holder: 'Col',row_upd: $this->row_upd,value_vacio: false);
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al integrar colonia', data: $colonia, header: $header, ws: $ws);
+        }
+
+        $this->inputs->colonia = $colonia;
+
+        $calle = $this->html->input_text_required(cols: 12,disabled: false,name: 'calle',place_holder: 'Calle',row_upd: $this->row_upd,value_vacio: false);
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al integrar calle', data: $calle, header: $header, ws: $ws);
+        }
+
+        $this->inputs->calle = $calle;
+
+
 
         return $template;
     }

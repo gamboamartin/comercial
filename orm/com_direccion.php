@@ -29,6 +29,10 @@ class com_direccion extends _modelo_parent{
             return $this->error->error(mensaje: 'Error al inicializar campo base', data: $this->registro);
         }
 
+        if(!isset($this->registro['dp_calle_pertenece_id'])){
+            $this->registro['dp_calle_pertenece_id'] = 1;
+        }
+
         $r_alta_bd = parent::alta_bd($keys_integra_ds);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al insertar direccion', data: $r_alta_bd);
