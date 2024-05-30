@@ -11,7 +11,6 @@ use gamboamartin\comercial\models\com_medio_prospeccion;
 use gamboamartin\comercial\models\com_producto;
 use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\comercial\models\com_tipo_cliente;
-use gamboamartin\comercial\models\com_tipo_direccion;
 use gamboamartin\comercial\models\com_tipo_producto;
 use gamboamartin\comercial\models\com_tipo_sucursal;
 use gamboamartin\comercial\models\com_tmp_prod_cs;
@@ -247,6 +246,7 @@ class instalacion
         $foraneas = array();
         $foraneas['com_tipo_direccion_id'] = new stdClass();
         $foraneas['dp_calle_pertenece_id'] = new stdClass();
+        $foraneas['dp_municipio_id'] = new stdClass();
 
 
         $result = $init->foraneas(foraneas: $foraneas,table:  'com_direccion');
@@ -259,6 +259,9 @@ class instalacion
 
         $campos->texto_interior = new stdClass();
         $campos->texto_exterior = new stdClass();
+        $campos->cp = new stdClass();
+        $campos->colonia = new stdClass();
+        $campos->calle = new stdClass();
 
 
         $result = $init->add_columns(campos: $campos,table:  'com_direccion');
