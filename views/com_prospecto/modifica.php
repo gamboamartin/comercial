@@ -77,33 +77,7 @@
                                 </div>
                             </div>
                         </ivi-tab>
-                        <ivi-tab label="Direcciones Prospecto" >
-                            <form method="post" action="<?php echo $controlador->link_alta_relacion; ?>"
-                                  class="form-additional">
-                                <?php echo $controlador->inputs->com_direccion_id; ?>
-                                <div class="control-group col-sm-12"
-                                     style="display: flex; flex-direction: row-reverse;">
-                                    <button type="submit" class="btn btn-success" value="correo" name="btn_action_next">
-                                        Alta
-                                    </button>
-                                    <br>
-                                </div>
-                            </form>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="">
-                                        <div class="widget-header"
-                                             style="display: flex;justify-content: space-between;align-items: center; margin-left: -15px;">
-                                            <h2>Registro de Direcciones Asignadas</h2>
-                                        </div>
 
-                                        <div class="table-responsive">
-                                            <table id="table-com_direccion_prospecto" class="table mb-0 table-striped table-sm "></table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </ivi-tab>
                     </ivi-tab-group>
                 </div>
             </div>
