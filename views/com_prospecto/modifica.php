@@ -51,6 +51,8 @@
                                 <?php echo $controlador->inputs->calle; ?>
                                 <?php echo $controlador->inputs->texto_exterior; ?>
                                 <?php echo $controlador->inputs->texto_interior; ?>
+                                <?php echo $controlador->inputs->com_prospecto_id; ?>
+
 
                                 <div class="control-group col-sm-12"
                                      style="display: flex; flex-direction: row-reverse;">
@@ -79,7 +81,6 @@
                             <form method="post" action="<?php echo $controlador->link_alta_relacion; ?>"
                                   class="form-additional">
                                 <?php echo $controlador->inputs->com_direccion_id; ?>
-
                                 <div class="control-group col-sm-12"
                                      style="display: flex; flex-direction: row-reverse;">
                                     <button type="submit" class="btn btn-success" value="correo" name="btn_action_next">

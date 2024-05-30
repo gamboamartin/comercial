@@ -380,6 +380,14 @@ class controlador_com_prospecto extends _base_sin_cod
 
         $this->inputs->calle = $calle;
 
+        $com_prospecto_id = $this->html->hidden(name: 'com_prospecto_id', value: $this->registro_id);
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al integrar com_prospecto_id', data: $com_prospecto_id, header: $header, ws: $ws);
+        }
+
+        $this->inputs->com_prospecto_id = $com_prospecto_id;
+
+
 
 
         return $template;

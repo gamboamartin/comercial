@@ -24,7 +24,7 @@ class com_direccion extends _modelo_parent{
 
     public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
     {
-        $this->registro = $this->inicializa_campos($this->registro);
+        $this->registro = $this->inicializa_campos(registros: $this->registro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al inicializar campo base', data: $this->registro);
         }
@@ -33,10 +33,26 @@ class com_direccion extends _modelo_parent{
             $this->registro['dp_calle_pertenece_id'] = 1;
         }
 
-        $r_alta_bd = parent::alta_bd($keys_integra_ds);
+        $com_prospecto_id = -1;
+        if(isset($this->registro['com_prospecto_id'])){
+            $com_prospecto_id = (int)$this->registro['com_prospecto_id'];
+            unset($this->registro['com_prospecto_id']);
+        }
+
+        $r_alta_bd = parent::alta_bd(keys_integra_ds: $keys_integra_ds);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al insertar direccion', data: $r_alta_bd);
         }
+
+        if($com_prospecto_id > 0){
+            $com_direccion_prospecto_ins['com_prospecto_id'] = $com_prospecto_id;
+            $com_direccion_prospecto_ins['com_direccion_id'] = $r_alta_bd->registro_id;
+            $r_alta_com_direccion_prospecto = (new com_direccion_prospecto(link: $this->link))->alta_registro(registro: $com_direccion_prospecto_ins);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al insertar com_direccion_prospecto', data: $r_alta_com_direccion_prospecto);
+            }
+        }
+
         return $r_alta_bd;
     }
 
