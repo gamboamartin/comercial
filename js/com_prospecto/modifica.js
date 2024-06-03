@@ -260,55 +260,15 @@ const columns_com_direccion = [
         data: `com_direccion_id`
     },
     {
-        title: "Tipo",
-        data: 'com_tipo_direccion_descripcion'
-    },
-    {
-        title: "Calle",
-        data: 'dp_calle_pertenece_descripcion'
-    },
-    {
-        title: "Exterior",
-        data: 'com_direccion_texto_exterior'
-    },
-    {
-        title: "Interior",
-        data: 'com_direccion_texto_interior'
-    },
-    {
         title: "Acciones",
         data: null
     }
 ];
 
-const columns_com_direccion_prospecto = [
-    {
-        title: "Id",
-        data: `com_direccion_prospecto_id`
-    },
-    {
-        title: "Dirección",
-        data: 'com_direccion_descripcion'
-    },
-    {
-        title: "Prospecto",
-        data: 'com_prospecto_descripcion'
-    },
-    {
-        title: "Acciones",
-        data: null
-    }
-];
 
-const filtro_com_direccion_prospecto = [
-    {
-        "key": "com_direccion_prospecto.com_prospecto_id",
-        "valor": registro_id
-    }
-];
 
 const table_com_direccion = table('com_direccion', columns_com_direccion, []);
-const table_com_direccion_prospecto = table('com_direccion_prospecto', columns_com_direccion_prospecto, filtro_com_direccion_prospecto);
+
 
 $('#table-com_direccion_prospecto').css({"width":"100%"});
 

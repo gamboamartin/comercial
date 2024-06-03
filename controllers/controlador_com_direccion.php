@@ -12,15 +12,10 @@ use base\controller\controler;
 use gamboamartin\comercial\models\com_direccion;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\errores\errores;
-use gamboamartin\gastos\models\gt_solicitantes;
 use gamboamartin\system\_ctl_base;
 use gamboamartin\system\links_menu;
-use gamboamartin\system\system;
 use gamboamartin\template\html;
 use html\com_direccion_html;
-use html\gt_solicitante_html;
-use html\gt_solicitantes_html;
-use html\gt_solicitud_html;
 
 use PDO;
 use stdClass;
@@ -90,9 +85,6 @@ class controlador_com_direccion extends _ctl_base {
         $init_data['dp_pais'] = "gamboamartin\\direccion_postal";
         $init_data['dp_estado'] = "gamboamartin\\direccion_postal";
         $init_data['dp_municipio'] = "gamboamartin\\direccion_postal";
-        $init_data['dp_cp'] = "gamboamartin\\direccion_postal";
-        $init_data['dp_colonia_postal'] = "gamboamartin\\direccion_postal";
-        $init_data['dp_calle_pertenece'] = "gamboamartin\\direccion_postal";
         $init_data['com_tipo_direccion'] = "gamboamartin\\comercial";
 
         $campos_view = $this->campos_view_base(init_data: $init_data, keys: $keys);
@@ -117,11 +109,13 @@ class controlador_com_direccion extends _ctl_base {
     {
         $columns["com_direccion_id"]["titulo"] = "Id";
         $columns["com_tipo_direccion_descripcion"]["titulo"] = "Tipo";
-        $columns["dp_calle_pertenece_descripcion"]["titulo"] = "Calle";
+        $columns["com_direccion_cp"]["titulo"] = "CP";
+        $columns["com_direccion_colonia"]["titulo"] = "Col";
+        $columns["com_direccion_calle"]["titulo"] = "Calle";
         $columns["com_direccion_texto_exterior"]["titulo"] = "Exterior";
         $columns["com_direccion_texto_interior"]["titulo"] = "Interior";
 
-        $filtro = array("com_direccion.id","dp_calle_pertenece", "com_direccion.texto_exterior", "com_direccion.texto_interior");
+        $filtro = array("com_direccion.id","com_direccion.calle", "com_direccion.texto_exterior", "com_direccion.texto_interior");
 
         $datatables = new stdClass();
         $datatables->columns = $columns;
