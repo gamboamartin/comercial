@@ -358,7 +358,6 @@ class controlador_com_prospecto extends _base_sin_cod
             return $this->retorno_error(mensaje: 'Error al integrar base', data: $base, header: $header, ws: $ws);
         }
 
-
         $cp = $this->html->input_text_required(cols: 6,disabled: false,name: 'cp',place_holder: 'CP',row_upd: $this->row_upd,value_vacio: false);
         if (errores::$error) {
             return $this->retorno_error(mensaje: 'Error al integrar cp', data: $cp, header: $header, ws: $ws);
@@ -386,10 +385,6 @@ class controlador_com_prospecto extends _base_sin_cod
         }
 
         $this->inputs->com_prospecto_id = $com_prospecto_id;
-
-
-
-
         return $template;
     }
 
