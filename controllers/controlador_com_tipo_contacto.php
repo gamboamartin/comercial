@@ -30,11 +30,7 @@ class controlador_com_tipo_contacto extends _base_sin_cod {
                                 stdClass $paths_conf = new stdClass()){
         $modelo = new com_tipo_contacto(link: $link);
         $html_ = new com_tipo_contacto_html(html: $html);
-
-
         parent::__construct(html_: $html_,link:  $link,modelo:  $modelo, paths_conf: $paths_conf);
-
-
 
         $init_links = $this->init_links();
         if(errores::$error){
@@ -47,12 +43,31 @@ class controlador_com_tipo_contacto extends _base_sin_cod {
 
         $this->modelo_doc_documento = new doc_documento(link: $link);
 
-        $this->doc_tipo_documento_id = 11;
+        $this->doc_tipo_documento_id = 10;
+    }
+
+    public function contactos(bool $header = true, bool $ws = false): array|string
+    {
+        $data_view = new stdClass();
+        $data_view->names = array('Id','Cod','Contacto','Acciones');
+        $data_view->keys_data = array('com_contacto_id','com_contacto_codigo','com_contacto_descripcion');
+        $data_view->key_actions = 'acciones';
+        $data_view->namespace_model = 'gamboamartin\\comercial\\models';
+        $data_view->name_model_children = 'com_contacto';
+
+        $contenido_table = $this->contenido_children(data_view: $data_view, next_accion: __FUNCTION__,
+            not_actions: $this->not_actions);
+        if(errores::$error){
+            return $this->retorno_error(
+                mensaje: 'Error al obtener tbody',data:  $contenido_table, header: $header,ws:  $ws);
+        }
+
+        return $contenido_table;
     }
 
     private function init_controladores(stdClass $paths_conf): controler
     {
-        $this->com_tipo_contacto= new com_tipo_contacto(link:$this->link, paths_conf: $paths_conf);
+        //$this->c= new controlador_com_cliente(link:$this->link, paths_conf: $paths_conf);
 
         return $this;
     }
@@ -62,7 +77,7 @@ class controlador_com_tipo_contacto extends _base_sin_cod {
         $datatables = new stdClass();
         $datatables->columns = array();
         $datatables->columns['com_tipo_contacto_id']['titulo'] = 'Id';
-        $datatables->columns['com_tipo_contacto_descripcion']['titulo'] = 'Tipo Contactos';
+        $datatables->columns['com_tipo_contacto_descripcion']['titulo'] = 'Tipo Contacto';
         $datatables->columns['com_tipo_contacto_n_contactos']['titulo'] = 'Contactos';
 
         $datatables->filtro = array();
@@ -107,22 +122,5 @@ class controlador_com_tipo_contacto extends _base_sin_cod {
         return $keys_selects;
     }
 
-    public function contactos(bool $header = true, bool $ws = false): array|string
-    {
-        $data_view = new stdClass();
-        $data_view->names = array('Id','Cod','Contacto','Acciones');
-        $data_view->keys_data = array('com_contacto_id','com_contacto_codigo','com_contacto_descripcion');
-        $data_view->key_actions = 'acciones';
-        $data_view->namespace_model = 'gamboamartin\\comercial\\models';
-        $data_view->name_model_children = 'com_contacto';
 
-        $contenido_table = $this->contenido_children(data_view: $data_view, next_accion: __FUNCTION__,
-            not_actions: $this->not_actions);
-        if(errores::$error){
-            return $this->retorno_error(
-                mensaje: 'Error al obtener tbody',data:  $contenido_table, header: $header,ws:  $ws);
-        }
-
-        return $contenido_table;
-    }
 }
