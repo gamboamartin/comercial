@@ -144,6 +144,7 @@ class controlador_com_contacto extends _ctl_base {
         $datatables->columns['com_contacto_id']['titulo'] = 'Id';
         $datatables->columns['com_tipo_contacto_descripcion']['titulo'] = 'Tipo';
         $datatables->columns['com_contacto_nombre']['titulo'] = 'Contacto';
+        $datatables->columns['com_contacto_nombre']['campos'] = array('com_contacto_nombre', 'com_contacto_ap', 'com_contacto_am');
         $datatables->columns['com_contacto_telefono']['titulo'] = 'Teléfono ';
         $datatables->columns['com_contacto_correo']['titulo'] = 'Correo';
 
@@ -190,11 +191,10 @@ class controlador_com_contacto extends _ctl_base {
         }
 
         $keys_selects = (new \base\controller\init())->key_select_txt(cols: 4, key: 'am',
-            keys_selects: $keys_selects, place_holder: 'Apellido Materno');
+            keys_selects: $keys_selects, place_holder: 'Apellido Materno', required: false);
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
         }
-
 
         return $keys_selects;
     }
