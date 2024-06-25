@@ -368,6 +368,21 @@ class instalacion
 
         return $out;
     }
+
+    private function _add_com_tipo_contacto(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $init = (new _instalacion(link: $link));
+
+        $create = $init->create_table_new(table: 'com_tipo_contacto');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create = $create;
+
+
+        return $out;
+    }
     private function _add_com_tmp_prod_cs(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -1537,6 +1552,37 @@ class instalacion
         return $out;
 
     }
+
+    private function com_tipo_contacto(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+
+        $create = $this->_add_com_tipo_contacto(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+
+        $out->campos = $create;
+
+
+        $adm_menu_descripcion = 'Comercial';
+        $adm_sistema_descripcion = 'comercial';
+        $etiqueta_label = 'Tipos de contacto';
+        $adm_seccion_pertenece_descripcion = 'comercial';
+        $adm_namespace_descripcion = 'gamboa.martin/comercial';
+        $adm_namespace_name = 'gamboamartin/comercial';
+
+        $acl = (new _adm())->integra_acl(adm_menu_descripcion: $adm_menu_descripcion,
+            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion,
+            adm_seccion_descripcion: __FUNCTION__, adm_seccion_pertenece_descripcion: $adm_seccion_pertenece_descripcion,
+            adm_sistema_descripcion: $adm_sistema_descripcion, etiqueta_label: $etiqueta_label, link: $link);
+        if(errores::$error) {
+            return (new errores())->error(mensaje: 'Error al obtener acl', data: $acl);
+        }
+
+        return $out;
+
+    }
     private function com_conf_precio(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -2059,6 +2105,12 @@ class instalacion
             return (new errores())->error(mensaje: 'Error integrar com_prospecto_etapa', data:  $com_prospecto_etapa);
         }
         $out->com_prospecto_etapa = $com_prospecto_etapa;
+
+        $com_tipo_contacto = $this->com_tipo_contacto(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error integrar com_tipo_contacto', data:  $com_tipo_contacto);
+        }
+        $out->com_tipo_contacto = $com_tipo_contacto;
 
         return $out;
 
