@@ -45,6 +45,10 @@ class com_tipo_cliente extends _modelo_parent_sin_codigo
 
     public function validacion(array $datos, int $registro_id): array|stdClass
     {
+        if(array_key_exists('status', $datos)){
+            return $datos;
+        }
+
         if (strlen($datos['descripcion']) < 3) {
             $mensaje_error = sprintf("Error el tipo de cliente '%s' debe tener como minimo 3 caracteres",
                 $datos['descripcion']);

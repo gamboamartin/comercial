@@ -12,7 +12,6 @@ use base\controller\controler;
 use gamboamartin\comercial\models\com_contacto;
 use gamboamartin\errores\errores;
 use gamboamartin\system\_ctl_base;
-use gamboamartin\system\_ctl_parent_sin_codigo;
 use gamboamartin\system\links_menu;
 use gamboamartin\template\html;
 use html\com_contacto_html;
