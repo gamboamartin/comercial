@@ -121,6 +121,4 @@ class controlador_com_tipo_contacto extends _base_sin_cod {
 
         return $keys_selects;
     }
-
-
 }

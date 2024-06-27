@@ -11,6 +11,7 @@ namespace gamboamartin\comercial\controllers;
 use base\controller\controler;
 use base\controller\init;
 use gamboamartin\comercial\models\com_tipo_agente;
+use gamboamartin\documento\models\doc_documento;
 use gamboamartin\errores\errores;
 use gamboamartin\template\html;
 use html\com_tipo_agente_html;
@@ -37,13 +38,37 @@ class controlador_com_tipo_agente extends _base_sin_cod {
             die('Error');
         }
 
-        $this->controlador_com_agente= new controlador_com_agente(link:$this->link, paths_conf: $paths_conf);
-
         $this->childrens_data['com_agente']['title'] = 'Agentes';
 
+        $this->modelo_doc_documento = new doc_documento(link: $link);
 
+        $this->doc_tipo_documento_id = 10;
     }
 
+    public function agentes(bool $header = true, bool $ws = false): array|string
+    {
+        $data_view = new stdClass();
+        $data_view->names = array('Id','Cod','Agente','Acciones');
+        $data_view->keys_data = array('com_agente_id','com_agente_codigo','com_agente_descripcion');
+        $data_view->key_actions = 'acciones';
+        $data_view->namespace_model = 'gamboamartin\\comercial\\models';
+        $data_view->name_model_children = 'com_agente';
+
+        $contenido_table = $this->contenido_children(data_view: $data_view, next_accion: __FUNCTION__,
+            not_actions: $this->not_actions);
+        if(errores::$error){
+            return $this->retorno_error(
+                mensaje: 'Error al obtener tbody',data:  $contenido_table, header: $header,ws:  $ws);
+        }
+
+        return $contenido_table;
+    }
+
+    private function init_controladores(stdClass $paths_conf): controler
+    {
+        //$this->c= new controlador_com_cliente(link:$this->link, paths_conf: $paths_conf);
+        return $this;
+    }
 
     public function init_datatable(): stdClass
     {
@@ -108,26 +133,18 @@ class controlador_com_tipo_agente extends _base_sin_cod {
 
     protected function key_selects_txt(array $keys_selects): array
     {
-
-        return $keys_selects;
-    }
-
-    public function agentes(bool $header = true, bool $ws = false): array|string
-    {
-        $data_view = new stdClass();
-        $data_view->names = array('Id','Cod','Agente','Acciones');
-        $data_view->keys_data = array('com_agente_id','com_agente_codigo','com_agente_descripcion');
-        $data_view->key_actions = 'acciones';
-        $data_view->namespace_model = 'gamboamartin\\comercial\\models';
-        $data_view->name_model_children = 'com_agente';
-
-        $contenido_table = $this->contenido_children(data_view: $data_view, next_accion: __FUNCTION__,
-            not_actions: $this->not_actions);
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 4,key: 'codigo',
+            keys_selects:$keys_selects, place_holder: 'Cod');
         if(errores::$error){
-            return $this->retorno_error(
-                mensaje: 'Error al obtener tbody',data:  $contenido_table, header: $header,ws:  $ws);
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
 
-        return $contenido_table;
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 8,key: 'descripcion',
+            keys_selects:$keys_selects, place_holder: 'Tipo Agente');
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
+        }
+
+        return $keys_selects;
     }
 }
