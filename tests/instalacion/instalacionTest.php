@@ -113,7 +113,7 @@ class instalacionTest extends test {
 
         errores::$error = false;
 
-        $cat_sat = new \gamboamartin\cat_sat\instalacion\instalacion();
+        $cat_sat = new \gamboamartin\cat_sat\instalacion\instalacion(link: $this->link);
 
         $instala = $cat_sat->instala(link: $this->link);
         if(errores::$error){
@@ -145,7 +145,7 @@ class instalacionTest extends test {
         $_SESSION['usuario_id'] = 2;
         $_GET['session_id'] = '1';
 
-        $init_cat_sat = (new \gamboamartin\cat_sat\instalacion\instalacion())->instala(link: $this->link);
+        $init_cat_sat = (new \gamboamartin\cat_sat\instalacion\instalacion(link: $this->link))->instala(link: $this->link);
 
         if(errores::$error){
             $error = (new errores())->error('Error al del', $init_cat_sat);

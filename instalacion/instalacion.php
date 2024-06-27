@@ -26,6 +26,158 @@ use stdClass;
 
 class instalacion
 {
+    private function _add_com_cliente(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $init = (new _instalacion(link: $link));
+
+        $create = $init->create_table_new(table: 'com_cliente');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create = $create;
+
+
+        $campos = new stdClass();
+
+        $campos->razon_social = new stdClass();
+        $campos->rfc = new stdClass();
+        $campos->numero_exterior = new stdClass();
+        $campos->numero_interior = new stdClass();
+        $campos->telefono = new stdClass();
+        $campos->pais = new stdClass();
+        $campos->estado = new stdClass();
+        $campos->municipio = new stdClass();
+        $campos->colonia = new stdClass();
+        $campos->calle = new stdClass();
+        $campos->cp = new stdClass();
+
+
+        $result = $init->add_columns(campos: $campos,table:  'com_cliente');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
+        }
+
+        $foraneas = array();
+        $foraneas['dp_calle_pertenece_id'] = new stdClass();
+        $foraneas['cat_sat_regimen_fiscal_id'] = new stdClass();
+        $foraneas['cat_sat_moneda_id'] = new stdClass();
+        $foraneas['cat_sat_forma_pago_id'] = new stdClass();
+        $foraneas['cat_sat_metodo_pago_id'] = new stdClass();
+        $foraneas['cat_sat_uso_cfdi_id'] = new stdClass();
+        $foraneas['cat_sat_tipo_de_comprobante_id'] = new stdClass();
+        $foraneas['com_tipo_cliente_id'] = new stdClass();
+        $foraneas['cat_sat_tipo_persona_id'] = new stdClass();
+        $foraneas['dp_municipio_id'] = new stdClass();
+
+        $foraneas = $init->foraneas(foraneas: $foraneas, table: 'com_cliente');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar foraneas', data:  $foraneas);
+        }
+        $out->foraneas = $foraneas;
+
+
+
+        return $out;
+    }
+
+    private function _add_com_conf_precio(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $init = (new _instalacion(link: $link));
+
+        $create = $init->create_table_new(table: 'com_conf_precio');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create = $create;
+
+        $foraneas = array();
+        $foraneas['com_producto_id'] = new stdClass();
+        $foraneas['com_tipo_cliente_id'] = new stdClass();
+
+        $result = $init->foraneas(foraneas: $foraneas,table:  'com_conf_precio');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
+        }
+
+        $out->foraneas = $result;
+
+        $campos = new stdClass();
+
+
+        $campos->precio = new stdClass();
+        $campos->precio->tipo_dato = 'double';
+        $campos->precio->default = '0';
+        $campos->precio->longitud = '100,2';
+
+        $result = $init->add_columns(campos: $campos,table:  'com_conf_precio');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
+        }
+
+        $out->campos = $result;
+
+        return $out;
+    }
+    private function _add_com_direccion(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $init = (new _instalacion(link: $link));
+
+        $create = $init->create_table_new(table: 'com_direccion');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create = $create;
+
+        $foraneas = array();
+        $foraneas['com_tipo_direccion_id'] = new stdClass();
+        $foraneas['dp_calle_pertenece_id'] = new stdClass();
+        $foraneas['dp_municipio_id'] = new stdClass();
+
+
+        $result = $init->foraneas(foraneas: $foraneas,table:  'com_direccion');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
+        }
+
+        $campos = new stdClass();
+
+        $campos->texto_interior = new stdClass();
+        $campos->texto_exterior = new stdClass();
+        $campos->cp = new stdClass();
+        $campos->colonia = new stdClass();
+        $campos->calle = new stdClass();
+
+
+        $result = $init->add_columns(campos: $campos,table:  'com_direccion');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
+        }
+
+
+
+        return $out;
+    }
+    private function _add_com_medio_prospeccion(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $init = (new _instalacion(link: $link));
+
+        $create = $init->create_table_new(table: 'com_medio_prospeccion');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create = $create;
+
+        return $out;
+    }
     private function _add_com_producto(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -88,7 +240,6 @@ class instalacion
 
         return $out;
     }
-
     private function _add_com_prospecto_etapa(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -187,19 +338,6 @@ class instalacion
 
         return $out;
     }
-    private function _add_com_medio_prospeccion(PDO $link): array|stdClass
-    {
-        $out = new stdClass();
-        $init = (new _instalacion(link: $link));
-
-        $create = $init->create_table_new(table: 'com_medio_prospeccion');
-        if(errores::$error){
-            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
-        }
-        $out->create = $create;
-
-        return $out;
-    }
     private function _add_com_tipo_cliente(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -215,7 +353,6 @@ class instalacion
 
         return $out;
     }
-
     private function _add_com_tipo_direccion(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -228,90 +365,6 @@ class instalacion
         $out->create = $create;
 
 
-
-        return $out;
-    }
-
-    private function _add_com_direccion(PDO $link): array|stdClass
-    {
-        $out = new stdClass();
-        $init = (new _instalacion(link: $link));
-
-        $create = $init->create_table_new(table: 'com_direccion');
-        if(errores::$error){
-            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
-        }
-        $out->create = $create;
-
-        $foraneas = array();
-        $foraneas['com_tipo_direccion_id'] = new stdClass();
-        $foraneas['dp_calle_pertenece_id'] = new stdClass();
-        $foraneas['dp_municipio_id'] = new stdClass();
-
-
-        $result = $init->foraneas(foraneas: $foraneas,table:  'com_direccion');
-
-        if(errores::$error){
-            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
-        }
-
-        $campos = new stdClass();
-
-        $campos->texto_interior = new stdClass();
-        $campos->texto_exterior = new stdClass();
-        $campos->cp = new stdClass();
-        $campos->colonia = new stdClass();
-        $campos->calle = new stdClass();
-
-
-        $result = $init->add_columns(campos: $campos,table:  'com_direccion');
-
-        if(errores::$error){
-            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
-        }
-
-
-
-        return $out;
-    }
-    private function _add_com_conf_precio(PDO $link): array|stdClass
-    {
-        $out = new stdClass();
-        $init = (new _instalacion(link: $link));
-
-        $create = $init->create_table_new(table: 'com_conf_precio');
-        if(errores::$error){
-            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
-        }
-        $out->create = $create;
-
-        $foraneas = array();
-        $foraneas['com_producto_id'] = new stdClass();
-        $foraneas['com_tipo_cliente_id'] = new stdClass();
-
-        $result = $init->foraneas(foraneas: $foraneas,table:  'com_conf_precio');
-
-        if(errores::$error){
-            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
-        }
-
-        $out->foraneas = $result;
-
-        $campos = new stdClass();
-
-
-        $campos->precio = new stdClass();
-        $campos->precio->tipo_dato = 'double';
-        $campos->precio->default = '0';
-        $campos->precio->longitud = '100,2';
-
-        $result = $init->add_columns(campos: $campos,table:  'com_conf_precio');
-
-        if(errores::$error){
-            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
-        }
-
-        $out->campos = $result;
 
         return $out;
     }
@@ -368,7 +421,6 @@ class instalacion
 
         return $out;
     }
-
     private function _add_com_tipo_contacto(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -1901,6 +1953,11 @@ class instalacion
     private function com_tipo_sucursal(PDO $link): array|stdClass
     {
         $out = new stdClass();
+
+        $create = $this->_add_com_cliente(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
 
         $create = $this->_add_com_tipo_sucursal(link: $link);
         if(errores::$error){

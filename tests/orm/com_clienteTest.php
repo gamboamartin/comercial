@@ -40,7 +40,7 @@ class com_clienteTest extends test {
         $_GET['session_id'] = '1';
 
 
-        $init_cat_sat = (new instalacion())->instala(link: $this->link);
+        $init_cat_sat = (new instalacion(link: $this->link))->instala(link: $this->link);
         if(errores::$error){
             $error = (new errores())->error('Error al init_cat_sat', $init_cat_sat);
             print_r($error);
