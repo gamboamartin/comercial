@@ -77,7 +77,7 @@ class controlador_com_agente extends _base_sin_cod {
         return $campos_view;
     }
 
-    private function data_form(stdClass $row): array|stdClass
+    protected function data_form(stdClass $row): array|stdClass
     {
 
         $keys_selects = $this->init_selects_inputs(disableds: array(), row: $row);
@@ -94,7 +94,7 @@ class controlador_com_agente extends _base_sin_cod {
         return $inputs;
     }
 
-    private function init_controladores(stdClass $paths_conf): controler
+    protected function init_controladores(stdClass $paths_conf): controler
     {
         $this->controlador_com_prospecto= new controlador_com_prospecto(link:$this->link, paths_conf: $paths_conf);
 
@@ -119,7 +119,7 @@ class controlador_com_agente extends _base_sin_cod {
         return $datatables;
     }
 
-    private function init_links(): array|string
+    protected function init_links(): array|string
     {
         $this->obj_link->genera_links($this);
         if(errores::$error){
@@ -231,7 +231,7 @@ class controlador_com_agente extends _base_sin_cod {
         return $contenido_table;
     }
 
-    private function init_selects(string $key, array $keys_selects, string $label, int $cols = 6,
+    protected function init_selects(string $key, array $keys_selects, string $label, int $cols = 6,
                                   bool  $con_registros = true, bool $disabled = false,  array $filtro = array(),
                                   int|null $id_selected = -1): array
     {
