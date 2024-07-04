@@ -18,6 +18,7 @@ use gamboamartin\cat_sat\models\cat_sat_tipo_de_comprobante;
 use gamboamartin\cat_sat\models\cat_sat_tipo_persona;
 use gamboamartin\cat_sat\models\cat_sat_uso_cfdi;
 use gamboamartin\comercial\models\com_cliente;
+use gamboamartin\comercial\models\com_contacto;
 use gamboamartin\comercial\models\com_email_cte;
 use gamboamartin\comercial\models\com_rel_agente_cliente;
 use gamboamartin\comercial\models\com_tipo_cliente;
@@ -47,6 +48,7 @@ class controlador_com_cliente extends _ctl_base
     public controlador_com_email_cte $controlador_com_email_cte;
 
     public string $link_com_rel_agente_cliente_bd = '';
+    public string $link_asigna_contacto_bd = '';
 
     public function __construct(PDO      $link, html $html = new \gamboamartin\template_1\html(),
                                 stdClass $paths_conf = new stdClass())
@@ -172,6 +174,45 @@ class controlador_com_cliente extends _ctl_base
         return $contenido_table;
     }
 
+    public function asigna_contacto(bool $header, bool $ws = false, array $not_actions = array()): array|string
+    {
+        $this->accion_titulo = 'Asignar contacto';
+
+        $r_modifica = $this->init_modifica();
+        if (errores::$error) {
+            return $this->retorno_error(
+                mensaje: 'Error al generar salida de template', data: $r_modifica, header: $header, ws: $ws);
+        }
+
+        $keys_selects = $this->init_selects_inputs();
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al inicializar selects', data: $keys_selects, header: $header,
+                ws: $ws);
+        }
+
+        $base = $this->base_upd(keys_selects: $keys_selects, params: array(), params_ajustados: array());
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al integrar base', data: $base, header: $header, ws: $ws);
+        }
+
+        $data_view = new stdClass();
+        $data_view->names = array('Id', 'Tipo', 'Contacto', 'Teléfono', 'Correo','Acciones');
+        $data_view->keys_data = array('com_contacto_id', 'com_tipo_contacto_descripcion', 'com_contacto_descripcion',
+            'com_contacto_telefono', 'com_contacto_correo');
+        $data_view->key_actions = 'acciones';
+        $data_view->namespace_model = 'gamboamartin\\comercial\\models';
+        $data_view->name_model_children = 'com_contacto';
+
+        $contenido_table = $this->contenido_children(data_view: $data_view, next_accion: __FUNCTION__,
+            not_actions: $not_actions);
+        if (errores::$error) {
+            return $this->retorno_error(
+                mensaje: 'Error al obtener tbody', data: $contenido_table, header: $header, ws: $ws);
+        }
+
+        return $contenido_table;
+    }
+
     public function asigna_agente_bd(bool $header, bool $ws = false): array|stdClass
     {
         $this->link->beginTransaction();
@@ -213,6 +254,54 @@ class controlador_com_cliente extends _ctl_base
         return $proceso;
     }
 
+    public function asigna_contacto_bd(bool $header, bool $ws = false): array|stdClass
+    {
+        $this->link->beginTransaction();
+
+        $siguiente_view = (new actions())->init_alta_bd();
+        if (errores::$error) {
+            $this->link->rollBack();
+            return $this->retorno_error(mensaje: 'Error al obtener siguiente view', data: $siguiente_view,
+                header: $header, ws: $ws);
+        }
+
+        if (isset($_POST['btn_action_next'])) {
+            unset($_POST['btn_action_next']);
+        }
+
+        $registro['com_tipo_contacto_id'] = $_POST['com_tipo_contacto_id'];
+        $registro['com_cliente_id'] = $this->registro_id;
+        $registro['nombre'] = $_POST['nombre'];
+        $registro['ap'] = $_POST['ap'];
+        $registro['am'] = $_POST['am'];
+        $registro['telefono'] = $_POST['telefono'];
+        $registro['correo'] = $_POST['correo'];
+
+        $com_contacto = new com_contacto($this->link);
+        $com_contacto->registro = $registro;
+        $proceso = $com_contacto->alta_bd();
+        if (errores::$error) {
+            $this->link->rollBack();
+            return $this->retorno_error(mensaje: 'Error al dar de alta relacion', data: $proceso, header: $header,
+                ws: $ws);
+        }
+
+        $this->link->commit();
+
+        if ($header) {
+            $this->retorno_base(registro_id: $this->registro_id, result: $proceso,
+                siguiente_view: "asigna_contacto", ws: $ws);
+        }
+        if ($ws) {
+            header('Content-Type: application/json');
+            echo json_encode($proceso, JSON_THROW_ON_ERROR);
+            exit;
+        }
+        $proceso->siguiente_view = "asigna_contacto";
+
+        return $proceso;
+    }
+
 
     protected function init_links(): array|string
     {
@@ -225,11 +314,19 @@ class controlador_com_cliente extends _ctl_base
 
         $link = $this->obj_link->get_link(seccion: "com_cliente", accion: "asigna_agente_bd");
         if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al recuperar link autoriza_bd', data: $link);
+            $error = $this->errores->error(mensaje: 'Error al recuperar link asigna_agente_bd', data: $link);
             print_r($error);
             exit;
         }
         $this->link_com_rel_agente_cliente_bd = $link;
+
+        $link = $this->obj_link->get_link(seccion: "com_cliente", accion: "asigna_contacto_bd");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al recuperar link asigna_contacto_bd', data: $link);
+            print_r($error);
+            exit;
+        }
+        $this->link_asigna_contacto_bd = $link;
 
         return $link;
     }
@@ -239,7 +336,7 @@ class controlador_com_cliente extends _ctl_base
     {
         $keys = new stdClass();
         $keys->inputs = array('codigo', 'razon_social', 'rfc', 'telefono', 'numero_exterior', 'numero_interior',
-            'cp', 'colonia', 'calle');
+            'cp', 'colonia', 'calle', 'nombre', 'ap', 'am', 'correo');
         $keys->selects = array();
 
         $init_data = array();
@@ -258,6 +355,7 @@ class controlador_com_cliente extends _ctl_base
         $init_data['com_tipo_cliente'] = "gamboamartin\\comercial";
         $init_data['cat_sat_tipo_persona'] = "gamboamartin\\cat_sat";
         $init_data['com_agente'] = "gamboamartin\\comercial";
+        $init_data['com_tipo_contacto'] = "gamboamartin\\comercial";
         $campos_view = $this->campos_view_base(init_data: $init_data, keys: $keys);
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al inicializar campo view', data: $campos_view);
@@ -465,6 +563,12 @@ class controlador_com_cliente extends _ctl_base
             return $this->errores->error(mensaje: 'Error al integrar selector', data: $keys_selects);
         }
 
+        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "com_tipo_contacto_id", label: "Tipo de Contacto",
+            cols: 12);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al integrar selector', data: $keys_selects);
+        }
+
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "cat_sat_regimen_fiscal_id",
             label: "Régimen Fiscal", cols: 12);
         if (errores::$error) {
@@ -627,6 +731,30 @@ class controlador_com_cliente extends _ctl_base
         }
 
         $keys_selects = (new _base())->keys_selects(keys_selects: $keys_selects);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6, key: 'correo',
+            keys_selects: $keys_selects, place_holder: 'Correo');
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 4, key: 'nombre',
+            keys_selects: $keys_selects, place_holder: 'Nombre');
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 4, key: 'ap',
+            keys_selects: $keys_selects, place_holder: 'Apellido Paterno');
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 4, key: 'am',
+            keys_selects: $keys_selects, place_holder: 'Apellido Materno', required: false);
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
         }
