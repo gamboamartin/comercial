@@ -79,6 +79,7 @@ class controlador_com_contacto extends _ctl_base {
 
         $init_data = array();
         $init_data['com_tipo_contacto'] = "gamboamartin\\comercial";
+        $init_data['com_cliente'] = "gamboamartin\\comercial";
         $campos_view = $this->campos_view_base(init_data: $init_data, keys: $keys);
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al inicializar campo view', data: $campos_view);
@@ -128,6 +129,12 @@ class controlador_com_contacto extends _ctl_base {
     public function init_selects_inputs(): array{
 
         $keys_selects = $this->init_selects(keys_selects: array(), key: "com_tipo_contacto_id", label: "Tipo de Contacto",
+            cols: 12);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al integrar selector',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "com_cliente_id", label: "Cliente",
             cols: 12);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al integrar selector',data:  $keys_selects);
@@ -213,6 +220,7 @@ class controlador_com_contacto extends _ctl_base {
         }
 
         $keys_selects['com_tipo_contacto_id']->id_selected = $this->registro['com_tipo_contacto_id'];
+        $keys_selects['com_cliente_id']->id_selected = $this->registro['com_cliente_id'];
 
         $base = $this->base_upd(keys_selects: $keys_selects, params: array(), params_ajustados: array());
         if (errores::$error) {

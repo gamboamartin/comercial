@@ -1,0 +1,1 @@
+$('#com_rel_agente_cliente').DataTable();

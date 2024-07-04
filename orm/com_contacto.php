@@ -15,7 +15,7 @@ class com_contacto extends _modelo_parent_sin_codigo
     public function __construct(PDO $link, array $childrens = array())
     {
         $tabla = 'com_contacto';
-        $columnas = array($tabla => false, 'com_tipo_contacto' => $tabla);
+        $columnas = array($tabla => false, 'com_tipo_contacto' => $tabla, 'com_cliente' => $tabla);
         $campos_obligatorios = array();
 
         parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios,
