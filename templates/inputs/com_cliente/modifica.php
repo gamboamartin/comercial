@@ -1,5 +1,9 @@
 <?php /** @var \gamboamartin\comercial\controllers\controlador_com_cliente $controlador  controlador en ejecucion */ ?>
 <?php use config\views; ?>
+
+
+
+
 <?php echo $controlador->inputs->com_tipo_cliente_id; ?>
 <?php echo $controlador->inputs->codigo; ?>
 <?php echo $controlador->inputs->razon_social; ?>
