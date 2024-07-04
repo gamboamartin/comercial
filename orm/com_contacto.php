@@ -24,7 +24,6 @@ class com_contacto extends _modelo_parent_sin_codigo
         $this->NAMESPACE = __NAMESPACE__;
 
         $this->etiqueta = 'Contactos';
-
     }
 
     public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
@@ -54,7 +53,7 @@ class com_contacto extends _modelo_parent_sin_codigo
             return $this->error->error(mensaje: 'Error generar codigo', data: $registros);
         }
 
-        $registros['descripcion'] = $registros['codigo'];
+        $registros['descripcion'] = $registros['nombre'] . ' ' . $registros['ap'] . ' ' . $registros['am'];
 
         return $registros;
     }
