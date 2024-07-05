@@ -466,7 +466,7 @@ class controlador_com_cliente extends _ctl_base
         return $this->inputs;
     }
 
-    private function data_form(): array|stdClass
+    protected function data_form(): array|stdClass
     {
         $keys_selects = $this->init_selects_inputs();
         if (errores::$error) {
