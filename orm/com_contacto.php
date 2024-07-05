@@ -53,7 +53,11 @@ class com_contacto extends _modelo_parent_sin_codigo
             return $this->error->error(mensaje: 'Error generar codigo', data: $registros);
         }
 
-        $registros['descripcion'] = $registros['nombre'] . ' ' . $registros['ap'] . ' ' . $registros['am'];
+        $registros['descripcion'] = $registros['nombre'] . ' ' . $registros['ap'];
+
+        if (array_key_exists('am', $registros)) {
+            $registros['descripcion'] .= ' ' . $registros['am'];
+        }
 
         return $registros;
     }
