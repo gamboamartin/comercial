@@ -115,10 +115,10 @@ class controlador_com_contacto extends _ctl_base {
     }
 
     private function init_selects(array $keys_selects, string $key, string $label, int|null $id_selected = -1, int $cols = 6,
-                                  bool  $con_registros = true, array $filtro = array()): array
+                                  bool  $con_registros = true, array $filtro = array(), array $columns_ds =  array()): array
     {
         $keys_selects = $this->key_select(cols: $cols, con_registros: $con_registros, filtro: $filtro, key: $key,
-            keys_selects: $keys_selects, id_selected: $id_selected, label: $label);
+            keys_selects: $keys_selects, id_selected: $id_selected, label: $label, columns_ds: $columns_ds);
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
         }
@@ -135,7 +135,7 @@ class controlador_com_contacto extends _ctl_base {
         }
 
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "com_cliente_id", label: "Cliente",
-            cols: 12);
+            cols: 12,columns_ds: array('com_cliente_descripcion'));
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al integrar selector',data:  $keys_selects);
         }
@@ -150,6 +150,7 @@ class controlador_com_contacto extends _ctl_base {
         $datatables->columns['com_contacto_id']['titulo'] = 'Id';
         $datatables->columns['com_tipo_contacto_descripcion']['titulo'] = 'Tipo';
         $datatables->columns['com_contacto_nombre']['titulo'] = 'Contacto';
+        $datatables->columns['com_cliente_razon_social']['titulo'] = 'Cliente';
         $datatables->columns['com_contacto_nombre']['campos'] = array('com_contacto_nombre', 'com_contacto_ap', 'com_contacto_am');
         $datatables->columns['com_contacto_telefono']['titulo'] = 'Teléfono ';
         $datatables->columns['com_contacto_correo']['titulo'] = 'Correo';
