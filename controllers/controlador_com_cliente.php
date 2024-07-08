@@ -190,6 +190,8 @@ class controlador_com_cliente extends _ctl_base
                 ws: $ws);
         }
 
+        $this->row_upd->telefono = '';
+
         $base = $this->base_upd(keys_selects: $keys_selects, params: array(), params_ajustados: array());
         if (errores::$error) {
             return $this->retorno_error(mensaje: 'Error al integrar base', data: $base, header: $header, ws: $ws);
@@ -336,8 +338,10 @@ class controlador_com_cliente extends _ctl_base
     protected function campos_view(): array
     {
         $keys = new stdClass();
-        $keys->inputs = array('codigo', 'razon_social', 'rfc', 'telefono', 'numero_exterior', 'numero_interior',
-            'cp', 'colonia', 'calle', 'nombre', 'ap', 'am', 'correo');
+        $keys->inputs = array('codigo', 'razon_social', 'rfc','numero_exterior', 'numero_interior',
+            'cp', 'colonia', 'calle', 'nombre', 'ap', 'am');
+        $keys->telefonos = array('telefono');
+        $keys->emails = array('correo');
         $keys->selects = array();
 
         $init_data = array();
