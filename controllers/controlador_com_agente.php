@@ -63,6 +63,7 @@ class controlador_com_agente extends _base_sin_cod {
     {
         $keys = new stdClass();
         $keys->inputs = array('nombre','apellido_paterno','apellido_materno','user','password','email','telefono');
+        $keys->passwords = array('password');
         $keys->selects = array();
 
         $init_data = array();
