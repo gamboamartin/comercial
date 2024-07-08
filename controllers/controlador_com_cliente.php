@@ -228,10 +228,11 @@ class controlador_com_cliente extends _ctl_base
             unset($_POST['btn_action_next']);
         }
 
-        $registro['com_agente_id'] = $_POST['com_agente_id'];
-        $registro['com_cliente_id'] = $this->registro_id;
+        $com_rel_agente_cliente = new com_rel_agente_cliente($this->link, array('com_agente'));
+        $com_rel_agente_cliente->registro['com_agente_id'] = $_POST['com_agente_id'];
+        $com_rel_agente_cliente->registro['com_cliente_id'] = $this->registro_id;
 
-        $proceso = (new com_rel_agente_cliente($this->link, array('com_agente')))->alta_registro(registro: $registro);
+        $proceso = $com_rel_agente_cliente->alta_bd();
         if (errores::$error) {
             $this->link->rollBack();
             return $this->retorno_error(mensaje: 'Error al dar de alta relacion', data: $proceso, header: $header,

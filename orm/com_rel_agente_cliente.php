@@ -32,6 +32,11 @@ class com_rel_agente_cliente extends _modelo_parent_sin_codigo
 
     public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
     {
+        $validar_duplicado = $this->validar_duplicado($this->registro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar duplicado', data: $validar_duplicado);
+        }
+
         $this->registro = $this->inicializa_campos($this->registro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al inicializar campo base', data: $this->registro);
@@ -44,6 +49,22 @@ class com_rel_agente_cliente extends _modelo_parent_sin_codigo
         return $r_alta_bd;
     }
 
+    public function validar_duplicado(array $registros): array|bool
+    {
+        $campos['com_agente_id'] = $registros['com_agente_id'];
+        $campos['com_cliente_id'] = $registros['com_cliente_id'];
+
+        $r_validar_duplicado = $this->existe(filtro: $campos);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar duplicado', data: $r_validar_duplicado);
+        }
+
+        if ($r_validar_duplicado) {
+            return $this->error->error(mensaje: 'El agente ya se encuentra asignado al cliente', data: $r_validar_duplicado);
+        }
+
+        return $r_validar_duplicado;
+    }
 
     protected function inicializa_campos(array $registros): array
     {
