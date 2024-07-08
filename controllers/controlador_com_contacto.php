@@ -74,7 +74,9 @@ class controlador_com_contacto extends _ctl_base {
     protected function campos_view(): array
     {
         $keys = new stdClass();
-        $keys->inputs = array('codigo', 'correo', 'telefono', 'nombre', 'ap', 'am');
+        $keys->inputs = array('codigo', 'nombre', 'ap', 'am');
+        $keys->telefonos = array('telefono');
+        $keys->emails = array('correo');
         $keys->selects = array();
 
         $init_data = array();
@@ -161,6 +163,7 @@ class controlador_com_contacto extends _ctl_base {
         $datatables->filtro[] = 'com_contacto.nombre';
         $datatables->filtro[] = 'com_contacto.ap';
         $datatables->filtro[] = 'com_contacto.am';
+        $datatables->filtro[] = 'com_cliente.razon_social';
 
         return $datatables;
     }
