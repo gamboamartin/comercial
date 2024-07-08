@@ -166,7 +166,6 @@ class controlador_com_agente extends _base_sin_cod {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
 
-
         $keys_selects = (new init())->key_select_txt(cols: 6,key: 'apellido_paterno',
             keys_selects:$keys_selects, place_holder: 'Apellido Paterno');
         if(errores::$error){
@@ -184,6 +183,7 @@ class controlador_com_agente extends _base_sin_cod {
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al maquetar key_selects',data:  $keys_selects);
         }
+        $keys_selects['apellido_materno']->required = false;
 
         $keys_selects = (new init())->key_select_txt(cols: 6,key: 'user',
             keys_selects:$keys_selects, place_holder: 'User');
