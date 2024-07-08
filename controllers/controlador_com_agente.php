@@ -62,8 +62,10 @@ class controlador_com_agente extends _base_sin_cod {
     protected function campos_view(array $inputs = array()): array
     {
         $keys = new stdClass();
-        $keys->inputs = array('nombre','apellido_paterno','apellido_materno','user','password','email','telefono');
+        $keys->inputs = array('nombre','apellido_paterno','apellido_materno','user');
         $keys->passwords = array('password');
+        $keys->telefonos = array('telefono');
+        $keys->emails = array('email');
         $keys->selects = array();
 
         $init_data = array();
