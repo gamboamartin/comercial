@@ -244,10 +244,10 @@ class controlador_com_agente extends _base_sin_cod
 
     protected function init_selects(string   $key, array $keys_selects, string $label, int $cols = 6,
                                     bool     $con_registros = true, bool $disabled = false, array $filtro = array(),
-                                    int|null $id_selected = -1): array
+                                    int|null $id_selected = -1, array $columns_ds =  array()): array
     {
         $keys_selects = $this->key_select(cols: $cols, con_registros: $con_registros, filtro: $filtro, key: $key,
-            keys_selects: $keys_selects, id_selected: $id_selected, label: $label, disabled: $disabled);
+            keys_selects: $keys_selects, id_selected: $id_selected, label: $label, columns_ds: $columns_ds, disabled: $disabled);
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
         }
@@ -281,13 +281,13 @@ class controlador_com_agente extends _base_sin_cod
         }
 
         $keys_selects = $this->init_selects(key: "com_tipo_agente_id", keys_selects: array(), label: "Tipo de Agente",
-            cols: 12, disabled: $disabled, id_selected: $row->com_tipo_agente_id);
+            cols: 12, disabled: $disabled, id_selected: $row->com_tipo_agente_id,columns_ds: array('com_tipo_agente_descripcion'));
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
         }
 
         $keys_selects = $this->init_selects(key: "adm_grupo_id", keys_selects: $keys_selects, label: "Grupo de Permisos",
-            cols: 12, disabled: $disabled, id_selected: $row->adm_grupo_id);
+            cols: 12, disabled: $disabled, id_selected: $row->adm_grupo_id,columns_ds: array('adm_grupo_descripcion'));
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
         }
