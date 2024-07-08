@@ -320,7 +320,6 @@ class controlador_com_agente extends _base_sin_cod
         $this->row_upd->telefono = $usuario['adm_usuario_telefono'];
         $this->row_upd->email = $usuario['adm_usuario_email'];
 
-
         $base = $this->base_upd(keys_selects: $keys_selects, params: array(), params_ajustados: array());
         if (errores::$error) {
             return $this->retorno_error(mensaje: 'Error al integrar base', data: $base, header: $header, ws: $ws);
