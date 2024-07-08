@@ -109,15 +109,18 @@ class controlador_com_agente extends _base_sin_cod {
         $datatables = new stdClass();
         $datatables->columns = array();
         $datatables->columns['com_agente_id']['titulo'] = 'Id';
-        $datatables->columns['com_agente_descripcion']['titulo'] = 'Agente';
         $datatables->columns['com_tipo_agente_descripcion']['titulo'] = 'Tipo';
+        $datatables->columns['com_agente_descripcion']['titulo'] = 'Agente';
         $datatables->columns['adm_usuario_user']['titulo'] = 'Usuario';
+        $datatables->columns['adm_usuario_telefono']['titulo'] = 'Teléfono';
+        $datatables->columns['adm_usuario_email']['titulo'] = 'Correo';
         $datatables->columns['com_agente_n_prospectos']['titulo'] = 'N Prospectos';
 
         $datatables->filtro = array();
         $datatables->filtro[] = 'com_agente.id';
         $datatables->filtro[] = 'com_agente.descripcion';
         $datatables->filtro[] = 'adm_usuario.user';
+        $datatables->filtro[] = 'adm_usuario.email';
 
         return $datatables;
     }
