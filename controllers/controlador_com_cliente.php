@@ -50,6 +50,8 @@ class controlador_com_cliente extends _ctl_base
     public string $link_com_rel_agente_cliente_bd = '';
     public string $link_asigna_contacto_bd = '';
 
+    public string $button_com_cliente_modifica = '';
+
     public function __construct(PDO      $link, html $html = new \gamboamartin\template_1\html(),
                                 stdClass $paths_conf = new stdClass())
     {
@@ -155,6 +157,14 @@ class controlador_com_cliente extends _ctl_base
         if (errores::$error) {
             return $this->retorno_error(mensaje: 'Error al integrar base', data: $base, header: $header, ws: $ws);
         }
+
+        $button =  $this->html->button_href(accion: 'modifica', etiqueta: 'Ir a Cliente',
+            registro_id: $this->registro_id, seccion: $this->tabla, style: 'warning', params: array());
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al generar link', data: $button);
+        }
+
+        $this->button_com_cliente_modifica = $button;
 
         $data_view = new stdClass();
         $data_view->names = array('Id', 'Tipo', 'Agente', 'Usuario', 'Acciones');

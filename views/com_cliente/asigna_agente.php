@@ -22,9 +22,10 @@
                         </div>
                     </form>
                 </div>
-
             </div>
-
+        </div>
+        <div class="col-md-12 buttons-form">
+            <?php echo $controlador->button_com_cliente_modifica; ?>
         </div>
     </div>
 
