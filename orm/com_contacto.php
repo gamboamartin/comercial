@@ -78,7 +78,7 @@ class com_contacto extends _modelo_parent_sin_codigo
         return $modifica;
     }
 
-    public function validacion(array $datos, int $registro_id): array|stdClass
+    public function validacion(array $datos, int $registro_id): array
     {
         if (array_key_exists('status', $datos)) {
             return $datos;
@@ -116,22 +116,7 @@ class com_contacto extends _modelo_parent_sin_codigo
             return $this->error->error(mensaje: $mensaje_error, data: $datos);
         }
 
-
-        $filtro['com_contacto.correo'] = trim($datos['correo']);
-        $filtro_extra[0]['com_contacto.id']['operador'] = '!=';
-        $filtro_extra[0]['com_contacto.id']['comparacion'] = 'AND';
-        $filtro_extra[0]['com_contacto.id']['valor'] = $registro_id;
-        $existe = $this->filtro_and(filtro: $filtro, filtro_extra: $filtro_extra);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error de duplicación', data: $existe);
-        }
-
-        if ($existe->n_registros > 0) {
-            $mensaje_error = sprintf("Error el correo '%s' ya existe", $datos['correo']);
-            return $this->error->error(mensaje: $mensaje_error, data: $datos);
-        }
-
-        return $existe;
+        return $datos;
     }
 
 
