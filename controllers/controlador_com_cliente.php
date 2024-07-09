@@ -153,6 +153,19 @@ class controlador_com_cliente extends _ctl_base
                 ws: $ws);
         }
 
+        $agentes_asignados = (new com_rel_agente_cliente(link: $this->link))->filtro_and(columnas: array('com_agente_id'),
+            filtro: array('com_cliente_id' => $this->registro_id));
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al obtener agentes asignados', data: $agentes_asignados,
+                header: $header, ws: $ws);
+        }
+
+        $agentes_asignados = $agentes_asignados->registros;
+        $agentes_asignados = call_user_func_array('array_merge', array_map('array_values', $agentes_asignados));
+
+        $keys_selects['com_agente_id']->not_in['llave'] = 'com_agente.id';
+        $keys_selects['com_agente_id']->not_in['values'] = $agentes_asignados;
+
         $base = $this->base_upd(keys_selects: $keys_selects, params: array(), params_ajustados: array());
         if (errores::$error) {
             return $this->retorno_error(mensaje: 'Error al integrar base', data: $base, header: $header, ws: $ws);
