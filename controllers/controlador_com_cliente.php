@@ -515,6 +515,14 @@ class controlador_com_cliente extends _ctl_base
         $data_extra_cat_sat_forma_pago[] = 'cat_sat_forma_pago_codigo';
         $keys_selects['cat_sat_forma_pago_id']->extra_params_keys = $data_extra_cat_sat_forma_pago;
 
+        $com_cliente_rfc = (new com_cliente_html(html: $this->html_base))->input_rfc(cols: 6, row_upd: $this->row_upd,
+            value_vacio: false);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar input', data: $com_cliente_rfc);
+        }
+
+        $this->inputs->com_cliente_rfc = $com_cliente_rfc;
+
 
         $inputs = $this->inputs(keys_selects: $keys_selects);
         if (errores::$error) {
@@ -812,6 +820,15 @@ class controlador_com_cliente extends _ctl_base
             return $this->retorno_error(
                 mensaje: 'Error al generar salida de template', data: $r_modifica, header: $header, ws: $ws);
         }
+
+        $com_cliente_rfc = (new com_cliente_html(html: $this->html_base))->input_rfc(cols: 6, row_upd: $this->row_upd,
+            value_vacio: false);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar input', data: $com_cliente_rfc);
+        }
+
+        $this->inputs->com_cliente_rfc = $com_cliente_rfc;
+
 
         $dp_municipio = (new dp_municipio($this->link))->get_municipio($this->registro['dp_municipio_id']);
         if (errores::$error) {

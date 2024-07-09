@@ -7,6 +7,7 @@ use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\errores\errores;
 use gamboamartin\system\html_controler;
+use gamboamartin\validacion\validacion;
 use models\base\limpieza;
 use PDO;
 use stdClass;
@@ -234,7 +235,7 @@ class com_cliente_html extends html_controler {
         }
 
         $html =$this->directivas->input_text_required(disabled: $disabled,name: 'rfc',place_holder: 'Rfc',
-            row_upd: $row_upd, value_vacio: $value_vacio);
+            row_upd: $row_upd, value_vacio: $value_vacio,regex: (new validacion())->patterns['rfc_html']);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input', data: $html);
         }
