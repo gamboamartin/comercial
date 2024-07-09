@@ -186,6 +186,7 @@ class controlador_com_prospecto extends _base_sin_cod
         $com_prospecto_etapa_ins['com_prospecto_id'] = $this->registro_id;
         $com_prospecto_etapa_ins['pr_etapa_proceso_id'] = $_POST['pr_etapa_proceso_id'];
         $com_prospecto_etapa_ins['fecha'] = $_POST['fecha'];
+        $com_prospecto_etapa_ins['observaciones'] = $_POST['observaciones'];
 
         $r_alta_com_prospecto_etapa = (new com_prospecto_etapa(link: $this->link))->alta_registro(registro: $com_prospecto_etapa_ins);
         if (errores::$error) {
