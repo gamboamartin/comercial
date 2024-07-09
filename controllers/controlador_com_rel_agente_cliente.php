@@ -6,6 +6,7 @@
  * @final En proceso
  *
  */
+
 namespace gamboamartin\comercial\controllers;
 
 use gamboamartin\comercial\models\com_rel_agente_cliente;
@@ -15,16 +16,17 @@ use html\com_rel_agente_sucursal_html;
 use PDO;
 use stdClass;
 
-final class controlador_com_rel_agente_cliente extends _base_sin_cod  {
+class controlador_com_rel_agente_cliente extends _base_sin_cod
+{
 
     public array|stdClass $keys_selects = array();
 
-
-    public function __construct(PDO $link, html $html = new \gamboamartin\template_1\html(),
-                                stdClass $paths_conf = new stdClass()){
+    public function __construct(PDO      $link, html $html = new \gamboamartin\template_1\html(),
+                                stdClass $paths_conf = new stdClass())
+    {
         $modelo = new com_rel_agente_cliente(link: $link);
         $html_ = new com_rel_agente_sucursal_html(html: $html);
-        parent::__construct(html_: $html_,link:  $link,modelo:  $modelo, paths_conf: $paths_conf);
+        parent::__construct(html_: $html_, link: $link, modelo: $modelo, paths_conf: $paths_conf);
 
     }
 
@@ -42,7 +44,6 @@ final class controlador_com_rel_agente_cliente extends _base_sin_cod  {
 
         return $datatables;
     }
-
 
 
     protected function key_selects_txt(array $keys_selects): array
