@@ -14,6 +14,7 @@
 
                         <?php echo $controlador->inputs->pr_etapa_proceso_id; ?>
                         <?php echo $controlador->inputs->fecha; ?>
+                        <?php echo $controlador->inputs->observaciones; ?>
 
                         <div class="controls">
                             <button type="submit" class="btn btn-success" value="correo" name="btn_action_next">Alta</button><br>
@@ -40,6 +41,7 @@
                             <th>Id</th>
                             <th>Etapa</th>
                             <th>Fecha</th>
+                            <th>Observaciones</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -50,6 +52,7 @@
                             <td><?php echo $etapa['com_prospecto_etapa_id'] ?></td>
                             <td><?php echo $etapa['pr_etapa_descripcion'] ?></td>
                             <td><?php echo $etapa['com_prospecto_etapa_fecha'] ?></td>
+                            <td><?php echo $etapa['com_prospecto_etapa_observaciones'] ?></td>
                         </tr>
                         <?php } ?>
                         </tbody>

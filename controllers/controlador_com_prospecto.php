@@ -149,6 +149,14 @@ class controlador_com_prospecto extends _base_sin_cod
 
         $this->inputs->fecha = $fecha;
 
+        $observaciones = $this->html->input_text(cols: 12, disabled: false, name: 'observaciones', place_holder: 'Observaciones',
+            row_upd: new stdClass(), value_vacio: false, required: false);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener input',data:  $observaciones,  header: $header, ws: $ws);
+        }
+
+        $this->inputs->observaciones = $observaciones;
+
         $link_alta_etapa = $this->obj_link->link_con_id(
             accion: 'etapa_bd', link: $this->link, registro_id: $this->registro_id, seccion: $this->tabla);
         if (errores::$error) {
