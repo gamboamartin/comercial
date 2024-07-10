@@ -13,6 +13,7 @@ use base\controller\controler;
 use base\controller\init;
 use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\comercial\models\com_agente;
+use gamboamartin\documento\models\adm_grupo;
 use gamboamartin\errores\errores;
 use gamboamartin\template\html;
 use html\com_agente_html;
@@ -267,13 +268,21 @@ class controlador_com_agente extends _base_sin_cod
             $row->com_tipo_agente_id = $id_selected;
         }
 
-        if (!isset($row->adm_grupo_id)) {
-            $id_selected = $modelo_preferido->id_preferido_detalle(entidad_preferida: 'adm_usuario');
+        if (!isset($row->adm_usuario_id) &&  !isset($row->adm_grupo_id)) {
+            $id_selected = (new adm_grupo(link: $this->link))->id_preferido_detalle(entidad_preferida: 'adm_grupo');
             if (errores::$error) {
                 return $this->errores->error(mensaje: 'Error al maquetar id_selected', data: $id_selected);
             }
             $row->adm_grupo_id = $id_selected;
+        } else {
+            $adm_usuario = (new adm_usuario(link: $this->link))->registro(registro_id: $row->adm_usuario_id);
+            if (errores::$error) {
+                return $this->errores->error(mensaje: 'Error al obtener usuario', data: $adm_usuario);
+            }
+            $row->adm_grupo_id = $adm_usuario['adm_grupo_id'];
         }
+
+
 
         $disabled = false;
         if (in_array('com_tipo_agente_id', $disableds)) {
