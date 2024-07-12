@@ -165,6 +165,30 @@ class instalacion
 
         return $out;
     }
+
+    private function _add_com_email_cte(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $init = (new _instalacion(link: $link));
+
+        $create = $init->create_table_new(table: 'com_email_cte');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create = $create;
+
+        $foraneas = array();
+        $foraneas['com_cliente_id'] = new stdClass();
+
+        $foraneas = $init->foraneas(foraneas: $foraneas, table: 'com_email_cte');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar foraneas', data:  $foraneas);
+        }
+        $out->foraneas = $foraneas;
+
+
+        return $out;
+    }
     private function _add_com_medio_prospeccion(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -748,6 +772,37 @@ class instalacion
             }
         }
         $out->upds_dom = $upds_dom;
+
+
+        return $out;
+
+    }
+
+    private function com_email_cte(PDO $link): array|stdClass
+    {
+
+        $out = new stdClass();
+
+        $add = $this->_add_com_email_cte(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar columnas', data:  $add);
+        }
+
+        $adm_menu_descripcion = 'Etapas';
+        $adm_sistema_descripcion = 'comercial';
+        $etiqueta_label = 'Emails Clientes';
+        $adm_seccion_pertenece_descripcion = 'com_email_cte';
+        $adm_namespace_descripcion = 'gamboa.martin/comercial';
+        $adm_namespace_name = 'gamboamartin/comercial';
+
+        $acl = (new _adm())->integra_acl(adm_menu_descripcion: $adm_menu_descripcion,
+            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion,
+            adm_seccion_descripcion: __FUNCTION__, adm_seccion_pertenece_descripcion: $adm_seccion_pertenece_descripcion,
+            adm_sistema_descripcion: $adm_sistema_descripcion, etiqueta_label: $etiqueta_label, link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
+        }
+
 
 
         return $out;
@@ -2168,6 +2223,12 @@ class instalacion
             return (new errores())->error(mensaje: 'Error integrar com_tipo_contacto', data:  $com_tipo_contacto);
         }
         $out->com_tipo_contacto = $com_tipo_contacto;
+
+        $com_email_cte = $this->com_email_cte(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error integrar com_email_cte', data:  $com_email_cte);
+        }
+        $out->com_email_cte = $com_email_cte;
 
         return $out;
 
