@@ -49,10 +49,10 @@ class com_conf_tipo_doc_cliente extends _modelo_parent_sin_codigo {
             return $this->error->error(mensaje: 'Error generar codigo', data: $registros);
         }
 
-        if(!isset($this->registro['descripcion'])){
-            $descripcion = trim($this->registro['doc_tipo_documento_id']);
-            $descripcion .= '-'.trim($this->registro['com_cliente_id']);
-            $this->registro['descripcion'] = $descripcion;
+        if(!isset($registros['descripcion'])){
+            $descripcion = trim($registros['doc_tipo_documento_id']);
+            $descripcion .= '-'.trim($registros['com_cliente_id']);
+            $registros['descripcion'] = $descripcion;
         }
 
         return $registros;

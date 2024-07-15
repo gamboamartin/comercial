@@ -80,7 +80,7 @@ class controlador_com_conf_tipo_doc_cliente extends _ctl_base {
 
         $init_data = array();
         $init_data['doc_tipo_documento'] = "gamboamartin\\documento";
-        $init_data['doc_tipo_documento_id'] = "gamboamartin\\documento";
+        $init_data['com_cliente'] = "gamboamartin\\comercial";
         $campos_view = $this->campos_view_base(init_data: $init_data, keys: $keys);
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al inicializar campo view', data: $campos_view);
