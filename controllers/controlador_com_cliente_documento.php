@@ -9,12 +9,14 @@
 namespace gamboamartin\comercial\controllers;
 
 use base\controller\controler;
+use gamboamartin\comercial\models\com_cliente_documento;
 use gamboamartin\comercial\models\com_conf_tipo_doc_cliente;
 use gamboamartin\comercial\models\com_contacto;
 use gamboamartin\errores\errores;
 use gamboamartin\system\_ctl_base;
 use gamboamartin\system\links_menu;
 use gamboamartin\template\html;
+use html\com_cliente_documento_html;
 use html\com_conf_tipo_doc_cliente_html;
 use html\com_contacto_html;
 use PDO;
@@ -25,8 +27,8 @@ class controlador_com_cliente_documento extends _ctl_base {
     public function __construct(PDO      $link, html $html = new \gamboamartin\template_1\html(),
                                 stdClass $paths_conf = new stdClass())
     {
-        $modelo = new com_conf_tipo_doc_cliente(link: $link);
-        $html = new com_conf_tipo_doc_cliente_html(html: $html);
+        $modelo = new com_cliente_documento(link: $link);
+        $html = new com_cliente_documento_html(html: $html);
         $obj_link = new links_menu(link: $link, registro_id: $this->registro_id);
 
         $datatables = $this->init_datatable();
@@ -79,8 +81,8 @@ class controlador_com_cliente_documento extends _ctl_base {
         $keys->selects = array();
 
         $init_data = array();
-        $init_data['doc_documento'] = "gamboamartin\\documento";
-        $init_data['com_cliente'] = "gamboamartin\\documento";
+        $init_data['doc_tipo_documento'] = "gamboamartin\\documento";
+        $init_data['com_cliente'] = "gamboamartin\\comercial";
         $campos_view = $this->campos_view_base(init_data: $init_data, keys: $keys);
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al inicializar campo view', data: $campos_view);
@@ -129,7 +131,7 @@ class controlador_com_cliente_documento extends _ctl_base {
 
     public function init_selects_inputs(): array{
 
-        $keys_selects = $this->init_selects(keys_selects: array(), key: "doc_documento_id", label: "Documento",
+        $keys_selects = $this->init_selects(keys_selects: array(), key: "doc_tipo_documento_id", label: "Tipo Documento",
             cols: 12);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al integrar selector',data:  $keys_selects);
@@ -185,7 +187,7 @@ class controlador_com_cliente_documento extends _ctl_base {
                 ws: $ws);
         }
 
-        $keys_selects['doc_documento_id']->id_selected = $this->registro['doc_documento_id'];
+        $keys_selects['doc_tipo_documento_id']->id_selected = $this->registro['doc_tipo_documento_id'];
         $keys_selects['com_cliente_id']->id_selected = $this->registro['com_cliente_id'];
 
         $base = $this->base_upd(keys_selects: $keys_selects, params: array(), params_ajustados: array());

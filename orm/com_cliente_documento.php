@@ -8,13 +8,13 @@ use stdClass;
 
 class com_cliente_documento extends _modelo_parent_sin_codigo {
     public function __construct(PDO $link, array $childrens = array()){
-        $tabla = 'com_conf_tipo_doc_cliente';
-        $columnas = array($tabla=>false, 'doc_documento'=>$tabla, 'com_cliente'=>$tabla);
-        $campos_obligatorios = array('doc_documento_id','com_cliente_id');
+        $tabla = 'com_cliente_documento';
+        $columnas = array($tabla=>false, 'doc_tipo_documento'=>$tabla, 'com_cliente'=>$tabla);
+        $campos_obligatorios = array('doc_tipo_documento_id','com_cliente_id');
 
         $columnas_extra = array();
 
-        $atributos_criticos =  array('doc_documento_id','com_cliente_id');
+        $atributos_criticos =  array('doc_tipo_documento_id','com_cliente_id');
 
         parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios,
             columnas: $columnas, columnas_extra: $columnas_extra, childrens: $childrens,
@@ -49,11 +49,11 @@ class com_cliente_documento extends _modelo_parent_sin_codigo {
             return $this->error->error(mensaje: 'Error generar codigo', data: $registros);
         }
 
-        if(!isset($this->registro['descripcion'])){
-            $descripcion = trim($this->registro['doc_documento_id']);
-            $descripcion .= '-'.trim($this->registro['com_cliente_id']);
-            $descripcion .= '-'.trim($this->registro['codigo']);
-            $this->registro['descripcion'] = $descripcion;
+        if(!isset($registros['descripcion'])){
+            $descripcion = trim($registros['doc_tipo_documento_id']);
+            $descripcion .= '-'.trim($registros['com_cliente_id']);
+            $descripcion .= '-'.trim($registros['codigo']);
+            $registros['descripcion'] = $descripcion;
         }
 
         return $registros;
