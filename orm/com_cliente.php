@@ -164,6 +164,9 @@ class com_cliente extends _modelo_parent
         if($this->registro['cp'] === 'PREDETERMINADO'){
             $this->registro['cp'] = '99999';
         }
+        if($this->registro['cp'] === 'PRED'){
+            $this->registro['cp'] = '99999';
+        }
         $data = (new com_sucursal($this->link))->maqueta_data(calle: $this->registro['calle'],
             codigo: $this->registro["codigo"], colonia: $this->registro['colonia'], cp: $this->registro['cp'],
             nombre_contacto: $this->registro["razon_social"], com_cliente_id: $r_alta_bd->registro_id,
