@@ -29,6 +29,11 @@ class com_cliente_documento extends _modelo_parent_sin_codigo {
 
     public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
     {
+        $validaciones = $this->validaciones($this->registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error en validaciones', data: $validaciones);
+        }
+
         $this->registro = $this->inicializa_campos($this->registro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al inicializar campo base', data: $this->registro);
@@ -40,6 +45,23 @@ class com_cliente_documento extends _modelo_parent_sin_codigo {
         }
 
         return $r_alta_bd;
+    }
+
+    protected function validaciones(array $registros): array
+    {
+        $filtro['doc_tipo_documento_id'] = $registros['doc_tipo_documento_id'];
+        $filtro['com_cliente_id'] = $registros['com_cliente_id'];
+        $existe = (new com_conf_tipo_doc_cliente(link: $this->link))->existe(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al verificar si existe', data: $filtro);
+        }
+
+        if(!$existe){
+            return $this->error->error(mensaje: "No existe una configuración para el cliente y el tipo de documento",
+                data: $filtro);
+        }
+
+        return $registros;
     }
 
     protected function inicializa_campos(array $registros): array

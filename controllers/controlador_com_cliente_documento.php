@@ -151,7 +151,7 @@ class controlador_com_cliente_documento extends _ctl_base {
         $datatables = new stdClass();
         $datatables->columns = array();
         $datatables->columns['com_cliente_documento_id']['titulo'] = 'Id';
-        $datatables->columns['doc_documento_descripcion']['titulo'] = 'Documento';
+        $datatables->columns['doc_tipo_documento_descripcion']['titulo'] = 'Tipo Documento';
         $datatables->columns['com_cliente_razon_social']['titulo'] = 'Cliente';
 
         $datatables->filtro = array();
