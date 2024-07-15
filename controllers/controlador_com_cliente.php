@@ -22,7 +22,6 @@ use gamboamartin\comercial\models\com_contacto;
 use gamboamartin\comercial\models\com_email_cte;
 use gamboamartin\comercial\models\com_rel_agente_cliente;
 use gamboamartin\comercial\models\com_tipo_cliente;
-use gamboamartin\comercial\models\com_tmp_cte_dp;
 use gamboamartin\direccion_postal\controllers\_init_dps;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\direccion_postal\models\dp_municipio;
@@ -33,10 +32,8 @@ use gamboamartin\system\links_menu;
 use gamboamartin\template\html;
 use html\com_cliente_html;
 use html\com_email_cte_html;
-use html\com_tmp_cte_dp_html;
 use PDO;
 use stdClass;
-use Throwable;
 
 class controlador_com_cliente extends _ctl_base
 {
@@ -908,58 +905,7 @@ class controlador_com_cliente extends _ctl_base
             return $this->retorno_error(mensaje: 'Error al integrar base', data: $base, header: $header, ws: $ws);
         }
 
-        $this->link->beginTransaction();
-        $data_tmp = (new com_tmp_cte_dp(link: $this->link))->genera_datos(com_cliente_id: $this->registro_id);
-        if (errores::$error) {
-            $this->link->rollBack();
-            return $this->retorno_error(
-                mensaje: 'Error al obtener com_tmp', data: $data_tmp, header: $header, ws: $ws);
-        }
-        $this->link->commit();
 
-
-        $this->existe_dom_tmp = $data_tmp->existe_dom_tmp;
-
-
-        $dp_estado = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_estado(cols: 4, row_upd: $data_tmp->com_tmp_cte_dp, value_vacio: false);
-        if (errores::$error) {
-            return $this->retorno_error(
-                mensaje: 'Error al obtener inputs', data: $dp_estado, header: $header, ws: $ws);
-        }
-
-        $this->inputs->dp_estado = $dp_estado;
-
-        $dp_municipio = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_municipio(cols: 4, row_upd: $data_tmp->com_tmp_cte_dp, value_vacio: false);
-        if (errores::$error) {
-            return $this->retorno_error(
-                mensaje: 'Error al obtener inputs', data: $dp_estado, header: $header, ws: $ws);
-        }
-
-        $this->inputs->dp_municipio = $dp_municipio;
-
-        $dp_cp = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_cp(cols: 4, row_upd: $data_tmp->com_tmp_cte_dp, value_vacio: false, required: true);
-        if (errores::$error) {
-            return $this->retorno_error(
-                mensaje: 'Error al obtener inputs', data: $dp_cp, header: $header, ws: $ws);
-        }
-
-        $this->inputs->dp_cp = $dp_cp;
-
-        $dp_colonia = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_colonia(cols: 6, row_upd: $data_tmp->com_tmp_cte_dp, value_vacio: false);
-        if (errores::$error) {
-            return $this->retorno_error(
-                mensaje: 'Error al obtener inputs', data: $dp_colonia, header: $header, ws: $ws);
-        }
-
-        $this->inputs->dp_colonia = $dp_colonia;
-
-        $dp_calle = (new com_tmp_cte_dp_html(html: $this->html_base))->input_dp_calle(cols: 6, row_upd: $data_tmp->com_tmp_cte_dp, value_vacio: false);
-        if (errores::$error) {
-            return $this->retorno_error(
-                mensaje: 'Error al obtener inputs', data: $dp_calle, header: $header, ws: $ws);
-        }
-
-        $this->inputs->dp_calle = $dp_calle;
 
         return $r_modifica;
     }
@@ -973,38 +919,6 @@ class controlador_com_cliente extends _ctl_base
         return $params;
     }
 
-    public function regenera_dom(bool $header, bool $ws = false)
-    {
-
-        $this->link->beginTransaction();
-        $data_tmp = (new com_tmp_cte_dp(link: $this->link))->genera_datos(com_cliente_id: $this->registro_id);
-        if (errores::$error) {
-            $this->link->rollBack();
-            return $this->retorno_error(
-                mensaje: 'Error al obtener com_tmp', data: $data_tmp, header: $header, ws: $ws);
-        }
-        $this->link->commit();
-
-        if ($header) {
-
-            $this->retorno_base(registro_id: $this->registro_id, result: $data_tmp, siguiente_view: 'modifica',
-                ws: $ws, seccion_retorno: $this->tabla);
-        }
-        if ($ws) {
-            header('Content-Type: application/json');
-            try {
-                echo json_encode($data_tmp, JSON_THROW_ON_ERROR);
-            } catch (Throwable $e) {
-                $error = (new errores())->error(mensaje: 'Error al maquetar JSON', data: $e);
-                print_r($error);
-            }
-            exit;
-        }
-
-        return $data_tmp;
-
-
-    }
 
 
 }

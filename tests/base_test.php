@@ -715,10 +715,7 @@ class base_test{
             return (new errores())->error('Error al eliminar', $del);
         }
 
-        $del = $this->del_com_tmp_cte_dp($link);
-        if(errores::$error){
-            return (new errores())->error('Error al eliminar', $del);
-        }
+
         $del = $this->del_com_precio_cliente($link);
         if(errores::$error){
             return (new errores())->error('Error al eliminar', $del);
@@ -830,15 +827,7 @@ class base_test{
         return $del;
     }
 
-    public function del_com_tmp_cte_dp(PDO $link): array
-    {
 
-        $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_tmp_cte_dp');
-        if(errores::$error){
-            return (new errores())->error('Error al eliminar', $del);
-        }
-        return $del;
-    }
 
     public function del_com_rel_prospecto_cte(PDO $link): array
     {
