@@ -693,85 +693,33 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al actualizar clientes', data: $upds);
         }
 
-        $com_clientes = $com_cliente_modelo->registros();
+
+
+        $adm_menu_descripcion = 'Clientes';
+        $adm_sistema_descripcion = 'comercial';
+        $etiqueta_label = 'Clientes';
+        $adm_seccion_pertenece_descripcion = 'com_cliente';
+        $adm_namespace_descripcion = 'gamboa.martin/comercial';
+        $adm_namespace_name = 'gamboamartin/comercial';
+
+        $acl = (new _adm())->integra_acl(adm_menu_descripcion: $adm_menu_descripcion,
+            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion,
+            adm_seccion_descripcion: __FUNCTION__, adm_seccion_pertenece_descripcion: $adm_seccion_pertenece_descripcion,
+            adm_sistema_descripcion: $adm_sistema_descripcion, etiqueta_label: $etiqueta_label, link: $link);
         if(errores::$error){
-            return (new errores())->error(mensaje: 'Error al obtener clientes', data:  $com_clientes);
+            return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
         }
 
-        $keys_dom = array('pais','estado','municipio','colonia', 'calle','cp');
 
-        $upds_dom = array();
-        foreach ($com_clientes as $com_cliente){
-
-            foreach ($keys_dom AS $key_dom){
-                $key_entidad = __FUNCTION__."_$key_dom";
-                $key_integra = 'dp_'.$key_dom.'_descripcion';
-
-                $com_cliente_bruto = $com_cliente_modelo->registro(registro_id: $com_cliente['com_cliente_id'],
-                    columnas_en_bruto: true);
-                if(errores::$error){
-                    return (new errores())->error(mensaje: 'Error al obtener el cliente',data:  $com_cliente_bruto);
-                }
-                $dp_calle_pertenece = (new dp_calle_pertenece(link: $link))->registro(
-                    registro_id: $com_cliente_bruto['dp_calle_pertenece_id']);
-                if(errores::$error){
-                    return (new errores())->error(mensaje: 'Error al obtener dp_calle_pertenece',data:  $dp_calle_pertenece);
-                }
-                if(!isset($com_cliente[$key_entidad])){
-                    return (new errores())->error(mensaje: 'Error no existe key '.$key_entidad,data:  $com_cliente);
-                }
-                if(!isset($dp_calle_pertenece[$key_integra])){
-                    return (new errores())->error(mensaje: 'Error no existe key '.$key_integra,data:  $dp_calle_pertenece);
-                }
-
-                if(trim($com_cliente[$key_entidad]) === ''){
-
-                    $r_upd = $com_cliente_modelo->modifica_en_bruto(registro: [$key_dom => $dp_calle_pertenece[$key_integra]],
-                        id: $com_cliente['com_cliente_id']);
-                    if(errores::$error){
-                        return (new errores())->error(mensaje: 'Error al modificar cliente', data:  $r_upd);
-                    }
-                    $upds_dom[] = $r_upd;
-
-                }
-
-            }
-
-            foreach ($keys_dom AS $key_dom){
-                $key_entidad = __FUNCTION__."_$key_dom";
-                $key_integra = 'dp_'.$key_dom.'_descripcion';
-
-                $com_cliente_bruto = $com_cliente_modelo->registro(registro_id: $com_cliente['com_cliente_id'],
-                    columnas_en_bruto: true);
-                if(errores::$error){
-                    return (new errores())->error(mensaje: 'Error al obtener el cliente',data:  $com_cliente_bruto);
-                }
-                $dp_calle_pertenece = (new dp_calle_pertenece(link: $link))->registro(
-                    registro_id: $com_cliente_bruto['dp_calle_pertenece_id']);
-                if(errores::$error){
-                    return (new errores())->error(mensaje: 'Error al obtener dp_calle_pertenece',data:  $dp_calle_pertenece);
-                }
-                if(!isset($com_cliente[$key_entidad])){
-                    return (new errores())->error(mensaje: 'Error no existe key '.$key_entidad,data:  $com_cliente);
-                }
-                if(!isset($dp_calle_pertenece[$key_integra])){
-                    return (new errores())->error(mensaje: 'Error no existe key '.$key_integra,data:  $dp_calle_pertenece);
-                }
-
-                if(trim($com_cliente[$key_entidad]) === ''){
-
-
-                    $r_upd = $com_cliente_modelo->modifica_bd(registro: [$key_dom => $dp_calle_pertenece[$key_integra]],
-                        id: $com_cliente['com_cliente_id'],valida_conf_tipo_persona: false, valida_metodo_pago: false);
-                    if(errores::$error){
-                        return (new errores())->error(mensaje: 'Error al modificar cliente', data:  $r_upd);
-                    }
-                    $upds_dom[] = $r_upd;
-                }
-
-            }
+        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'correo',
+            adm_seccion_descripcion: __FUNCTION__, es_view: 'activo', icono: 'bi bi-mailbox',
+            link: $link, lista: 'activo', titulo: 'Correos');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
         }
-        $out->upds_dom = $upds_dom;
+        $out->es_automatico = $alta_accion;
+
+
 
 
         return $out;
