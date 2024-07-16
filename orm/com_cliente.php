@@ -495,13 +495,22 @@ class com_cliente extends _modelo_parent
             return array();
         }
 
-        $documentos = (new com_cliente_documento(link: $controler->link))->documentos(
+        $clientes_documentos = (new com_cliente_documento(link: $controler->link))->documentos(
             com_cliente: $controler->registro_id, tipos_documentos: $doc_ids);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener documentos',data:  $documentos);
+            return $this->error->error(mensaje: 'Error al obtener documentos',data:  $clientes_documentos);
         }
 
-        print_r($documentos);exit();
+        $buttons_documentos = $this->buttons_documentos(controler: $controler, clientes_documentos:  $clientes_documentos,
+            tipos_documentos: $doc_ids);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar buttons',data:  $buttons_documentos);
+        }
+
+        return $buttons_documentos;
+    }
+
+    private function buttons_documentos(controlador_com_cliente $controler, array $clientes_documentos, array $tipos_documentos){
 
         return array();
     }
