@@ -530,6 +530,57 @@ class controlador_com_cliente extends _ctl_base
         return $inputs;
     }
 
+    final public function documentos(bool $header, bool $ws = false): array|stdClass
+    {
+        $template = $this->modifica(header: false);
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al integrar base', data: $template, header: $header, ws: $ws);
+        }
+
+
+        $keys_selects = $this->init_selects_inputs();
+        if (errores::$error) {return $this->errores->error(mensaje: 'Error al inicializar selects', data: $keys_selects);
+        }
+
+        $keys_selects['com_tipo_cliente_id']->id_selected = $this->registro['com_tipo_cliente_id'];
+        $keys_selects['com_tipo_cliente_id']->disabled = true;
+
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 4, key: 'codigo',
+            keys_selects: $keys_selects, place_holder: 'Cod');
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+        $keys_selects['codigo']->disabled = true;
+
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 8, key: 'razon_social',
+            keys_selects: $keys_selects, place_holder: 'Razón Social');
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+        $keys_selects['razon_social']->disabled = true;
+
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6, key: 'rfc',
+            keys_selects: $keys_selects, place_holder: 'RFC');
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+        $keys_selects['rfc']->disabled = true;
+
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6, key: 'telefono',
+            keys_selects: $keys_selects, place_holder: 'Teléfono');
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+        $keys_selects['telefono']->disabled = true;
+
+        $base = $this->base_upd(keys_selects: $keys_selects, params: array(), params_ajustados: array());
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al integrar base', data: $base, header: $header, ws: $ws);
+        }
+
+        return $template;
+    }
+
     public function get_cliente(bool $header, bool $ws = true): array|stdClass
     {
         $keys['com_cliente'] = array('id', 'descripcion', 'codigo', 'rfc');
