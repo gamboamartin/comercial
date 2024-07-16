@@ -13,6 +13,7 @@ use gamboamartin\cat_sat\models\cat_sat_uso_cfdi;
 use gamboamartin\comercial\controllers\controlador_com_cliente;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\direccion_postal\models\dp_municipio;
+use gamboamartin\documento\models\doc_tipo_documento;
 use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
@@ -483,11 +484,11 @@ class com_cliente extends _modelo_parent
         $conf_tipos_docs = (new com_conf_tipo_doc_cliente(link: $controler->link))->filtro_and(
             columnas: ['doc_tipo_documento_id'],
             filtro: array('com_cliente_id' => $cliente['com_cliente_id']));
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener conf. de tipos de documentos',data:  $conf_tipos_docs);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener conf. de tipos de documentos', data: $conf_tipos_docs);
         }
 
-        $doc_ids = array_map(function($registro) {
+        $doc_ids = array_map(function ($registro) {
             return $registro['doc_tipo_documento_id'];
         }, $conf_tipos_docs->registros);
 
@@ -497,22 +498,215 @@ class com_cliente extends _modelo_parent
 
         $clientes_documentos = (new com_cliente_documento(link: $controler->link))->documentos(
             com_cliente: $controler->registro_id, tipos_documentos: $doc_ids);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener documentos',data:  $clientes_documentos);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener documentos', data: $clientes_documentos);
         }
 
-        $buttons_documentos = $this->buttons_documentos(controler: $controler, clientes_documentos:  $clientes_documentos,
+        $buttons_documentos = $this->buttons_documentos(controler: $controler, clientes_documentos: $clientes_documentos,
             tipos_documentos: $doc_ids);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al integrar buttons',data:  $buttons_documentos);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al integrar buttons', data: $buttons_documentos);
         }
 
         return $buttons_documentos;
     }
 
-    private function buttons_documentos(controlador_com_cliente $controler, array $clientes_documentos, array $tipos_documentos){
+    private function buttons_documentos(controlador_com_cliente $controler, array $clientes_documentos, array $tipos_documentos)
+    {
+        $conf_docs = $this->documentos_de_cliente(com_cliente_id: $controler->registro_id,
+            link: $controler->link, todos: true, tipos_documentos: $tipos_documentos);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener configuraciones de documentos',
+                data: $conf_docs);
+        }
 
-        return array();
+        foreach ($conf_docs as $indice => $doc_tipo_documento) {
+            $conf = $this->inm_docs_prospecto(controler: $controler,
+                doc_tipo_documento: $doc_tipo_documento, indice: $indice,
+                com_conf_tipo_doc_cliente: $conf_docs, clientes_documentos: $clientes_documentos);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al integrar buttons', data: $conf);
+            }
+        }
+
+        return $conf_docs;
+    }
+
+    final public function documentos_de_cliente(int $com_cliente_id, PDO $link, bool $todos, array $tipos_documentos)
+    {
+        $in = array();
+
+        if (count($tipos_documentos) > 0) {
+            $in['llave'] = 'doc_tipo_documento.id';
+            $in['values'] = $tipos_documentos;
+        }
+
+        $r_doc_tipo_documento = (new doc_tipo_documento(link: $link))->filtro_and(in: $in);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al Obtener tipos de documento', data: $r_doc_tipo_documento);
+        }
+
+        return $r_doc_tipo_documento->registros;
+    }
+
+    private function inm_docs_prospecto(controlador_com_cliente $controler, array $doc_tipo_documento, int $indice,
+                                        array $com_conf_tipo_doc_cliente, array $clientes_documentos)
+    {
+        $existe = false;
+        foreach ($clientes_documentos as $cliente_documento) {
+            $existe_doc = $this->doc_existente(controler: $controler,
+                doc_tipo_documento: $doc_tipo_documento, indice: $indice,
+                com_conf_tipo_doc_cliente: $com_conf_tipo_doc_cliente, clientes_documentos: $cliente_documento);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al integrar datos', data: $existe_doc);
+            }
+
+            $com_conf_tipo_doc_cliente = $existe_doc->com_conf_tipo_doc_cliente;
+            $existe = $existe_doc->existe;
+            if ($existe) {
+                break;
+            }
+        }
+
+        if (!$existe) {
+            $com_conf_tipo_doc_cliente = $this->integra_data(controler: $controler,
+                doc_tipo_documento: $doc_tipo_documento, indice: $indice,
+                com_conf_tipo_doc_cliente: $com_conf_tipo_doc_cliente);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al integrar button', data: $com_conf_tipo_doc_cliente);
+            }
+        }
+
+        return $com_conf_tipo_doc_cliente;
+    }
+
+    private function integra_data(controlador_com_cliente $controler, array $doc_tipo_documento,
+                                  int $indice, array $com_conf_tipo_doc_cliente){
+        $params = array('doc_tipo_documento_id'=>$doc_tipo_documento['doc_tipo_documento_id']);
+
+        $button = $controler->html->button_href(accion: 'subir_documento',etiqueta:
+            'Subir Documento',registro_id:  $controler->registro_id,
+            seccion:  'com_cliente_documento',style:  'warning', params: $params);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar button',data:  $button);
+        }
+
+        $com_conf_tipo_doc_cliente = $this->integra_button_default(button: $button,
+            indice:  $indice,com_conf_tipo_doc_cliente:  $com_conf_tipo_doc_cliente);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar button',data:  $com_conf_tipo_doc_cliente);
+        }
+
+        return $com_conf_tipo_doc_cliente;
+    }
+
+    private function integra_button_default(string $button, int $indice, array $com_conf_tipo_doc_cliente): array
+    {
+        $com_conf_tipo_doc_cliente[$indice]['descarga'] = $button;
+        $com_conf_tipo_doc_cliente[$indice]['vista_previa'] = $button;
+        $com_conf_tipo_doc_cliente[$indice]['descarga_zip'] = $button;
+        $com_conf_tipo_doc_cliente[$indice]['elimina_bd'] = $button;
+        return $com_conf_tipo_doc_cliente;
+    }
+
+    private function doc_existente(controlador_com_cliente $controler, array $doc_tipo_documento, int $indice,
+                                   array                   $com_conf_tipo_doc_cliente, array $clientes_documentos)
+    {
+
+        $existe = false;
+        if ($doc_tipo_documento['doc_tipo_documento_id'] === $clientes_documentos['doc_tipo_documento_id']) {
+
+            $existe = true;
+
+            $inm_conf_docs_prospecto = $this->buttons_base(controler: $controler, indice: $indice,
+                com_cliente_documento_id: $controler->registro_id, com_conf_tipo_doc_cliente: $com_conf_tipo_doc_cliente,
+                com_cliente_documento: $clientes_documentos);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al integrar button', data: $inm_conf_docs_prospecto);
+            }
+        }
+
+        $data = new stdClass();
+        $data->existe = $existe;
+        $data->com_conf_tipo_doc_cliente = $com_conf_tipo_doc_cliente;
+        return $data;
+    }
+
+    private function buttons_base(controlador_com_cliente $controler, int $indice, int $com_cliente_documento_id,
+                                  array $com_conf_tipo_doc_cliente, array $com_cliente_documento): array
+    {
+        $inm_conf_docs_prospecto = $this->buttons(controler: $controler, indice: $indice,
+            com_conf_tipo_doc_cliente: $com_conf_tipo_doc_cliente, com_cliente_documento: $com_cliente_documento);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al integrar button', data: $inm_conf_docs_prospecto);
+        }
+
+        $inm_conf_docs_prospecto = $this->button_del(controler: $controler, indice: $indice,
+            com_cliente_documento_id: $com_cliente_documento_id, com_conf_tipo_doc_cliente: $com_conf_tipo_doc_cliente,
+            com_cliente_documento: $com_cliente_documento);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al integrar button', data: $inm_conf_docs_prospecto);
+        }
+
+        return $inm_conf_docs_prospecto;
+    }
+
+    private function buttons(controlador_com_cliente $controler, int $indice, array $com_conf_tipo_doc_cliente,
+                             array $com_cliente_documento)
+    {
+
+        $com_conf_tipo_doc_cliente = $this->button(accion: 'descarga', controler: $controler,
+            etiqueta: 'Descarga', indice: $indice, com_cliente_documento_id: $com_cliente_documento['com_cliente_documento_id'],
+            com_conf_tipo_doc_cliente: $com_conf_tipo_doc_cliente);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al integrar button', data: $com_conf_tipo_doc_cliente);
+        }
+
+        $com_conf_tipo_doc_cliente = $this->button(accion: 'vista_previa', controler: $controler,
+            etiqueta: 'Vista Previa', indice: $indice, com_cliente_documento_id: $com_cliente_documento['com_cliente_documento_id'],
+            com_conf_tipo_doc_cliente: $com_conf_tipo_doc_cliente, target: '_blank');
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al integrar button', data: $com_conf_tipo_doc_cliente);
+        }
+
+        $com_conf_tipo_doc_cliente = $this->button(accion: 'descarga_zip', controler: $controler,
+            etiqueta: 'ZIP', indice: $indice, com_cliente_documento_id: $com_cliente_documento['com_cliente_documento_id'],
+            com_conf_tipo_doc_cliente: $com_conf_tipo_doc_cliente, target: '_blank');
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al integrar button', data: $com_conf_tipo_doc_cliente);
+        }
+
+        return $com_conf_tipo_doc_cliente;
+    }
+
+    private function button(string $accion, controlador_com_cliente $controler, string $etiqueta, int $indice,
+                            int    $com_cliente_documento_id, array $com_conf_tipo_doc_cliente, array $params = array(),
+                            string $style = 'success', string $target = ''): array
+    {
+        $button = $controler->html->button_href(accion: $accion, etiqueta: $etiqueta,
+            registro_id: $com_cliente_documento_id, seccion: 'com_cliente_documento', style: $style, params: $params,
+            target: $target);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al integrar button', data: $button);
+        }
+        $com_conf_tipo_doc_cliente[$indice][$accion] = $button;
+
+        return $com_conf_tipo_doc_cliente;
+    }
+
+    final public function button_del(controlador_com_cliente $controler, int $indice, int $com_cliente_documento_id,
+                                     array $com_conf_tipo_doc_cliente, array $com_cliente_documento){
+        $params = array('accion_retorno'=>'documentos','seccion_retorno'=>$controler->seccion,
+            'id_retorno'=>$com_cliente_documento_id);
+
+        $com_conf_tipo_doc_cliente = $this->button(accion: 'elimina_bd', controler: $controler,
+            etiqueta: 'Elimina', indice: $indice, com_cliente_documento_id: $com_cliente_documento['com_cliente_documento_id'],
+            com_conf_tipo_doc_cliente: $com_conf_tipo_doc_cliente, params: $params, style: 'danger');
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al integrar button', data: $com_conf_tipo_doc_cliente);
+        }
+
+        return $com_conf_tipo_doc_cliente;
     }
 
     private function integra_key_dom(array $dp_calle_pertenece, string $key_dom, array $registro): array
