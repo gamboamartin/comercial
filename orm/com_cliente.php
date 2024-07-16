@@ -10,6 +10,7 @@ use gamboamartin\cat_sat\models\cat_sat_moneda;
 use gamboamartin\cat_sat\models\cat_sat_regimen_fiscal;
 use gamboamartin\cat_sat\models\cat_sat_tipo_de_comprobante;
 use gamboamartin\cat_sat\models\cat_sat_uso_cfdi;
+use gamboamartin\comercial\controllers\controlador_com_cliente;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\direccion_postal\models\dp_municipio;
 use gamboamartin\errores\errores;
@@ -471,6 +472,12 @@ class com_cliente extends _modelo_parent
         }
 
         return $data;
+    }
+
+    final public function integra_documentos(controlador_com_cliente $controler){
+
+
+        return array();
     }
 
     private function integra_key_dom(array $dp_calle_pertenece, string $key_dom, array $registro): array

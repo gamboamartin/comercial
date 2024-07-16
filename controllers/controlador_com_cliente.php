@@ -970,6 +970,21 @@ class controlador_com_cliente extends _ctl_base
         return $params;
     }
 
+    public function tipos_documentos(bool $header, bool $ws = false): array
+    {
+        $documentos = (new com_cliente($this->link))->integra_documentos(controler: $this);
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al integrar buttons', data: $documentos, header: $header, ws: $ws);
+        }
 
+        $salida['draw'] = count($documentos);
+        $salida['recordsTotal'] = count($documentos);
+        $salida['recordsFiltered'] = count($documentos);
+        $salida['data'] = $documentos;
+
+        header('Content-Type: application/json');
+        echo json_encode($salida);
+        exit;
+    }
 
 }

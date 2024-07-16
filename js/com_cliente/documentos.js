@@ -29,8 +29,7 @@ const columns_tipos_documentos = [
 const options = {paging: false, info: false, searching: false}
 
 const table_tipos_documentos = table('com_cliente', columns_tipos_documentos, [], [], function () {
-    }, true,
-    "tipos_documentos", {registro_id: registro_id}, options);
+    }, true, "tipos_documentos", {registro_id: registro_id}, options);
 
 
 var modal = document.getElementById("myModal");

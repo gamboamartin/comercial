@@ -28,15 +28,15 @@
     </div>
     <br>
 
-    <div class="container" style="margin-top: 20px;">
+    <!--<div class="container" style="margin-top: 20px;">
         <div class="row">
             <div class="col-lg-12" style="display: flex; gap: 15px;">
-                <form id="form-documentos" action="<?php echo $controlador->link_agrupa_documentos; ?>" method="post"
+                <form id="form-documentos" action="<?php /*echo $controlador->link_agrupa_documentos; */?>" method="post"
                       enctype="multipart/form-data">
                     <input type="hidden" id="documentos" name="documentos" required>
                     <button id="agrupar" class="btn btn-success">Agrupar</button>
                 </form>
-                <form id="form-documentos-verificar" action="<?php echo $controlador->link_verifica_documentos; ?>" method="post"
+                <form id="form-documentos-verificar" action="<?php /*echo $controlador->link_verifica_documentos; */?>" method="post"
                       enctype="multipart/form-data">
                     <input type="hidden" id="documentos-verificar" name="documentos" required>
                     <button id="verificar" class="btn btn-success">Verificar</button>
@@ -44,7 +44,7 @@
                     <button id="enviar" class="btn btn-success">Enviar Documentos</button>
             </div>
         </div>
-    </div>
+    </div>-->
 
     <div class="container">
         <div class="row">
