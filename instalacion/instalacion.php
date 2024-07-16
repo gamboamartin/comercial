@@ -189,6 +189,57 @@ class instalacion
 
         return $out;
     }
+
+    private function _add_com_contacto(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $init = (new _instalacion(link: $link));
+
+        $create = $init->create_table_new(table: 'com_contacto');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create = $create;
+
+        $foraneas = array();
+        $foraneas['com_tipo_contacto_id'] = new stdClass();
+        $foraneas['com_cliente_id'] = new stdClass();
+
+        $foraneas = $init->foraneas(foraneas: $foraneas, table: 'com_contacto');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar foraneas', data:  $foraneas);
+        }
+        $out->foraneas = $foraneas;
+
+
+        return $out;
+    }
+
+    private function _add_com_contacto_user(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $init = (new _instalacion(link: $link));
+
+        $create = $init->create_table_new(table: 'com_contacto_user');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create = $create;
+
+        $foraneas = array();
+        $foraneas['com_contacto_id'] = new stdClass();
+        $foraneas['adm_usuario_id'] = new stdClass();
+
+        $foraneas = $init->foraneas(foraneas: $foraneas, table: 'com_contacto_user');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar foraneas', data:  $foraneas);
+        }
+        $out->foraneas = $foraneas;
+
+
+        return $out;
+    }
+
     private function _add_com_medio_prospeccion(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -756,6 +807,69 @@ class instalacion
         return $out;
 
     }
+
+    private function com_contacto(PDO $link): array|stdClass
+    {
+
+        $out = new stdClass();
+
+        $add = $this->_add_com_contacto(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar columnas', data:  $add);
+        }
+
+        $adm_menu_descripcion = 'Clientes';
+        $adm_sistema_descripcion = 'comercial';
+        $etiqueta_label = 'Contactos';
+        $adm_seccion_pertenece_descripcion = 'com_contacto';
+        $adm_namespace_descripcion = 'gamboa.martin/comercial';
+        $adm_namespace_name = 'gamboamartin/comercial';
+
+        $acl = (new _adm())->integra_acl(adm_menu_descripcion: $adm_menu_descripcion,
+            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion,
+            adm_seccion_descripcion: __FUNCTION__, adm_seccion_pertenece_descripcion: $adm_seccion_pertenece_descripcion,
+            adm_sistema_descripcion: $adm_sistema_descripcion, etiqueta_label: $etiqueta_label, link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
+        }
+
+
+
+        return $out;
+
+    }
+
+    private function com_contacto_user(PDO $link): array|stdClass
+    {
+
+        $out = new stdClass();
+
+        $add = $this->_add_com_contacto_user(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar columnas', data:  $add);
+        }
+
+        $adm_menu_descripcion = 'Clientes';
+        $adm_sistema_descripcion = 'comercial';
+        $etiqueta_label = 'Usuarios de cliente';
+        $adm_seccion_pertenece_descripcion = 'com_contacto_user';
+        $adm_namespace_descripcion = 'gamboa.martin/comercial';
+        $adm_namespace_name = 'gamboamartin/comercial';
+
+        $acl = (new _adm())->integra_acl(adm_menu_descripcion: $adm_menu_descripcion,
+            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion,
+            adm_seccion_descripcion: __FUNCTION__, adm_seccion_pertenece_descripcion: $adm_seccion_pertenece_descripcion,
+            adm_sistema_descripcion: $adm_sistema_descripcion, etiqueta_label: $etiqueta_label, link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
+        }
+
+
+
+        return $out;
+
+    }
+
     private function com_precio_cliente(PDO $link): stdClass|array
     {
         $out = new stdClass();
@@ -2177,6 +2291,18 @@ class instalacion
             return (new errores())->error(mensaje: 'Error integrar com_email_cte', data:  $com_email_cte);
         }
         $out->com_email_cte = $com_email_cte;
+
+        $com_contacto = $this->com_contacto(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error integrar com_contacto', data:  $com_contacto);
+        }
+        $out->com_contacto = $com_contacto;
+
+        $com_contrato_user = $this->com_contacto_user(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error integrar com_contrato_user', data:  $com_contrato_user);
+        }
+        $out->com_contrato_user = $com_contrato_user;
 
         return $out;
 
