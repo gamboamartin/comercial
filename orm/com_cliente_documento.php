@@ -9,12 +9,13 @@ use stdClass;
 class com_cliente_documento extends _modelo_parent_sin_codigo {
     public function __construct(PDO $link, array $childrens = array()){
         $tabla = 'com_cliente_documento';
-        $columnas = array($tabla=>false, 'doc_tipo_documento'=>$tabla, 'com_cliente'=>$tabla);
-        $campos_obligatorios = array('doc_tipo_documento_id','com_cliente_id');
+        $columnas = array($tabla=>false,  'com_cliente'=>$tabla, 'doc_documento' => $tabla,
+            'doc_tipo_documento' => 'doc_documento', 'doc_extension' => 'doc_documento');
+        $campos_obligatorios = array('doc_documento_id','com_cliente_id');
 
         $columnas_extra = array();
 
-        $atributos_criticos =  array('doc_tipo_documento_id','com_cliente_id');
+        $atributos_criticos =  array('doc_documento_id','com_cliente_id');
 
         parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios,
             columnas: $columnas, columnas_extra: $columnas_extra, childrens: $childrens,
@@ -45,6 +46,23 @@ class com_cliente_documento extends _modelo_parent_sin_codigo {
         }
 
         return $r_alta_bd;
+    }
+
+    final public function documentos(int $com_cliente, array $tipos_documentos)
+    {
+        $in = array();
+
+        if (count($tipos_documentos) > 0) {
+            $in['llave'] = 'doc_documento.doc_tipo_documento_id';
+            $in['values'] = $tipos_documentos;
+        }
+
+        $documentos = $this->filtro_and(filtro: array('com_cliente.id' => $com_cliente), in: $in);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener documentos', data: $documentos);
+        }
+
+        return $documentos->registros;
     }
 
     protected function validaciones(array $registros): array

@@ -26,11 +26,11 @@ class com_cliente extends _modelo_parent
         $columnas = array($tabla => false, 'cat_sat_moneda' => $tabla, 'cat_sat_regimen_fiscal' => $tabla,
             'dp_municipio' => $tabla, 'dp_estado' => 'dp_municipio', 'dp_pais' => 'dp_estado',
             'com_tipo_cliente' => $tabla, 'cat_sat_uso_cfdi' => $tabla, 'cat_sat_metodo_pago' => $tabla,
-            'cat_sat_forma_pago' => $tabla, 'cat_sat_tipo_de_comprobante' => $tabla,'cat_sat_tipo_persona'=>$tabla);
+            'cat_sat_forma_pago' => $tabla, 'cat_sat_tipo_de_comprobante' => $tabla, 'cat_sat_tipo_persona' => $tabla);
 
         $campos_obligatorios = array('cat_sat_moneda_id', 'cat_sat_regimen_fiscal_id', 'cat_sat_moneda_id',
             'cat_sat_forma_pago_id', 'cat_sat_uso_cfdi_id', 'cat_sat_tipo_de_comprobante_id', 'cat_sat_metodo_pago_id',
-            'telefono','cat_sat_tipo_persona_id','pais','estado','municipio','colonia','calle','cp','dp_municipio_id');
+            'telefono', 'cat_sat_tipo_persona_id', 'pais', 'estado', 'municipio', 'colonia', 'calle', 'cp', 'dp_municipio_id');
 
         $columnas_extra['com_cliente_n_sucursales'] =
             "(SELECT COUNT(*) FROM com_sucursal WHERE com_sucursal.com_cliente_id = com_cliente.id)";
@@ -57,7 +57,7 @@ class com_cliente extends _modelo_parent
             return $this->error->error(mensaje: 'Error al obtener calle', data: $dp_calle_pertenece);
         }
 
-        $registro = $this->integra_key_dom_faltante(dp_calle_pertenece: $dp_calle_pertenece,key_dom:  $key_dom,registro:  $registro);
+        $registro = $this->integra_key_dom_faltante(dp_calle_pertenece: $dp_calle_pertenece, key_dom: $key_dom, registro: $registro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al integrar key_dom', data: $registro);
         }
@@ -67,11 +67,11 @@ class com_cliente extends _modelo_parent
 
     private function ajusta_keys_dom(array $registro)
     {
-        $keys_dom = array('pais','estado','municipio','colonia','calle','cp');
+        $keys_dom = array('pais', 'estado', 'municipio', 'colonia', 'calle', 'cp');
 
-        foreach ($keys_dom as $key_dom){
+        foreach ($keys_dom as $key_dom) {
 
-            $registro = $this->ajusta_key_dom(key_dom: $key_dom,registro:  $registro);
+            $registro = $this->ajusta_key_dom(key_dom: $key_dom, registro: $registro);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al integrar key_dom', data: $registro);
             }
@@ -84,7 +84,7 @@ class com_cliente extends _modelo_parent
 
     /**
      * Inserta un cliente
-     * @param array $keys_integra_ds  Campos para la integracion de descricpion select
+     * @param array $keys_integra_ds Campos para la integracion de descricpion select
      * @return array|stdClass
      */
     public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
@@ -100,25 +100,25 @@ class com_cliente extends _modelo_parent
             return $this->error->error(mensaje: 'Error al inicializar foraneas', data: $this->registro);
         }
 
-        $keys = array('telefono','numero_exterior','razon_social','dp_municipio_id');
+        $keys = array('telefono', 'numero_exterior', 'razon_social', 'dp_municipio_id');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $this->registro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
         }
 
-        if(!isset($this->registro["numero_interior"])){
+        if (!isset($this->registro["numero_interior"])) {
             $this->registro['numero_interior'] = '';
         }
 
         $es_empleado = false;
 
-        if(isset($this->registro["es_empleado"])){
+        if (isset($this->registro["es_empleado"])) {
             $es_empleado = $this->registro["es_empleado"];
         }
 
         $dp_municipio_modelo = new dp_municipio(link: $this->link);
         $dp_municipio = $dp_municipio_modelo->registro(registro_id: $this->registro['dp_municipio_id']);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener dp_municipio', data: $dp_municipio);
         }
 
@@ -138,7 +138,7 @@ class com_cliente extends _modelo_parent
             return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
 
-        $valida = (NEW _validacion())->valida_conf_tipo_persona(link: $this->link,registro:  $this->registro);
+        $valida = (new _validacion())->valida_conf_tipo_persona(link: $this->link, registro: $this->registro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
@@ -157,15 +157,14 @@ class com_cliente extends _modelo_parent
         $this->registro = $registro;
 
 
-
         $r_alta_bd = parent::alta_bd(keys_integra_ds: $keys_integra_ds);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al insertar cliente', data: $r_alta_bd);
         }
-        if($this->registro['cp'] === 'PREDETERMINADO'){
+        if ($this->registro['cp'] === 'PREDETERMINADO') {
             $this->registro['cp'] = '99999';
         }
-        if($this->registro['cp'] === 'PRED'){
+        if ($this->registro['cp'] === 'PRED') {
             $this->registro['cp'] = '99999';
         }
         $data = (new com_sucursal($this->link))->maqueta_data(calle: $this->registro['calle'],
@@ -197,20 +196,20 @@ class com_cliente extends _modelo_parent
         $registro['com_cliente_id'] = $com_cliente_id;
         $registro['com_prospecto_id'] = $com_prospecto_id;
         $tiene_relacion = (new com_rel_prospecto_cte(link: $this->link))->tiene_relacion(registro: $registro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error a verificar si tiene relacion',data:  $tiene_relacion);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error a verificar si tiene relacion', data: $tiene_relacion);
         }
 
-        if($tiene_relacion){
-            return $this->error->error(mensaje: 'Error el cliente ya esta relacionado',data:  $tiene_relacion);
+        if ($tiene_relacion) {
+            return $this->error->error(mensaje: 'Error el cliente ya esta relacionado', data: $tiene_relacion);
         }
 
         $com_rel_prospecto_cte_ins['com_cliente_id'] = $com_cliente_id;
         $com_rel_prospecto_cte_ins['com_prospecto_id'] = $com_prospecto_id;
 
         $inserta = (new com_rel_prospecto_cte(link: $this->link))->alta_registro(registro: $com_rel_prospecto_cte_ins);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al insertar relacion',data:  $inserta);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al insertar relacion', data: $inserta);
         }
         return $inserta;
 
@@ -219,16 +218,16 @@ class com_cliente extends _modelo_parent
     final public function com_prospecto(int $com_cliente_id)
     {
         $existe = $this->tiene_prospecto(com_cliente_id: $com_cliente_id);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al verificar si existe prospecto',data: $existe);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al verificar si existe prospecto', data: $existe);
         }
         $filtro['com_cliente.id'] = $com_cliente_id;
         $r_com_rel_prospecto_cte = (new com_rel_prospecto_cte(link: $this->link))->filtro_and(filtro: $filtro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener relaciones',data: $r_com_rel_prospecto_cte);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener relaciones', data: $r_com_rel_prospecto_cte);
         }
-        if($r_com_rel_prospecto_cte->n_registros > 1){
-            return $this->error->error(mensaje: 'Error hay un error de integridad',data: $r_com_rel_prospecto_cte);
+        if ($r_com_rel_prospecto_cte->n_registros > 1) {
+            return $this->error->error(mensaje: 'Error hay un error de integridad', data: $r_com_rel_prospecto_cte);
         }
         return (object)$r_com_rel_prospecto_cte->rgeistros[0];
 
@@ -237,8 +236,8 @@ class com_cliente extends _modelo_parent
     final public function com_prospecto_id(int $com_cliente_id)
     {
         $com_prospecto = $this->com_prospecto(com_cliente_id: $com_cliente_id);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener com_prospecto',data: $com_prospecto);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener com_prospecto', data: $com_prospecto);
         }
         return (int)$com_prospecto->com_prospecto_id;
     }
@@ -252,8 +251,8 @@ class com_cliente extends _modelo_parent
      */
     private function com_sucursal_descripcion(stdClass $com_cliente, array $sucursal): array|string
     {
-        $valida = $this->valida_data_sucursal(com_cliente: $com_cliente,sucursal:  $sucursal);;
-        if(errores::$error){
+        $valida = $this->valida_data_sucursal(com_cliente: $com_cliente, sucursal: $sucursal);;
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al al validar datos', data: $valida);
         }
 
@@ -261,8 +260,8 @@ class com_cliente extends _modelo_parent
         $data['codigo'] = $sucursal['com_sucursal_codigo'];
 
         $com_sucursal_descripcion = (new com_sucursal(link: $this->link))->ds(
-            com_cliente_razon_social: $com_cliente->razon_social,com_cliente_rfc:  $com_cliente->rfc, data: $data);
-        if(errores::$error){
+            com_cliente_razon_social: $com_cliente->razon_social, com_cliente_rfc: $com_cliente->rfc, data: $data);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener com_sucursal_descripcion',
                 data: $com_sucursal_descripcion);
         }
@@ -278,28 +277,28 @@ class com_cliente extends _modelo_parent
      * @return array
      */
     private function com_sucursal_upd(stdClass $com_cliente, int $com_cliente_id, string $com_sucursal_descripcion,
-                                      array $sucursal): array
+                                      array    $sucursal): array
     {
-        $keys = array('com_sucursal_codigo','com_tipo_sucursal_descripcion');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $sucursal);
-        if(errores::$error){
+        $keys = array('com_sucursal_codigo', 'com_tipo_sucursal_descripcion');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $sucursal);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar sucursal', data: $valida);
         }
-        if($com_cliente_id<=0){
+        if ($com_cliente_id <= 0) {
             return $this->error->error(mensaje: 'Error com_cliente_id debe ser mayor a 0', data: $com_cliente_id);
         }
 
-        $keys = array('dp_calle_pertenece_id','numero_exterior','telefono');
+        $keys = array('dp_calle_pertenece_id', 'numero_exterior', 'telefono');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $com_cliente);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar cliente', data: $valida);
         }
-        if(!isset($com_cliente->numero_interior)){
+        if (!isset($com_cliente->numero_interior)) {
             $com_cliente->numero_interior = '';
         }
 
         $com_sucursal_descripcion = trim($com_sucursal_descripcion);
-        if($com_sucursal_descripcion === ''){
+        if ($com_sucursal_descripcion === '') {
             return $this->error->error(mensaje: 'Error com_sucursal_descripcion esta vacia',
                 data: $com_sucursal_descripcion);
         }
@@ -308,10 +307,10 @@ class com_cliente extends _modelo_parent
         $com_sucursal_upd['descripcion'] = $com_sucursal_descripcion;
         $com_sucursal_upd['com_cliente_id'] = $com_cliente_id;
 
-        if($sucursal['com_tipo_sucursal_descripcion'] === 'MATRIZ') {
+        if ($sucursal['com_tipo_sucursal_descripcion'] === 'MATRIZ') {
             $com_sucursal_upd = $this->com_sucursal_upd_dom(com_cliente: $com_cliente,
                 com_sucursal_upd: $com_sucursal_upd);
-            if(errores::$error){
+            if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al maquetar sucursal', data: $com_sucursal_upd);
             }
         }
@@ -327,13 +326,13 @@ class com_cliente extends _modelo_parent
      */
     private function com_sucursal_upd_dom(stdClass $com_cliente, array $com_sucursal_upd): array
     {
-        $keys = array('dp_calle_pertenece_id','numero_exterior','telefono','pais','estado','municipio','colonia',
-            'calle','dp_municipio_id','cp');
+        $keys = array('dp_calle_pertenece_id', 'numero_exterior', 'telefono', 'pais', 'estado', 'municipio', 'colonia',
+            'calle', 'dp_municipio_id', 'cp');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $com_cliente);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar cliente', data: $valida);
         }
-        if(!isset($com_cliente->numero_interior)){
+        if (!isset($com_cliente->numero_interior)) {
             $com_cliente->numero_interior = '';
         }
 
@@ -357,8 +356,8 @@ class com_cliente extends _modelo_parent
 
     private function descripcion(array $registro): array
     {
-        if(!isset($registro['descripcion'])){
-            $descripcion = trim($registro['razon_social'].' '.$registro['rfc']);
+        if (!isset($registro['descripcion'])) {
+            $descripcion = trim($registro['razon_social'] . ' ' . $registro['rfc']);
             $registro['descripcion'] = $descripcion;
         }
         return $registro;
@@ -375,27 +374,27 @@ class com_cliente extends _modelo_parent
     public function elimina_bd(int $id): array|stdClass
     {
 
-        if($id <= 0){
+        if ($id <= 0) {
             return $this->error->error(mensaje: 'Error id es menor a 0', data: $id);
         }
 
         $filtro['com_cliente.id'] = $id;
         $r_com_sucursal = (new com_sucursal(link: $this->link))->elimina_con_filtro_and(filtro: $filtro);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al eliminar sucursales', data: $r_com_sucursal);
         }
 
         $r_com_sucursal = (new com_email_cte(link: $this->link))->elimina_con_filtro_and(filtro: $filtro);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al eliminar sucursales', data: $r_com_sucursal);
         }
         $del = (new com_rel_prospecto_cte(link: $this->link))->elimina_con_filtro_and(filtro: $filtro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al eliminar relacion',data:  $del);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al eliminar relacion', data: $del);
         }
 
         $r_elimina_bd = parent::elimina_bd(id: $id); // TODO: Change the autogenerated stub
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al eliminar', data: $r_elimina_bd);
         }
         return $r_elimina_bd;
@@ -439,7 +438,7 @@ class com_cliente extends _modelo_parent
     private function inicializa_foraneas(array $data, string $funcion_llamada): array
     {
         $funcion_llamada = trim($funcion_llamada);
-        if($funcion_llamada === ''){
+        if ($funcion_llamada === '') {
             return $this->error->error(mensaje: "Error al funcion_llamada esta vacia" . $this->tabla,
                 data: $funcion_llamada);
         }
@@ -459,7 +458,7 @@ class com_cliente extends _modelo_parent
 
         foreach ($foraneas as $key => $modelo_pred) {
 
-            if($funcion_llamada === 'alta_bd') {
+            if ($funcion_llamada === 'alta_bd') {
                 if (!isset($data[$key]) || $data[$key] === -1) {
                     $predeterminado = ($modelo_pred)->id_predeterminado();
                     if (errores::$error) {
@@ -474,23 +473,50 @@ class com_cliente extends _modelo_parent
         return $data;
     }
 
-    final public function integra_documentos(controlador_com_cliente $controler){
+    final public function integra_documentos(controlador_com_cliente $controler)
+    {
+        $cliente = $this->registro(registro_id: $controler->registro_id);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener cliente', data: $cliente);
+        }
 
+        $conf_tipos_docs = (new com_conf_tipo_doc_cliente(link: $controler->link))->filtro_and(
+            columnas: ['doc_tipo_documento_id'],
+            filtro: array('com_cliente_id' => $cliente['com_cliente_id']));
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener conf. de tipos de documentos',data:  $conf_tipos_docs);
+        }
+
+        $doc_ids = array_map(function($registro) {
+            return $registro['doc_tipo_documento_id'];
+        }, $conf_tipos_docs->registros);
+
+        if (count($doc_ids) <= 0) {
+            return array();
+        }
+
+        $documentos = (new com_cliente_documento(link: $controler->link))->documentos(
+            com_cliente: $controler->registro_id, tipos_documentos: $doc_ids);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener documentos',data:  $documentos);
+        }
+
+        print_r($documentos);exit();
 
         return array();
     }
 
     private function integra_key_dom(array $dp_calle_pertenece, string $key_dom, array $registro): array
     {
-        $registro[$key_dom] = $dp_calle_pertenece['dp_'.$key_dom.'_descripcion'];
+        $registro[$key_dom] = $dp_calle_pertenece['dp_' . $key_dom . '_descripcion'];
         return $registro;
 
     }
 
     private function integra_key_dom_faltante(array $dp_calle_pertenece, string $key_dom, array $registro)
     {
-        if(!isset($registro[$key_dom])){
-            $registro = $this->integra_key_dom(dp_calle_pertenece: $dp_calle_pertenece,key_dom:  $key_dom,registro:  $registro);
+        if (!isset($registro[$key_dom])) {
+            $registro = $this->integra_key_dom(dp_calle_pertenece: $dp_calle_pertenece, key_dom: $key_dom, registro: $registro);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al integrar key_dom', data: $registro);
             }
@@ -509,7 +535,7 @@ class com_cliente extends _modelo_parent
     {
         foreach ($campos_limpiar as $valor) {
             $valor = trim($valor);
-            if($valor === ''){
+            if ($valor === '') {
                 return $this->error->error(mensaje: "Error valor esta vacio" . $this->tabla, data: $valor);
             }
             if (isset($registro[$valor])) {
@@ -531,14 +557,14 @@ class com_cliente extends _modelo_parent
      */
     public function modifica_bd(array $registro, int $id, bool $reactiva = false,
                                 array $keys_integra_ds = array('codigo', 'descripcion'),
-                                bool $valida_conf_tipo_persona = true,
-                                bool $valida_metodo_pago = true): array|stdClass
+                                bool  $valida_conf_tipo_persona = true,
+                                bool  $valida_metodo_pago = true): array|stdClass
     {
-        if($id<=0){
+        if ($id <= 0) {
             return $this->error->error(mensaje: 'Error id debe ser mayor a 0', data: $id);
         }
         $registro_previo = $this->registro(registro_id: $id, columnas_en_bruto: true, retorno_obj: true);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener registro previo', data: $registro_previo);
         }
 
@@ -547,17 +573,17 @@ class com_cliente extends _modelo_parent
             return $this->error->error(mensaje: 'Error al limpiar campos', data: $registro);
         }
 
-        if(!isset($registro['descripcion'])){
+        if (!isset($registro['descripcion'])) {
             $registro['descripcion'] = $registro_previo->descripcion;;
         }
 
-        $r_modifica_bd = parent::modifica_bd(registro: $registro,id:  $id, reactiva: $reactiva,
-            keys_integra_ds:  $keys_integra_ds);
+        $r_modifica_bd = parent::modifica_bd(registro: $registro, id: $id, reactiva: $reactiva,
+            keys_integra_ds: $keys_integra_ds);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al modificar cliente', data: $r_modifica_bd);
         }
 
-        if($valida_conf_tipo_persona) {
+        if ($valida_conf_tipo_persona) {
             $valida = (new _validacion())->valida_conf_tipo_persona(link: $this->link,
                 registro: (array)$r_modifica_bd->registro_actualizado);
             if (errores::$error) {
@@ -570,13 +596,13 @@ class com_cliente extends _modelo_parent
             return $this->error->error(mensaje: 'Error al obtener cliente', data: $com_cliente);
         }
 
-        if($valida_metodo_pago) {
+        if ($valida_metodo_pago) {
             $valida = (new _validacion())->valida_metodo_pago(link: $this->link, registro: (array)$com_cliente);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
             }
         }
-        $r_com_sucursal = $this->upd_sucursales(com_cliente:$com_cliente,com_cliente_id:  $id);
+        $r_com_sucursal = $this->upd_sucursales(com_cliente: $com_cliente, com_cliente_id: $id);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al modificar sucursales', data: $r_com_sucursal);
         }
@@ -586,7 +612,7 @@ class com_cliente extends _modelo_parent
 
     final public function modifica_en_bruto(array $registro, int $id)
     {
-        $upd = parent::modifica_bd(registro: $registro,id:  $id);
+        $upd = parent::modifica_bd(registro: $registro, id: $id);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al modificar registro', data: $upd);
         }
@@ -629,18 +655,18 @@ class com_cliente extends _modelo_parent
      */
     private function row_com_sucursal_upd(stdClass $com_cliente, int $com_cliente_id, array $sucursal): array
     {
-        $valida = $this->valida_data_upd_sucursal(com_cliente: $com_cliente,com_cliente_id:  $com_cliente_id,
-            sucursal:  $sucursal);
-        if(errores::$error){
+        $valida = $this->valida_data_upd_sucursal(com_cliente: $com_cliente, com_cliente_id: $com_cliente_id,
+            sucursal: $sucursal);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al al validar datos', data: $valida);
         }
 
-        $keys = array('dp_calle_pertenece_id','numero_exterior','telefono');
+        $keys = array('dp_calle_pertenece_id', 'numero_exterior', 'telefono');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $com_cliente);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar cliente', data: $valida);
         }
-        if(!isset($com_cliente->numero_interior)){
+        if (!isset($com_cliente->numero_interior)) {
             $com_cliente->numero_interior = '';
         }
 
@@ -651,8 +677,8 @@ class com_cliente extends _modelo_parent
         }
 
 
-        $com_sucursal_upd = $this->com_sucursal_upd(com_cliente: $com_cliente,com_cliente_id:  $com_cliente_id,
-            com_sucursal_descripcion:  $com_sucursal_descripcion,sucursal:  $sucursal);
+        $com_sucursal_upd = $this->com_sucursal_upd(com_cliente: $com_cliente, com_cliente_id: $com_cliente_id,
+            com_sucursal_descripcion: $com_sucursal_descripcion, sucursal: $sucursal);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al maquetar row', data: $com_sucursal_upd);
         }
@@ -664,7 +690,7 @@ class com_cliente extends _modelo_parent
     {
         $filtro['com_cliente.id'] = $com_cliente_id;
         $existe = (new com_rel_prospecto_cte(link: $this->link))->existe(filtro: $filtro);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error validar si existe prospecto', data: $existe);
         }
         return $existe;
@@ -681,27 +707,26 @@ class com_cliente extends _modelo_parent
      */
     private function upd_sucursal(stdClass $com_cliente, int $com_cliente_id, array $sucursal): array|stdClass
     {
-        $valida = $this->valida_data_upd_sucursal(com_cliente: $com_cliente,com_cliente_id:  $com_cliente_id,
-            sucursal:  $sucursal);
-        if(errores::$error){
+        $valida = $this->valida_data_upd_sucursal(com_cliente: $com_cliente, com_cliente_id: $com_cliente_id,
+            sucursal: $sucursal);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al al validar datos', data: $valida);
         }
         $keys = array('com_sucursal_id');
-        $valida = $this->validacion->valida_ids(keys: $keys,registro:  $sucursal);
-        if(errores::$error){
+        $valida = $this->validacion->valida_ids(keys: $keys, registro: $sucursal);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error validar $sucursal', data: $valida);
         }
-        $keys = array('dp_calle_pertenece_id','numero_exterior','telefono');
+        $keys = array('dp_calle_pertenece_id', 'numero_exterior', 'telefono');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $com_cliente);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar cliente', data: $valida);
         }
-        if(!isset($com_cliente->numero_interior)){
+        if (!isset($com_cliente->numero_interior)) {
             $com_cliente->numero_interior = '';
         }
 
-        $com_sucursal_upd = $this->row_com_sucursal_upd(com_cliente: $com_cliente,com_cliente_id:
-            $com_cliente_id,sucursal:  $sucursal);
+        $com_sucursal_upd = $this->row_com_sucursal_upd(com_cliente: $com_cliente, com_cliente_id: $com_cliente_id, sucursal: $sucursal);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al maquetar row', data: $com_sucursal_upd);
         }
@@ -709,7 +734,7 @@ class com_cliente extends _modelo_parent
         $com_sucursal_modelo = new com_sucursal(link: $this->link);
         $com_sucursal_modelo->transaccion_desde_cliente = true;
         $r_com_sucursal = $com_sucursal_modelo->modifica_bd(registro: $com_sucursal_upd,
-            id:  $sucursal['com_sucursal_id']);
+            id: $sucursal['com_sucursal_id']);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al modificar sucursales', data: $r_com_sucursal);
         }
@@ -727,12 +752,12 @@ class com_cliente extends _modelo_parent
         if ($com_cliente_id <= 0) {
             return $this->error->error(mensaje: 'Error $com_cliente_id debe ser mayor a 0', data: $com_cliente_id);
         }
-        $keys = array('dp_calle_pertenece_id','numero_exterior','telefono');
+        $keys = array('dp_calle_pertenece_id', 'numero_exterior', 'telefono');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $com_cliente);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar cliente', data: $valida);
         }
-        if(!isset($com_cliente->numero_interior)){
+        if (!isset($com_cliente->numero_interior)) {
             $com_cliente->numero_interior = '';
         }
 
@@ -743,15 +768,15 @@ class com_cliente extends _modelo_parent
         }
 
         $sucursales = $r_sucursales->registros;
-        foreach ($sucursales as $sucursal){
-            $valida = $this->valida_data_upd_sucursal(com_cliente: $com_cliente,com_cliente_id:  $com_cliente_id,
-                sucursal:  $sucursal);
-            if(errores::$error){
+        foreach ($sucursales as $sucursal) {
+            $valida = $this->valida_data_upd_sucursal(com_cliente: $com_cliente, com_cliente_id: $com_cliente_id,
+                sucursal: $sucursal);
+            if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al al validar datos', data: $valida);
             }
 
-            $r_com_sucursal = $this->upd_sucursal(com_cliente: $com_cliente,com_cliente_id:  $com_cliente_id,
-                sucursal:  $sucursal);
+            $r_com_sucursal = $this->upd_sucursal(com_cliente: $com_cliente, com_cliente_id: $com_cliente_id,
+                sucursal: $sucursal);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al modificar sucursales', data: $r_com_sucursal);
             }
@@ -770,13 +795,13 @@ class com_cliente extends _modelo_parent
     private function valida_data_sucursal(array|stdClass $com_cliente, array|stdClass $sucursal): bool|array
     {
         $keys = array('com_sucursal_codigo');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $sucursal);
-        if(errores::$error){
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $sucursal);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al al validar sucursal', data: $valida);
         }
-        $keys = array('razon_social','rfc');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $com_cliente);
-        if(errores::$error){
+        $keys = array('razon_social', 'rfc');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $com_cliente);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al al validar com_cliente', data: $valida);
         }
         return true;
@@ -793,16 +818,16 @@ class com_cliente extends _modelo_parent
     private function valida_data_upd_sucursal(array|stdClass $com_cliente, int $com_cliente_id,
                                               array|stdClass $sucursal): bool|array
     {
-        $valida = $this->valida_data_sucursal(com_cliente: $com_cliente,sucursal:  $sucursal);;
-        if(errores::$error){
+        $valida = $this->valida_data_sucursal(com_cliente: $com_cliente, sucursal: $sucursal);;
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al al validar datos', data: $valida);
         }
-        $keys = array('com_sucursal_codigo','com_tipo_sucursal_descripcion');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $sucursal);
-        if(errores::$error){
+        $keys = array('com_sucursal_codigo', 'com_tipo_sucursal_descripcion');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $sucursal);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar sucursal', data: $valida);
         }
-        if($com_cliente_id<=0){
+        if ($com_cliente_id <= 0) {
             return $this->error->error(mensaje: 'Error com_cliente_id debe ser mayor a 0', data: $com_cliente_id);
         }
         return true;
