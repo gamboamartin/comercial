@@ -521,11 +521,11 @@ class com_cliente extends _modelo_parent
         }
 
         foreach ($conf_docs as $indice => $doc_tipo_documento) {
-            $conf = $this->inm_docs_prospecto(controler: $controler,
+            $conf_docs = $this->inm_docs_prospecto(controler: $controler,
                 doc_tipo_documento: $doc_tipo_documento, indice: $indice,
                 com_conf_tipo_doc_cliente: $conf_docs, clientes_documentos: $clientes_documentos);
             if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al integrar buttons', data: $conf);
+                return $this->error->error(mensaje: 'Error al integrar buttons', data: $conf_docs);
             }
         }
 
@@ -626,6 +626,8 @@ class com_cliente extends _modelo_parent
             }
         }
 
+        print_r("entro");exit();
+
         $data = new stdClass();
         $data->existe = $existe;
         $data->com_conf_tipo_doc_cliente = $com_conf_tipo_doc_cliente;
@@ -640,6 +642,8 @@ class com_cliente extends _modelo_parent
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al integrar button', data: $inm_conf_docs_prospecto);
         }
+
+        print_r($inm_conf_docs_prospecto);exit();
 
         $inm_conf_docs_prospecto = $this->button_del(controler: $controler, indice: $indice,
             com_cliente_documento_id: $com_cliente_documento_id, com_conf_tipo_doc_cliente: $com_conf_tipo_doc_cliente,
