@@ -289,6 +289,18 @@ class controlador_com_contacto extends _ctl_base {
             return $this->errores->error(mensaje: 'Error al integrar selector',data:  $keys_selects);
         }
 
+        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "com_tipo_contacto_id", label: "Tipo Contacto",
+            cols: 6,columns_ds: array('com_tipo_contacto_descripcion'));
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al integrar selector',data:  $keys_selects);
+        }
+
+        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "com_cliente_id", label: "Cliente",
+            cols: 6,columns_ds: array('com_cliente_razon_social'));
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al integrar selector',data:  $keys_selects);
+        }
+
         return $keys_selects;
     }
 

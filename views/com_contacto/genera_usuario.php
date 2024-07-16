@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="col-md-12 buttons-form">
-            <?php echo $controlador->button_com_cliente_modifica; ?>
+            <?php echo $controlador->button_com_contacto_modifica; ?>
         </div>
     </div>
 
