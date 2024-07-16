@@ -218,6 +218,7 @@ class instalacion
         $campos->nombre = new stdClass();
         $campos->ap = new stdClass();
         $campos->am = new stdClass();
+        $campos->telefono = new stdClass();
 
         $result = $init->add_columns(campos: $campos,table:  'com_contacto');
 
@@ -849,6 +850,13 @@ class instalacion
         }
 
 
+        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'genera_usuario',
+            adm_seccion_descripcion:  __FUNCTION__, es_view: 'activo', icono: 'bi bi-file-earmark-person',
+            link:  $link, lista:  'activo',titulo:  'Genera User', es_status: 'inactivo');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
+        }
+        $out->es_automatico = $alta_accion;
 
         return $out;
 
@@ -884,7 +892,6 @@ class instalacion
         return $out;
 
     }
-
     private function com_precio_cliente(PDO $link): stdClass|array
     {
         $out = new stdClass();
@@ -1736,7 +1743,6 @@ class instalacion
         return $out;
 
     }
-
     private function com_tipo_contacto(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -1874,7 +1880,6 @@ class instalacion
         return $out;
 
     }
-
     private function com_tipo_direccion(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -1907,7 +1912,6 @@ class instalacion
         return $out;
 
     }
-
     private function com_direccion(PDO $link): array|stdClass
     {
         $out = new stdClass();
