@@ -212,6 +212,21 @@ class instalacion
         $out->foraneas = $foraneas;
 
 
+        $campos = new stdClass();
+
+        $campos->correo = new stdClass();
+        $campos->nombre = new stdClass();
+        $campos->ap = new stdClass();
+        $campos->am = new stdClass();
+
+        $result = $init->add_columns(campos: $campos,table:  'com_contacto');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
+        }
+
+
+
         return $out;
     }
 
@@ -1734,7 +1749,7 @@ class instalacion
         $out->campos = $create;
 
 
-        $adm_menu_descripcion = 'Comercial';
+        $adm_menu_descripcion = 'Clientes';
         $adm_sistema_descripcion = 'comercial';
         $etiqueta_label = 'Tipos de contacto';
         $adm_seccion_pertenece_descripcion = 'comercial';

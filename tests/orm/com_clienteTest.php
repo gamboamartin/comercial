@@ -52,9 +52,9 @@ class com_clienteTest extends test {
 
 
 
-        $alta = (new base_test())->del_com_cliente($this->link);
+        $del = (new base_test())->del_com_cliente($this->link);
         if(errores::$error){
-            $error = (new errores())->error('Error al insertar', $alta);
+            $error = (new errores())->error('Error al del', $del);
             print_r($error);
             exit;
         }

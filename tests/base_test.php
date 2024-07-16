@@ -724,6 +724,10 @@ class base_test{
         if(errores::$error){
             return (new errores())->error('Error al eliminar', $del);
         }
+        $del = $this->del_com_contacto($link);
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
+        }
 
         $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_cliente');
         if(errores::$error){
@@ -833,6 +837,31 @@ class base_test{
     {
 
         $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_rel_prospecto_cte');
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
+        }
+        return $del;
+    }
+
+    public function del_com_contacto(PDO $link): array
+    {
+
+        $del = $this->del_com_contacto_user($link);
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
+        }
+
+        $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_contacto');
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
+        }
+        return $del;
+    }
+
+    public function del_com_contacto_user(PDO $link): array
+    {
+
+        $del = $this->del($link, 'gamboamartin\\comercial\\models\\com_contacto_user');
         if(errores::$error){
             return (new errores())->error('Error al eliminar', $del);
         }
