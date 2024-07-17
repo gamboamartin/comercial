@@ -6,12 +6,14 @@
  * @final En proceso
  *
  */
+
 namespace gamboamartin\comercial\controllers;
 
 use base\controller\controler;
 use gamboamartin\comercial\models\com_cliente_documento;
 use gamboamartin\comercial\models\com_conf_tipo_doc_cliente;
 use gamboamartin\comercial\models\com_contacto;
+use gamboamartin\compresor\compresor;
 use gamboamartin\errores\errores;
 use gamboamartin\system\_ctl_base;
 use gamboamartin\system\links_menu;
@@ -22,7 +24,8 @@ use html\com_contacto_html;
 use PDO;
 use stdClass;
 
-class controlador_com_cliente_documento extends _ctl_base {
+class controlador_com_cliente_documento extends _ctl_base
+{
 
     public string $ruta_doc = '';
     public bool $es_imagen = false;
@@ -46,8 +49,8 @@ class controlador_com_cliente_documento extends _ctl_base {
             paths_conf: $paths_conf);
 
         $init_controladores = $this->init_controladores(paths_conf: $paths_conf);
-        if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al inicializar controladores',data:  $init_controladores);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al inicializar controladores', data: $init_controladores);
             print_r($error);
             die('Error');
         }
@@ -98,7 +101,8 @@ class controlador_com_cliente_documento extends _ctl_base {
     private function data_form(): array|stdClass
     {
         $keys_selects = $this->init_selects_inputs();
-        if (errores::$error) {return $this->errores->error(mensaje: 'Error al inicializar selects', data: $keys_selects);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al inicializar selects', data: $keys_selects);
         }
 
         $inputs = $this->inputs(keys_selects: $keys_selects);
@@ -122,7 +126,7 @@ class controlador_com_cliente_documento extends _ctl_base {
     }
 
     private function init_selects(array $keys_selects, string $key, string $label, int|null $id_selected = -1, int $cols = 6,
-                                  bool  $con_registros = true, array $filtro = array(), array $columns_ds =  array()): array
+                                  bool  $con_registros = true, array $filtro = array(), array $columns_ds = array()): array
     {
         $keys_selects = $this->key_select(cols: $cols, con_registros: $con_registros, filtro: $filtro, key: $key,
             keys_selects: $keys_selects, id_selected: $id_selected, label: $label, columns_ds: $columns_ds);
@@ -133,18 +137,19 @@ class controlador_com_cliente_documento extends _ctl_base {
         return $keys_selects;
     }
 
-    public function init_selects_inputs(): array{
+    public function init_selects_inputs(): array
+    {
 
         $keys_selects = $this->init_selects(keys_selects: array(), key: "doc_documento_id", label: "Documento",
-            cols: 12,columns_ds: array('doc_documento_descripcion'));
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al integrar selector',data:  $keys_selects);
+            cols: 12, columns_ds: array('doc_documento_descripcion'));
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al integrar selector', data: $keys_selects);
         }
 
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "com_cliente_id", label: "Cliente",
-            cols: 12,columns_ds: array('com_cliente_descripcion'));
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al integrar selector',data:  $keys_selects);
+            cols: 12, columns_ds: array('com_cliente_descripcion'));
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al integrar selector', data: $keys_selects);
         }
 
         return $keys_selects;
@@ -204,39 +209,39 @@ class controlador_com_cliente_documento extends _ctl_base {
 
     private function name_doc(stdClass $registro): string
     {
-        $name = $registro->com_cliente_documento_id.".".$registro->com_cliente_razon_social;
-        $name .= ".".$registro->doc_tipo_documento_codigo;
+        $name = $registro->com_cliente_documento_id . "." . $registro->com_cliente_razon_social;
+        $name .= "." . $registro->doc_tipo_documento_codigo;
         return $name;
     }
 
     private function name_file(stdClass $registro): array|string
     {
         $name = $this->name_doc(registro: $registro);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al obtener name',data:  $name);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener name', data: $name);
         }
-        $name .= ".".$registro->doc_extension_descripcion;
+        $name .= "." . $registro->doc_extension_descripcion;
         return $name;
     }
 
     public function descarga(bool $header, bool $ws = false): array|string
     {
         $registro = $this->modelo->registro(registro_id: $this->registro_id, retorno_obj: true);
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al obtener documento',data:  $registro,header:  $header,
-                ws:  $ws);
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al obtener documento', data: $registro, header: $header,
+                ws: $ws);
         }
-        $ruta_doc = $this->path_base."$registro->doc_documento_ruta_relativa";
+        $ruta_doc = $this->path_base . "$registro->doc_documento_ruta_relativa";
 
         $content = file_get_contents($ruta_doc);
 
         $name_file = $this->name_file(registro: $registro);
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al obtener name_file',data:  $name_file,header:  $header,
-                ws:  $ws);
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al obtener name_file', data: $name_file, header: $header,
+                ws: $ws);
         }
 
-        if($header) {
+        if ($header) {
             if (ob_get_level() > 0) {
                 ob_end_clean();
             }
@@ -259,24 +264,55 @@ class controlador_com_cliente_documento extends _ctl_base {
     public function vista_previa(bool $header, bool $ws = false): array|string|stdClass
     {
         $registro = $this->modelo->registro(registro_id: $this->registro_id, retorno_obj: true);
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al obtener documento',data:  $registro,header:  $header,
-                ws:  $ws);
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al obtener documento', data: $registro, header: $header,
+                ws: $ws);
         }
 
-        $ruta_doc = $this->url_base."$registro->doc_documento_ruta_relativa";
+        $ruta_doc = $this->url_base . "$registro->doc_documento_ruta_relativa";
 
         $this->ruta_doc = $ruta_doc;
-        if($registro->doc_extension_es_imagen === 'activo') {
+        if ($registro->doc_extension_es_imagen === 'activo') {
             $this->es_imagen = true;
         }
-        if($registro->doc_extension_descripcion === 'pdf'){
+        if ($registro->doc_extension_descripcion === 'pdf') {
             $this->es_pdf = true;
         }
 
         return $registro;
     }
 
+    public function descarga_zip(bool $header, bool $ws = false): array|string
+    {
+        $registro = $this->modelo->registro(registro_id: $this->registro_id, retorno_obj: true);
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al obtener documento', data: $registro, header: $header,
+                ws: $ws);
+        }
+        $ruta_doc = $this->path_base . "$registro->doc_documento_ruta_relativa";
 
+
+        $name = $this->name_doc(registro: $registro);
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al obtener name', data: $name, header: $header,
+                ws: $ws);
+        }
+        $name_zip = $name . '.zip';
+
+        $name_file = $this->name_file(registro: $registro);
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al obtener name_file', data: $name_file, header: $header,
+                ws: $ws);
+        }
+
+        $archivos[$ruta_doc] = $name_file;
+        $comprime = compresor::descarga_zip_multiple(archivos: $archivos, name_zip: $name_zip);
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al comprimir file', data: $comprime, header: $header,
+                ws: $ws);
+        }
+
+        return $comprime;
+    }
 
 }
