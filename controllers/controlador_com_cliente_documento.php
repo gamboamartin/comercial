@@ -24,6 +24,10 @@ use stdClass;
 
 class controlador_com_cliente_documento extends _ctl_base {
 
+    public string $ruta_doc = '';
+    public bool $es_imagen = false;
+    public bool $es_pdf = false;
+
     public function __construct(PDO      $link, html $html = new \gamboamartin\template_1\html(),
                                 stdClass $paths_conf = new stdClass())
     {
@@ -250,6 +254,29 @@ class controlador_com_cliente_documento extends _ctl_base {
         return $content;
 
     }
+
+
+    public function vista_previa(bool $header, bool $ws = false): array|string|stdClass
+    {
+        $registro = $this->modelo->registro(registro_id: $this->registro_id, retorno_obj: true);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener documento',data:  $registro,header:  $header,
+                ws:  $ws);
+        }
+
+        $ruta_doc = $this->url_base."$registro->doc_documento_ruta_relativa";
+
+        $this->ruta_doc = $ruta_doc;
+        if($registro->doc_extension_es_imagen === 'activo') {
+            $this->es_imagen = true;
+        }
+        if($registro->doc_extension_descripcion === 'pdf'){
+            $this->es_pdf = true;
+        }
+
+        return $registro;
+    }
+
 
 
 }

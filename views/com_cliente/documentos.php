@@ -37,3 +37,9 @@
     </div>
 </main>
 
+<dialog id="myModal">
+    <span class="close-btn" id="closeModalBtn">&times;</span>
+    <h2>Vista Previa</h2>
+    <div class="content">
+    </div>
+</dialog>
