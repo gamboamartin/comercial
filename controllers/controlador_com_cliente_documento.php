@@ -198,5 +198,58 @@ class controlador_com_cliente_documento extends _ctl_base {
         return $r_modifica;
     }
 
+    private function name_doc(stdClass $registro): string
+    {
+        $name = $registro->com_cliente_documento_id.".".$registro->com_cliente_razon_social;
+        $name .= ".".$registro->doc_tipo_documento_codigo;
+        return $name;
+    }
+
+    private function name_file(stdClass $registro): array|string
+    {
+        $name = $this->name_doc(registro: $registro);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener name',data:  $name);
+        }
+        $name .= ".".$registro->doc_extension_descripcion;
+        return $name;
+    }
+
+    public function descarga(bool $header, bool $ws = false): array|string
+    {
+        $registro = $this->modelo->registro(registro_id: $this->registro_id, retorno_obj: true);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener documento',data:  $registro,header:  $header,
+                ws:  $ws);
+        }
+        $ruta_doc = $this->path_base."$registro->doc_documento_ruta_relativa";
+
+        $content = file_get_contents($ruta_doc);
+
+        $name_file = $this->name_file(registro: $registro);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener name_file',data:  $name_file,header:  $header,
+                ws:  $ws);
+        }
+
+        if($header) {
+            if (ob_get_level() > 0) {
+                ob_end_clean();
+            }
+            // Define headers
+            header("Cache-Control: public");
+            header("Content-Description: File Transfer");
+            header("Content-Disposition: attachment; filename=$name_file");
+            header("Content-Type: application/$registro->doc_extension_descripcion");
+            header("Content-Transfer-Encoding: binary");
+
+            // Read the file
+            readfile($ruta_doc);
+            exit;
+        }
+        return $content;
+
+    }
+
 
 }
