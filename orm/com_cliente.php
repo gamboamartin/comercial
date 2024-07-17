@@ -511,7 +511,7 @@ class com_cliente extends _modelo_parent
         return $buttons_documentos;
     }
 
-    private function buttons_documentos(controlador_com_cliente $controler, array $clientes_documentos, array $tipos_documentos)
+    public function buttons_documentos(controlador_com_cliente $controler, array $clientes_documentos, array $tipos_documentos)
     {
         $conf_docs = $this->documentos_de_cliente(com_cliente_id: $controler->registro_id,
             link: $controler->link, todos: true, tipos_documentos: $tipos_documentos);
@@ -586,7 +586,7 @@ class com_cliente extends _modelo_parent
 
         $button = $controler->html->button_href(accion: 'subir_documento',etiqueta:
             'Subir Documento',registro_id:  $controler->registro_id,
-            seccion:  'com_cliente_documento',style:  'warning', params: $params);
+            seccion:  'com_cliente',style:  'warning', params: $params);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al integrar button',data:  $button);
         }
@@ -688,7 +688,7 @@ class com_cliente extends _modelo_parent
                             string $style = 'success', string $target = ''): array
     {
         $button = $controler->html->button_href(accion: $accion, etiqueta: $etiqueta,
-            registro_id: $com_cliente_documento_id, seccion: 'com_cliente_documento', style: $style, params: $params,
+            registro_id: $com_cliente_documento_id, seccion: 'com_cliente', style: $style, params: $params,
             target: $target);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al integrar button', data: $button);

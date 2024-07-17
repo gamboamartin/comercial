@@ -2,6 +2,8 @@
 namespace gamboamartin\comercial\models;
 use base\orm\_modelo_parent;
 use base\orm\_modelo_parent_sin_codigo;
+use gamboamartin\comercial\controllers\controlador_doc_documento;
+use gamboamartin\documento\models\doc_documento;
 use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
@@ -30,6 +32,11 @@ class com_cliente_documento extends _modelo_parent_sin_codigo {
 
     public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
     {
+        $inserta_documento = $this->registra_documento();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error en insertar documento', data: $inserta_documento);
+        }
+
         $validaciones = $this->validaciones($this->registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error en validaciones', data: $validaciones);
@@ -46,6 +53,26 @@ class com_cliente_documento extends _modelo_parent_sin_codigo {
         }
 
         return $r_alta_bd;
+    }
+
+    public function registra_documento() : array|stdClass {
+        if (!array_key_exists('documento', $_FILES)) {
+            return array();
+        }
+
+        if (array_key_exists('com_cliente_id', $_POST)) {
+            unset($_POST['com_cliente_id']);
+            unset($this->registro['doc_tipo_documento_id']);
+        }
+
+        $alta_documento = (new controlador_doc_documento(link: $this->link))->alta_bd(header: false);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al insertar documento', data: $alta_documento );
+        }
+
+        $this->registro['doc_documento_id'] = $alta_documento->registro_id;
+
+        return $alta_documento;
     }
 
     final public function documentos(int $com_cliente, array $tipos_documentos)
@@ -67,7 +94,12 @@ class com_cliente_documento extends _modelo_parent_sin_codigo {
 
     protected function validaciones(array $registros): array
     {
-        $filtro['doc_tipo_documento_id'] = $registros['doc_tipo_documento_id'];
+        $documento = (new doc_documento(link: $this->link))->registro(registro_id: $registros['doc_documento_id']);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener documento', data: $documento);
+        }
+
+        $filtro['doc_tipo_documento_id'] = $documento['doc_tipo_documento_id'];
         $filtro['com_cliente_id'] = $registros['com_cliente_id'];
         $existe = (new com_conf_tipo_doc_cliente(link: $this->link))->existe(filtro: $filtro);
         if(errores::$error){
@@ -90,7 +122,7 @@ class com_cliente_documento extends _modelo_parent_sin_codigo {
         }
 
         if(!isset($registros['descripcion'])){
-            $descripcion = trim($registros['doc_tipo_documento_id']);
+            $descripcion = trim($registros['doc_documento_id']);
             $descripcion .= '-'.trim($registros['com_cliente_id']);
             $descripcion .= '-'.trim($registros['codigo']);
             $registros['descripcion'] = $descripcion;
