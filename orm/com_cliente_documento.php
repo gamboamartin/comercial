@@ -131,4 +131,30 @@ class com_cliente_documento extends _modelo_parent_sin_codigo {
         return $registros;
     }
 
+    public function elimina_bd(int $id): array|stdClass
+    {
+        if($id <= 0){
+            return  $this->error->error(mensaje: 'El id no puede ser menor a 0 en '.$this->tabla, data: $id);
+        }
+
+        $cliente_documento = $this->registro(registro_id: $id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener registro', data: $cliente_documento);
+        }
+
+        $r_elimina = parent::elimina_bd(id: $id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al eliminar ',data:  $r_elimina);
+        }
+
+        $filtro['doc_documento.id'] = $cliente_documento['doc_documento_id'];
+        $del = (new doc_documento(link: $this->link))->elimina_con_filtro_and(filtro:$filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al eliminar inm_comprador_etapa',
+                data:  $del);
+        }
+
+        return $r_elimina;
+    }
+
 }

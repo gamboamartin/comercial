@@ -684,7 +684,7 @@ class com_cliente extends _modelo_parent
                             string $style = 'success', string $target = ''): array
     {
         $button = $controler->html->button_href(accion: $accion, etiqueta: $etiqueta,
-            registro_id: $com_cliente_documento_id, seccion: 'com_cliente', style: $style, params: $params,
+            registro_id: $com_cliente_documento_id, seccion: 'com_cliente_documento', style: $style, params: $params,
             target: $target);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al integrar button', data: $button);
