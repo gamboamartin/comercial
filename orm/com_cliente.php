@@ -618,15 +618,13 @@ class com_cliente extends _modelo_parent
 
             $existe = true;
 
-            $inm_conf_docs_prospecto = $this->buttons_base(controler: $controler, indice: $indice,
+            $com_conf_tipo_doc_cliente = $this->buttons_base(controler: $controler, indice: $indice,
                 com_cliente_documento_id: $controler->registro_id, com_conf_tipo_doc_cliente: $com_conf_tipo_doc_cliente,
                 com_cliente_documento: $clientes_documentos);
             if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al integrar button', data: $inm_conf_docs_prospecto);
+                return $this->error->error(mensaje: 'Error al integrar button', data: $com_conf_tipo_doc_cliente);
             }
         }
-
-        print_r("entro");exit();
 
         $data = new stdClass();
         $data->existe = $existe;
@@ -637,22 +635,20 @@ class com_cliente extends _modelo_parent
     private function buttons_base(controlador_com_cliente $controler, int $indice, int $com_cliente_documento_id,
                                   array $com_conf_tipo_doc_cliente, array $com_cliente_documento): array
     {
-        $inm_conf_docs_prospecto = $this->buttons(controler: $controler, indice: $indice,
+        $com_conf_tipo_doc_cliente = $this->buttons(controler: $controler, indice: $indice,
             com_conf_tipo_doc_cliente: $com_conf_tipo_doc_cliente, com_cliente_documento: $com_cliente_documento);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al integrar button', data: $inm_conf_docs_prospecto);
+            return $this->error->error(mensaje: 'Error al integrar button', data: $com_conf_tipo_doc_cliente);
         }
 
-        print_r($inm_conf_docs_prospecto);exit();
-
-        $inm_conf_docs_prospecto = $this->button_del(controler: $controler, indice: $indice,
+        $com_conf_tipo_doc_cliente = $this->button_del(controler: $controler, indice: $indice,
             com_cliente_documento_id: $com_cliente_documento_id, com_conf_tipo_doc_cliente: $com_conf_tipo_doc_cliente,
             com_cliente_documento: $com_cliente_documento);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al integrar button', data: $inm_conf_docs_prospecto);
+            return $this->error->error(mensaje: 'Error al integrar button', data: $com_conf_tipo_doc_cliente);
         }
 
-        return $inm_conf_docs_prospecto;
+        return $com_conf_tipo_doc_cliente;
     }
 
     private function buttons(controlador_com_cliente $controler, int $indice, array $com_conf_tipo_doc_cliente,
