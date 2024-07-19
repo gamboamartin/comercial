@@ -10,6 +10,7 @@ namespace gamboamartin\comercial\controllers;
 
 use base\controller\controler;
 use config\generales;
+use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\comercial\models\com_contacto;
 use gamboamartin\comercial\models\com_contacto_user;
 use gamboamartin\documento\models\adm_grupo;
@@ -97,6 +98,21 @@ class controlador_com_contacto extends _ctl_base {
         return $campos_view;
     }
 
+    private function caracteres_random(): stdClass
+    {
+        $caracteres = new stdClass();
+        $caracteres->numeros = '0123456789';
+        $caracteres->munisculas = 'abcdefghijklmnopqrstuvwxyz';
+        $caracteres->mayusculas = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $caracteres->especiales = '+-.*';
+
+        $full = implode(separator: '', array: (array)$caracteres);
+        $caracteres->full = $full;
+
+        return $caracteres;
+
+    }
+
     private function data_form(): array|stdClass
     {
         $keys_selects = $this->init_selects_inputs();
@@ -147,9 +163,12 @@ class controlador_com_contacto extends _ctl_base {
         $com_contacto = (object)$this->registro;
         $adm_usuario_df = new stdClass();
 
-        $user_df = strtolower(trim($com_contacto->com_contacto_nombre));
-        $user_df .= ".".strtolower(trim($com_contacto->com_contacto_ap));
-        $user_df = trim(str_replace('..', '', $user_df));
+
+        $user_df = $this->user_df(com_contacto: $com_contacto);
+        if (errores::$error) {
+            return $this->retorno_error(
+                mensaje: 'Error al obtener user_df', data: $user_df, header: $header, ws: $ws);
+        }
 
         $adm_usuario_df->user = $user_df;
 
@@ -164,8 +183,16 @@ class controlador_com_contacto extends _ctl_base {
         }
         $this->inputs->adm_usuario->user = $user;
 
+        $password_df = $this->password_df();
+        if (errores::$error) {
+            return $this->retorno_error(
+                mensaje: 'Error al obtener password_df', data: $password_df, header: $header, ws: $ws);
+        }
+
+        $adm_usuario_df->password = $password_df;
+
         $password = $this->html->input_text_required(cols: 6, disabled: false, name: 'password',
-            place_holder: 'Password', row_upd: new stdClass(), value_vacio: false);
+            place_holder: 'Password', row_upd:  $adm_usuario_df, value_vacio: false);
         if (errores::$error) {
             return $this->retorno_error(
                 mensaje: 'Error al obtener password', data: $password, header: $header, ws: $ws);
@@ -247,8 +274,33 @@ class controlador_com_contacto extends _ctl_base {
         }
         $this->inputs->adm_usuario->am = $am;
 
+        $link_genera_usuario = $this->obj_link->link_con_id(accion:'genera_usuario_bd',link: $this->link,
+            registro_id: $this->registro_id,seccion: $this->seccion);
+        if (errores::$error) {
+            return $this->retorno_error(
+                mensaje: 'Error al obtener link', data: $email, header: $header, ws: $ws);
+        }
+
+        $this->link_com_contacto_user_bd = $link_genera_usuario;
 
         return $contenido_table;
+    }
+
+    public function genera_usuario_bd(bool $header, bool $ws = false): array|string
+    {
+        $r_com_contacto_user = (new com_contacto(link: $this->link))->inserta_com_contacto_user(com_contacto_id: $this->registro_id);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al insertar r_com_contacto_user',data:  $r_com_contacto_user, header: $header,ws:  $ws);
+        }
+        $out = $this->out_alta(header: $header,id_retorno:  $this->registro_id,r_alta_bd:  $r_com_contacto_user,
+            seccion_retorno:  $this->tabla,siguiente_view:  'genera_usuario',ws:  $ws);
+        if(errores::$error){
+            print_r($out);
+            die('Error');
+        }
+
+        return $out;
+
     }
 
     private function init_configuraciones(): controler
@@ -391,6 +443,59 @@ class controlador_com_contacto extends _ctl_base {
         }
 
         return $r_modifica;
+    }
+
+    private function password_df(): array|string
+    {
+        $caracteres = $this->caracteres_random();
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener caracteres', data: $caracteres);
+        }
+
+        $password_df = $this->password_df_ini(caracteres: $caracteres,longitud_por_tipo:  1);
+        if (errores::$error) {
+            return $this->errores->error(mensaje:'Error al obtener password_df', data: $caracteres);
+        }
+
+        $password_df = $this->password_df_var(caracteres: $caracteres, iteraciones: 1, longitud: 1, password_df: $password_df);
+        if (errores::$error) {
+            return $this->errores->error(mensaje:'Error al obtener password_df', data: $caracteres);
+        }
+        return $password_df;
+
+    }
+
+    private function password_df_ini(stdClass $caracteres, int $longitud_por_tipo): string
+    {
+        $password_df = '';
+        foreach ($caracteres as $cadena){
+            $password_df .=   substr(str_shuffle($cadena), 0, $longitud_por_tipo);
+        }
+        return $password_df;
+
+    }
+
+    private function password_df_var(stdClass $caracteres, int $iteraciones, int $longitud, string $password_df): string
+    {
+        $contador = 0;
+        $ini = '';
+        $fin = '';
+        while($contador <= $iteraciones) {
+            $ini .= substr(str_shuffle($caracteres->full), 0, $longitud);
+            $fin .= substr(str_shuffle($caracteres->full), 0, $longitud) ;
+            $contador++;
+        }
+
+        return $ini.$password_df.$fin;
+
+    }
+
+    private function user_df(stdClass $com_contacto): string
+    {
+        $user_df = strtolower(trim($com_contacto->com_contacto_nombre));
+        $user_df .= ".".strtolower(trim($com_contacto->com_contacto_ap));
+        return trim(str_replace('..', '', $user_df));
+
     }
 
 

@@ -856,6 +856,12 @@ class instalacion
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
         }
+        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'genera_usuario_bd',
+            adm_seccion_descripcion:  __FUNCTION__, es_view: 'inactivo', icono: 'bi bi-file-earmark-person',
+            link:  $link, lista:  'inactivo',titulo:  'Genera User');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
+        }
         $out->es_automatico = $alta_accion;
 
         return $out;

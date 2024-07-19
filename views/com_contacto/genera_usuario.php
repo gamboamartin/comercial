@@ -1,4 +1,4 @@
-<?php /** @var  \gamboamartin\ks_ops\controllers\controlador_com_cliente $controlador controlador en ejecucion */ ?>
+<?php /** @var  gamboamartin\comercial\controllers\controlador_com_contacto $controlador controlador en ejecucion */ ?>
 <?php use config\views; ?>
 
 <main class="main section-color-primary">
