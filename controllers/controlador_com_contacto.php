@@ -64,6 +64,25 @@ class controlador_com_contacto extends _ctl_base {
 
     }
 
+    private function adm_grupo_id_input(): array|stdClass
+    {
+        $generales = new generales();
+        $adm_grupo_id = -1;
+        if(isset($generales->grupo_contacto_usuario_id)){
+            $adm_grupo_id = $generales->grupo_contacto_usuario_id;
+        }
+
+        $adm_grupo_id = (new adm_grupo_html(html: $this->html_base))->select_adm_grupo_id(cols: 12,con_registros: true,
+            id_selected:  $adm_grupo_id,link:  $this->link,disabled: true);
+
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener grupo_id', data: $adm_grupo_id);
+        }
+
+        $this->inputs->adm_usuario->adm_grupo_id = $adm_grupo_id;
+        return $this->inputs;
+
+    }
     public function alta(bool $header, bool $ws = false): array|string
     {
         $r_alta = $this->init_alta();
@@ -77,6 +96,36 @@ class controlador_com_contacto extends _ctl_base {
         }
 
         return $r_alta;
+    }
+
+    private function am_input(stdClass $com_contacto): array|stdClass
+    {
+        $adm_usuario_df = new stdClass();
+        $am_df = strtoupper(trim($com_contacto->com_contacto_am));
+        $adm_usuario_df->am = $am_df;
+        $am = $this->html->input_text_required(cols: 6, disabled: true, name: 'am',
+            place_holder: 'AM', row_upd: $adm_usuario_df, value_vacio: false);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al inicializar am', data: $am_df);
+        }
+        $this->inputs->adm_usuario->am = $am;
+        return $this->inputs;
+
+    }
+
+    private function ap_input(stdClass $com_contacto): array|stdClass
+    {
+        $adm_usuario_df = new stdClass();
+        $ap_df = strtoupper(trim($com_contacto->com_contacto_ap));
+        $adm_usuario_df->ap = $ap_df;
+        $ap = $this->html->input_text_required(cols: 6, disabled: true, name: 'ap',
+            place_holder: 'AP', row_upd: $adm_usuario_df, value_vacio: false);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener ap', data: $ap);
+        }
+        $this->inputs->adm_usuario->ap = $ap;
+        return $this->inputs;
+
     }
 
     protected function campos_view(): array
@@ -127,6 +176,38 @@ class controlador_com_contacto extends _ctl_base {
         return $inputs;
     }
 
+    private function data_view_genera_usuario(): stdClass
+    {
+        $data_view = new stdClass();
+        $data_view->names = array('Id', 'Usuario', 'Contacto', 'Acciones');
+        $data_view->keys_data = array('adm_usuario_id', 'adm_usuario_user', 'com_contacto_descripcion');
+        $data_view->key_actions = 'acciones';
+        $data_view->namespace_model = 'gamboamartin\\comercial\\models';
+        $data_view->name_model_children = 'com_contacto_user';
+
+        return $data_view;
+
+    }
+
+    private function email_input(stdClass $com_contacto): array|stdClass
+    {
+        $adm_usuario_df = new stdClass();
+        $email_df = strtolower(trim($com_contacto->com_contacto_correo));
+
+        $adm_usuario_df->email = $email_df;
+
+
+        $email = $this->html->input_text_required(cols: 12, disabled: true, name: 'email',
+            place_holder: 'Email', row_upd: $adm_usuario_df, value_vacio: false);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al inicializar email', data: $email);
+        }
+        $this->inputs->adm_usuario->email = $email;
+
+        return $this->inputs;
+
+    }
+
     public function genera_usuario(bool $header, bool $ws = false): array|string
     {
         $this->accion_titulo = 'Genera Usuario';
@@ -137,7 +218,6 @@ class controlador_com_contacto extends _ctl_base {
                 mensaje: 'Error al generar salida de template', data: $r_modifica, header: $header, ws: $ws);
         }
 
-
         $button =  $this->html->button_href(accion: 'modifica', etiqueta: 'Ir a Contacto',
             registro_id: $this->registro_id, seccion: $this->tabla, style: 'warning', params: array());
         if (errores::$error) {
@@ -146,12 +226,11 @@ class controlador_com_contacto extends _ctl_base {
 
         $this->button_com_contacto_modifica = $button;
 
-        $data_view = new stdClass();
-        $data_view->names = array('Id', 'Usuario', 'Contacto', 'Acciones');
-        $data_view->keys_data = array('adm_usuario_id', 'adm_usuario_user', 'com_contacto_descripcion');
-        $data_view->key_actions = 'acciones';
-        $data_view->namespace_model = 'gamboamartin\\comercial\\models';
-        $data_view->name_model_children = 'com_contacto_user';
+        $data_view = $this->data_view_genera_usuario();
+        if (errores::$error) {
+            return $this->retorno_error(
+                mensaje: 'Error al generar data view', data: $data_view, header: $header, ws: $ws);
+        }
 
         $contenido_table = $this->contenido_children(data_view: $data_view, next_accion: __FUNCTION__,
             not_actions: array());
@@ -160,125 +239,16 @@ class controlador_com_contacto extends _ctl_base {
                 mensaje: 'Error al obtener tbody', data: $contenido_table, header: $header, ws: $ws);
         }
 
-        $com_contacto = (object)$this->registro;
-        $adm_usuario_df = new stdClass();
-
-
-        $user_df = $this->user_df(com_contacto: $com_contacto);
+        $inputs = $this->inputs_genera_usuario(com_contacto: $this->registro);
         if (errores::$error) {
-            return $this->retorno_error(
-                mensaje: 'Error al obtener user_df', data: $user_df, header: $header, ws: $ws);
+            return $this->retorno_error(mensaje: 'Error al obtener inputs', data: $inputs, header: $header, ws: $ws);
         }
-
-        $adm_usuario_df->user = $user_df;
-
-        $this->inputs = new stdClass();
-        $this->inputs->adm_usuario = new stdClass();
-
-        $user = $this->html->input_text_required(cols: 6, disabled: false,name: 'user',place_holder: 'User',
-            row_upd: $adm_usuario_df,value_vacio: false);
-        if (errores::$error) {
-            return $this->retorno_error(
-                mensaje: 'Error al obtener user', data: $user, header: $header, ws: $ws);
-        }
-        $this->inputs->adm_usuario->user = $user;
-
-        $password_df = $this->password_df();
-        if (errores::$error) {
-            return $this->retorno_error(
-                mensaje: 'Error al obtener password_df', data: $password_df, header: $header, ws: $ws);
-        }
-
-        $adm_usuario_df->password = $password_df;
-
-        $password = $this->html->input_text_required(cols: 6, disabled: false, name: 'password',
-            place_holder: 'Password', row_upd:  $adm_usuario_df, value_vacio: false);
-        if (errores::$error) {
-            return $this->retorno_error(
-                mensaje: 'Error al obtener password', data: $password, header: $header, ws: $ws);
-        }
-        $this->inputs->adm_usuario->password = $password;
-
-
-        $email_df = strtolower(trim($com_contacto->com_contacto_correo));
-
-        $adm_usuario_df->email = $email_df;
-
-
-        $email = $this->html->input_text_required(cols: 12, disabled: true, name: 'email',
-            place_holder: 'Email', row_upd: $adm_usuario_df, value_vacio: false);
-        if (errores::$error) {
-            return $this->retorno_error(
-                mensaje: 'Error al obtener email', data: $email, header: $header, ws: $ws);
-        }
-        $this->inputs->adm_usuario->email = $email;
-
-        $generales = new generales();
-        $adm_grupo_id = -1;
-        if(isset($generales->grupo_contacto_usuario_id)){
-            $adm_grupo_id = $generales->grupo_contacto_usuario_id;
-        }
-
-
-        $adm_grupo_id = (new adm_grupo_html(html: $this->html_base))->select_adm_grupo_id(cols: 12,con_registros: true,
-            id_selected:  $adm_grupo_id,link:  $this->link,disabled: true);
-
-        if (errores::$error) {
-            return $this->retorno_error(
-                mensaje: 'Error al obtener grupo_id', data: $adm_grupo_id, header: $header, ws: $ws);
-        }
-
-        $this->inputs->adm_usuario->adm_grupo_id = $adm_grupo_id;
-
-
-        $telefono_df = strtolower(trim($com_contacto->com_contacto_telefono));
-        $adm_usuario_df->telefono = $telefono_df;
-        $telefono = $this->html->input_text_required(cols: 6, disabled: true, name: 'telefono',
-            place_holder: 'Telefono', row_upd: $adm_usuario_df, value_vacio: false);
-        if (errores::$error) {
-            return $this->retorno_error(
-                mensaje: 'Error al obtener email', data: $email, header: $header, ws: $ws);
-        }
-        $this->inputs->adm_usuario->telefono = $telefono;
-
-
-        $nombre_df = strtolower(trim($com_contacto->com_contacto_nombre));
-        $adm_usuario_df->nombre = $nombre_df;
-        $nombre = $this->html->input_text_required(cols: 6, disabled: true, name: 'nombre',
-            place_holder: 'Nombre', row_upd: $adm_usuario_df, value_vacio: false);
-        if (errores::$error) {
-            return $this->retorno_error(
-                mensaje: 'Error al obtener email', data: $email, header: $header, ws: $ws);
-        }
-        $this->inputs->adm_usuario->nombre = $nombre;
-
-
-        $ap_df = strtolower(trim($com_contacto->com_contacto_ap));
-        $adm_usuario_df->ap = $ap_df;
-        $ap = $this->html->input_text_required(cols: 6, disabled: true, name: 'ap',
-            place_holder: 'AP', row_upd: $adm_usuario_df, value_vacio: false);
-        if (errores::$error) {
-            return $this->retorno_error(
-                mensaje: 'Error al obtener email', data: $email, header: $header, ws: $ws);
-        }
-        $this->inputs->adm_usuario->ap = $ap;
-
-
-        $am_df = strtolower(trim($com_contacto->com_contacto_am));
-        $adm_usuario_df->am = $am_df;
-        $am = $this->html->input_text_required(cols: 6, disabled: true, name: 'am',
-            place_holder: 'AM', row_upd: $adm_usuario_df, value_vacio: false);
-        if (errores::$error) {
-            return $this->retorno_error(
-                mensaje: 'Error al obtener email', data: $email, header: $header, ws: $ws);
-        }
-        $this->inputs->adm_usuario->am = $am;
 
         $link_genera_usuario = $this->obj_link->link_con_id(accion:'genera_usuario_bd',link: $this->link,
             registro_id: $this->registro_id,seccion: $this->seccion);
         if (errores::$error) {
             return $this->retorno_error(
-                mensaje: 'Error al obtener link', data: $email, header: $header, ws: $ws);
+                mensaje: 'Error al obtener link', data: $link_genera_usuario, header: $header, ws: $ws);
         }
 
         $this->link_com_contacto_user_bd = $link_genera_usuario;
@@ -379,6 +349,55 @@ class controlador_com_contacto extends _ctl_base {
         return $datatables;
     }
 
+    private function inputs_genera_usuario(stdClass|array $com_contacto): array|stdClass
+    {
+        if(is_array($com_contacto)){
+            $com_contacto =(object)$com_contacto;
+        }
+
+        $this->inputs = new stdClass();
+
+        $user = $this->user_input(com_contacto: $com_contacto);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener user', data: $user);
+        }
+
+        $password = $this->password_input();
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener password', data: $password);
+        }
+        $email = $this->email_input(com_contacto: $com_contacto);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener email', data: $email);
+        }
+        $adm_grupo_id = $this->adm_grupo_id_input();
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener grupo_id', data: $adm_grupo_id);
+        }
+
+        $telefono = $this->telefono_input(com_contacto: $com_contacto);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener telefono', data: $telefono);
+        }
+
+        $nombre = $this->nombre_input(com_contacto: $com_contacto);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener nombre', data: $nombre);
+        }
+        $ap = $this->ap_input(com_contacto: $com_contacto);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener ap', data: $ap);
+        }
+
+        $am = $this->am_input(com_contacto: $com_contacto);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener am', data: $am);
+        }
+
+        return $this->inputs;
+
+    }
+
     protected function key_selects_txt(array $keys_selects): array
     {
         $keys_selects = (new \base\controller\init())->key_select_txt(cols: 4, key: 'codigo',
@@ -445,6 +464,21 @@ class controlador_com_contacto extends _ctl_base {
         return $r_modifica;
     }
 
+    private function nombre_input(stdClass $com_contacto): array|stdClass
+    {
+        $adm_usuario_df = new stdClass();
+        $nombre_df = strtoupper(trim($com_contacto->com_contacto_nombre));
+        $adm_usuario_df->nombre = $nombre_df;
+        $nombre = $this->html->input_text_required(cols: 6, disabled: true, name: 'nombre',
+            place_holder: 'Nombre', row_upd: $adm_usuario_df, value_vacio: false);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al generar nombre', data: $nombre);
+        }
+        $this->inputs->adm_usuario->nombre = $nombre;
+        return $this->inputs;
+
+    }
+
     private function password_df(): array|string
     {
         $caracteres = $this->caracteres_random();
@@ -487,6 +521,76 @@ class controlador_com_contacto extends _ctl_base {
         }
 
         return $ini.$password_df.$fin;
+
+    }
+
+    private function password_input(): array|stdClass
+    {
+        $adm_usuario_df = new stdClass();
+        $password_df = $this->password_df();
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener password_df', data: $password_df);
+        }
+
+        $adm_usuario_df->password = $password_df;
+
+        $password = $this->html->input_text_required(cols: 6, disabled: false, name: 'password',
+            place_holder: 'Password', row_upd:  $adm_usuario_df, value_vacio: false);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener password', data: $password_df);
+        }
+        $this->inputs->adm_usuario->password = $password;
+
+        return $this->inputs;
+
+    }
+
+    private function telefono_input(stdClass$com_contacto): array|stdClass
+    {
+        $adm_usuario_df = new stdClass();
+        $telefono_df = strtolower(trim($com_contacto->com_contacto_telefono));
+        $adm_usuario_df->telefono = $telefono_df;
+        $telefono = $this->html->input_text_required(cols: 6, disabled: true, name: 'telefono',
+            place_holder: 'Telefono', row_upd: $adm_usuario_df, value_vacio: false);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener telefono', data: $telefono_df);
+        }
+        $this->inputs->adm_usuario->telefono = $telefono;
+        return $this->inputs;
+
+    }
+
+    private function user_input(stdClass $com_contacto): array|stdClass
+    {
+        $adm_usuario_df = new stdClass();
+
+        $user_df = $this->user_df(com_contacto: $com_contacto);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener user_df', data: $user_df);
+        }
+
+        $existe_user = (new adm_usuario(link: $this->link))->existe_user(user: $user_df);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al validar si existe user', data: $user_df);
+        }
+        while($existe_user) {
+            $user_df = $user_df . mt_rand(1,9);
+            $existe_user = (new adm_usuario(link: $this->link))->existe_user(user: $user_df);
+            if (errores::$error) {
+                return $this->errores->error(mensaje: 'Error al validar si existe user', data: $user_df);
+            }
+        }
+
+        $adm_usuario_df->user = $user_df;
+        $this->inputs->adm_usuario = new stdClass();
+        $user = $this->html->input_text_required(cols: 6, disabled: false,name: 'user',place_holder: 'User',
+            row_upd: $adm_usuario_df,value_vacio: false);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener user', data: $user);
+        }
+
+        $this->inputs->adm_usuario->user = $user;
+        return $this->inputs;
 
     }
 
