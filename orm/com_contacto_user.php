@@ -56,6 +56,29 @@ class com_contacto_user extends _modelo_parent_sin_codigo
 
     }
 
+    final public function modifica_bd(array $registro, int $id, bool $reactiva = false,
+                                      array $keys_integra_ds = array('descripcion')): array|stdClass
+    {
+
+        $r_modifica = parent::modifica_bd(registro: $registro,id:  $id,reactiva:  $reactiva,
+            keys_integra_ds:  $keys_integra_ds);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al modificar  datos',data:  $r_modifica);
+        }
+
+        if(isset($registro['password'])){
+            $adm_usuario_upd['password'] = $registro['password'];
+            $r_modifica_user = (new adm_usuario(link: $this->link))->modifica_bd(registro: $adm_usuario_upd,
+                id: $this->row->adm_usuario_id);
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error al modificar  r_modifica_user',data:  $r_modifica_user);
+            }
+        }
+
+        return $r_modifica;
+
+    }
+
 
 
 }

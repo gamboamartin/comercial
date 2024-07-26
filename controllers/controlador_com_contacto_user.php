@@ -9,6 +9,7 @@
 namespace gamboamartin\comercial\controllers;
 
 use base\controller\controler;
+use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\comercial\models\com_contacto_user;
 use gamboamartin\errores\errores;
 use gamboamartin\notificaciones\controllers\_plantilla;
@@ -213,6 +214,9 @@ class controlador_com_contacto_user extends _ctl_base {
                 ws: $ws);
         }
 
+        $keys_selects['com_contacto_id']->disabled = true;
+        $keys_selects['adm_usuario_id']->disabled = true;
+
         $keys_selects['com_contacto_id']->id_selected = $this->registro['com_contacto_id'];
         $keys_selects['adm_usuario_id']->id_selected = $this->registro['adm_usuario_id'];
 
@@ -220,6 +224,23 @@ class controlador_com_contacto_user extends _ctl_base {
         if (errores::$error) {
             return $this->retorno_error(mensaje: 'Error al integrar base', data: $base, header: $header, ws: $ws);
         }
+
+        $adm_usuario = (new adm_usuario(link: $this->link))->registro(registro_id: $this->row_upd->adm_usuario_id,
+            columnas_en_bruto: true,retorno_obj: true);
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al obtener adm_usuario', data: $adm_usuario, header: $header,
+                ws: $ws);
+        }
+
+        $this->row_upd->password = $adm_usuario->password;
+        $input_password = $this->html->input_text_required(cols: 12, disabled: false,name:  'password',
+            place_holder:  'Password',row_upd:  $this->row_upd, value_vacio: false);
+
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al integrar input_password', data: $input_password, header: $header, ws: $ws);
+        }
+
+        $this->inputs->adm_password = $input_password;;
 
         return $r_modifica;
     }
