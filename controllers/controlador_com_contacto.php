@@ -258,9 +258,11 @@ class controlador_com_contacto extends _ctl_base {
 
     public function genera_usuario_bd(bool $header, bool $ws = false): array|string
     {
-        $r_com_contacto_user = (new com_contacto(link: $this->link))->inserta_com_contacto_user(com_contacto_id: $this->registro_id);
+        $r_com_contacto_user = (new com_contacto(link: $this->link))->inserta_com_contacto_user(
+            com_contacto_id: $this->registro_id);
         if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al insertar r_com_contacto_user',data:  $r_com_contacto_user, header: $header,ws:  $ws);
+            return $this->retorno_error(mensaje: 'Error al insertar r_com_contacto_user',data:  $r_com_contacto_user,
+                header: $header,ws:  $ws,class: __CLASS__,file: __FILE__,function: __FUNCTION__,line: __LINE__);
         }
         $out = $this->out_alta(header: $header,id_retorno:  $this->registro_id,r_alta_bd:  $r_com_contacto_user,
             seccion_retorno:  $this->tabla,siguiente_view:  'genera_usuario',ws:  $ws);
