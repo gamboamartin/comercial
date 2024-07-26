@@ -11,6 +11,7 @@ namespace gamboamartin\comercial\controllers;
 use base\controller\controler;
 use gamboamartin\comercial\models\com_contacto_user;
 use gamboamartin\errores\errores;
+use gamboamartin\notificaciones\controllers\_plantilla;
 use gamboamartin\system\_ctl_base;
 use gamboamartin\system\links_menu;
 use gamboamartin\template\html;
@@ -103,6 +104,34 @@ class controlador_com_contacto_user extends _ctl_base {
         return $inputs;
     }
 
+    final public function envia_acceso(bool $header, bool $ws = false)
+    {
+        $com_contacto_user = (new com_contacto_user(link: $this->link))->registro(registro_id: $this->registro_id,
+            columnas_en_bruto: true,retorno_obj: true);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener contactor usuario', data: $com_contacto_user,
+                header: $header, ws: $ws);
+        }
+
+        $envia = (new _plantilla())->envia_mensaje_accesos(adm_usuario_id: $com_contacto_user->adm_usuario_id,
+            link:  $this->link);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al enviar accesos', data: $envia,
+                header: $header, ws: $ws);
+        }
+
+        $out = $this->retorno_base(registro_id: $this->registro_id, result: $envia, siguiente_view: 'lista', ws: $ws);
+        if(errores::$error){
+            print_r($out);
+            die('Error');
+        }
+
+        return $envia;
+
+
+
+    }
+
     private function init_configuraciones(): controler
     {
         $this->titulo_lista = 'Registro de Usuarios de clientes';
@@ -169,8 +198,6 @@ class controlador_com_contacto_user extends _ctl_base {
 
         return $datatables;
     }
-
-
 
     public function modifica(bool $header, bool $ws = false): array|stdClass
     {

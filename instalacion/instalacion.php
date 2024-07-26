@@ -893,6 +893,13 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
         }
 
+        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'envia_acceso',
+            adm_seccion_descripcion:  __FUNCTION__, es_view: 'inactivo', icono: 'bi bi-universal-access',
+            link:  $link, lista:  'activo',titulo:  'Envia Accesos');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
+        }
+        $out->es_automatico = $alta_accion;
 
 
         return $out;

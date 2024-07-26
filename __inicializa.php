@@ -79,6 +79,17 @@ if(errores::$error){
     exit;
 }
 
+$notificaciones = new gamboamartin\notificaciones\instalacion\instalacion();
+
+$instala = $notificaciones->instala(link: $link);
+if(errores::$error){
+    if($link->inTransaction()) {
+        $link->rollBack();
+    }
+    $error = (new errores())->error(mensaje: 'Error al instalar comercial', data: $instala);
+    print_r($error);
+    exit;
+}
 
 $comercial = new gamboamartin\comercial\instalacion\instalacion();
 
