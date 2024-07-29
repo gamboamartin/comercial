@@ -365,6 +365,33 @@ class instalacion
 
         return $out;
     }
+    private function _add_com_datos_sistema(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $init = (new _instalacion(link: $link));
+
+        $create = $init->create_table_new(table: 'com_datos_sistema');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar tabla', data:  $create);
+        }
+        $out->create = $create;
+
+        $campos = new stdClass();
+        $campos->pagina_oficial = new stdClass();
+        $campos->telefonos = new stdClass();
+        $campos->domicilio = new stdClass();
+        $campos->correos = new stdClass();
+        $campos->latitud = new stdClass();
+        $campos->longitud = new stdClass();
+
+        $result = $init->add_columns(campos: $campos,table:  'com_datos_sistema');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
+        }
+
+        return $out;
+    }
     private function _add_com_rel_prospecto_cte(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -807,6 +834,36 @@ class instalacion
         $adm_sistema_descripcion = 'comercial';
         $etiqueta_label = 'Emails Clientes';
         $adm_seccion_pertenece_descripcion = 'com_email_cte';
+        $adm_namespace_descripcion = 'gamboa.martin/comercial';
+        $adm_namespace_name = 'gamboamartin/comercial';
+
+        $acl = (new _adm())->integra_acl(adm_menu_descripcion: $adm_menu_descripcion,
+            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion,
+            adm_seccion_descripcion: __FUNCTION__, adm_seccion_pertenece_descripcion: $adm_seccion_pertenece_descripcion,
+            adm_sistema_descripcion: $adm_sistema_descripcion, etiqueta_label: $etiqueta_label, link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
+        }
+
+
+
+        return $out;
+
+    }
+    private function com_datos_sistema(PDO $link): array|stdClass
+    {
+
+        $out = new stdClass();
+
+        $add = $this->_add_com_datos_sistema(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al agregar columnas', data:  $add);
+        }
+
+        $adm_menu_descripcion = 'Datos Sistema';
+        $adm_sistema_descripcion = 'comercial';
+        $etiqueta_label = 'Datos Sistema';
+        $adm_seccion_pertenece_descripcion = 'com_datos_sistema';
         $adm_namespace_descripcion = 'gamboa.martin/comercial';
         $adm_namespace_name = 'gamboamartin/comercial';
 
@@ -2222,6 +2279,12 @@ class instalacion
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error integrar com_tipo_tel', data:  $com_tipo_tel);
         }
+        
+        $com_datos_sistema = $this->com_datos_sistema(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error integrar com_datos_sistema', data:  $com_datos_sistema);
+        }
+        
         $com_tipo_prospecto = $this->com_tipo_prospecto(link: $link);
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error integrar com_tipo_prospecto', data:  $com_tipo_prospecto);
