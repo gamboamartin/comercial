@@ -174,6 +174,22 @@ class controlador_com_contacto_user extends _ctl_base {
         return $keys_selects;
     }
 
+    /**
+     * TOTAL
+     * Inicializa la configuración de las columnas y filtros para el datatable.
+     *
+     * Esta función crea un objeto stdClass que contiene la configuración de las
+     * columnas y los filtros necesarios para un datatable. Cada columna tiene un
+     * título asociado que se utiliza para mostrar en la interfaz de usuario.
+     *
+     * @return stdClass Un objeto que contiene la configuración del datatable.
+     *         - columns: Un array asociativo donde las claves representan el
+     *           identificador de cada columna y los valores son arrays asociativos
+     *           con los títulos de las columnas.
+     *         - filtro: Un array que contiene los campos que se utilizarán para
+     *           filtrar los datos en el datatable.
+     * @ur https://github.com/gamboamartin/comercial/wiki/controllers.controlador_com_contacto_user.init_datatable
+     */
     public function init_datatable(): stdClass
     {
         $datatables = new stdClass();
