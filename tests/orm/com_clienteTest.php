@@ -35,7 +35,7 @@ class com_clienteTest extends test {
         unset($_SESSION['columnas']);
         $_GET['seccion'] = 'cat_sat_tipo_persona';
         $_GET['accion'] = 'lista';
-        $_SESSION['grupo_id'] = 1;
+        $_SESSION['grupo_id'] = 2;
         $_SESSION['usuario_id'] = 2;
         $_GET['session_id'] = '1';
 
@@ -127,7 +127,7 @@ class com_clienteTest extends test {
 
         $_GET['seccion'] = 'cat_sat_tipo_persona';
         $_GET['accion'] = 'lista';
-        $_SESSION['grupo_id'] = 1;
+        $_SESSION['grupo_id'] = 2;
         $_GET['session_id'] = '1';
         $modelo = new com_cliente($this->link);
         $modelo = new liberator($modelo);
@@ -153,7 +153,7 @@ class com_clienteTest extends test {
 
         $_GET['seccion'] = 'cat_sat_tipo_persona';
         $_GET['accion'] = 'lista';
-        $_SESSION['grupo_id'] = 1;
+        $_SESSION['grupo_id'] = 2;
         $_GET['session_id'] = '1';
         $modelo = new com_cliente($this->link);
         $modelo = new liberator($modelo);
@@ -185,7 +185,7 @@ class com_clienteTest extends test {
 
         $_GET['seccion'] = 'cat_sat_tipo_persona';
         $_GET['accion'] = 'lista';
-        $_SESSION['grupo_id'] = 1;
+        $_SESSION['grupo_id'] = 2;
         $_GET['session_id'] = '1';
         $modelo = new com_cliente($this->link);
         $modelo = new liberator($modelo);
@@ -230,7 +230,7 @@ class com_clienteTest extends test {
 
         $_GET['seccion'] = 'cat_sat_tipo_persona';
         $_GET['accion'] = 'lista';
-        $_SESSION['grupo_id'] = 1;
+        $_SESSION['grupo_id'] = 2;
         $_SESSION['usuario_id'] = 1;
         $_GET['session_id'] = '1';
         $_GET['registro_id'] = '1';
@@ -286,7 +286,7 @@ class com_clienteTest extends test {
 
         $_GET['seccion'] = 'cat_sat_tipo_persona';
         $_GET['accion'] = 'lista';
-        $_SESSION['grupo_id'] = 1;
+        $_SESSION['grupo_id'] = 2;
         $_GET['session_id'] = '1';
         $modelo = new com_cliente($this->link);
         $modelo = new liberator($modelo);
@@ -314,7 +314,7 @@ class com_clienteTest extends test {
 
         $_GET['seccion'] = 'cat_sat_tipo_persona';
         $_GET['accion'] = 'lista';
-        $_SESSION['grupo_id'] = 1;
+        $_SESSION['grupo_id'] = 2;
         $_SESSION['usuario_id'] = 2;
         $_GET['session_id'] = '1';
         $modelo = new com_cliente($this->link);
@@ -382,7 +382,7 @@ class com_clienteTest extends test {
 
         $_GET['seccion'] = 'cat_sat_tipo_persona';
         $_GET['accion'] = 'lista';
-        $_SESSION['grupo_id'] = 1;
+        $_SESSION['grupo_id'] = 2;
         $_GET['session_id'] = '1';
         $modelo = new com_cliente($this->link);
         $modelo = new liberator($modelo);
@@ -402,7 +402,7 @@ class com_clienteTest extends test {
 
         $_GET['seccion'] = 'cat_sat_tipo_persona';
         $_GET['accion'] = 'lista';
-        $_SESSION['grupo_id'] = 1;
+        $_SESSION['grupo_id'] = 2;
         $_GET['session_id'] = '1';
         $modelo = new com_cliente($this->link);
         $modelo = new liberator($modelo);
@@ -424,7 +424,7 @@ class com_clienteTest extends test {
 
         $_GET['seccion'] = 'cat_sat_tipo_persona';
         $_GET['accion'] = 'lista';
-        $_SESSION['grupo_id'] = 1;
+        $_SESSION['grupo_id'] = 2;
         $_SESSION['usuario_id'] = 2;
         $_GET['session_id'] = '1';
         $modelo = new com_cliente($this->link);
@@ -486,7 +486,7 @@ class com_clienteTest extends test {
 
         $_GET['seccion'] = 'cat_sat_tipo_persona';
         $_GET['accion'] = 'lista';
-        $_SESSION['grupo_id'] = 1;
+        $_SESSION['grupo_id'] = 2;
         $_SESSION['usuario_id'] = 1;
         $_GET['session_id'] = '1';
         $obj = new com_cliente(link: $this->link);
@@ -509,7 +509,7 @@ class com_clienteTest extends test {
 
         $_GET['seccion'] = 'cat_sat_tipo_persona';
         $_GET['accion'] = 'lista';
-        $_SESSION['grupo_id'] = 1;
+        $_SESSION['grupo_id'] = 2;
         $_GET['session_id'] = '1';
         $modelo = new com_cliente($this->link);
         $modelo = new liberator($modelo);
@@ -543,7 +543,7 @@ class com_clienteTest extends test {
 
         $_GET['seccion'] = 'cat_sat_tipo_persona';
         $_GET['accion'] = 'lista';
-        $_SESSION['grupo_id'] = 1;
+        $_SESSION['grupo_id'] = 2;
         $_SESSION['usuario_id'] = 2;
         $_GET['session_id'] = '1';
         $modelo = new com_cliente($this->link);
@@ -582,7 +582,7 @@ class com_clienteTest extends test {
 
         $_GET['seccion'] = 'cat_sat_tipo_persona';
         $_GET['accion'] = 'lista';
-        $_SESSION['grupo_id'] = 1;
+        $_SESSION['grupo_id'] = 2;
         $_SESSION['usuario_id'] = 2;
         $_GET['session_id'] = '1';
         $modelo = new com_cliente($this->link);
@@ -616,7 +616,7 @@ class com_clienteTest extends test {
 
         $_GET['seccion'] = 'cat_sat_tipo_persona';
         $_GET['accion'] = 'lista';
-        $_SESSION['grupo_id'] = 1;
+        $_SESSION['grupo_id'] = 2;
         $_GET['session_id'] = '1';
         $modelo = new com_cliente($this->link);
         $modelo = new liberator($modelo);
@@ -642,7 +642,7 @@ class com_clienteTest extends test {
 
         $_GET['seccion'] = 'cat_sat_tipo_persona';
         $_GET['accion'] = 'lista';
-        $_SESSION['grupo_id'] = 1;
+        $_SESSION['grupo_id'] = 2;
         $_SESSION['usuario_id'] = 2;
         $_GET['session_id'] = '1';
         $modelo = new com_cliente($this->link);

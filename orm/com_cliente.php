@@ -37,29 +37,33 @@ class com_cliente extends _modelo_parent
         $columnas_extra['com_cliente_n_sucursales'] =
             "(SELECT COUNT(*) FROM com_sucursal WHERE com_sucursal.com_cliente_id = com_cliente.id)";
 
-        $aplica_seguridad = true;
-        $grupo_id = $_SESSION['grupo_id'];
 
-        $columnas_extra['usuario_permitido_id'] =
-            "(SELECT adm_usuario.id FROM com_contacto
-                LEFT JOIN com_contacto_user ON com_contacto_user.com_contacto_id = com_contacto.id 
-                LEFT JOIN adm_usuario ON adm_usuario.id = com_contacto_user.adm_usuario_id
-                WHERE com_contacto.com_cliente_id = com_cliente.id 
-                AND adm_usuario.id = $_SESSION[usuario_id])";
+        $aplica_seguridad = false;
+        if(isset($_SESSION['grupo_id'])) {
+            $aplica_seguridad = true;
+            $grupo_id = $_SESSION['grupo_id'];
 
-        $adm_grupo = (new adm_grupo(link: $link))->registro(registro_id: $grupo_id, columnas_en_bruto: true, retorno_obj: true);
-        if(errores::$error){
-            $error = (new errores())->error(mensaje: 'Error al obtener grupo de usuario',data:  $adm_grupo);
-            print_r($error);
-            exit;
-        }
+            $columnas_extra['usuario_permitido_id'] =
+                "(SELECT adm_usuario.id FROM com_contacto
+                    LEFT JOIN com_contacto_user ON com_contacto_user.com_contacto_id = com_contacto.id 
+                    LEFT JOIN adm_usuario ON adm_usuario.id = com_contacto_user.adm_usuario_id
+                    WHERE com_contacto.com_cliente_id = com_cliente.id 
+                    AND adm_usuario.id = $_SESSION[usuario_id])";
 
-        if(!isset($adm_grupo->solo_mi_info)){
-            $adm_grupo->solo_mi_info = 'inactivo';
-        }
-        if($adm_grupo->solo_mi_info === 'inactivo'){
-            $aplica_seguridad = false;
-            $columnas_extra['usuario_permitido_id'] = "$_SESSION[usuario_id]";
+            $adm_grupo = (new adm_grupo(link: $link))->registro(registro_id: $grupo_id, columnas_en_bruto: true, retorno_obj: true);
+            if (errores::$error) {
+                $error = (new errores())->error(mensaje: 'Error al obtener grupo de usuario', data: $adm_grupo);
+                print_r($error);
+                exit;
+            }
+
+            if (!isset($adm_grupo->solo_mi_info)) {
+                $adm_grupo->solo_mi_info = 'inactivo';
+            }
+            if ($adm_grupo->solo_mi_info === 'inactivo') {
+                $aplica_seguridad = false;
+                $columnas_extra['usuario_permitido_id'] = "$_SESSION[usuario_id]";
+            }
         }
 
         $tipo_campos = array();
