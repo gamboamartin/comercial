@@ -13,6 +13,7 @@ use gamboamartin\cat_sat\models\cat_sat_uso_cfdi;
 use gamboamartin\comercial\controllers\controlador_com_cliente;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\direccion_postal\models\dp_municipio;
+use gamboamartin\documento\models\adm_grupo;
 use gamboamartin\documento\models\doc_tipo_documento;
 use gamboamartin\errores\errores;
 use PDO;
@@ -36,14 +37,41 @@ class com_cliente extends _modelo_parent
         $columnas_extra['com_cliente_n_sucursales'] =
             "(SELECT COUNT(*) FROM com_sucursal WHERE com_sucursal.com_cliente_id = com_cliente.id)";
 
+        $aplica_seguridad = true;
+        $grupo_id = $_SESSION['grupo_id'];
+
+        $columnas_extra['usuario_permitido_id'] =
+            "(SELECT adm_usuario.id FROM com_contacto
+                LEFT JOIN com_contacto_user ON com_contacto_user.com_contacto_id = com_contacto.id 
+                LEFT JOIN adm_usuario ON adm_usuario.id = com_contacto_user.adm_usuario_id
+                WHERE com_contacto.com_cliente_id = com_cliente.id 
+                AND adm_usuario.id = $_SESSION[usuario_id])";
+
+        $adm_grupo = (new adm_grupo(link: $link))->registro(registro_id: $grupo_id, columnas_en_bruto: true, retorno_obj: true);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al obtener grupo de usuario',data:  $adm_grupo);
+            print_r($error);
+            exit;
+        }
+
+        if(!isset($adm_grupo->solo_mi_info)){
+            $adm_grupo->solo_mi_info = 'inactivo';
+        }
+        if($adm_grupo->solo_mi_info === 'inactivo'){
+            $aplica_seguridad = false;
+            $columnas_extra['usuario_permitido_id'] = "$_SESSION[usuario_id]";
+        }
+
         $tipo_campos = array();
         $tipo_campos['rfc'] = 'rfc';
 
         $atributos_criticos[] = 'cat_sat_tipo_persona_id';
 
-        parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios,
-            columnas: $columnas, columnas_extra: $columnas_extra, tipo_campos: $tipo_campos,
-            atributos_criticos: $atributos_criticos);
+
+
+        parent::__construct(link: $link, tabla: $tabla, aplica_seguridad: $aplica_seguridad,
+            campos_obligatorios: $campos_obligatorios, columnas: $columnas, columnas_extra: $columnas_extra,
+            tipo_campos: $tipo_campos, atributos_criticos: $atributos_criticos);
 
         $this->NAMESPACE = __NAMESPACE__;
 

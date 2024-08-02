@@ -224,7 +224,6 @@ class com_clienteTest extends test {
 
     }
 
-
     public function test_desactiva_bd(): void
     {
         errores::$error = false;
@@ -456,7 +455,30 @@ class com_clienteTest extends test {
         errores::$error = false;
     }
 
+    public function test_registro(): void
+    {
+        unset($_SESSION['columnas']);
+        $_GET['seccion'] = 'cat_sat_tipo_persona';
+        $_GET['accion'] = 'lista';
+        $_SESSION['grupo_id'] = 2;
+        $_SESSION['usuario_id'] = 2;
+        $_GET['session_id'] = '1';
 
+        errores::$error = false;
+
+
+        $modelo = new com_cliente($this->link);
+
+        $registro_id = 1;
+        $resultado = $modelo->registro($registro_id);
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(1, $resultado['com_cliente_id']);
+
+        errores::$error = false;
+
+    }
 
     public function test_registro_cliente_upd(): void
     {
