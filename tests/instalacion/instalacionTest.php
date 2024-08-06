@@ -65,6 +65,13 @@ class instalacionTest extends test {
         $_SESSION['usuario_id'] = 2;
         $_GET['session_id'] = '1';
 
+        $instala = (new \gamboamartin\cat_sat\instalacion\instalacion(link: $this->link))->instala(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al instala', $instala);
+            print_r($error);
+            exit;
+        }
+
         $instala = (new instalacion())->instala(link: $this->link);
         if(errores::$error){
             $error = (new errores())->error('Error al instala', $instala);

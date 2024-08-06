@@ -38,32 +38,11 @@ class com_cliente extends _modelo_parent
             "(SELECT COUNT(*) FROM com_sucursal WHERE com_sucursal.com_cliente_id = com_cliente.id)";
 
 
-        $aplica_seguridad = false;
-        if(isset($_SESSION['grupo_id'])) {
-            $aplica_seguridad = true;
-            $grupo_id = $_SESSION['grupo_id'];
-
-            $columnas_extra['usuario_permitido_id'] =
-                "(SELECT adm_usuario.id FROM com_contacto
-                    LEFT JOIN com_contacto_user ON com_contacto_user.com_contacto_id = com_contacto.id 
-                    LEFT JOIN adm_usuario ON adm_usuario.id = com_contacto_user.adm_usuario_id
-                    WHERE com_contacto.com_cliente_id = com_cliente.id 
-                    AND adm_usuario.id = $_SESSION[usuario_id])";
-
-            $adm_grupo = (new adm_grupo(link: $link))->registro(registro_id: $grupo_id, columnas_en_bruto: true, retorno_obj: true);
-            if (errores::$error) {
-                $error = (new errores())->error(mensaje: 'Error al obtener grupo de usuario', data: $adm_grupo);
-                print_r($error);
-                exit;
-            }
-
-            if (!isset($adm_grupo->solo_mi_info)) {
-                $adm_grupo->solo_mi_info = 'inactivo';
-            }
-            if ($adm_grupo->solo_mi_info === 'inactivo') {
-                $aplica_seguridad = false;
-                $columnas_extra['usuario_permitido_id'] = "$_SESSION[usuario_id]";
-            }
+        $seguridad = $this->seguridad_datos(columnas_extra: $columnas_extra,link:  $link);
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al integrar columnas_seguridad', data: $seguridad);
+            print_r($error);
+            exit;
         }
 
         $tipo_campos = array();
@@ -73,8 +52,8 @@ class com_cliente extends _modelo_parent
 
 
 
-        parent::__construct(link: $link, tabla: $tabla, aplica_seguridad: $aplica_seguridad,
-            campos_obligatorios: $campos_obligatorios, columnas: $columnas, columnas_extra: $columnas_extra,
+        parent::__construct(link: $link, tabla: $tabla, aplica_seguridad: $seguridad->aplica_seguridad,
+            campos_obligatorios: $campos_obligatorios, columnas: $columnas, columnas_extra: $seguridad->columnas_extra,
             tipo_campos: $tipo_campos, atributos_criticos: $atributos_criticos);
 
         $this->NAMESPACE = __NAMESPACE__;
@@ -224,6 +203,31 @@ class com_cliente extends _modelo_parent
         return $r_alta_bd;
     }
 
+    private function aplica_seguridad(PDO $link): bool|array
+    {
+        $aplica_seguridad = false;
+        if(isset($_SESSION['grupo_id'])) {
+            $aplica_seguridad = true;
+            $grupo_id = $_SESSION['grupo_id'];
+
+            $adm_grupo = (new adm_grupo(link: $link))->registro(registro_id: $grupo_id, columnas_en_bruto: true,
+                retorno_obj: true);
+            if (errores::$error) {
+                return (new errores())->error(mensaje: 'Error al obtener grupo de usuario', data: $adm_grupo);
+            }
+
+            if (!isset($adm_grupo->solo_mi_info)) {
+                $adm_grupo->solo_mi_info = 'inactivo';
+            }
+            if ($adm_grupo->solo_mi_info === 'inactivo') {
+                $aplica_seguridad = false;
+            }
+        }
+        return $aplica_seguridad;
+
+
+    }
+
     final public function asigna_prospecto(int $com_cliente_id, int $com_prospecto_id)
     {
         $registro['com_cliente_id'] = $com_cliente_id;
@@ -245,6 +249,22 @@ class com_cliente extends _modelo_parent
             return $this->error->error(mensaje: 'Error al insertar relacion', data: $inserta);
         }
         return $inserta;
+
+    }
+
+    private function columna_seguridad(bool $aplica_seguridad): string
+    {
+        $sql = "$_SESSION[usuario_id]";
+        if($aplica_seguridad) {
+            $sql =
+                "(SELECT adm_usuario.id FROM com_contacto
+                    LEFT JOIN com_contacto_user ON com_contacto_user.com_contacto_id = com_contacto.id 
+                    LEFT JOIN adm_usuario ON adm_usuario.id = com_contacto_user.adm_usuario_id
+                    WHERE com_contacto.com_cliente_id = com_cliente.id 
+                    AND adm_usuario.id = $_SESSION[usuario_id])";
+        }
+
+        return $sql;
 
     }
 
@@ -504,6 +524,18 @@ class com_cliente extends _modelo_parent
         }
 
         return $data;
+    }
+
+    private function integra_columna_seguridad(bool $aplica_seguridad, array $columnas_extra): array
+    {
+        $columnas_seguridad = $this->columna_seguridad(aplica_seguridad: $aplica_seguridad);
+        if (errores::$error) {
+           return (new errores())->error(mensaje: 'Error al obtener columnas_seguridad', data: $columnas_seguridad);
+        }
+        $columnas_extra['usuario_permitido_id'] = $columnas_seguridad;
+
+        return $columnas_extra;
+
     }
 
     final public function integra_documentos(controlador_com_cliente $controler)
@@ -919,6 +951,25 @@ class com_cliente extends _modelo_parent
         }
 
         return $com_sucursal_upd;
+    }
+
+    private function seguridad_datos(array $columnas_extra, PDO $link): array|stdClass
+    {
+        $aplica_seguridad = $this->aplica_seguridad(link: $link);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al obtener grupo de usuario', data: $aplica_seguridad);
+        }
+
+        $columnas_extra = $this->integra_columna_seguridad(aplica_seguridad: $aplica_seguridad,columnas_extra:  $columnas_extra);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al integrar columnas_seguridad', data: $columnas_extra);
+        }
+        $seguridad = new stdClass();
+        $seguridad->aplica_seguridad = $aplica_seguridad;
+        $seguridad->columnas_extra = $columnas_extra;
+
+        return $seguridad;
+
     }
 
     final public function tiene_prospecto(int $com_cliente_id)
