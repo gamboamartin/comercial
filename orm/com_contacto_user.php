@@ -70,7 +70,7 @@ class com_contacto_user extends _modelo_parent_sin_codigo
 
         $upd_user['password'] = $password;
         $upd_user['status'] = 'inactivo';
-        $upd = (new adm_usuario(link: $this->link))->modifica_bd(registro: $upd_user,id: $row->amd_usuario_id);
+        $upd = (new adm_usuario(link: $this->link))->modifica_bd(registro: $upd_user,id: $row->adm_usuario_id);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al ajustar usuario',data:  $upd);
         }
