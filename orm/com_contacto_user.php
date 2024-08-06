@@ -4,6 +4,7 @@ namespace gamboamartin\comercial\models;
 
 use base\orm\_modelo_parent_sin_codigo;
 use gamboamartin\administrador\models\adm_usuario;
+use gamboamartin\comercial\controllers\_pass;
 use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
@@ -46,13 +47,39 @@ class com_contacto_user extends _modelo_parent_sin_codigo
 
         }
 
-
         $r_alta_bd = parent::alta_bd();
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al insertar usuario',data:  $r_alta_bd);
         }
-
         return $r_alta_bd;
+    }
+
+
+    final public function elimina_bd(int $id): array|stdClass
+    {
+
+        $row = $this->registro(registro_id: $id,columnas_en_bruto: true, retorno_obj: true);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener contacto_user',data:  $row);
+        }
+
+        $password = (new _pass())->password_df();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener pass',data:  $password);
+        }
+
+        $upd_user['password'] = $password;
+        $upd_user['status'] = 'inactivo';
+        $upd = (new adm_usuario(link: $this->link))->modifica_bd(registro: $upd_user,id: $row->amd_usuario_id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al ajustar usuario',data:  $upd);
+        }
+
+        $r_elimina = parent::elimina_bd(id: $id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al elimina contacto_user',data:  $r_elimina);
+        }
+        return $r_elimina;
 
     }
 

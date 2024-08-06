@@ -82,6 +82,23 @@ class com_contacto extends _modelo_parent_sin_codigo
         return $com_contacto_user_ins;
 
     }
+
+    public function elimina_bd(int $id): array|stdClass
+    {
+        $filtro['com_contacto.id'] = $id;
+        $del = (new com_contacto_user(link: $this->link))->elimina_con_filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al eliminar contactos', data: $del);
+        }
+
+        $r_elimina = parent::elimina_bd(id: $id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al eliminar contacto', data: $r_elimina);
+        }
+
+        return $r_elimina;
+
+    }
     protected function inicializa_campos(array $registros): array
     {
         $registros['codigo'] = $this->get_codigo_aleatorio();
