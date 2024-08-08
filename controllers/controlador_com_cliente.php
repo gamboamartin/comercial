@@ -42,8 +42,6 @@ class controlador_com_cliente extends _ctl_base
     public string $link_com_email_cte_alta_bd = '';
     public string $button_com_cliente_correo = '';
 
-    public bool $existe_dom_tmp = false;
-
     public controlador_com_email_cte $controlador_com_email_cte;
 
     public string $link_com_rel_agente_cliente_bd = '';

@@ -813,7 +813,37 @@ class instalacion
         }
         $out->es_automatico = $alta_accion;
 
+        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'documentos',
+            adm_seccion_descripcion: __FUNCTION__, es_view: 'activo', icono: 'bi bi-files',
+            link: $link, lista: 'activo', titulo: 'Documentos');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
+        }
+        $out->es_automatico = $alta_accion;
 
+        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'get_cliente',
+            adm_seccion_descripcion: __FUNCTION__, es_view: 'inactivo', icono: 'bi bi-mailbox',
+            link: $link, lista: 'inactivo', titulo: 'Get Cliente');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
+        }
+        $out->es_automatico = $alta_accion;
+
+        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'tipos_documentos',
+            adm_seccion_descripcion: __FUNCTION__, es_view: 'inactivo', icono: 'bi bi-mailbox',
+            link: $link, lista: 'inactivo', titulo: 'Tipos Doc');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
+        }
+        $out->es_automatico = $alta_accion;
+
+        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'subir_documento',
+            adm_seccion_descripcion: __FUNCTION__, es_view: 'activo', icono: 'bi bi-cloud-upload-fill',
+            link: $link, lista: 'activo', titulo: 'Subir Documentos');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
+        }
+        $out->es_automatico = $alta_accion;
 
 
         return $out;
