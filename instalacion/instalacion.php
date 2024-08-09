@@ -846,6 +846,13 @@ class instalacion
         $out->es_automatico = $alta_accion;
 
 
+        $inserta_campos = (new _instalacion(link: $link))->inserta_adm_campos(
+            modelo_integracion: (new com_cliente(link: $link)));
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar adm campos', data:  $inserta_campos);
+        }
+
+
         return $out;
 
     }
