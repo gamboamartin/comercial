@@ -452,7 +452,7 @@ class com_cliente extends _modelo_parent
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * TOTAL
      * Función para inicializar las variables básicas del cliente.
      *
      * Esta función recibe un arreglo asociativo con la información del cliente, si dentro de este arreglo se encuentra el índice
@@ -470,6 +470,7 @@ class com_cliente extends _modelo_parent
      *  echo $cliente['descripcion']; // Imprime: Compañía XY
      * </code>
      * @version 22.2.0
+     * @url https://github.com/gamboamartin/comercial/wiki/orm.com_cliente.init_base
      */
     final protected function init_base(array $data): array
     {
