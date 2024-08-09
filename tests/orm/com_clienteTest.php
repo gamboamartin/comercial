@@ -206,7 +206,6 @@ class com_clienteTest extends test {
         //print_r($resultado);exit;
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("1", $resultado['dp_calle_pertenece_id']);
         $this->assertEquals("1", $resultado['numero_exterior']);
         $this->assertEquals("", $resultado['numero_interior']);
         $this->assertEquals("1", $resultado['telefono_1']);

@@ -22,8 +22,8 @@ class com_sucursal extends modelo
             'com_tipo_cliente'=>'com_cliente','dp_pais'=>'dp_estado');
 
         $campos_obligatorios = array('descripcion', 'codigo', 'descripcion_select', 'alias', 'codigo_bis',
-            'numero_exterior', 'com_cliente_id', 'dp_calle_pertenece_id','com_tipo_sucursal_id',
-            'pais','estado','municipio','cp','colonia','calle','dp_municipio_id');
+            'numero_exterior', 'com_cliente_id','com_tipo_sucursal_id', 'pais','estado','municipio','cp','colonia',
+            'calle','dp_municipio_id');
 
         $tipo_campos = array();
 
@@ -85,7 +85,7 @@ class com_sucursal extends modelo
      */
     public function alta_bd(): array|stdClass
     {
-        $keys = array('com_cliente_id', 'dp_calle_pertenece_id','dp_municipio_id');
+        $keys = array('com_cliente_id','dp_municipio_id');
         $valida = $this->validacion->valida_ids(keys: $keys, registro: $this->registro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
@@ -122,7 +122,6 @@ class com_sucursal extends modelo
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al insertar predeterminado', data: $ins_pred);
         }
-
 
         $r_alta_bd = parent::alta_bd();
         if (errores::$error) {
@@ -318,29 +317,18 @@ class com_sucursal extends modelo
      * @param string $nombre_contacto Nombre de contacto
      * @param int $com_cliente_id Id de cliente
      * @param string $telefono Telefono de cliente
-     * @param int $dp_calle_pertenece_id calle
      * @param int $dp_municipio_id
      * @param string $numero_exterior ext
      * @param string $numero_interior int
      * @param bool $es_empleado si es empleado da de alta empleado
      * @return array
      */
-    final public function maqueta_data(string $calle, string $codigo, string $colonia, int $cp,
-                                       string $nombre_contacto, int $com_cliente_id, string $telefono,
-                                       int $dp_calle_pertenece_id, int $dp_municipio_id, string $numero_exterior,
-                                       string $numero_interior, bool $es_empleado = false): array
+    final public function maqueta_data(
+        string $calle, string $codigo, string $colonia, int $cp, string $nombre_contacto, int $com_cliente_id,
+        string $telefono, int $dp_municipio_id, string $numero_exterior, string $numero_interior,
+        bool $es_empleado = false): array
     {
 
-        /*$com_tipo_sucursal= (new com_tipo_sucursal($this->link))->inserta_predeterminado(codigo: 'MAT',
-            descripcion: 'MATRIZ');
-        if (errores::$error) {
-            return $this->error->error(mensaje: "Error al obtener el id predeterminado", data: $com_tipo_sucursal);
-        }
-
-        $com_tipo_sucursal_id = (new com_tipo_sucursal(link: $this->link))->id_predeterminado();
-        if (errores::$error) {
-            return $this->error->error(mensaje: "Error al obtener el id predeterminado", data: $com_tipo_sucursal);
-        }*/
 
         $com_tipo_sucursal_id = 1;
 
@@ -357,7 +345,6 @@ class com_sucursal extends modelo
         $data['descripcion'] = $nombre_contacto;
         $data['nombre_contacto'] = $nombre_contacto;
         $data['com_cliente_id'] = $com_cliente_id;
-        $data['dp_calle_pertenece_id'] = $dp_calle_pertenece_id;
         $data['numero_exterior'] = $numero_exterior;
         $data['numero_interior'] = $numero_interior;
         $data['telefono_1'] = $telefono;

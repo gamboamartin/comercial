@@ -60,7 +60,6 @@ class instalacion
         }
 
         $foraneas = array();
-        $foraneas['dp_calle_pertenece_id'] = new stdClass();
         $foraneas['cat_sat_regimen_fiscal_id'] = new stdClass();
         $foraneas['cat_sat_moneda_id'] = new stdClass();
         $foraneas['cat_sat_forma_pago_id'] = new stdClass();
@@ -429,7 +428,6 @@ class instalacion
         $out->create = $create;
 
         $foraneas = array();
-        $foraneas['dp_calle_pertenece_id'] = new stdClass();
         $foraneas['com_tipo_sucursal_id'] = new stdClass();
         $foraneas['com_cliente_id'] = new stdClass();
         $foraneas['dp_municipio_id'] = new stdClass();
@@ -745,7 +743,6 @@ class instalacion
         $out->foraneas = $result;
 
         $foraneas = array();
-        $foraneas['dp_calle_pertenece_id'] = new stdClass();
         $foraneas['cat_sat_regimen_fiscal_id'] = new stdClass();
         $foraneas['cat_sat_moneda_id'] = new stdClass();
         $foraneas['cat_sat_forma_pago_id'] = new stdClass();
@@ -1732,31 +1729,17 @@ class instalacion
 
             foreach ($keys_dom AS $key_dom) {
                 $key_entidad = __FUNCTION__ . "_$key_dom";
-                $key_integra = 'dp_' . $key_dom . '_descripcion';
 
-                $com_sucursal_bruto = $com_sucursal_modelo->registro(registro_id: $com_sucursal['com_sucursal_id'], columnas_en_bruto: true);
+                $com_sucursal_bruto = $com_sucursal_modelo->registro(registro_id: $com_sucursal['com_sucursal_id'],
+                    columnas_en_bruto: true);
                 if (errores::$error) {
                     return (new errores())->error(mensaje: 'Error al obtener el com_sucursal', data: $com_sucursal_bruto);
                 }
-                $dp_calle_pertenece = (new dp_calle_pertenece(link: $link))->registro(registro_id: $com_sucursal_bruto['dp_calle_pertenece_id']);
-                if (errores::$error) {
-                    return (new errores())->error(mensaje: 'Error al obtener dp_calle_pertenece', data: $dp_calle_pertenece);
-                }
+
                 if (!isset($com_sucursal[$key_entidad])) {
                     return (new errores())->error(mensaje: 'Error no existe key ' . $key_entidad, data: $com_sucursal);
                 }
-                if (!isset($dp_calle_pertenece[$key_integra])) {
-                    return (new errores())->error(mensaje: 'Error no existe key ' . $key_integra, data: $dp_calle_pertenece);
-                }
 
-                if (trim($com_sucursal[$key_entidad]) === '') {
-                    $r_upd = $com_sucursal_modelo->modifica_bd(registro: [$key_dom => $dp_calle_pertenece[$key_integra]],
-                        id: $com_sucursal['com_sucursal_id']);
-                    if (errores::$error) {
-                        return (new errores())->error(mensaje: 'Error al modificar com_sucursal', data: $r_upd);
-                    }
-                    $upds_dom[] = $r_upd;
-                }
             }
 
         }

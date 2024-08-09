@@ -466,7 +466,6 @@ class base_test{
         $registro['descripcion'] = 1;
         $registro['com_cliente_id'] = $com_cliente_id;
         $registro['com_tipo_sucursal_id'] = $com_tipo_sucursal_id;
-        $registro['dp_calle_pertenece_id'] = 1;
         $registro['numero_exterior'] = 1;
         $registro['dp_municipio_id'] = $dp_municipio_id;
         $registro['cp'] = $cp;
