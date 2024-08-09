@@ -8,14 +8,9 @@
  */
 namespace gamboamartin\comercial\controllers;
 
-use base\orm\modelo;
-use config\generales;
-use gamboamartin\administrador\models\adm_campo;
-use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\cat_sat\models\cat_sat_obj_imp;
 use gamboamartin\cat_sat\models\cat_sat_producto;
 use gamboamartin\cat_sat\models\cat_sat_unidad;
-use gamboamartin\comercial\models\_exporta;
 use gamboamartin\comercial\models\com_producto;
 use gamboamartin\comercial\models\com_tipo_producto;
 use gamboamartin\documento\models\doc_documento;
@@ -179,20 +174,6 @@ class controlador_com_producto extends _base_comercial {
         return $upd;
 
     }
-
-    public function descarga_layout(bool $header, bool $ws = true): array|stdClass
-    {
-
-        $xls = (new \gamboamartin\system\_importador\_exporta())->layout(header: true,modelo:  $this->modelo);
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al exportar', data: $xls, header: $header,
-                ws: $ws, class: __CLASS__, file: __FILE__, function: __FUNCTION__, line: __LINE__);
-        }
-
-        return $xls;
-
-    }
-
 
     public function key_selects_txt(array $keys_selects): array
     {

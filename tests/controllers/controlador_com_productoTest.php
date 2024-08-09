@@ -65,7 +65,7 @@ class controlador_com_productoTest extends test {
         $_GET['session_id'] = '1';
         $_GET['registro_id'] = '1';
         $ctl = new controlador_com_producto(link: $this->link, paths_conf: $this->paths_conf);
-        $ctl = new liberator($ctl);
+        //$ctl = new liberator($ctl);
 
 
         $resultado = $ctl->init_datatable();
