@@ -524,7 +524,7 @@ class base_test{
         $registro = array();
         $registro['id'] = $id;
         $registro['codigo'] = 1;
-        $registro['descripcion'] = 1;
+        $registro['descripcion'] = 'TEST';
 
 
         $alta = (new com_tipo_cliente($link))->alta_registro($registro);
