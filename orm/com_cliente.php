@@ -550,8 +550,7 @@ class com_cliente extends _modelo_parent
         }
 
         $conf_tipos_docs = (new com_conf_tipo_doc_cliente(link: $controler->link))->filtro_and(
-            columnas: ['doc_tipo_documento_id'],
-            filtro: array('com_cliente_id' => $cliente['com_cliente_id']));
+            columnas: ['doc_tipo_documento_id']);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener conf. de tipos de documentos', data: $conf_tipos_docs);
         }
