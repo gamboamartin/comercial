@@ -14,6 +14,7 @@ use gamboamartin\comercial\controllers\controlador_com_cliente;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\direccion_postal\models\dp_municipio;
 use gamboamartin\documento\models\adm_grupo;
+use gamboamartin\documento\models\doc_conf_tipo_documento_seccion;
 use gamboamartin\documento\models\doc_tipo_documento;
 use gamboamartin\errores\errores;
 use PDO;
@@ -549,8 +550,8 @@ class com_cliente extends _modelo_parent
             return $this->error->error(mensaje: 'Error al obtener cliente', data: $cliente);
         }
 
-        $conf_tipos_docs = (new com_conf_tipo_doc_cliente(link: $controler->link))->filtro_and(
-            columnas: ['doc_tipo_documento_id']);
+        $conf_tipos_docs = (new doc_conf_tipo_documento_seccion(link: $controler->link))->filtro_and(
+            columnas: ['doc_tipo_documento_id'],filtro: array('adm_seccion.descripcion' => $this->tabla));
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener conf. de tipos de documentos', data: $conf_tipos_docs);
         }
