@@ -390,7 +390,6 @@ class com_cliente extends _modelo_parent
                         $key = str_replace(':', '', $key);
                         $key = str_replace(' ', '_', $key);
                         $key = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $key);
-                        $key = preg_replace('/[^A-Za-z0-9 ]/', '', $key);
                         $datos[$key] = $value;
                     }
                 }
