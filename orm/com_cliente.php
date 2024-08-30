@@ -334,7 +334,7 @@ class com_cliente extends _modelo_parent
 
         $contenido->tipo_persona = "PERSONA FISICA";
 
-        if (array_key_exists('denominacionorazonsocial', $datos_identificacion)) {
+        if (array_key_exists('denominacion_o_razon_social', $datos_identificacion)) {
             $contenido->tipo_persona = "PERSONA MORAL";
         }
 
