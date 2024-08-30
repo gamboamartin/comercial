@@ -51,8 +51,6 @@ class controlador_com_cliente extends _ctl_base
 
     public string $link_com_cliente_documento_alta_bd = '';
 
-    public string $link_com_cliente_leer_qr = '';
-
     public function __construct(PDO      $link, html $html = new \gamboamartin\template_1\html(),
                                 stdClass $paths_conf = new stdClass())
     {
@@ -118,7 +116,6 @@ class controlador_com_cliente extends _ctl_base
 
     public function alta(bool $header, bool $ws = false): array|string
     {
-
         $urls_js = (new _init_dps())->init_js(controler: $this);
 
         if (errores::$error) {
@@ -134,6 +131,15 @@ class controlador_com_cliente extends _ctl_base
         if (errores::$error) {
             return $this->retorno_error(mensaje: 'Error al obtener inputs', data: $inputs, header: $header, ws: $ws);
         }
+
+        $documento = $this->html->input_file(cols: 12, name: 'documento', row_upd: new stdClass(), value_vacio: false,
+            place_holder: 'CIF', required: false);
+        if (errores::$error) {
+            return $this->retorno_error(
+                mensaje: 'Error al obtener inputs', data: $documento, header: $header, ws: $ws);
+        }
+
+        $this->inputs->documento = $documento;
 
         return $r_alta;
     }
@@ -362,14 +368,6 @@ class controlador_com_cliente extends _ctl_base
             exit;
         }
         $this->link_asigna_contacto_bd = $link;
-
-        $link = $this->obj_link->get_link(seccion: "com_cliente", accion: "leer_qr_bd");
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al recuperar link leer_qr_bd', data: $link);
-            print_r($error);
-            exit;
-        }
-        $this->link_com_cliente_leer_qr = $link;
 
         return $link;
     }
@@ -605,82 +603,22 @@ class controlador_com_cliente extends _ctl_base
         return $salida;
     }
 
-    public function leer_qr(bool $header, bool $ws = false)
+    public function leer_qr(bool $header, bool $ws = false) : array
     {
-        $this->inputs = new stdClass();
-
-        $documento = $this->html->input_file(cols: 12, name: 'documento', row_upd: new stdClass(), value_vacio: false);
+        $registros = (new com_cliente($this->link))->leer_codigo_qr();
         if (errores::$error) {
-            return $this->retorno_error(
-                mensaje: 'Error al obtener inputs', data: $documento, header: $header, ws: $ws);
-        }
-
-        $this->inputs->documento = $documento;
-
-        $btn_action_next = $this->html->hidden('btn_action_next', value: 'documentos');
-        if (errores::$error) {
-            return $this->retorno_error(
-                mensaje: 'Error al generar btn_action_next', data: $btn_action_next, header: $header, ws: $ws);
-        }
-
-        $id_retorno = $this->html->hidden('id_retorno', value: $this->registro_id);
-        if (errores::$error) {
-            return $this->retorno_error(
-                mensaje: 'Error al generar btn_action_next', data: $btn_action_next, header: $header, ws: $ws);
-        }
-
-        $seccion_retorno = $this->html->hidden('seccion_retorno', value: $this->seccion);
-        if (errores::$error) {
-            return $this->retorno_error(
-                mensaje: 'Error al generar btn_action_next', data: $btn_action_next, header: $header, ws: $ws);
-        }
-
-        $this->inputs->btn_action_next = $btn_action_next;
-        $this->inputs->id_retorno = $id_retorno;
-        $this->inputs->seccion_retorno = $seccion_retorno;
-    }
-
-    public function leer_qr_bd(bool $header, bool $ws = false): array|stdClass
-    {
-        $this->link->beginTransaction();
-
-        $siguiente_view = (new actions())->init_alta_bd();
-        if (errores::$error) {
-            $this->link->rollBack();
-            return $this->retorno_error(mensaje: 'Error al obtener siguiente view', data: $siguiente_view,
+            return $this->retorno_error(mensaje: 'Error al leer el código QR del documento PDF', data: $registros,
                 header: $header, ws: $ws);
         }
 
-        $_POST['documentos'] = 'documento';
+        $salida['draw'] = count($registros);
+        $salida['recordsTotal'] = count($registros);
+        $salida['recordsFiltered'] = count($registros);
+        $salida['data'] = $registros;
 
-        $proceso = (new com_cliente($this->link))->leer_codigo_qr();
-        if (errores::$error) {
-            $this->link->rollBack();
-            return $this->retorno_error(mensaje: 'Error al leer el código QR del documento PDF', data: $proceso, header: $header,
-                ws: $ws);
-        }
-
-        echo '<pre>';
-        print_r($proceso);
-        echo '</pre>';
-
-        exit();
-
-        $this->link->commit();
-
-        if ($header) {
-            $this->retorno_base(registro_id: $this->registro_id, result: $proceso,
-                siguiente_view: "leer_qr", ws: $ws);
-        }
-        if ($ws) {
-            header('Content-Type: application/json');
-            echo json_encode($proceso, JSON_THROW_ON_ERROR);
-            exit;
-        }
-
-        $proceso->siguiente_view = "leer_qr";
-
-        return $proceso;
+        header('Content-Type: application/json');
+        echo json_encode($salida);
+        exit;
     }
 
     /**

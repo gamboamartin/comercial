@@ -316,7 +316,7 @@ class com_cliente extends _modelo_parent
             return $this->error->error(mensaje: 'Error al formatear contenido', data: $contenido_formateado);
         }
 
-        return $contenido_formateado;
+        return get_object_vars($contenido_formateado);
     }
 
     /**
