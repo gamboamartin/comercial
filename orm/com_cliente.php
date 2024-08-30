@@ -316,7 +316,29 @@ class com_cliente extends _modelo_parent
             return $this->error->error(mensaje: 'Error al formatear contenido', data: $contenido_formateado);
         }
 
+        $contenido_formateado = $this->contenido_anexar_campos(contenido: $contenido_formateado);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al anexar campos', data: $contenido_formateado);
+        }
+
         return get_object_vars($contenido_formateado);
+    }
+
+    public function contenido_anexar_campos(stdClass $contenido): array|stdClass
+    {
+        if (!property_exists($contenido, 'datos_identificacion')) {
+            return $this->error->error(mensaje: 'Error no existe datos_identificacion', data: $contenido);
+        }
+
+        $datos_identificacion = $contenido->datos_identificacion;
+
+        $contenido->tipo_persona = "PERSONA FISICA";
+
+        if (array_key_exists('denominacionorazonsocial', $datos_identificacion)) {
+            $contenido->tipo_persona = "PERSONA MORAL";
+        }
+
+        return $contenido;
     }
 
     /**
