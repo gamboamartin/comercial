@@ -17,8 +17,12 @@ use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\direccion_postal\models\dp_municipio;
 use gamboamartin\documento\models\adm_grupo;
 use gamboamartin\documento\models\doc_conf_tipo_documento_seccion;
+use gamboamartin\documento\models\doc_documento;
 use gamboamartin\documento\models\doc_tipo_documento;
 use gamboamartin\errores\errores;
+use gamboamartin\plugins\Imagen;
+use gamboamartin\plugins\PDF;
+use gamboamartin\plugins\Web;
 use PDO;
 use stdClass;
 
@@ -258,6 +262,61 @@ class com_cliente extends _modelo_parent
         }
         return $inserta;
 
+    }
+
+    public function leer_codigo_qr(): array|stdClass
+    {
+        if (!array_key_exists('documento', $_FILES)) {
+            return $this->error->error(mensaje: 'Error no existe documento', data: $_FILES);
+        }
+
+        $directorio_destino = 'archivos/temporales/pdf/cliente_'. $_GET['registro_id'].'/';
+
+        if (!file_exists($directorio_destino)) {
+            mkdir($directorio_destino, 0777, true);
+        }
+
+        $nombre_archivo = basename($_FILES['documento']['name']);
+        $ruta_destino = $directorio_destino . $nombre_archivo;
+
+        if (!move_uploaded_file($_FILES['documento']['tmp_name'], $ruta_destino)) {
+            return $this->error->error(mensaje: 'Error al mover archivo', data: $_FILES);
+        }
+
+        $nombre_directorio_imagen = 'archivos/temporales/imagenes/cliente_'.$_GET['registro_id'].'/';
+
+        $contenido = (new PDF())->leer_pdf(directorio: $nombre_directorio_imagen, prefijo_imagen: "imagen",
+            ruta_pdf: $ruta_destino);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al leer pdf', data: $contenido);
+        }
+
+        $url = (new Imagen())->leer_codigo_qr(ruta_qr: $nombre_directorio_imagen."imagen-003.png");
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al leer código QR', data: $url);
+        }
+
+        $directorio_borrado = (new doc_documento($this->link))->borrar_directorio($directorio_destino);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al borrar directorio', data: $directorio_borrado);
+        }
+
+        $directorio_borrado = (new doc_documento($this->link))->borrar_directorio($nombre_directorio_imagen);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al borrar directorio', data: $directorio_borrado);
+        }
+
+        $contenido = (new Web())->leer_contenido(url: $url);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al leer contenido', data: $contenido);
+        }
+
+        $contenido_formateado = $this->contenido_web_formateado(html: $contenido);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al formatear contenido', data: $contenido_formateado);
+        }
+
+        return $contenido_formateado;
     }
 
     /**
