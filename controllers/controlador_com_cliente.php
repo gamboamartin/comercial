@@ -51,6 +51,8 @@ class controlador_com_cliente extends _ctl_base
 
     public string $link_com_cliente_documento_alta_bd = '';
 
+    public string $link_com_cliente_leer_qr = '';
+
     public function __construct(PDO      $link, html $html = new \gamboamartin\template_1\html(),
                                 stdClass $paths_conf = new stdClass())
     {
@@ -361,6 +363,14 @@ class controlador_com_cliente extends _ctl_base
         }
         $this->link_asigna_contacto_bd = $link;
 
+        $link = $this->obj_link->get_link(seccion: "com_cliente", accion: "leer_qr_bd");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al recuperar link leer_qr_bd', data: $link);
+            print_r($error);
+            exit;
+        }
+        $this->link_com_cliente_leer_qr = $link;
+
         return $link;
     }
 
@@ -593,6 +603,41 @@ class controlador_com_cliente extends _ctl_base
         }
 
         return $salida;
+    }
+
+    public function leer_qr(bool $header, bool $ws = false)
+    {
+        $this->inputs = new stdClass();
+
+        $documento = $this->html->input_file(cols: 12, name: 'documento', row_upd: new stdClass(), value_vacio: false);
+        if (errores::$error) {
+            return $this->retorno_error(
+                mensaje: 'Error al obtener inputs', data: $documento, header: $header, ws: $ws);
+        }
+
+        $this->inputs->documento = $documento;
+
+        $btn_action_next = $this->html->hidden('btn_action_next', value: 'documentos');
+        if (errores::$error) {
+            return $this->retorno_error(
+                mensaje: 'Error al generar btn_action_next', data: $btn_action_next, header: $header, ws: $ws);
+        }
+
+        $id_retorno = $this->html->hidden('id_retorno', value: $this->registro_id);
+        if (errores::$error) {
+            return $this->retorno_error(
+                mensaje: 'Error al generar btn_action_next', data: $btn_action_next, header: $header, ws: $ws);
+        }
+
+        $seccion_retorno = $this->html->hidden('seccion_retorno', value: $this->seccion);
+        if (errores::$error) {
+            return $this->retorno_error(
+                mensaje: 'Error al generar btn_action_next', data: $btn_action_next, header: $header, ws: $ws);
+        }
+
+        $this->inputs->btn_action_next = $btn_action_next;
+        $this->inputs->id_retorno = $id_retorno;
+        $this->inputs->seccion_retorno = $seccion_retorno;
     }
 
     /**
