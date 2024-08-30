@@ -640,6 +640,49 @@ class controlador_com_cliente extends _ctl_base
         $this->inputs->seccion_retorno = $seccion_retorno;
     }
 
+    public function leer_qr_bd(bool $header, bool $ws = false): array|stdClass
+    {
+        $this->link->beginTransaction();
+
+        $siguiente_view = (new actions())->init_alta_bd();
+        if (errores::$error) {
+            $this->link->rollBack();
+            return $this->retorno_error(mensaje: 'Error al obtener siguiente view', data: $siguiente_view,
+                header: $header, ws: $ws);
+        }
+
+        $_POST['documentos'] = 'documento';
+
+        $proceso = (new com_cliente($this->link))->leer_codigo_qr();
+        if (errores::$error) {
+            $this->link->rollBack();
+            return $this->retorno_error(mensaje: 'Error al leer el código QR del documento PDF', data: $proceso, header: $header,
+                ws: $ws);
+        }
+
+        echo '<pre>';
+        print_r($proceso);
+        echo '</pre>';
+
+        exit();
+
+        $this->link->commit();
+
+        if ($header) {
+            $this->retorno_base(registro_id: $this->registro_id, result: $proceso,
+                siguiente_view: "leer_qr", ws: $ws);
+        }
+        if ($ws) {
+            header('Content-Type: application/json');
+            echo json_encode($proceso, JSON_THROW_ON_ERROR);
+            exit;
+        }
+
+        $proceso->siguiente_view = "leer_qr";
+
+        return $proceso;
+    }
+
     /**
      * Inicializa las configuraciones base del controler
      * @return controler
