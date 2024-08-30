@@ -20,9 +20,9 @@ use gamboamartin\documento\models\doc_conf_tipo_documento_seccion;
 use gamboamartin\documento\models\doc_documento;
 use gamboamartin\documento\models\doc_tipo_documento;
 use gamboamartin\errores\errores;
-use gamboamartin\plugins\Imagen;
-use gamboamartin\plugins\PDF;
-use gamboamartin\plugins\Web;
+use gamboamartin\plugins\imagen;
+use gamboamartin\plugins\pdf;
+use gamboamartin\plugins\web;
 use PDO;
 use stdClass;
 
@@ -285,13 +285,13 @@ class com_cliente extends _modelo_parent
 
         $nombre_directorio_imagen = 'archivos/temporales/imagenes/cliente_'.$_GET['registro_id'].'/';
 
-        $contenido = (new PDF())->leer_pdf(directorio: $nombre_directorio_imagen, prefijo_imagen: "imagen",
+        $contenido = (new pdf())->leer_pdf(directorio: $nombre_directorio_imagen, prefijo_imagen: "imagen",
             ruta_pdf: $ruta_destino);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al leer pdf', data: $contenido);
         }
 
-        $url = (new Imagen())->leer_codigo_qr(ruta_qr: $nombre_directorio_imagen."imagen-003.png");
+        $url = (new imagen())->leer_codigo_qr(ruta_qr: $nombre_directorio_imagen."imagen-003.png");
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al leer código QR', data: $url);
         }
@@ -306,7 +306,7 @@ class com_cliente extends _modelo_parent
             return $this->error->error(mensaje: 'Error al borrar directorio', data: $directorio_borrado);
         }
 
-        $contenido = (new Web())->leer_contenido(url: $url);
+        $contenido = (new web())->leer_contenido(url: $url);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al leer contenido', data: $contenido);
         }
