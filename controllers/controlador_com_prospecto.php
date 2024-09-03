@@ -327,7 +327,7 @@ class controlador_com_prospecto extends _base_sin_cod
         $datatables->columns = array();
         $datatables->columns['com_prospecto_id']['titulo'] = 'Id';
         $datatables->columns['com_prospecto_descripcion']['titulo'] = 'Prospecto';
-
+        $datatables->columns['com_prospecto_etapa']['titulo'] = 'Etapa';
 
         $datatables->filtro = array();
         $datatables->filtro[] = 'com_prospecto.id';
