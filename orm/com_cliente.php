@@ -108,7 +108,10 @@ class com_cliente extends _modelo_parent
      */
     public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
     {
-
+        $inserta_documento = $this->registra_documento();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error en insertar documento', data: $inserta_documento);
+        }
 
         $this->registro = $this->init_base(data: $this->registro);
         if (errores::$error) {
@@ -238,6 +241,26 @@ class com_cliente extends _modelo_parent
         return $aplica_seguridad;
 
 
+    }
+
+    public function registra_documento() : array|stdClass {
+        if (!array_key_exists('documento', $_FILES)) {
+            return array();
+        }
+
+        $tipo_documento = (new doc_documento($this->link))->validar_permisos_documento(modelo: $this->tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar permisos para el documento', data: $tipo_documento);
+        }
+
+        $registro['doc_tipo_documento_id'] = $tipo_documento['doc_tipo_documento_id'];
+
+        $alta_documento = (new doc_documento(link: $this->link))->alta_documento(registro: $registro,file: $_FILES['documento']);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al insertar documento', data: $alta_documento );
+        }
+
+        return $alta_documento;
     }
 
     final public function asigna_prospecto(int $com_cliente_id, int $com_prospecto_id)
