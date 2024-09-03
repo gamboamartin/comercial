@@ -108,11 +108,6 @@ class com_cliente extends _modelo_parent
      */
     public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
     {
-        $inserta_documento = $this->registra_documento();
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error en insertar documento', data: $inserta_documento);
-        }
-
         $this->registro = $this->init_base(data: $this->registro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al inicializar campo base', data: $this->registro);
@@ -214,6 +209,10 @@ class com_cliente extends _modelo_parent
             return $this->error->error(mensaje: 'Error al insertar sucursal', data: $alta_sucursal);
         }
 
+        $inserta_documento = $this->registra_documento_cliente(com_cliente: $r_alta_bd->registro_id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al insertar documento para cliente', data: $inserta_documento);
+        }
 
         return $r_alta_bd;
     }
@@ -243,19 +242,19 @@ class com_cliente extends _modelo_parent
 
     }
 
-    public function registra_documento() : array|stdClass {
-        if (!array_key_exists('documento', $_FILES)) {
-            return array();
-        }
-
+    public function registra_documento_cliente(int $com_cliente) : array|stdClass {
         $tipo_documento = (new doc_documento($this->link))->validar_permisos_documento(modelo: $this->tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar permisos para el documento', data: $tipo_documento);
         }
 
-        $registro['doc_tipo_documento_id'] = $tipo_documento['doc_tipo_documento_id'];
+        $_POST = array();
+        $com_cliente_documento = new com_cliente_documento($this->link);
+        $com_cliente_documento->registro['com_cliente_id'] = $com_cliente;
+        $com_cliente_documento->registro['doc_tipo_documento_id'] = $tipo_documento['doc_tipo_documento_id'];
+        $_POST['doc_tipo_documento_id'] = $tipo_documento['doc_tipo_documento_id'];
 
-        $alta_documento = (new doc_documento(link: $this->link))->alta_documento(registro: $registro,file: $_FILES['documento']);
+        $alta_documento = $com_cliente_documento->alta_bd();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al insertar documento', data: $alta_documento );
         }
