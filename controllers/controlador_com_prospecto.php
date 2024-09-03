@@ -14,6 +14,7 @@ use gamboamartin\comercial\models\com_direccion;
 use gamboamartin\comercial\models\com_direccion_prospecto;
 use gamboamartin\comercial\models\com_prospecto;
 use gamboamartin\comercial\models\com_prospecto_etapa;
+use gamboamartin\comercial\models\com_rel_agente;
 use gamboamartin\errores\errores;
 use gamboamartin\proceso\html\pr_etapa_proceso_html;
 use gamboamartin\system\actions;
@@ -31,6 +32,9 @@ class controlador_com_prospecto extends _base_sin_cod
     public string $link_alta_direccion = '';
     public string $link_alta_relacion = '';
     public array $etapas = array();
+
+    public string $link_com_rel_agente_prospecto_bd = '';
+    public string $button_com_prospecto_modifica = '';
 
     public function __construct(PDO      $link, html $html = new \gamboamartin\template_1\html(),
                                 stdClass $paths_conf = new stdClass())
@@ -68,6 +72,108 @@ class controlador_com_prospecto extends _base_sin_cod
         }
 
         return $r_alta;
+    }
+
+    public function asigna_agente(bool $header, bool $ws = false, array $not_actions = array()): array|string
+    {
+        $this->accion_titulo = 'Asignar agente';
+
+        $r_modifica = $this->init_modifica();
+        if (errores::$error) {
+            return $this->retorno_error(
+                mensaje: 'Error al generar salida de template', data: $r_modifica, header: $header, ws: $ws);
+        }
+
+        $keys_selects = $this->init_selects_inputs();
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al inicializar selects', data: $keys_selects, header: $header,
+                ws: $ws);
+        }
+
+        $agentes_asignados = (new com_rel_agente(link: $this->link))->filtro_and(columnas: array('com_agente_id'),
+            filtro: array('com_prospecto_id' => $this->registro_id));
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al obtener agentes asignados', data: $agentes_asignados,
+                header: $header, ws: $ws);
+        }
+
+        $agentes_asignados = $agentes_asignados->registros;
+        $agentes_asignados = call_user_func_array('array_merge', array_map('array_values', $agentes_asignados));
+
+        $keys_selects['com_agente_id']->not_in['llave'] = 'com_agente.id';
+        $keys_selects['com_agente_id']->not_in['values'] = $agentes_asignados;
+
+        $base = $this->base_upd(keys_selects: $keys_selects, params: array(), params_ajustados: array());
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al integrar base', data: $base, header: $header, ws: $ws);
+        }
+
+        $button =  $this->html->button_href(accion: 'modifica', etiqueta: 'Ir a Prospecto',
+            registro_id: $this->registro_id, seccion: $this->tabla, style: 'warning', params: array());
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al generar link', data: $button);
+        }
+
+        $this->button_com_prospecto_modifica = $button;
+
+        $data_view = new stdClass();
+        $data_view->names = array('Id', 'Tipo', 'Agente', 'Usuario', 'Acciones');
+        $data_view->keys_data = array('com_agente_id', 'com_tipo_agente_descripcion', 'com_agente_descripcion',
+            'adm_usuario_descripcion');
+        $data_view->key_actions = 'acciones';
+        $data_view->namespace_model = 'gamboamartin\\comercial\\models';
+        $data_view->name_model_children = 'com_rel_agente';
+
+        $contenido_table = $this->contenido_children(data_view: $data_view, next_accion: __FUNCTION__,
+            not_actions: $not_actions);
+        if (errores::$error) {
+            return $this->retorno_error(
+                mensaje: 'Error al obtener tbody', data: $contenido_table, header: $header, ws: $ws);
+        }
+
+        return $contenido_table;
+    }
+
+    public function asigna_agente_bd(bool $header, bool $ws = false): array|stdClass
+    {
+        $this->link->beginTransaction();
+
+        $siguiente_view = (new actions())->init_alta_bd();
+        if (errores::$error) {
+            $this->link->rollBack();
+            return $this->retorno_error(mensaje: 'Error al obtener siguiente view', data: $siguiente_view,
+                header: $header, ws: $ws);
+        }
+
+        if (isset($_POST['btn_action_next'])) {
+            unset($_POST['btn_action_next']);
+        }
+
+        $com_rel_agente_prospecto = new com_rel_agente($this->link, array('com_agente'));
+        $com_rel_agente_prospecto->registro['com_agente_id'] = $_POST['com_agente_id'];
+        $com_rel_agente_prospecto->registro['com_prospecto_id'] = $this->registro_id;
+
+        $proceso = $com_rel_agente_prospecto->alta_bd();
+        if (errores::$error) {
+            $this->link->rollBack();
+            return $this->retorno_error(mensaje: 'Error al dar de alta relacion', data: $proceso, header: $header,
+                ws: $ws);
+        }
+
+        $this->link->commit();
+
+        if ($header) {
+            $this->retorno_base(registro_id: $this->registro_id, result: $proceso,
+                siguiente_view: "asigna_agente", ws: $ws);
+        }
+        if ($ws) {
+            header('Content-Type: application/json');
+            echo json_encode($proceso, JSON_THROW_ON_ERROR);
+            exit;
+        }
+        $proceso->siguiente_view = "asigna_agente";
+
+        return $proceso;
     }
 
     protected function campos_view(array $inputs = array()): array
@@ -281,6 +387,14 @@ class controlador_com_prospecto extends _base_sin_cod
             exit;
         }
         $this->link_alta_relacion = $link;
+
+        $link = $this->obj_link->get_link(seccion: "com_prospecto", accion: "asigna_agente_bd");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al recuperar link asigna_agente_bd', data: $link);
+            print_r($error);
+            exit;
+        }
+        $this->link_com_rel_agente_prospecto_bd = $link;
 
         return $link;
     }

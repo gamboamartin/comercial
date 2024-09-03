@@ -8,7 +8,8 @@ use stdClass;
 class com_rel_agente extends _modelo_parent{
     public function __construct(PDO $link, array $childrens = array()){
         $tabla = 'com_rel_agente';
-        $columnas = array($tabla=>false, 'com_agente'=>$tabla, 'com_prospecto'=>$tabla);
+        $columnas = array($tabla=>false, 'com_agente'=>$tabla, 'com_prospecto'=>$tabla, 'com_tipo_agente' => 'com_agente',
+            'adm_usuario' => 'com_agente');
         $campos_obligatorios = array('com_agente_id','com_prospecto_id');
 
         $columnas_extra = array();
