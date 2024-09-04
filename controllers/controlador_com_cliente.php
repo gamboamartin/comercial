@@ -17,7 +17,9 @@ use gamboamartin\cat_sat\models\cat_sat_regimen_fiscal;
 use gamboamartin\cat_sat\models\cat_sat_tipo_de_comprobante;
 use gamboamartin\cat_sat\models\cat_sat_tipo_persona;
 use gamboamartin\cat_sat\models\cat_sat_uso_cfdi;
+use gamboamartin\comercial\models\_email;
 use gamboamartin\comercial\models\com_cliente;
+use gamboamartin\comercial\models\com_cliente_documento;
 use gamboamartin\comercial\models\com_conf_tipo_doc_cliente;
 use gamboamartin\comercial\models\com_contacto;
 use gamboamartin\comercial\models\com_email_cte;
@@ -27,6 +29,7 @@ use gamboamartin\direccion_postal\controllers\_init_dps;
 use gamboamartin\direccion_postal\models\dp_calle_pertenece;
 use gamboamartin\direccion_postal\models\dp_municipio;
 use gamboamartin\errores\errores;
+use gamboamartin\notificaciones\models\not_mensaje;
 use gamboamartin\system\_ctl_base;
 use gamboamartin\system\actions;
 use gamboamartin\system\links_menu;
@@ -50,6 +53,8 @@ class controlador_com_cliente extends _ctl_base
     public string $button_com_cliente_modifica = '';
 
     public string $link_com_cliente_documento_alta_bd = '';
+
+    public string $link_envia_documentos = '';
 
     public function __construct(PDO      $link, html $html = new \gamboamartin\template_1\html(),
                                 stdClass $paths_conf = new stdClass())
@@ -369,6 +374,15 @@ class controlador_com_cliente extends _ctl_base
         }
         $this->link_asigna_contacto_bd = $link;
 
+        $this->link_envia_documentos = $this->obj_link->link_con_id(accion: "envia_documentos",link: $this->link,
+            registro_id: $this->registro_id,seccion: "com_cliente");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener link',
+                data: $this->link_envia_documentos);
+            print_r($error);
+            exit;
+        }
+
         return $link;
     }
 
@@ -377,7 +391,7 @@ class controlador_com_cliente extends _ctl_base
     {
         $keys = new stdClass();
         $keys->inputs = array('codigo', 'razon_social', 'rfc','numero_exterior', 'numero_interior',
-            'cp', 'colonia', 'calle', 'nombre', 'ap', 'am');
+            'cp', 'colonia', 'calle', 'nombre', 'ap', 'am', 'asunto', 'mensaje', 'receptor', 'cc', 'cco');
         $keys->telefonos = array('telefono');
         $keys->emails = array('correo');
         $keys->selects = array();
@@ -583,12 +597,198 @@ class controlador_com_cliente extends _ctl_base
         }
         $keys_selects['telefono']->disabled = true;
 
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 12, key: 'receptor',
+            keys_selects: $keys_selects, place_holder: 'Receptor');
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 12, key: 'asunto',
+            keys_selects: $keys_selects, place_holder: 'Asunto');
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 12, key: 'mensaje',
+            keys_selects: $keys_selects, place_holder: 'Mensaje');
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 12, key: 'cc',
+            keys_selects: $keys_selects, place_holder: 'CC',required: false);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 12, key: 'cco',
+            keys_selects: $keys_selects, place_holder: 'CCO',required: false);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+
+        $this->row_upd->asunto = "Envío de documentos";
+        $this->row_upd->mensaje = "Se envían documentos";
+
         $base = $this->base_upd(keys_selects: $keys_selects, params: array(), params_ajustados: array());
         if (errores::$error) {
             return $this->retorno_error(mensaje: 'Error al integrar base', data: $base, header: $header, ws: $ws);
         }
 
         return $template;
+    }
+
+    public function valida_campos(array $campos): array
+    {
+        $campos_validos = array('documentos', 'receptor', 'asunto', 'mensaje');
+        $campos_faltantes = array_diff($campos_validos, array_keys($campos));
+        if (!empty($campos_faltantes)) {
+            $mensaje_error = 'Faltan los siguientes campos: ' . implode(', ', $campos_faltantes);
+            return $this->errores->error(mensaje: $mensaje_error, data: $campos_faltantes);
+        }
+
+        return $campos;
+    }
+
+    function separar_correos(string $correos) :array {
+        if (trim($correos) === "") {
+            return [];
+        }
+
+        return preg_split('/[;,]/', $correos);
+    }
+
+    public function valida_receptor(array $correos): array|bool
+    {
+        foreach ($correos as $receptor) {
+            $validacion = (new _email($this->link))->validar_correo(correo: $receptor);
+            if (!$validacion) {
+                $mensaje_error = sprintf(_email::ERROR_CORREO_NO_VALIDO, $receptor);
+                return $this->errores->error(mensaje: $mensaje_error, data: $mensaje_error);
+            }
+        }
+
+        return true;
+    }
+
+    final public function envia_documentos(bool $header, bool $ws = false): array|stdClass
+    {
+        $campos_necesarios = $this->valida_campos($_POST);
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al validar campos', data: $campos_necesarios,
+                header: $header, ws: $ws);
+        }
+
+        $correos = $this->separar_correos(correos: $campos_necesarios['receptor']);
+        if (empty($correos)) {
+            $mensaje_error = 'No se encontraron correos válidos';
+            return $this->errores->error(mensaje: $mensaje_error, data: $correos);
+        }
+
+        $cc = $this->separar_correos(correos: $campos_necesarios['cc'] ?? "");
+        if (empty($correos)) {
+            $mensaje_error = 'No se encontraron correos válidos';
+            return $this->errores->error(mensaje: $mensaje_error, data: $correos);
+        }
+
+        $cco = $this->separar_correos(correos: $campos_necesarios['cco'] ?? "");
+        if (empty($correos)) {
+            $mensaje_error = 'No se encontraron correos válidos';
+            return $this->errores->error(mensaje: $mensaje_error, data: $correos);
+        }
+
+        $valida_correos = $this->valida_receptor(correos: $correos);
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al validar correos', data: $valida_correos,
+                header: $header, ws: $ws);
+        }
+
+        $this->link->beginTransaction();
+
+        $siguiente_view = (new actions())->init_alta_bd();
+        if (errores::$error) {
+            $this->link->rollBack();
+            return $this->retorno_error(mensaje: 'Error al obtener siguiente view', data: $siguiente_view,
+                header: $header, ws: $ws);
+        }
+
+        $emisor = (new _email($this->link))->emisor(correo: 'factura@efacturacion.com.mx');
+        if (errores::$error) {
+            $this->link->rollBack();
+            return $this->retorno_error(mensaje: 'Error al obtener emisor', data: $emisor,
+                header: $header, ws: $ws);
+        }
+
+        $mensaje = (new _email($this->link))->mensaje(asunto: $campos_necesarios['asunto'],
+            mensaje: $campos_necesarios['mensaje'], emisor: $emisor['not_emisor_id']);
+        if (errores::$error) {
+            $this->link->rollBack();
+            return $this->retorno_error(mensaje: 'Error al obtener mensaje', data: $mensaje,
+                header: $header, ws: $ws);
+        }
+
+        foreach ($correos as $correo) {
+            $receptor = (new _email($this->link))->receptor(correo: $correo);
+            if (errores::$error) {
+                $this->link->rollBack();
+                return $this->retorno_error(mensaje: 'Error al obtener receptor', data: $receptor,
+                    header: $header, ws: $ws);
+            }
+
+            $mensaje_receptor = (new _email($this->link))->mensaje_receptor(mensaje: $mensaje['not_mensaje_id'],
+                receptor: $receptor['not_receptor_id']);
+            if (errores::$error) {
+                $this->link->rollBack();
+                return $this->retorno_error(mensaje: 'Error al obtener mensaje receptor', data: $mensaje_receptor,
+                    header: $header, ws: $ws);
+            }
+        }
+
+        $documentos_seleccionados = explode(',', $campos_necesarios['documentos']);
+        $documentos = array();
+
+        foreach ($documentos_seleccionados as $documento) {
+            $registro = (new com_cliente_documento($this->link))->registro(registro_id: $documento, columnas: ['doc_documento_id']);
+            if (errores::$error) {
+                $this->link->rollBack();
+                return $this->retorno_error(mensaje: 'Error al obtener documento', data: $registro,
+                    header: $header, ws: $ws);
+            }
+            $documentos[] = $registro['doc_documento_id'];
+        }
+
+        $r_alta_doc_etapa = new stdClass();
+
+        $mensaje_adjuntos = (new _email($this->link))->adjuntos(mensaje: $mensaje['not_mensaje_id'],
+            documentos: $documentos);
+        if (errores::$error) {
+            $this->link->rollBack();
+            return $this->retorno_error(mensaje: 'Error al obtener adjuntos', data: $mensaje_adjuntos,
+                header: $header, ws: $ws);
+        }
+
+        $mensaje_enviado = (new not_mensaje($this->link))->envia_mensaje(not_mensaje_id: $mensaje['not_mensaje_id'],
+            cc: $cc, cco: $cco);
+        if (errores::$error) {
+            $this->link->rollBack();
+            return $this->retorno_error(mensaje: 'Error al enviar mensaje', data: $mensaje_enviado,
+                header: $header, ws: $ws);
+        }
+
+        $this->link->commit();
+
+        if ($header) {
+            $this->retorno_base(registro_id: $this->registro_id, result: $r_alta_doc_etapa,
+                siguiente_view: "documentos", ws: $ws);
+        }
+        if ($ws) {
+            header('Content-Type: application/json');
+            echo json_encode($r_alta_doc_etapa, JSON_THROW_ON_ERROR);
+            exit;
+        }
+        $r_alta_doc_etapa->siguiente_view = "documentos";
+
+        return $r_alta_doc_etapa;
     }
 
     public function get_cliente(bool $header, bool $ws = true): array|stdClass
