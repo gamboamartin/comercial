@@ -209,11 +209,6 @@ class com_cliente extends _modelo_parent
             return $this->error->error(mensaje: 'Error al insertar sucursal', data: $alta_sucursal);
         }
 
-        $inserta_documento = $this->registra_documento_cliente(com_cliente: $r_alta_bd->registro_id);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al insertar documento para cliente', data: $inserta_documento);
-        }
-
         return $r_alta_bd;
     }
 
@@ -243,6 +238,10 @@ class com_cliente extends _modelo_parent
     }
 
     public function registra_documento_cliente(int $com_cliente) : array|stdClass {
+        if (!array_key_exists('documento', $_FILES)) {
+            return array();
+        }
+
         $tipo_documento = (new doc_documento($this->link))->validar_permisos_documento(modelo: $this->tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar permisos para el documento', data: $tipo_documento);
