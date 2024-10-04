@@ -36,6 +36,9 @@ class controlador_com_prospecto extends _base_sin_cod
     public string $link_com_rel_agente_prospecto_bd = '';
     public string $button_com_prospecto_modifica = '';
 
+    public string $hora_inicio = '';
+    public string $hora_fin = '';
+
     public function __construct(PDO      $link, html $html = new \gamboamartin\template_1\html(),
                                 stdClass $paths_conf = new stdClass())
     {
@@ -180,7 +183,8 @@ class controlador_com_prospecto extends _base_sin_cod
     {
         $keys = new stdClass();
         $keys->inputs = array('codigo', 'descripcion', 'nombre', 'apellido_paterno', 'apellido_materno', 'telefono',
-            'correo', 'razon_social', 'texto_exterior', 'texto_interior');
+            'correo', 'razon_social', 'texto_exterior', 'texto_interior', 'titulo', 'zona_horaria');
+        $keys->fechas = array('fecha_inicio', 'fecha_fin');
         $keys->selects = array();
 
         $init_data = array();
@@ -242,7 +246,19 @@ class controlador_com_prospecto extends _base_sin_cod
                 ws: $ws);
         }
 
+        $this->row_upd->descripcion = "";
+
+        date_default_timezone_set('America/Mexico_City');
+
+        $horaInicio = new \DateTime();
+        $this->hora_inicio = $horaInicio->format('H:i');
+
+        $horaFin = clone $horaInicio;
+        $horaFin->modify('+1 hour');
+        $this->hora_fin = $horaFin->format('H:i');
+
         $keys_selects['pr_etapa_proceso_id']->filtro = array('pr_proceso.descripcion' => 'PROSPECCION');
+        $keys_selects['adm_tipo_evento_id']->required = false;
 
         $hoy = date('Y-m-d');
         $fecha = $this->html->input_fecha(cols: 12, row_upd: new stdClass(), value_vacio: false, value: $hoy);
@@ -413,8 +429,8 @@ class controlador_com_prospecto extends _base_sin_cod
             return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
         }
 
-        $keys_selects = (new init())->key_select_txt(cols: 8, key: 'descripcion',
-            keys_selects: $keys_selects, place_holder: 'Tipo Agente');
+        $keys_selects = (new init())->key_select_txt(cols: 12, key: 'descripcion',
+            keys_selects: $keys_selects, place_holder: 'Descripción', required: false);
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
         }
@@ -458,6 +474,30 @@ class controlador_com_prospecto extends _base_sin_cod
 
         $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6, key: 'texto_interior',
             keys_selects: $keys_selects, place_holder: 'Interior');
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+
+        $keys_selects = (new init())->key_select_txt(cols: 12, key: 'titulo',
+            keys_selects: $keys_selects, place_holder: 'Titulo', required: false);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+
+        $keys_selects = (new init())->key_select_txt(cols: 12, key: 'zona_horaria',
+            keys_selects: $keys_selects, place_holder: 'Zona Horaria', required: false);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+
+        $keys_selects = (new init())->key_select_txt(cols: 6, key: 'fecha_inicio',
+            keys_selects: $keys_selects, place_holder: 'Fecha Inicio', required: false);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+
+        $keys_selects = (new init())->key_select_txt(cols: 6, key: 'fecha_fin',
+            keys_selects: $keys_selects, place_holder: 'Fecha Fin', required: false);
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
         }
