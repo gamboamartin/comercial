@@ -98,6 +98,7 @@ class com_producto extends _modelo_parent {
         }
 
 
+        
         if(isset($this->registro['cat_sat_producto'])){
             if(trim($this->registro['cat_sat_producto'] !=='')){
 
