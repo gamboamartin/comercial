@@ -92,9 +92,9 @@ class com_producto extends _modelo_parent {
     {
 
         if(isset($this->registro['cat_sat_producto_radio'])){
-            $this->registro['cat_sat_producto'] = $this->registro['cat_sat_producto_radio'];
-            unset($this->registro['cat_sat_producto_radio']);
-            $this->registro['cat_sat_cve_prod_id'] = $this->registro['cat_sat_producto'];
+            //$this->registro['cat_sat_producto'] = $this->registro['cat_sat_producto_radio'];
+            //unset($this->registro['cat_sat_producto_radio']);
+            $this->registro['cat_sat_cve_prod_id'] = $this->registro['cat_sat_producto_radio'];
         }
 
 
