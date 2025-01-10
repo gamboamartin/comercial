@@ -116,6 +116,7 @@ class controlador_com_cliente extends _ctl_base
         }
         $this->link_com_email_cte_alta_bd = $link_com_email_cte_alta_bd;
 
+        $this->lista_get_data = true;
 
     }
 
