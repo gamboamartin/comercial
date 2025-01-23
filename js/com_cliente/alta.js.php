@@ -15,6 +15,7 @@
 
     let cat_sat_metodo_pago_id_sl = $("#cat_sat_metodo_pago_id");
     let cat_sat_forma_pago_id_sl = $("#cat_sat_forma_pago_id");
+    let cat_sat_tipo_persona_id_sl = $("#cat_sat_tipo_persona_id");
 
     let metodo_pago_permitido = <?php echo(json_encode((new \gamboamartin\cat_sat\models\_validacion())->metodo_pago_permitido)); ?>;
     let formas_pagos_permitidas = [];
@@ -102,7 +103,11 @@
 
         get_data(url, function (data) {
             console.log(data.registros);
-
+            $.each(data.registros, function( index, cat_sat_tipo_persona ) {
+                console.log(cat_sat_tipo_persona.cat_sat_tipo_persona_id);
+                cat_sat_tipo_persona_id_sl.val(cat_sat_tipo_persona.cat_sat_tipo_persona_id);
+                cat_sat_tipo_persona_id_sl.selectpicker('refresh');
+            });
         });
 
         let razon_social = "";
