@@ -19,6 +19,7 @@ use gamboamartin\errores\errores;
 use gamboamartin\proceso\html\pr_etapa_proceso_html;
 use gamboamartin\system\actions;
 use gamboamartin\template\html;
+use gamboamartin\validacion\validacion;
 use html\com_prospecto_html;
 use PDO;
 use stdClass;
@@ -455,11 +456,16 @@ class controlador_com_prospecto extends _base_sin_cod
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
         }
+        $validacion =  new validacion();
+        $keys_selects['telefono']->regex = $validacion->patterns['telefono_mx_html'];
+
         $keys_selects = (new init())->key_select_txt(cols: 6, key: 'correo',
             keys_selects: $keys_selects, place_holder: 'Correo');
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
         }
+        $keys_selects['correo']->regex = $validacion->patterns['correo_html_base'];
+
         $keys_selects = (new init())->key_select_txt(cols: 6, key: 'razon_social',
             keys_selects: $keys_selects, place_holder: 'Razon Social');
         if (errores::$error) {
