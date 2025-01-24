@@ -16,6 +16,10 @@
     let cat_sat_metodo_pago_id_sl = $("#cat_sat_metodo_pago_id");
     let cat_sat_forma_pago_id_sl = $("#cat_sat_forma_pago_id");
     let cat_sat_tipo_persona_id_sl = $("#cat_sat_tipo_persona_id");
+    let cat_sat_regimen_fiscal_id_sl = $("#cat_sat_regimen_fiscal_id");
+    let dp_pais_final_id_sl = $("#dp_pais_id");
+    let dp_estado_final_id_sl = $("#dp_estado_id");
+    let dp_municipio_final_id_sl = $("#dp_municipio_id");
 
     let metodo_pago_permitido = <?php echo(json_encode((new \gamboamartin\cat_sat\models\_validacion())->metodo_pago_permitido)); ?>;
     let formas_pagos_permitidas = [];
@@ -97,16 +101,59 @@
     .then(response => response.json())
     .then(result => {
         data = result.data;
+        console.log(data);
         persona = data.datos_identificacion;
 
         let url = get_url("cat_sat_tipo_persona", "get_tipo_persona", {tipo_persona: data.tipo_persona });
+        get_data(url, function (data_tp) {
+            cat_sat_tipo_persona_id_sl.val(data_tp.cat_sat_tipo_persona_id);
+            cat_sat_tipo_persona_id_sl.selectpicker('refresh');
+        });
 
-        get_data(url, function (data) {
-            console.log(data.registros);
-            $.each(data.registros, function( index, cat_sat_tipo_persona ) {
-                console.log(cat_sat_tipo_persona.cat_sat_tipo_persona_id);
-                cat_sat_tipo_persona_id_sl.val(cat_sat_tipo_persona.cat_sat_tipo_persona_id);
-                cat_sat_tipo_persona_id_sl.selectpicker('refresh');
+        let url_rf = get_url("cat_sat_regimen_fiscal", "get_regimen_fiscal",
+            {regimen_fiscal: data.datos_fiscales.regimen });
+        get_data(url_rf, function (data_rf) {
+            cat_sat_regimen_fiscal_id_sl.val(data_rf.cat_sat_regimen_fiscal_id);
+            cat_sat_regimen_fiscal_id_sl.selectpicker('refresh');
+        });
+
+        let url_ubi = get_url("dp_municipio", "get_ubicacion_sat",
+        {municipio: data.datos_ubicacion.municipio_o_delegacion});
+
+        get_data(url_ubi, function (data_mun) {
+
+            dp_pais_final_id_sl.val(data_mun.dp_pais_id);
+            dp_pais_final_id_sl.selectpicker('refresh');
+
+            let url_est = get_url("dp_estado","get_estado", {dp_pais_id: data_mun.dp_pais_id});
+
+            get_data(url_est, function (data_est) {
+                dp_estado_final_id_sl.empty();
+                integra_new_option(dp_estado_final_id_sl,'Seleccione un estado','-1');
+
+                $.each(data_est.registros, function( index, dp_estado ) {
+                    integra_new_option(dp_estado_final_id_sl,dp_estado.dp_estado_descripcion,dp_estado.dp_estado_id,
+                    "data-dp_estado_predeterminado",dp_estado.dp_estado_predeterminado);
+                });
+
+                dp_estado_final_id_sl.val(data.dp_estado_id);
+                dp_estado_final_id_sl.selectpicker('refresh');
+            });
+
+            let url_mun = get_url("dp_municipio","get_municipio", {dp_estado_id: data_mun.dp_estado_id});
+
+            get_data(url_mun, function (data_mund) {
+                dp_municipio_final_id_sl.empty();
+
+                integra_new_option(dp_municipio_final_id_sl,'Seleccione un municipio','-1');
+
+                $.each(data_mund.registros, function( index, dp_municipio ) {
+                    integra_new_option(dp_municipio_final_id_sl,dp_municipio.dp_municipio_descripcion,dp_municipio.dp_municipio_id,
+                    "data-dp_municipio_predeterminado",dp_municipio.dp_municipio_predeterminado);
+                });
+
+                dp_municipio_final_id_sl.val(data.dp_municipio_id);
+                dp_municipio_final_id_sl.selectpicker('refresh');
             });
         });
 
