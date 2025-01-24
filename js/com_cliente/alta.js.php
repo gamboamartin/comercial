@@ -136,7 +136,7 @@
                     "data-dp_estado_predeterminado",dp_estado.dp_estado_predeterminado);
                 });
 
-                dp_estado_final_id_sl.val(data.dp_estado_id);
+                dp_estado_final_id_sl.val(data_mun.dp_estado_id);
                 dp_estado_final_id_sl.selectpicker('refresh');
             });
 
@@ -152,7 +152,7 @@
                     "data-dp_municipio_predeterminado",dp_municipio.dp_municipio_predeterminado);
                 });
 
-                dp_municipio_final_id_sl.val(data.dp_municipio_id);
+                dp_municipio_final_id_sl.val(data_mun.dp_municipio_id);
                 dp_municipio_final_id_sl.selectpicker('refresh');
             });
         });
