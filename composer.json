@@ -68,5 +68,10 @@
     },
     "require-dev": {
 
+    },
+  "config": {
+    "allow-plugins": {
+      "phpdocumentor/shim": false
     }
+  }
 }
