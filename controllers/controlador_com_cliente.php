@@ -1005,6 +1005,7 @@ class controlador_com_cliente extends _ctl_base
         $datatables = new stdClass();
         $datatables->columns = $columns;
         $datatables->filtro = $filtro;
+        $datatables->menu_active = true;
 
         return $datatables;
     }
