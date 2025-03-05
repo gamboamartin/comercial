@@ -833,28 +833,81 @@ class controlador_com_cliente extends _ctl_base
     }
 
     /**
-     * Inicializa las configuraciones base del controler
-     * @return controler
+     * REG
+     * Inicializa las configuraciones básicas del controlador.
+     *
+     * Este método establece configuraciones predeterminadas para la gestión de clientes, como el título de la lista de registros.
+     *
+     * @return controler Retorna la instancia del controlador con las configuraciones aplicadas.
+     *
+     * @example
+     * ```php
+     * $controlador = new controlador_com_cliente($link);
+     * $controlador = $controlador->init_configuraciones();
+     * ```
+     *
+     * @example
+     * Ejemplo de salida esperada:
+     * ```php
+     * controlador_com_cliente Object
+     * (
+     *     [titulo_lista] => Registro de Clientes
+     * )
+     * ```
      */
     private function init_configuraciones(): controler
     {
+        // Define el título de la lista en la vista de clientes
         $this->titulo_lista = 'Registro de Clientes';
 
+        // Retorna la instancia del controlador con las configuraciones aplicadas
         return $this;
     }
+
 
 
     /**
-     * Inicializa los controladores a utilizar
-     * @param stdClass $paths_conf Archivos de rutas de configuracion
-     * @return controler
+     * REG
+     * Inicializa los controladores necesarios para la gestión de clientes.
+     *
+     * Este método configura los controladores auxiliares utilizados en la gestión de clientes,
+     * como el controlador de correos electrónicos asociados a los clientes (`controlador_com_email_cte`).
+     *
+     * @param stdClass $paths_conf Contiene la configuración de rutas del sistema.
+     *                             Este objeto es utilizado para inicializar los controladores con los
+     *                             caminos correctos a los archivos de configuración.
+     *
+     * @return controler Retorna la instancia del controlador principal con los controladores auxiliares inicializados.
+     *
+     * @example
+     * ```php
+     * $paths_conf = new stdClass();
+     * $controlador = new controlador_com_cliente($link);
+     * $controlador = $controlador->init_controladores($paths_conf);
+     * ```
+     *
+     * @example
+     * Ejemplo de salida esperada:
+     * ```php
+     * controlador_com_cliente Object
+     * (
+     *     [controlador_com_email_cte] => controlador_com_email_cte Object
+     *         (
+     *             [link] => PDO Object
+     *             [paths_conf] => stdClass Object
+     *         )
+     * )
+     * ```
      */
     private function init_controladores(stdClass $paths_conf): controler
     {
+        // Inicializa el controlador de correos electrónicos de clientes
         $this->controlador_com_email_cte = new controlador_com_email_cte(link: $this->link, paths_conf: $paths_conf);
 
+        // Retorna la instancia del controlador actual con los controladores auxiliares configurados
         return $this;
     }
+
 
     /**
      * @param array $keys_selects
@@ -991,17 +1044,68 @@ class controlador_com_cliente extends _ctl_base
     }
 
     /**
-     * Este método se utiliza para inicializar un objeto de tipo stdClass que contiene las configuraciones
-     * especificas para un objeto DataTable.
+     * REG
+     * Inicializa la configuración para la visualización de datos en un DataTable.
      *
-     * @return stdClass Este método retorna un objeto de tipo stdClass con las siguientes propiedades:
-     * - columns: Es un array que contiene las columnas del DataTable.
-     * - filtro: Es un array que contiene los campos que se utilizarán como filtros en el DataTable.
-     * @version 20.2.0
-     * @por_documentar_wiki
+     * Este método define las columnas a mostrar en el DataTable, los filtros aplicables,
+     * y configura la activación del menú para la tabla de clientes en el sistema comercial.
+     *
+     * @return stdClass Un objeto con la configuración del DataTable.
+     *
+     * @example
+     * Ejemplo de salida esperada:
+     * ```
+     * stdClass Object
+     * (
+     *     [columns] => Array
+     *         (
+     *             [com_cliente_id] => Array
+     *                 (
+     *                     [titulo] => Id
+     *                 )
+     *
+     *             [com_cliente_codigo] => Array
+     *                 (
+     *                     [titulo] => Código
+     *                 )
+     *
+     *             [com_cliente_razon_social] => Array
+     *                 (
+     *                     [titulo] => Razón Social
+     *                 )
+     *
+     *             [com_cliente_rfc] => Array
+     *                 (
+     *                     [titulo] => RFC
+     *                 )
+     *
+     *             [cat_sat_regimen_fiscal_descripcion] => Array
+     *                 (
+     *                     [titulo] => Régimen Fiscal
+     *                 )
+     *
+     *             [com_cliente_n_sucursales] => Array
+     *                 (
+     *                     [titulo] => Sucursales
+     *                 )
+     *         )
+     *
+     *     [filtro] => Array
+     *         (
+     *             [0] => com_cliente.id
+     *             [1] => com_cliente.codigo
+     *             [2] => com_cliente.razon_social
+     *             [3] => com_cliente.rfc
+     *             [4] => cat_sat_regimen_fiscal.descripcion
+     *         )
+     *
+     *     [menu_active] => 1
+     * )
+     * ```
      */
     protected function init_datatable(): stdClass
     {
+        // Definición de las columnas con sus respectivos títulos
         $columns["com_cliente_id"]["titulo"] = "Id";
         $columns["com_cliente_codigo"]["titulo"] = "Código";
         $columns["com_cliente_razon_social"]["titulo"] = "Razón Social";
@@ -1009,16 +1113,24 @@ class controlador_com_cliente extends _ctl_base
         $columns["cat_sat_regimen_fiscal_descripcion"]["titulo"] = "Régimen Fiscal";
         $columns["com_cliente_n_sucursales"]["titulo"] = "Sucursales";
 
-        $filtro = array("com_cliente.id", "com_cliente.codigo", "com_cliente.razon_social", "com_cliente.rfc",
-            "cat_sat_regimen_fiscal.descripcion");
+        // Filtros aplicables en la búsqueda del DataTable
+        $filtro = array(
+            "com_cliente.id",
+            "com_cliente.codigo",
+            "com_cliente.razon_social",
+            "com_cliente.rfc",
+            "cat_sat_regimen_fiscal.descripcion"
+        );
 
+        // Creación del objeto de configuración del DataTable
         $datatables = new stdClass();
-        $datatables->columns = $columns;
-        $datatables->filtro = $filtro;
-        $datatables->menu_active = true;
+        $datatables->columns = $columns; // Asignación de las columnas
+        $datatables->filtro = $filtro; // Asignación de los filtros
+        $datatables->menu_active = true; // Activación del menú
 
         return $datatables;
     }
+
 
     protected function key_selects_txt(array $keys_selects): array
     {

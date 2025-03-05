@@ -25,9 +25,9 @@ class controlador_com_productoTest extends test {
         parent::__construct($name);
         $this->errores = new errores();
         $this->paths_conf = new stdClass();
-        $this->paths_conf->generales = '/var/www/html/organigrama/config/generales.php';
-        $this->paths_conf->database = '/var/www/html/organigrama/config/database.php';
-        $this->paths_conf->views = '/var/www/html/organigrama/config/views.php';
+        $this->paths_conf->generales = '/var/www/html/comercial/config/generales.php';
+        $this->paths_conf->database = '/var/www/html/comercial/config/database.php';
+        $this->paths_conf->views = '/var/www/html/comercial/config/views.php';
     }
 
     public function test_inicializa_propiedades(): void

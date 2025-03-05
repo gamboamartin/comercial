@@ -3,6 +3,7 @@ namespace gamboamartin\comercial\test\instalacion;
 
 use config\generales;
 use gamboamartin\administrador\models\_instalacion;
+use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\comercial\instalacion\instalacion;
 use gamboamartin\comercial\models\com_agente;
 use gamboamartin\comercial\models\com_sucursal;
@@ -10,6 +11,9 @@ use gamboamartin\comercial\models\com_tipo_cambio;
 use gamboamartin\comercial\test\base_test;
 use gamboamartin\errores\errores;
 
+use gamboamartin\notificaciones\models\not_mensaje_etapa;
+use gamboamartin\notificaciones\models\not_rel_mensaje_etapa;
+use gamboamartin\proceso\models\pr_etapa_proceso;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 
@@ -64,6 +68,34 @@ class instalacionTest extends test {
         $_SESSION['grupo_id'] = 2;
         $_SESSION['usuario_id'] = 2;
         $_GET['session_id'] = '1';
+
+        $del = (new not_rel_mensaje_etapa($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al $del', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new not_mensaje_etapa($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al $del', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new pr_etapa_proceso($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al $del', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_accion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al $del', $del);
+            print_r($error);
+            exit;
+        }
 
         $instala = (new \gamboamartin\cat_sat\instalacion\instalacion(link: $this->link))->instala(link: $this->link);
         if(errores::$error){

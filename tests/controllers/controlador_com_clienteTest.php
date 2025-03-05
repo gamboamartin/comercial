@@ -1,6 +1,7 @@
 <?php
 namespace gamboamartin\comercial\test\controllers;
 
+use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\comercial\controllers\controlador_com_cliente;
 use gamboamartin\comercial\controllers\controlador_com_sucursal;
 use gamboamartin\comercial\models\com_cliente;
@@ -24,9 +25,9 @@ class controlador_com_clienteTest extends test {
         parent::__construct($name);
         $this->errores = new errores();
         $this->paths_conf = new stdClass();
-        $this->paths_conf->generales = '/var/www/html/organigrama/config/generales.php';
-        $this->paths_conf->database = '/var/www/html/organigrama/config/database.php';
-        $this->paths_conf->views = '/var/www/html/organigrama/config/views.php';
+        $this->paths_conf->generales = '/var/www/html/comercial/config/generales.php';
+        $this->paths_conf->database = '/var/www/html/comercial/config/database.php';
+        $this->paths_conf->views = '/var/www/html/comercial/config/views.php';
     }
 
     public function test_init_configuraciones(): void
@@ -39,8 +40,31 @@ class controlador_com_clienteTest extends test {
         $_SESSION['usuario_id'] = 2;
         $_GET['session_id'] = '1';
         $_GET['registro_id'] = '1';
+
+
+        $del = (new adm_accion($this->link))->elimina_todo();
+
+        if(errores::$error){
+            $error = (new errores())->error('Error al $del', $del);
+            print_r($error);
+            exit;
+        }
+
+        $adm_accion_ins['descripcion'] = 'lista';
+        $adm_accion_ins['adm_seccion_id'] = 1;
+
+        $ins = (new adm_accion($this->link))->alta_registro($adm_accion_ins);
+
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $ins);
+            print_r($error);
+            exit;
+        }
+
+
         $ctl = new controlador_com_cliente(link: $this->link, paths_conf: $this->paths_conf);
         $ctl = new liberator($ctl);
+
 
 
         $resultado = $ctl->init_configuraciones();
