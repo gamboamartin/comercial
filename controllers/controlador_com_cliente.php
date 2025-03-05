@@ -184,7 +184,7 @@ class controlador_com_cliente extends _ctl_base
             return $this->retorno_error(mensaje: 'Error al integrar base', data: $base, header: $header, ws: $ws);
         }
 
-        $button =  $this->html->button_href(accion: 'modifica', etiqueta: 'Ir a Cliente',
+        $button = $this->html->button_href(accion: 'modifica', etiqueta: 'Ir a Cliente',
             registro_id: $this->registro_id, seccion: $this->tabla, style: 'warning', params: array());
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al generar link', data: $button);
@@ -233,7 +233,7 @@ class controlador_com_cliente extends _ctl_base
             return $this->retorno_error(mensaje: 'Error al integrar base', data: $base, header: $header, ws: $ws);
         }
 
-        $button =  $this->html->button_href(accion: 'modifica', etiqueta: 'Ir a Cliente',
+        $button = $this->html->button_href(accion: 'modifica', etiqueta: 'Ir a Cliente',
             registro_id: $this->registro_id, seccion: $this->tabla, style: 'warning', params: array());
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al generar link', data: $button);
@@ -242,7 +242,7 @@ class controlador_com_cliente extends _ctl_base
         $this->button_com_cliente_modifica = $button;
 
         $data_view = new stdClass();
-        $data_view->names = array('Id', 'Tipo', 'Contacto', 'Teléfono', 'Correo','Acciones');
+        $data_view->names = array('Id', 'Tipo', 'Contacto', 'Teléfono', 'Correo', 'Acciones');
         $data_view->keys_data = array('com_contacto_id', 'com_tipo_contacto_descripcion', 'com_contacto_descripcion',
             'com_contacto_telefono', 'com_contacto_correo');
         $data_view->key_actions = 'acciones';
@@ -375,8 +375,8 @@ class controlador_com_cliente extends _ctl_base
         }
         $this->link_asigna_contacto_bd = $link;
 
-        $this->link_envia_documentos = $this->obj_link->link_con_id(accion: "envia_documentos",link: $this->link,
-            registro_id: $this->registro_id,seccion: "com_cliente");
+        $this->link_envia_documentos = $this->obj_link->link_con_id(accion: "envia_documentos", link: $this->link,
+            registro_id: $this->registro_id, seccion: "com_cliente");
         if (errores::$error) {
             $error = $this->errores->error(mensaje: 'Error al obtener link',
                 data: $this->link_envia_documentos);
@@ -391,7 +391,7 @@ class controlador_com_cliente extends _ctl_base
     protected function campos_view(): array
     {
         $keys = new stdClass();
-        $keys->inputs = array('codigo', 'razon_social', 'rfc','numero_exterior', 'numero_interior',
+        $keys->inputs = array('codigo', 'razon_social', 'rfc', 'numero_exterior', 'numero_interior',
             'cp', 'colonia', 'calle', 'nombre', 'ap', 'am', 'asunto', 'mensaje', 'receptor', 'cc', 'cco');
         $keys->telefonos = array('telefono');
         $keys->emails = array('correo');
@@ -564,7 +564,8 @@ class controlador_com_cliente extends _ctl_base
 
 
         $keys_selects = $this->init_selects_inputs();
-        if (errores::$error) {return $this->errores->error(mensaje: 'Error al inicializar selects', data: $keys_selects);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al inicializar selects', data: $keys_selects);
         }
 
         $keys_selects['com_tipo_cliente_id']->id_selected = $this->registro['com_tipo_cliente_id'];
@@ -617,13 +618,13 @@ class controlador_com_cliente extends _ctl_base
         }
 
         $keys_selects = (new \base\controller\init())->key_select_txt(cols: 12, key: 'cc',
-            keys_selects: $keys_selects, place_holder: 'CC',required: false);
+            keys_selects: $keys_selects, place_holder: 'CC', required: false);
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
         }
 
         $keys_selects = (new \base\controller\init())->key_select_txt(cols: 12, key: 'cco',
-            keys_selects: $keys_selects, place_holder: 'CCO',required: false);
+            keys_selects: $keys_selects, place_holder: 'CCO', required: false);
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
         }
@@ -651,7 +652,8 @@ class controlador_com_cliente extends _ctl_base
         return $campos;
     }
 
-    function separar_correos(string $correos) :array {
+    function separar_correos(string $correos): array
+    {
         if (trim($correos) === "") {
             return [];
         }
@@ -804,12 +806,24 @@ class controlador_com_cliente extends _ctl_base
         return $salida;
     }
 
-    public function leer_qr(bool $header, bool $ws = false) : array
+    public function error_especifico($error_array): string
     {
+        while (isset($error_array['data']) && is_array($error_array['data']) && isset($error_array['data']['mensaje'])) {
+            $error_array = $error_array['data'];
+        }
+        return $error_array['mensaje'] ?? 'No se encontró un mensaje de error';
+    }
+
+    public function leer_qr(bool $header, bool $ws = false): array
+    {
+        $salida['status'] = "success";
+        $salida['mensaje'] = 'Código QR leído correctamente';
+
         $registros = (new com_cliente($this->link))->leer_codigo_qr();
         if (errores::$error) {
-            return $this->retorno_error(mensaje: 'Error al leer el código QR del documento PDF', data: $registros,
-                header: $header, ws: $ws);
+            $error = $this->error_especifico($registros);
+            $salida['status'] = "error";
+            $salida['mensaje'] = $error;
         }
 
         $salida['draw'] = count($registros);
@@ -857,7 +871,7 @@ class controlador_com_cliente extends _ctl_base
      * @return array
      */
     protected function init_selects(array $keys_selects, string $key, string $label, int|null $id_selected = -1,
-                                    int $cols = 6, bool  $con_registros = true, array $filtro = array()): array
+                                    int   $cols = 6, bool $con_registros = true, array $filtro = array()): array
     {
         $keys_selects = $this->key_select(cols: $cols, con_registros: $con_registros, filtro: $filtro, key: $key,
             keys_selects: $keys_selects, id_selected: $id_selected, label: $label);
@@ -1185,7 +1199,6 @@ class controlador_com_cliente extends _ctl_base
         if (errores::$error) {
             return $this->retorno_error(mensaje: 'Error al integrar base', data: $base, header: $header, ws: $ws);
         }
-
 
 
         return $r_modifica;

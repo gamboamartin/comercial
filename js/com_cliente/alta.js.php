@@ -100,6 +100,12 @@
     })
     .then(response => response.json())
     .then(result => {
+        if(result.status === 'error'){
+            alert(result.mensaje);
+            loaderOverlay.remove();
+            return;
+        }
+
         data = result.data;
         console.log(data);
         persona = data.datos_identificacion;
@@ -182,7 +188,7 @@
     })
     .catch(error => {
         alert('Error al leer el documento.');
-        console.error('Error al subir el archivo:', error);
+        console.error("Error procesando la respuesta:", error);
         loaderOverlay.remove();
     });
 });
