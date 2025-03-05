@@ -811,19 +811,15 @@ class controlador_com_cliente extends _ctl_base
         while (isset($error_array['data']) && is_array($error_array['data']) && isset($error_array['data']['mensaje'])) {
             $error_array = $error_array['data'];
         }
-        return $error_array['mensaje'] ?? 'No se encontró un mensaje de error';
+        return $error_array['mensaje_limpio'] ?? 'No se encontró un mensaje de error';
     }
 
     public function leer_qr(bool $header, bool $ws = false): array
     {
-        $salida['status'] = "success";
-        $salida['mensaje'] = 'Código QR leído correctamente';
-
         $registros = (new com_cliente($this->link))->leer_codigo_qr();
         if (errores::$error) {
-            $error = $this->error_especifico($registros);
-            $salida['status'] = "error";
-            $salida['mensaje'] = $error;
+            return $this->retorno_error(mensaje: 'Error al leer el código QR del documento PDF', data: $registros,
+                header: $header, ws: $ws);
         }
 
         $salida['draw'] = count($registros);
