@@ -19,6 +19,7 @@ use gamboamartin\cat_sat\models\cat_sat_tipo_persona;
 use gamboamartin\cat_sat\models\cat_sat_uso_cfdi;
 use gamboamartin\comercial\models\_email;
 use gamboamartin\comercial\models\com_cliente;
+use gamboamartin\comercial\models\com_cliente_cuenta;
 use gamboamartin\comercial\models\com_cliente_documento;
 use gamboamartin\comercial\models\com_conf_tipo_doc_cliente;
 use gamboamartin\comercial\models\com_contacto;
@@ -34,6 +35,7 @@ use gamboamartin\system\_ctl_base;
 use gamboamartin\system\actions;
 use gamboamartin\system\links_menu;
 use gamboamartin\template\html;
+use html\bn_banco_html;
 use html\com_cliente_html;
 use html\com_email_cte_html;
 use html\doc_tipo_documento_html;
@@ -43,7 +45,9 @@ use stdClass;
 class controlador_com_cliente extends _ctl_base
 {
     public string $link_com_email_cte_alta_bd = '';
+    public string $link_asigna_cuenta_bd = '';
     public string $button_com_cliente_correo = '';
+    public string $button_com_cliente_cuenta = '';
 
     public controlador_com_email_cte $controlador_com_email_cte;
 
@@ -116,8 +120,15 @@ class controlador_com_cliente extends _ctl_base
         }
         $this->link_com_email_cte_alta_bd = $link_com_email_cte_alta_bd;
 
-        $this->lista_get_data = true;
+        $link_asigna_cuenta_bd = $this->obj_link->link_alta_bd(link: $this->link, seccion: 'com_cliente_cuenta');
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener link', data: $link_asigna_cuenta_bd);
+            print_r($error);
+            exit;
+        }
+        $this->link_asigna_cuenta_bd = $link_asigna_cuenta_bd;
 
+        $this->lista_get_data = true;
     }
 
     public function alta(bool $header, bool $ws = false): array|string
@@ -521,6 +532,113 @@ class controlador_com_cliente extends _ctl_base
         }
 
         $this->button_com_cliente_correo = $button_com_cliente_correo;
+        return $this->inputs;
+    }
+
+    public function asigna_cuenta(bool $header, bool $ws = false): array|stdClass
+    {
+        $row_upd = $this->modelo->registro(registro_id: $this->registro_id, columnas_en_bruto: true, retorno_obj: true);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener registro', data: $row_upd);
+        }
+
+        $this->inputs = new stdClass();
+        $com_cliente_id = (new com_cliente_html(html: $this->html_base))->select_com_cliente_id(cols: 12,
+            con_registros: true, id_selected: $this->registro_id, link: $this->link,
+            disabled: true, filtro: array('com_cliente.id' => $this->registro_id));
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar input', data: $com_cliente_id);
+        }
+        $this->inputs->com_cliente_id = $com_cliente_id;
+
+        $bn_banco_id = (new bn_banco_html(html: $this->html_base))->select_bn_banco_id(cols: 12,
+            con_registros: true, id_selected: -1, link: $this->link);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar input', data: $bn_banco_id);
+        }
+        $this->inputs->bn_banco_id = $bn_banco_id;
+
+        $com_cliente_rfc = (new com_cliente_html(html: $this->html_base))->input_rfc(cols: 4, row_upd: $row_upd,
+            value_vacio: false, disabled: true);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar input', data: $com_cliente_rfc);
+        }
+        $this->inputs->com_cliente_rfc = $com_cliente_rfc;
+
+        $com_cliente_razon_social = (new com_cliente_html(html: $this->html_base))->input_razon_social(cols: 8,
+            row_upd: $row_upd, value_vacio: false, disabled: true);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar input', data: $com_cliente_rfc);
+        }
+        $this->inputs->com_cliente_razon_social = $com_cliente_razon_social;
+
+        $num_cuenta = $this->html->input_text(cols: 12, disabled: false, name: 'num_cuenta',
+            place_holder: "Número de cuenta", row_upd: new stdClass(), value_vacio: false);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar input', data: $num_cuenta);
+        }
+        $this->inputs->num_cuenta = $num_cuenta;
+
+        $clabe = $this->html->input_text(cols: 12, disabled: false, name: 'clabe',
+            place_holder: "Clabe", row_upd: new stdClass(), value_vacio: false);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar input', data: $clabe);
+        }
+        $this->inputs->clabe = $clabe;
+
+        $hidden_row_id = $this->html->hidden(name: 'com_cliente_id', value: $this->registro_id);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar input', data: $hidden_row_id);
+        }
+
+        $hidden_seccion_retorno = $this->html->hidden(name: 'seccion_retorno', value: $this->tabla);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar input', data: $hidden_seccion_retorno);
+        }
+
+        $hidden_id_retorno = $this->html->hidden(name: 'id_retorno', value: $this->registro_id);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar input', data: $hidden_id_retorno);
+        }
+
+        $this->inputs->hidden_row_id = $hidden_row_id;
+        $this->inputs->hidden_seccion_retorno = $hidden_seccion_retorno;
+        $this->inputs->hidden_id_retorno = $hidden_id_retorno;
+
+        $filtro['com_cliente.id'] = $this->registro_id;
+        $com_cliente_cuenta = (new com_cliente_cuenta(link: $this->link))->filtro_and(filtro: $filtro);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener cuentas', data: $com_cliente_cuenta);
+        }
+
+        $cuentas_cliente = $com_cliente_cuenta->registros;
+
+        foreach ($cuentas_cliente as $indice => $cuenta_cliente) {
+            $params = $this->params_button_partida(com_cliente_id: $this->registro_id, accion: "asigna_cuenta");
+            if (errores::$error) {
+                return $this->errores->error(mensaje: 'Error al generar params', data: $params);
+            }
+
+            $link_elimina = $this->html->button_href(accion: 'elimina_bd', etiqueta: 'Eliminar',
+                registro_id: $cuenta_cliente['com_cliente_cuenta_id'],
+                seccion: 'com_cliente_cuenta', style: 'danger', icon: 'bi bi-trash',
+                muestra_icono_btn: true, muestra_titulo_btn: false, params: $params);
+            if (errores::$error) {
+                return $this->errores->error(mensaje: 'Error al generar link elimina_bd para partida', data: $link_elimina);
+            }
+            $cuentas_cliente[$indice]['elimina_bd'] = $link_elimina;
+        }
+        $this->registros['cuentas_cliente'] = $cuentas_cliente;
+
+        $button_com_cliente_cuenta = $this->html->button_href(accion: 'modifica', etiqueta: 'Ir a Cliente',
+            registro_id: $this->registro_id,
+            seccion: 'com_cliente', style: 'warning', params: array());
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al generar link', data: $button_com_cliente_cuenta);
+        }
+
+        $this->button_com_cliente_cuenta = $button_com_cliente_cuenta;
+
         return $this->inputs;
     }
 
@@ -1312,11 +1430,11 @@ class controlador_com_cliente extends _ctl_base
         return $r_modifica;
     }
 
-    private function params_button_partida(int $com_cliente_id): array
+    private function params_button_partida(int $com_cliente_id, string $accion = 'correo'): array
     {
         $params = array();
         $params['seccion_retorno'] = 'com_cliente';
-        $params['accion_retorno'] = 'correo';
+        $params['accion_retorno'] = $accion;
         $params['id_retorno'] = $com_cliente_id;
         return $params;
     }
