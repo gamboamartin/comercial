@@ -553,6 +553,7 @@ class com_cliente extends _modelo_parent
         $com_sucursal_upd['codigo'] = $sucursal['com_sucursal_codigo'];
         $com_sucursal_upd['descripcion'] = $com_sucursal_descripcion;
         $com_sucursal_upd['com_cliente_id'] = $com_cliente_id;
+        $com_sucursal_upd['cp'] = $com_cliente->cp;
 
         if ($sucursal['com_tipo_sucursal_descripcion'] === 'MATRIZ') {
             $com_sucursal_upd = $this->com_sucursal_upd_dom(com_cliente: $com_cliente,
