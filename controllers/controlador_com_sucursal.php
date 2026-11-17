@@ -9,7 +9,7 @@
 namespace gamboamartin\comercial\controllers;
 
 use base\controller\init;
-use controllers\_init_dps;
+use gamboamartin\direccion_postal\controllers\_init_dps;
 use gamboamartin\comercial\models\com_cliente;
 use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\comercial\models\com_tipo_sucursal;
